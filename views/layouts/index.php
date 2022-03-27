@@ -1,30 +1,20 @@
 <?php
+$this->title = 'Home Page';
+$this->params['breadcrumbs'] = [['label' => $this->title]];
 
-if (Yii::$app->user->isGuest){ 
-    $this->title = 'Please Sign In';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
+use yii\filters\AccessControl;
+use yii\web\Controller;
+use yii\web\Response;
+
+if (!Yii::$app->user->isGuest):
+header('Location: index.php?r=site%2Flogin');
     
-<style type="text/css">#card1{
-display:none;
-}</style>
 
-<?php
-    
-}
-else {
-    $this->title = 'Home Page';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-    <style type="text/css">#loginButton{
-display:none;
-}</style>
+endif;
 
-<?php
-    }    
+
 ?>
-
-<div id="card1" class="container-fluid">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header text-white bg-primary">
             <h3 class="card-title">Patient Admission Summary</h3>
@@ -80,8 +70,5 @@ display:none;
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-</div>
-    
-<div id="loginButton" class="container-fluid">
-<h1><a href="?r=site%2Flogin" class="nav-link">Click here to login.</a></h1>
+
 </div>

@@ -1,3 +1,16 @@
+<?php
+if (Yii::$app->user->isGuest){ 
+    ?>
+  
+<style type="text/css">#sidebarx{
+display:none;
+}</style>
+
+<?php
+}
+?>
+
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
@@ -6,7 +19,7 @@
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebarx">
         <!-- Sidebar user panel (optional) -->
         <!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
