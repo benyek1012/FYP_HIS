@@ -1,1 +1,1 @@
-Testing HIS with github
+Testing HIS with discord notifications
