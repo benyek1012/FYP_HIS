@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_information */
@@ -14,15 +15,21 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'first_reg_date')->textInput() ?>
+    
+    <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
+        ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
+        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ]
+        ])?>
 
     <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'nationality')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'sex')->textInput(['maxlength' => true]) ?>
+    
+    <label for="Sex">Sex</label>
+    <?= $form->field($model, 'sex')->radio(['label' => 'Male', 'value' => "Male", 'uncheck' => null]) ?>
+    <?= $form->field($model, 'sex')->radio(['label' => 'Female', 'value' => "Female", 'uncheck' => null]) ?>
 
     <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
 
