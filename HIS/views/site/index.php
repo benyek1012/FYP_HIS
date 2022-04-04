@@ -25,6 +25,7 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
         <div class="card-header text-white bg-primary">
             <h3 class="card-title">Patient Information</h3>
             <div class="card-tools">
+                
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                         class="fas fa-minus"></i></button>

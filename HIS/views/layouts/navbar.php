@@ -10,16 +10,28 @@ use yii\helpers\Html;
         <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a id="dropdownSubMenu1" href="<?=\yii\helpers\Url::home()?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Admission</a>
+
+
+        <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Patients</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="#" class="dropdown-item">Search </a></li>
+                <li><a href="/patient_information" class="dropdown-item">Search </a></li>
+                <li><a href="/patient_information/create" class="dropdown-item">New Patients</a></li>
+            </ul>
+        </li>
+
+        
+        <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Admissions</a>
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a href="#" class="dropdown-item">Search </a></li>
                 <li><a href="#" class="dropdown-item">New Admission</a></li>
                 <li><a href="#" class="dropdown-item">New Admission(Labor)</a></li>
                 <li><a href="#" class="dropdown-item">Reminder Letters</a></li>
                 <li><a href="#" class="dropdown-item">Batch Entry</a></li>
             </ul>
         </li>
+
         <li class="nav-item dropdown">
             <a href="#" class="nav-link">Reports</a>
         </li>

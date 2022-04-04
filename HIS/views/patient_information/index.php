@@ -12,17 +12,13 @@ use kartik\date\DatePicker;
 
 
 
-$this->title = 'Patient Informations';
+$this->title = 'Search Patient Informations';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-information-index">
 
-    <p>
-        <?= Html::a('Create Patient Information', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+    
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -52,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'job',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {update}',
                 'urlCreator' => function ($action,  $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'patient_uid' => $model->patient_uid]);
                  }
