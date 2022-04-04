@@ -39,9 +39,11 @@ class Patient_information extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['patient_uid', 'first_reg_date'], 'required'],
+            [['patient_uid', 'nric','name','phone_number','email'], 'required'],
             [['first_reg_date'], 'safe'],
-            [['patient_uid'], 'string', 'max' => 64],
+            [['nric'], 'string', 'length' => [12], 'max' => 12],
+            [['phone_number'], 'string', 'length' => [10], 'max' => 10],
+            [['email'], 'email'],
             [['nric', 'nationality', 'sex', 'job'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 200],
             [['phone_number', 'email', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
@@ -70,6 +72,8 @@ class Patient_information extends \yii\db\ActiveRecord
             'job' => 'Job',
         ];
     }
+
+ 
 
     /**
      * Gets query for [[PatientAdmissions]].
