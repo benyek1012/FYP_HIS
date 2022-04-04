@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\datetime\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
@@ -14,7 +15,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'rn')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'entry_datetime')->textInput() ?>
+    
+    <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(), 
+        ['options' => ['placeholder' => 'Enter the entry date and time ...'],
+        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
+    ])?>
 
     <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
 

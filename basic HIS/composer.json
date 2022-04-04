@@ -19,9 +19,13 @@
         "yiisoft/yii2-bootstrap4": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "kartik-v/yii2-widget-datepicker": "@dev",
+<<<<<<< HEAD
         "kartik-v/yii2-widget-datetimepicker": "dev-master",
         "gpslab/base64uid": "^1.2",
         "udokmeci/yii2-phone-validator" : "dev-master"
+=======
+        "kartik-v/yii2-widget-datetimepicker": "dev-master"
+>>>>>>> 14677640de59732afcc7ad1b8b6d42d864751689
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

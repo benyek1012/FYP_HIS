@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_informationSearch */
@@ -31,7 +32,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'patient_uid',
-            'first_reg_date',
+            [
+                'attribute' => 'first_reg_date',
+                'value' => 'first_reg_date',
+                'format' => 'raw',
+                'filter' => DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'first_reg_date',
+                    'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ]
+                ])
+            ],
             'nric',
             'nationality',
             'name',

@@ -1,11 +1,17 @@
 <?php
 
+<<<<<<< HEAD
 
 use kartik\date\DatePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
 use GpsLab\Component\Base64UID\Base64UID;
+=======
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use kartik\date\DatePicker;
+>>>>>>> 14677640de59732afcc7ad1b8b6d42d864751689
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_information */
@@ -35,9 +41,16 @@ use GpsLab\Component\Base64UID\Base64UID;
     <?= $form->field($model, 'patient_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $uid]) ?>
 
 
+<<<<<<< HEAD
     <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
         ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
         'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
+=======
+    
+    <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
+        ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
+        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ]
+>>>>>>> 14677640de59732afcc7ad1b8b6d42d864751689
         ])?>
 
     <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
@@ -45,8 +58,15 @@ use GpsLab\Component\Base64UID\Base64UID;
     <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+<<<<<<< HEAD
 
     <?= $form->field($model, 'sex')->inline()->radioList(['male' => 'Male', 'female' => 'Female'])->label(true) ?>
+=======
+    
+    <label for="Sex">Sex</label>
+    <?= $form->field($model, 'sex')->radio(['label' => 'Male', 'value' => "Male", 'uncheck' => null]) ?>
+    <?= $form->field($model, 'sex')->radio(['label' => 'Female', 'value' => "Female", 'uncheck' => null]) ?>
+>>>>>>> 14677640de59732afcc7ad1b8b6d42d864751689
 
     <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
 

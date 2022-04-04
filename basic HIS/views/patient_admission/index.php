@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use kartik\datetime\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_admissionSearch */
@@ -29,7 +30,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'rn',
-            'entry_datetime',
+            [
+                'attribute' => 'entry_datetime',
+                'value' => 'entry_datetime',
+                'format' => 'raw',
+                'filter' => DateTimePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'entry_datetime',
+                    'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
+                ])
+            ],
             'patient_uid',
             'initial_ward_code',
             'initial_ward_class',
