@@ -14,6 +14,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
+
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,24 +23,30 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
+
 <body class="d-flex flex-column">
-<?php $this->beginBody() ?>
+    <?php $this->beginBody() ?>
 
-<div class="wrapper">
-    <!-- Navbar -->
-    <?= $this->render('navbar', ['assetDir' => $assetDir]) ?>
-    <!-- /.navbar -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        <?= $this->render('navbar', ['assetDir' => $assetDir]) ?>
+        <!-- /.navbar -->
 
-    <!-- Main Sidebar Container -->
-    <?= $this->render('sidebar', ['assetDir' => $assetDir]) ?>
-    
-     <!-- Content Wrapper. Contains page content -->
-    <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
-    <!-- /.content-wrapper -->
+        <!-- Main Sidebar Container -->
+        <?= $this->render('sidebar', ['assetDir' => $assetDir]) ?>
 
-</div>
+        <div class="card">
+            <div class="card-body">
+                <!-- Content Wrapper. Contains page content -->
+                <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
+                <!-- /.content-wrapper -->
+            </div>
+        </div>
 
-<?php $this->endBody() ?>
+    </div>
+
+    <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>

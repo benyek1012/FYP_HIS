@@ -12,7 +12,7 @@ use kartik\date\DatePicker;
 
 
 
-$this->title = 'Patient Informations';
+$this->title = 'Search Patient Informations';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-information-index">
@@ -66,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'job',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {update}',
                 'urlCreator' => function ($action,  $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'patient_uid' => $model->patient_uid]);
                  }
