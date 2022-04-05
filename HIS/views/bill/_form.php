@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use kartik\datetime\DateTimePicker;
+use GpsLab\Component\Base64UID\Base64UID;
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
 /* @var $form yii\widgets\ActiveForm */
@@ -10,11 +11,24 @@ use yii\widgets\ActiveForm;
 
 <div class="bill-form">
 
-    <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'bill_uid')->textInput(['maxlength' => true]) ?>
+<?php $form = ActiveForm::begin([
+        'id' => 'patient-information-form',
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+        ],
+    ]); 
+    $billuid = Base64UID::generate(32);
+    $generationresponsibleuid = Base64UID::generate(32);
+    $billprintresponsibleuid = Base64UID::generate(32);
+    $rn = date('Y')."/".substr(number_format(time() * rand(),0,'',''),0,6);
 
-    <?= $form->field($model, 'rn')->textInput(['maxlength' => true]) ?>
+    ?>
+
+    <?= $form->field($model, 'bill_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $billuid]) ?>
+
+    <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => $rn]) ?>
 
     <?= $form->field($model, 'status_code')->textInput(['maxlength' => true]) ?>
 
@@ -34,9 +48,12 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'nurse_responsilbe')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'bill_generation_datetime')->textInput() ?>
 
-    <?= $form->field($model, 'generation_responsible_uid')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'bill_generation_datetime')->widget(DateTimePicker::classname(), 
+        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii' ]
+    ])?>
+
+    <?= $form->field($model, 'generation_responsible_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $generationresponsibleuid]) ?>
 
     <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true]) ?>
 
@@ -44,9 +61,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'bill_print_responsible_uid')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'bill_print_datetime')->textInput() ?>
+    <?= $form->field($model, 'bill_print_responsible_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid]) ?>
+    
+    <?= $form->field($model, 'bill_print_datetime')->widget(DateTimePicker::classname(), 
+        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii' ]
+    ])?>
 
     <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
 

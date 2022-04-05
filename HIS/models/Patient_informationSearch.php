@@ -14,10 +14,12 @@ class Patient_informationSearch extends Patient_information
     /**
      * {@inheritdoc}
      */
+    public $globalSearch;
+
     public function rules()
     {
         return [
-            [['patient_uid', 'first_reg_date', 'nric', 'nationality', 'name', 'sex', 'phone_number', 'email', 'address1', 'address2', 'address3', 'job'], 'safe'],
+            [['patient_uid','globalSearch', 'first_reg_date', 'nric', 'nationality', 'name', 'sex', 'phone_number', 'email', 'address1', 'address2', 'address3', 'job'], 'safe'],
         ];
     }
 
@@ -55,22 +57,17 @@ class Patient_informationSearch extends Patient_information
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'first_reg_date' => $this->first_reg_date,
-        ]);
-
-        $query->andFilterWhere(['like', 'patient_uid', $this->patient_uid])
-            ->andFilterWhere(['like', 'nric', $this->nric])
-            ->andFilterWhere(['like', 'nationality', $this->nationality])
-            ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'sex', $this->sex])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'address1', $this->address1])
-            ->andFilterWhere(['like', 'address2', $this->address2])
-            ->andFilterWhere(['like', 'address3', $this->address3])
-            ->andFilterWhere(['like', 'job', $this->job]);
+        $query->orFilterWhere(['like', 'patient_uid', $this->globalSearch])
+            ->orWhere(['nric' => $this->globalSearch]);
+            // ->orFilterWhere(['like', 'nationality', $this->globalSearch])
+            // ->orFilterWhere(['like', 'name', $this->globalSearch])
+            // ->orFilterWhere(['like', 'sex', $this->globalSearch])
+            // ->orFilterWhere(['like', 'phone_number', $this->globalSearch])
+            // ->orFilterWhere(['like', 'email', $this->globalSearch])
+            // ->orFilterWhere(['like', 'address1', $this->globalSearch])
+            // ->orFilterWhere(['like', 'address2', $this->globalSearch])
+            // ->orFilterWhere(['like', 'address3', $this->globalSearch])
+            // ->orFilterWhere(['like', 'job', $this->globalSearch]);
 
         return $dataProvider;
     }

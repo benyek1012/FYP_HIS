@@ -32,11 +32,15 @@ class Patient_next_of_kin extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nok_uid', 'patient_uid'], 'required'],
+            [['nok_uid', 'patient_uid','nok_name','nok_relationship','nok_phone_number','nok_email'], 'required'],
             [['nok_uid', 'patient_uid'], 'string', 'max' => 64],
             [['nok_name'], 'string', 'max' => 200],
+            ['nok_name', 'match', 'pattern' => '/^[a-z]\w*$/i', 'message' => 'Name can only contain word characters'],
             [['nok_relationship'], 'string', 'max' => 20],
-            [['nok_phone_number', 'nok_email'], 'string', 'max' => 100],
+            [['nok_phone_number'], 'string', 'length' => [10], 'max' => 10],
+            [['nok_phone_number'], 'integer'],
+            [['nok_email'], 'email'],
+            [['nok_email'], 'string', 'max' => 100],
             [['nok_uid'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
         ];

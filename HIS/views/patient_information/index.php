@@ -17,11 +17,21 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-information-index">
 
+    <h1><?= Html::encode($this->title) ?></h1>
+
     <p>
         <?= Html::a('Create Patient Information', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php 
+     $countries = array(
+        'malaysia'=>'Malaysia',
+        'indonesia'=>'Indonesia',
+        'singapore' => 'Singapore',
+        'thailand' => 'Thailand',
+        'china' => 'China'
+    );
+    // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -41,7 +51,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 ])
             ],
             'nric',
-            'nationality',
+            [
+                'attribute' => 'nationality',
+                'value' => 'nationality',
+                'filter'=> Html::activeDropDownList($searchModel, 'nationality', $countries,['class'=>'form-control','prompt' => 'Select nationality','maxlength' => true]),
+            ],
             'name',
             //'sex',
             //'phone_number',
