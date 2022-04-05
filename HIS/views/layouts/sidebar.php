@@ -8,7 +8,7 @@ $model1 = new Patient_informationSearch;
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index.php" class="brand-link">
+    <a href="/site/index" class="brand-link">
         <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="HIS Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
         <span class="brand-text font-weight-light">HIS</span>
@@ -20,22 +20,45 @@ $model1 = new Patient_informationSearch;
         <div class="user-panel">
             <!-- SidebarSearch Form -->
             <!-- href be escaped -->
-            <div class="form-inline mt-3 pb-3 mb-4 d-flex">
+          <?php /*  <div class="form-inline mt-3 pb-3 mb-4 d-flex">
                 <div class="input-group" data-widget="sidebar-search">
 
                     <?php $form = ActiveForm::begin([
                     'action' => ['index'],
-                    'method' => 'get',
+                    'method' => 'post',
                      ]); ?>
-                    <?= $form->field($model1, 'nric')->textInput(['class' => 'form-control form-control-sidebar',
+                    <?= $form->field($model1, 'globalSearch')->textInput(['class' => 'form-control form-control-sidebar',
                     'style' => 'text-color: white !important;','placeholder'=>"Search IC"])->label(false)?>
                     <div class="input-group-append">
-                            <?= Html::submitButton('<i
-                                class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar']) ?>
+                            <?php /*Html::submitButton('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar'], [ 'onclick' => '
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/sidebar/actionGlobalSearch" ']); */?>
+                  <?php /*          <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
                     </div>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>
+        </div>
+       */ ?>
+
+        <div class="patient-information-search">
+
+        <?php $form = ActiveForm::begin([
+            'action' => ['index'],
+            'method' => 'get',
+        ]); ?>
+
+        <?= $form->field($model1, 'globalSearch') ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Search', ['class' => 'btn btn-primary'], [ 'onclick' => '
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/sidebar/actionGlobalSearch" ']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
+
         </div>
         
 <?php /*

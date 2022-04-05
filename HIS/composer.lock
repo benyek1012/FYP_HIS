@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cdf332968fec8dc71a37e5e506a4671a",
+    "content-hash": "d0e7df6528409fb9c72cb1f03551be7e",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -382,6 +382,50 @@
                 "source": "https://github.com/ezyang/htmlpurifier/tree/v4.14.0"
             },
             "time": "2021-12-25T01:21:49+00:00"
+        },
+        {
+            "name": "gpslab/base64uid",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gpslab/base64uid.git",
+                "reference": "c818a069ff6b8b8aec58977b41278224b93e7349"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gpslab/base64uid/zipball/c818a069ff6b8b8aec58977b41278224b93e7349",
+                "reference": "c818a069ff6b8b8aec58977b41278224b93e7349",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": ">=2",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^1.0",
+                "phpunit/phpunit": "^4.8.36",
+                "scrutinizer/ocular": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GpsLab\\Component\\Base64UID\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Generate UID like YouTube",
+            "homepage": "https://github.com/gpslab/payload",
+            "keywords": [
+                "UID"
+            ],
+            "support": {
+                "issues": "https://github.com/gpslab/base64uid/issues",
+                "source": "https://github.com/gpslab/base64uid/tree/master"
+            },
+            "time": "2020-01-14T15:13:10+00:00"
         },
         {
             "name": "hail812/yii2-adminlte-widgets",

@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use kartik\date\DatePicker;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_informationSearch */
@@ -12,33 +13,18 @@ use kartik\date\DatePicker;
 
 
 
-$this->title = 'Search Patient Informations';
+$this->title = 'Patient Informations';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-information-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Patient Information', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php 
-     $countries = array(
-        'malaysia'=>'Malaysia',
-        'indonesia'=>'Indonesia',
-        'singapore' => 'Singapore',
-        'thailand' => 'Thailand',
-        'china' => 'China'
-    );
-    // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php Pjax::begin();?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+       // 'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'patient_uid',
             [
                 'attribute' => 'first_reg_date',
@@ -51,22 +37,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ])
             ],
             'nric',
-            [
-                'attribute' => 'nationality',
-                'value' => 'nationality',
-                'filter'=> Html::activeDropDownList($searchModel, 'nationality', $countries,['class'=>'form-control','prompt' => 'Select nationality','maxlength' => true]),
-            ],
+            'nationality',
             'name',
-            //'sex',
-            //'phone_number',
-            //'email:email',
-            //'address1',
-            //'address2',
-            //'address3',
-            //'job',
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {update}',
                 'urlCreator' => function ($action,  $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'patient_uid' => $model->patient_uid]);
                  }
@@ -74,6 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-
+<?php Pjax::end();?>
 </div>
 
