@@ -30,9 +30,7 @@ use GpsLab\Component\Base64UID\Base64UID;
     );
     ?>
 
-
     <?= $form->field($model, 'patient_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $uid]) ?>
-
 
     <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
         ['options' => ['placeholder' => 'Enter the fist registeration date ...'],

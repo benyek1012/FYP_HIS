@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;;
 use app\models\Patient_information;
 use app\models\Patient_informationSearch;
 use yii\web\Controller;
@@ -55,12 +56,16 @@ class Patient_informationController extends Controller
      */
     public function actionView()
     {
-        $model = new Patient_information();
+        $model = new Patient_informationSearch();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
+        if ($this->request->isGet && $model->load($this->request->get()))
+        {
+            if($model->search($model->nric)) {
+                Yii::$app->session->set('pid', '1111');
+                // var_dump("truea");
+                // exit();
                 return $this->render('/site/index', [
-                 'model' => $this->findModel($model->patient_uid)]);  
+                 'model' => $this->findModel_nric($model->nric)]);  
             }
         } else {
             $model->loadDefaultValues();
@@ -78,7 +83,8 @@ class Patient_informationController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'patient_uid' => $model->patient_uid]);
+                return $this->render('/site/index', [
+                    'model' => $this->findModel($model->patient_uid)]);  
             }
         } else {
             $model->loadDefaultValues();
@@ -119,6 +125,15 @@ class Patient_informationController extends Controller
     protected function findModel($patient_uid)
     {
         if (($model = Patient_information::findOne(['patient_uid' => $patient_uid])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findModel_nric($patient_nric)
+    {
+        if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
             return $model;
         }
 

@@ -41,7 +41,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return [
             [['name','phone_number','email'], 'required'],
             [['name'], 'string', 'max' => 200],
-            ['name', 'match', 'pattern' => '/^[a-z]\w*$/i', 'message' => 'Name can only contain word characters'],
+            ['name', 'match', 'pattern' => '/^[a-z,.\s-]+$/i', 'message' => 'Name can only contain word characters'],
             [['first_reg_date'], 'safe'],
             [['nric'], 'string', 'length' => [12], 'max' => 12],
             [['nric'], 'integer'],

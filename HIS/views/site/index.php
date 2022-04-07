@@ -2,11 +2,9 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\Patient_information */
-
 $this->title = 'Home Page';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
+
 ?>
 <div class="container-fluid">
     <div class="card">

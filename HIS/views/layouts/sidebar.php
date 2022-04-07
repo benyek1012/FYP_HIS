@@ -1,14 +1,17 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\Patient_informationSearch;
 use app\models\Patient_information;
-$model = new Patient_information();
+use yii\helpers\ArrayHelper;
 
+$model = new Patient_informationSearch();
+$nric = ArrayHelper::getValue(Yii::$app->request->get(), 'Patient_informationSearch.nric');
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/site/index" class="brand-link">
+    <a href="<?= Yii::$app->homeUrl; ?>" class="brand-link">
         <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="HIS Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
         <span class="brand-text font-weight-light">HIS</span>
@@ -44,15 +47,15 @@ $model = new Patient_information();
     <?php */ ?>
     <div class="form-inline mt-3 pb-3 mb-4 d-flex">
         <?php $form = ActiveForm::begin([
-      //  'action' => ['patient_information/view'],
       'action' => ['patient_information/view'],
-        'method' => 'post',
+    //  'action' => [\yii\helpers\Url::current()],
+        'method' => 'get',
         'options' => [
             'class' => 'input-group'
          ]
     ]); ?>
 
-        <?= $form->field($model, 'patient_uid')->textInput(['class' => 'form-control form-control-sidebar',
+        <?= $form->field($model , 'nric')->textInput(['class' => 'form-control form-control-sidebar',
                     'style' => 'text-color: white !important;','placeholder'=>"Search IC"])->label(false)?>
 
         <div class="input-group-append">
@@ -110,6 +113,21 @@ $model = new Patient_information();
         </div>
 
         <?php
+        if(isset($nric))
+        {
+         $patientInfo = Patient_information::findOne(['nric' => $nric]);
+            echo $patientInfo->name;
+        }
+// if( isset( $_GET['nric'] ) ) {
+
+//     $patientInfo = Patient_information::findOne(['nric' => $_GET['nric']]);
+//     echo $patientInfo->nationality;
+//  }
+//  else{
+//     $patientInfo = Patient_information::findOne(['nric' => '111111111111']);
+//     echo $patientInfo->nationality;
+//  }
+       
                              echo \hail812\adminlte\widgets\Menu::widget([
                                 'items' => [
                          ['label' => 'RN1, paid total, balance1', 'iconClass' => ''],

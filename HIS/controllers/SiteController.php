@@ -74,7 +74,7 @@ class SiteController extends Controller
             "CREATE TABLE IF NOT EXISTS `patient_information` (
                 `patient_uid` VARCHAR(64) NOT NULL,
                 `first_reg_date` DATE NOT NULL,
-                `nric` VARCHAR(20) UNIQUE,
+                `nric` VARCHAR(20),
                 `nationality` VARCHAR(20),
                 `name` VARCHAR(200),
                 `sex` VARCHAR(20),
