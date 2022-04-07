@@ -1,9 +1,13 @@
 <?php
 
-use yii\helpers\Html;
-
+use kartik\date\DatePicker;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Html;
+use GpsLab\Component\Base64UID\Base64UID;
+    
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_information */
+/* @var $form yii\widgets\ActiveForm */
 
 $this->title = 'Create Patient Information';
 $this->params['breadcrumbs'][] = ['label' => 'Patient Informations', 'url' => ['index']];
@@ -11,10 +15,55 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-information-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<?php 
+     $countries = array(
+        'malaysia'=>'Malaysia',
+        'indonesia'=>'Indonesia',
+        'singapore' => 'Singapore',
+        'thailand' => 'Thailand',
+        'china' => 'China'
+    );
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+    $form = ActiveForm::begin([
+        'action' => ['patient_information/create'],
+        'id' => 'patient-information-form',
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback']],
+    ]);     
+?>
+
+    <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
+        ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
+        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
+        ])?>
+
+    <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Base64UID::generate(32)])->label(false); ?>
+
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
+
+    <?= $form->field($model, 'sex')->inline()->radioList(['male' => 'Male', 'female' => 'Female'])->label(true) ?>
+
+    <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'address2')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Create', ['class' => 'btn btn-outline-primary align-self-start']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
 
 </div>

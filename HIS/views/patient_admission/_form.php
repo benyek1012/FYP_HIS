@@ -30,7 +30,7 @@ use kartik\datetime\DateTimePicker;
         'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
     ])?>
 
-    <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('pid')])->label(false); ?>
 
     <?= $form->field($model, 'initial_ward_code')->textInput(['maxlength' => true]) ?>
 

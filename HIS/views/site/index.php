@@ -1,6 +1,6 @@
 <?php
-use yii\helpers\Html;
-use yii\widgets\DetailView;
+
+use app\models\Patient_next_of_kin;
 
 $this->title = 'Home Page';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
@@ -42,9 +42,9 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
             if(!empty($model))
             {
             ?>
-                <?= $this->render('/patient_information/_form', [
+            <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-        <?php } else echo "Patient is not selected"; ?>
+            <?php } else echo "Patient is not selected"; ?>
         </div>
         <!-- /.card-body -->
     </div>
@@ -62,13 +62,15 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
         </div>
         <!-- /.card-header -->
         <div class="card-body d-flex flex-column">
-            <?php   
-      
-      // $NOK = Patient_next_of_kin::findOne(['patient_uid' => $model->patient_uid]);
-      // if (!empty($NOK)) 
-      //   echo $this->render('/patient_next_of_kin/view', ['model'=>$NOK]);
-      
-      ?>
+
+        <?php   
+            // if(!empty($model))
+            // {
+            //      $NOK = Patient_next_of_kin::findOne(['patient_uid' => $model->patient_uid]);
+            //     if (!empty($NOK))
+            //         echo $this->render('/patient_next_of_kin/view', ['model'=>$NOK]);
+            // }
+        ?>
             <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;">Add
                 Waris</button>
         </div>

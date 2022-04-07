@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\Patient_informationSearch;
+use yii\bootstrap4\Modal;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -112,7 +113,24 @@ class Patient_informationController extends Controller
         if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
             return $model;
         }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
+        else{
+            echo '<script type="text/javascript">',
+            'confirmAction();',
+            '</script>';
+        }
     }
 }
+
+?>
+
+<script>
+// The function below will start the confirmation dialog
+function confirmAction() {
+    var answer = confirm("Are you sure to create patient information?");
+    if (answer) {
+        window.location.href = '/patient_information/create';
+    }else{
+        window.location.href = '/site/index';
+    }
+}
+</script>

@@ -42,7 +42,7 @@ class Patient_next_of_kin extends \yii\db\ActiveRecord
             [['nok_email'], 'email'],
             [['nok_email'], 'string', 'max' => 100],
             [['nok_uid'], 'unique'],
-            [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
+           // [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
         ];
     }
 

@@ -2,13 +2,20 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_informationSearch;
-use app\controllers\Patient_informationController;
+use app\models\Patient_information;
 use yii\helpers\ArrayHelper;
 
 $model = new Patient_informationSearch();
-$query = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
-if(isset($query))
-    $info = Patient_informationController::findModel_nric($query);
+
+$ic = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
+$pid = Yii::$app->request->get('pid');
+
+if(!empty($ic) || isset($pid))
+{
+    if(isset($ic))
+        $info = Patient_information::findOne(['nric' => $ic]);
+    else  $info = Patient_information::findOne(['patient_uid' => $pid]);
+}
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -47,7 +54,7 @@ if(isset($query))
     </div>
     ?>
     <?php */ ?>
-    <div class="form-inline mt-3 pb-3 mb-4 d-flex">
+    <div class="form-inline mt-3 d-flex">
         <?php $form = ActiveForm::begin([
       'action' => ['patient_information/view'],
     //  'action' => [\yii\helpers\Url::current()],
@@ -67,42 +74,11 @@ if(isset($query))
     </div>
 
 
-    <?php /*
-            <!-- Sidebar -->
-    <div class="sidebar">
-        <!-- Search Bar -->
-        <div class="user-panel">
-            <!-- SidebarSearch Form -->
-            <!-- href be escaped -->
-            <div class="form-inline mt-3 pb-3 mb-4 d-flex">
-                <div class="input-group" data-widget="sidebar-search">
-                    <input class="form-control form-control-sidebar" type="search" placeholder="Search"
-                        aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-sidebar">
-                            <i class="fas fa-search fa-fw"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        */ ?>
-
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <?php
             echo \hail812\adminlte\widgets\Menu::widget([
                       'items' => [
-                         /* [
-                              'label' => 'Starter Pages',
-                             'icon' => 'far',
-                              'items' => [
-                                  ['label' => 'Active Page', 'url' => ['site/index'], 'iconStyle' => 'far'],
-                                    ['label' => 'Inactive Page', 'iconStyle' => 'far'],
-                              ]
-                          ], */
-                          
                          ['label' => 'Patient NRIC', 'iconClass' => '']  ]
                          ])
                          ?>
@@ -115,28 +91,20 @@ if(isset($query))
         </div>
 
         <?php
-        if(isset($nric))
+        if(!empty($info))
         {
             echo $info->name;
         }
-// if( isset( $_GET['nric'] ) ) {
-
-//     $patientInfo = Patient_information::findOne(['nric' => $_GET['nric']]);
-//     echo $patientInfo->nationality;
-//  }
-//  else{
-//     $patientInfo = Patient_information::findOne(['nric' => '111111111111']);
-//     echo $patientInfo->nationality;
-//  }
-       
+                    if(!empty($info)){
                              echo \hail812\adminlte\widgets\Menu::widget([
                                 'items' => [
                          ['label' => 'RN1, paid total, balance1', 'iconClass' => ''],
                          ['label' => 'RN2, paid total, balance1', 'iconClass' => ''],
                          ['label' => 'RN3, paid total, balance1', 'iconClass' => ''],
-                         ['label' => 'New R/N | Labor R/N', 'iconClass' => ''],
-                         ['label' => 'Print Transaction Records', 'iconClass' => '']]
-                         ])
+                         ['label' => 'New R/N | Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'pid' => $info->patient_uid]],
+                         ['label' => 'Print Transaction Records', 'iconClass' => '']]]);
+                                }
+                               
                          ?>
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel"> </div>
