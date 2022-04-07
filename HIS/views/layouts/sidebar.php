@@ -3,10 +3,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_informationSearch;
 use app\models\Patient_information;
+use app\controllers\Patient_informationController;
 use yii\helpers\ArrayHelper;
 
 $model = new Patient_informationSearch();
-$nric = ArrayHelper::getValue(Yii::$app->request->get(), 'Patient_informationSearch.nric');
+$nric = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -49,7 +50,7 @@ $nric = ArrayHelper::getValue(Yii::$app->request->get(), 'Patient_informationSea
         <?php $form = ActiveForm::begin([
       'action' => ['patient_information/view'],
     //  'action' => [\yii\helpers\Url::current()],
-        'method' => 'get',
+      //  'method' => 'get',
         'options' => [
             'class' => 'input-group'
          ]
@@ -115,8 +116,10 @@ $nric = ArrayHelper::getValue(Yii::$app->request->get(), 'Patient_informationSea
         <?php
         if(isset($nric))
         {
-         $patientInfo = Patient_information::findOne(['nric' => $nric]);
-            echo $patientInfo->name;
+        //  $patientInfo = Patient_information::findOne(['nric' => $nric]);
+        //     echo $patientInfo->name;
+            $info = Patient_informationController::findModel_nric($nric);
+            echo $info->name;
         }
 // if( isset( $_GET['nric'] ) ) {
 

@@ -4,10 +4,10 @@ namespace app\controllers;
 
 use Yii;;
 use app\models\Patient_information;
-use app\models\Patient_informationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Patient_informationSearch;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -32,38 +32,13 @@ class Patient_informationController extends Controller
         );
     }
 
-    /**
-     * Lists all Patient_information models.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        // $searchModel = new Patient_informationSearch();
-        // $dataProvider = $searchModel->search($this->request->queryParams);
-
-        // return $this->render('index', [
-        //     'searchModel' => $searchModel,
-        //     'dataProvider' => $dataProvider,
-        // ]);
-    }
-
-    /**
-     * Displays a single Patient_information model.
-     * @param string $patient_uid Patient Uid
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionView()
     {
         $model = new Patient_informationSearch();
 
-        if ($this->request->isGet && $model->load($this->request->get()))
+        if ($this->request->isPost && $model->load($this->request->post()))
         {
             if($model->search($model->nric)) {
-                Yii::$app->session->set('pid', '1111');
-                // var_dump("truea");
-                // exit();
                 return $this->render('/site/index', [
                  'model' => $this->findModel_nric($model->nric)]);  
             }
@@ -122,7 +97,7 @@ class Patient_informationController extends Controller
      * @return Patient_information the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($patient_uid)
+    public function findModel($patient_uid)
     {
         if (($model = Patient_information::findOne(['patient_uid' => $patient_uid])) !== null) {
             return $model;
@@ -131,7 +106,7 @@ class Patient_informationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    protected function findModel_nric($patient_nric)
+    public function findModel_nric($patient_nric)
     {
         if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
             return $model;

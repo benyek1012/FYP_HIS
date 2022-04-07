@@ -11,7 +11,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="patient-information-form" >
+<div class="patient-information-form">
 
     <?php $form = ActiveForm::begin([
         'id' => 'patient-information-form',
@@ -30,18 +30,16 @@ use GpsLab\Component\Base64UID\Base64UID;
     );
     ?>
 
-    <?= $form->field($model, 'patient_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $uid]) ?>
-
     <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
         ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
         'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
         ])?>
 
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'sex')->inline()->radioList(['male' => 'Male', 'female' => 'Female'])->label(true) ?>
 

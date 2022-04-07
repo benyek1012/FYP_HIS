@@ -42,35 +42,9 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
             if(!empty($model))
             {
             ?>
-
-            <div class="patient-information-view">
-
-                <h1><?= Html::encode($model->name) ?></h1>
-
-                <p>
-                    <?= Html::a('Update', ['update', 'patient_uid' => $model->patient_uid], ['class' => 'btn btn-outline-primary']) ?>
-                </p>
-
-                <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-           // 'patient_uid',
-            'first_reg_date',
-            'nric',
-            'nationality',
-            'name',
-            'sex',
-            'phone_number',
-            'email:email',
-            'address1',
-            'address2',
-            'address3',
-            'job',
-        ],
-    ]) ?>
-            </div>
-
-            <?php } else echo "Patient is not selected"; ?>
+                <?= $this->render('/patient_information/_form', [
+                    'model' => $model,]) ?>
+        <?php } else echo "Patient is not selected"; ?>
         </div>
         <!-- /.card-body -->
     </div>
@@ -88,7 +62,7 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
         </div>
         <!-- /.card-header -->
         <div class="card-body d-flex flex-column">
-        <?php   
+            <?php   
       
       // $NOK = Patient_next_of_kin::findOne(['patient_uid' => $model->patient_uid]);
       // if (!empty($NOK)) 
