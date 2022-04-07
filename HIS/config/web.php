@@ -23,6 +23,9 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        // This is the sohai line that needed to be installed in order for the sohai popover-x to be disabled.
+        'assetManager' => [ 'bundles' => [ 'yii\bootstrap4\BootstrapAsset' => [ 'sourcePath' => '@vendor/almasaeed2010/adminlte/dist', 'css'=>[ 'css/adminlte.min.css' ] ], ], ], //
+
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'OIKHASKtMjagrENRWYA41KvQyYOokTXc',

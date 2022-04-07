@@ -77,6 +77,8 @@ use GpsLab\Component\Base64UID\Base64UID;
         </div>
     </div>
 
+    <?php echo $this->render('_form', ['modelNOK' => $modelNOK]); ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

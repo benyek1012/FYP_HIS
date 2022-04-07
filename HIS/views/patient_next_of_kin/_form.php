@@ -30,17 +30,26 @@ use GpsLab\Component\Base64UID\Base64UID;
     );
     ?>
 
-    <?= $form->field($model, 'nok_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $nokuid]) ?>
-
-    <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, ['prompt'=>'Please select relationship','maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?= $form->field($model, 'nok_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $nokuid]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, ['prompt'=>'Please select relationship','maxlength' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
