@@ -2,12 +2,13 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_informationSearch;
-use app\models\Patient_information;
 use app\controllers\Patient_informationController;
 use yii\helpers\ArrayHelper;
 
 $model = new Patient_informationSearch();
-$nric = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
+$query = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
+if(isset($query))
+    $info = Patient_informationController::findModel_nric($query);
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -116,9 +117,6 @@ $nric = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSe
         <?php
         if(isset($nric))
         {
-        //  $patientInfo = Patient_information::findOne(['nric' => $nric]);
-        //     echo $patientInfo->name;
-            $info = Patient_informationController::findModel_nric($nric);
             echo $info->name;
         }
 // if( isset( $_GET['nric'] ) ) {

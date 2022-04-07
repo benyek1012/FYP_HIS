@@ -77,15 +77,16 @@ class Patient_informationController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($patient_uid)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel($patient_uid);
+        $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'patient_uid' => $model->patient_uid]);
+            return $this->render('/site/index', [
+                'model' => $this->findModel($model->patient_uid)]);  
         }
 
-        return $this->render('update', [
+        return $this->render('/site/index', [
             'model' => $model,
         ]);
     }

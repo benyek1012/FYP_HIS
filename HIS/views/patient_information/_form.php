@@ -5,7 +5,7 @@ use kartik\date\DatePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 use GpsLab\Component\Base64UID\Base64UID;
-
+    
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_information */
 /* @var $form yii\widgets\ActiveForm */
@@ -14,6 +14,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 <div class="patient-information-form">
 
     <?php $form = ActiveForm::begin([
+        'action' => ['patient_information/update', 'id' =>  $model->patient_uid],
         'id' => 'patient-information-form',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
@@ -56,7 +57,7 @@ use GpsLab\Component\Base64UID\Base64UID;
     <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Update', ['class' => 'btn btn-outline-primary align-self-start']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

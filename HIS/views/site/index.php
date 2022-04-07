@@ -43,7 +43,7 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
             {
             ?>
                 <?= $this->render('/patient_information/_form', [
-                    'model' => $model,]) ?>
+                    'model' => $model]) ?>
         <?php } else echo "Patient is not selected"; ?>
         </div>
         <!-- /.card-body -->
