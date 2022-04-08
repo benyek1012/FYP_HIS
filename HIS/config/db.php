@@ -3,8 +3,8 @@
 return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=dbhis',
-    'username' => 'root',
-    'password' => '',
+    'username' => 'yfbyek',
+    'password' => 'yfbyek',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
@@ -12,3 +12,4 @@ return [
     //'schemaCacheDuration' => 60,
     //'schemaCache' => 'cache',
 ];
+

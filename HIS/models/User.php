@@ -20,8 +20,8 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
         ],
         '101' => [
             'id' => '101',
-            'username' => 'guest',
-            'password' => 'guest',
+            'username' => 'demo',
+            'password' => 'demo',
             'authKey' => 'test101key',
             'accessToken' => '101-token',
         ],
@@ -43,7 +43,6 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     {
         foreach (self::$users as $user) {
             if ($user['accessToken'] === $token) {
-                $_SESSION['user']=$user;
                 return new static($user);
             }
         }
@@ -73,7 +72,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function getId()
     {
-      return $this->id;
+        return $this->id;
     }
 
     /**
@@ -101,6 +100,5 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $password;
-
     }
 }
