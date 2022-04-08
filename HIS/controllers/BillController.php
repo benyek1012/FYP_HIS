@@ -74,6 +74,8 @@ class BillController extends Controller
                 return $this->redirect(['view', 'bill_uid' => $model->bill_uid]);
             }
         } else {
+            $model->bill_generation_datetime =  date("d-m-Y H:i:s");
+            $model->bill_print_datetime =  date("d-m-Y H:i:s");
             $model->loadDefaultValues();
         }
 

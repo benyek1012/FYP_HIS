@@ -3,11 +3,11 @@
 namespace app\models;
 
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
+use Yii;
 use app\models\Patient_information;
 
 /**
- * Patient_informationSearch represents the model behind the search form of `app\models\Patient_information`.
+ * Patient_next_of_kinSearch represents the model behind the search form of `app\models\Patient_next_of_kin`.
  */
 class Patient_informationSearch extends Patient_information
 {
@@ -17,7 +17,7 @@ class Patient_informationSearch extends Patient_information
     public function rules()
     {
         return [
-            [['patient_uid', 'first_reg_date', 'nric', 'nationality', 'name', 'sex', 'phone_number', 'email', 'address1', 'address2', 'address3', 'job'], 'safe'],
+            [['nric'], 'safe'],
         ];
     }
 
@@ -30,48 +30,22 @@ class Patient_informationSearch extends Patient_information
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
+   
     public function search($params)
     {
-        $query = Patient_information::find();
-
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
-        $this->load($params);
-
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
+         $query = Patient_information::find()->where(['nric' => $params]);
+        // var_dump($query->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);
+     
+        if(!empty($query))
+        {
+            return true;
         }
+        else{
+            // var_dump("f");
+            // exit();
+            return false;
+        }
+    } 
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'first_reg_date' => $this->first_reg_date,
-        ]);
-
-        $query->andFilterWhere(['like', 'patient_uid', $this->patient_uid])
-            ->andFilterWhere(['like', 'nric', $this->nric])
-            ->andFilterWhere(['like', 'nationality', $this->nationality])
-            ->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'sex', $this->sex])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'address1', $this->address1])
-            ->andFilterWhere(['like', 'address2', $this->address2])
-            ->andFilterWhere(['like', 'address3', $this->address3])
-            ->andFilterWhere(['like', 'job', $this->job]);
-
-        return $dataProvider;
-    }
+    
 }

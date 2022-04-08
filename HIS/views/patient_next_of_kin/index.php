@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap4\Dropdown;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -20,7 +21,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Patient Next Of Kin', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php     
+        $relationship = array(
+        'father'=>'Father',
+        'monther'=>'Monther',
+        'couple' => 'Couple',
+        'brother' => 'Brother',
+        'sister' => 'Sister',
+        'other' => 'Other'
+    );// echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -31,7 +40,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'nok_uid',
             'patient_uid',
             'nok_name',
-            'nok_relationship',
+            [
+                'attribute' => 'nok_relationship',
+                'value' => 'nok_relationship',
+                'filter'=> Html::activeDropDownList($searchModel, 'nok_relationship', $relationship,['class'=>'form-control','prompt' => 'Select relationship','maxlength' => true]),
+            ],
             'nok_phone_number',
             //'nok_email:email',
             [

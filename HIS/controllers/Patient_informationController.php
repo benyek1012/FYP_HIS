@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use Yii;;
 use app\models\Patient_information;
-use app\models\Patient_informationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Patient_informationSearch;
+use yii\bootstrap4\Modal;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -31,33 +33,19 @@ class Patient_informationController extends Controller
         );
     }
 
-    /**
-     * Lists all Patient_information models.
-     *
-     * @return string
-     */
-    public function actionIndex()
+    public function actionView()
     {
-        $searchModel = new Patient_informationSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $model = new Patient_informationSearch();
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Patient_information model.
-     * @param string $patient_uid Patient Uid
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($patient_uid)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($patient_uid),
-        ]);
+        if ($this->request->isPost && $model->load($this->request->post()))
+        {
+            if($model->search($model->nric)) {
+                return $this->render('/site/index', [
+                 'model' => $this->findModel_nric($model->nric)]);  
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
     }
 
     /**
@@ -71,7 +59,8 @@ class Patient_informationController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'patient_uid' => $model->patient_uid]);
+                return $this->render('/site/index', [
+                    'model' => $this->findModel($model->patient_uid)]);  
             }
         } else {
             $model->loadDefaultValues();
@@ -89,15 +78,16 @@ class Patient_informationController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($patient_uid)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel($patient_uid);
+        $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'patient_uid' => $model->patient_uid]);
+            return $this->render('/site/index', [
+                'model' => $this->findModel($model->patient_uid)]);  
         }
 
-        return $this->render('update', [
+        return $this->render('/site/index', [
             'model' => $model,
         ]);
     }
@@ -109,7 +99,7 @@ class Patient_informationController extends Controller
      * @return Patient_information the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($patient_uid)
+    public function findModel($patient_uid)
     {
         if (($model = Patient_information::findOne(['patient_uid' => $patient_uid])) !== null) {
             return $model;
@@ -117,4 +107,30 @@ class Patient_informationController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function findModel_nric($patient_nric)
+    {
+        if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
+            return $model;
+        }
+        else{
+            echo '<script type="text/javascript">',
+            'confirmAction();',
+            '</script>';
+        }
+    }
 }
+
+?>
+
+<script>
+// The function below will start the confirmation dialog
+function confirmAction() {
+    var answer = confirm("Are you sure to create patient information?");
+    if (answer) {
+        window.location.href = '/patient_information/create';
+    }else{
+        window.location.href = '/site/index';
+    }
+}
+</script>

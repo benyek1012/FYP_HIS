@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Html;
 use kartik\datetime\DateTimePicker;
 
 /* @var $this yii\web\View */
@@ -11,9 +11,18 @@ use kartik\datetime\DateTimePicker;
 
 <div class="patient-admission-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+            'id' => 'patient-admission-form',
+            'fieldConfig' => [
+                'template' => "{label}\n{input}\n{error}",
+                'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+            ],
+        ]); 
+    
+    $rn = date('Y')."/".substr(number_format(time() * rand(),0,'',''),0,6);
+    ?>
 
-    <?= $form->field($model, 'rn')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => $rn]) ?>
 
     
     <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(), 
@@ -21,7 +30,7 @@ use kartik\datetime\DateTimePicker;
         'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
     ])?>
 
-    <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('pid')])->label(false); ?>
 
     <?= $form->field($model, 'initial_ward_code')->textInput(['maxlength' => true]) ?>
 
