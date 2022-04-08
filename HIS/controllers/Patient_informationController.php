@@ -2,13 +2,15 @@
 
 namespace app\controllers;
 
+use Yii;;
 use app\models\Patient_information;
-use app\models\Patient_informationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Patient_informationSearch;
+use app\models\Patient_next_of_kin;
+use app\models\Patient_next_of_kinSearch;
 use yii\helpers\Json;
-use yii;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -33,63 +35,53 @@ class Patient_informationController extends Controller
         );
     }
 
-    /**
-     * Lists all Patient_information models.
-     *
-     * @return string
-     */
-    public function actionIndex()
+    public function actionView()
     {
-        $model = new Patient_information();
-        $searchModel = new Patient_informationSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $model = new Patient_informationSearch();
+        $modelNOK = new Patient_next_of_kinSearch();
 
         if(Yii::$app->request->post('hasEditable')){
-            $patient_uid = Yii::$app->request->post('editableKey');
-            $patient = Patient_information::findOne($patient_uid);
+            $nok_uid = Yii::$app->request->post('editableKey');
+            $nok = Patient_next_of_kin::findOne($nok_uid);
 
             $out = Json::encode(['output'=>'','message'=>'']);
             $post = [];
-            $posted = current($_POST['Patient_information']);
-            $post['Patient_information'] = $posted;
+            $posted = current($_POST['Patient_next_of_kin']);
+            $post['Patient_next_of_kin'] = $posted;
 
-            if($patient->load($post)){
-                $patient -> save();
+            if($nok->load($post)){
+                $nok -> save();
             }
             echo $out;
             return;
         }
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->render('index', [
-                    'model' => $model,
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
-                ]);
+        if ($this->request->isPost && $model->load($this->request->post()))
+        {
+            if($model->search($model->nric)) {
+                $findPatient_uid = $this->findModel_nric($model->nric);
+                // var_dump($findPatient_uid->patient_uid);
+                // exit();
+                if($modelNOK->search($findPatient_uid->patient_uid)){
+                    // $nokPatient_uid = Patient_next_of_kinController::findModel_patient_uid($findPatient_uid->patient_uid);
+                    // var_dump($nokPatient_uid);
+                    // exit();
+                    // $dataProvider = $modelNOK->search($this->request->queryParams);
+                    $dataProvider = $modelNOK->search($findPatient_uid->patient_uid);
+                    // var_dump($this->request->get());
+                    // exit();
+                    return $this->render('/site/index', [
+                        'model' => $this->findModel_nric($model->nric),
+                        'modelNOK' => Patient_next_of_kinController::findModel_patient_uid($findPatient_uid->patient_uid),
+                        'dataProvider' => $dataProvider,
+                    ]);  
+                }
+                // return $this->render('/site/index', [
+                //  'model' => $this->findModel_nric($model->nric)]);  
             }
         } else {
             $model->loadDefaultValues();
         }
-
-        return $this->render('index', [
-            'model' => $model,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Patient_information model.
-     * @param string $patient_uid Patient Uid
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($patient_uid)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($patient_uid),
-        ]);
     }
 
     /**
@@ -103,7 +95,8 @@ class Patient_informationController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'patient_uid' => $model->patient_uid]);
+                return $this->render('/site/index', [
+                    'model' => $this->findModel($model->patient_uid)]);  
             }
         } else {
             $model->loadDefaultValues();
@@ -141,12 +134,21 @@ class Patient_informationController extends Controller
      * @return Patient_information the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($patient_uid)
+    public function findModel($patient_uid)
     {
         if (($model = Patient_information::findOne(['patient_uid' => $patient_uid])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function findModel_nric($patient_nric)
+    {
+        if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
+            return $model;
+        }
+
+        // throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

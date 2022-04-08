@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use app\models\Patient_next_of_kinSearch;
 use yii\web\Controller;
@@ -69,10 +68,8 @@ class Patient_next_of_kinController extends Controller
     public function actionCreate()
     {
         $model = new Patient_next_of_kin();
-        $modelPatient = new Patient_information();
 
         if ($this->request->isPost) {
-            $model->patient_uid = $modelPatient->patient_uid;
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'nok_uid' => $model->nok_uid]);
             }
@@ -129,6 +126,15 @@ class Patient_next_of_kinController extends Controller
     protected function findModel($nok_uid)
     {
         if (($model = Patient_next_of_kin::findOne(['nok_uid' => $nok_uid])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function findModel_patient_uid($patient_uid)
+    {
+        if (($model = Patient_next_of_kin::findOne(['patient_uid' => $patient_uid])) !== null) {
             return $model;
         }
 

@@ -2,6 +2,7 @@
 
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
+use app\models\Patient_next_of_kin;
 
 use GpsLab\Component\Base64UID\Base64UID;
 
@@ -28,28 +29,21 @@ use GpsLab\Component\Base64UID\Base64UID;
         'sister' => 'Sister',
         'other' => 'Other'
     );
+
+    $model = new Patient_next_of_kin();
     ?>
 
-    <div class="row">
-        <div class="col-sm-6">
-            <?= $form->field($model, 'nok_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $nokuid]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, ['prompt'=>'Please select relationship','maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
-        </div>
-    </div>
+    <?= $form->field($model, 'nok_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $nokuid]) ?>
+
+    <?= $form->field($model, 'patient_uid')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, ['prompt'=>'Please select relationship','maxlength' => true]) ?>
+
+    <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

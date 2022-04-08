@@ -5,15 +5,15 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'modules' => [
-       'gridview' =>  [
-            'class' => '\kartik\grid\Module',
-            // your other grid module settings
-        ],
-       'gridviewKrajee' =>  [
-            'class' => '\kartik\grid\Module',
-            // your other grid module settings
-        ]
-    ],
+        'gridview' =>  [
+             'class' => '\kartik\grid\Module',
+             // your other grid module settings
+         ],
+        'gridviewKrajee' =>  [
+             'class' => '\kartik\grid\Module',
+             // your other grid module settings
+         ]
+     ],
 
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
@@ -23,9 +23,6 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
-        // This is the sohai line that needed to be installed in order for the sohai popover-x to be disabled.
-        'assetManager' => [ 'bundles' => [ 'yii\bootstrap4\BootstrapAsset' => [ 'sourcePath' => '@vendor/almasaeed2010/adminlte/dist', 'css'=>[ 'css/adminlte.min.css' ] ], ], ], //
-
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'OIKHASKtMjagrENRWYA41KvQyYOokTXc',

@@ -15,15 +15,11 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'nok_uid') ?>
 
     <?= $form->field($model, 'patient_uid') ?>
 
-    <?= $form->field($model, 'nok_name') ?>
 
-    <?= $form->field($model, 'nok_relationship') ?>
 
-    <?= $form->field($model, 'nok_phone_number') ?>
 
     <?php // echo $form->field($model, 'nok_email') ?>
 

@@ -14,6 +14,8 @@ class Patient_next_of_kinSearch extends Patient_next_of_kin
     /**
      * {@inheritdoc}
      */
+    public $globalPatient_uid;
+
     public function rules()
     {
         return [
@@ -41,6 +43,10 @@ class Patient_next_of_kinSearch extends Patient_next_of_kin
     {
         $query = Patient_next_of_kin::find();
 
+        // $query = Patient_next_of_kin::findOne(['patient_uid' => $params]);
+        // var_dump($query->andFilterWhere(['like', 'patient_uid', $this->patient_uid]));
+        // exit();
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -56,12 +62,14 @@ class Patient_next_of_kinSearch extends Patient_next_of_kin
         }
 
         // grid filtering conditions
-        $query->andFilterWhere(['like', 'nok_uid', $this->nok_uid])
+        $query->andFilterWhere(['like', 'patient_uid', $this->patient_uid])
+            // ->orWhere(['patient_uid' => $this->patient_uid]);
             ->andFilterWhere(['like', 'patient_uid', $this->patient_uid])
             ->andFilterWhere(['like', 'nok_name', $this->nok_name])
             ->andFilterWhere(['like', 'nok_relationship', $this->nok_relationship])
             ->andFilterWhere(['like', 'nok_phone_number', $this->nok_phone_number])
             ->andFilterWhere(['like', 'nok_email', $this->nok_email]);
+            
 
         return $dataProvider;
     }
