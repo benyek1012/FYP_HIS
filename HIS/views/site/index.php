@@ -1,5 +1,8 @@
 <?php
 
+use app\controllers\Patient_admissionController;
+use app\controllers\Patient_informationController;
+use app\models\Patient_admissionSearch;
 use app\models\Patient_next_of_kin;
 
 $this->title = 'Home Page';
@@ -19,7 +22,16 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            The body of the card
+            <?php
+                 echo $id = $model->patient_uid;
+                $admissionModel = new Patient_admissionSearch();
+                if($admissionModel->search($model->patient_uid))
+                {
+                          $this->render('/patient_admission/index', [
+                         'model' => Patient_admissionController::findModel_uid($id)]);   
+                ?>
+            <?php } else echo "  The body of the card"; ?>
+            
         </div>
         <!-- /.card-body -->
     </div>
@@ -29,6 +41,8 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
         <div class="card-header text-white bg-primary">
             <h3 class="card-title">Patient Information</h3>
             <div class="card-tools">
+
+
 
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i

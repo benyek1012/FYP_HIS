@@ -77,6 +77,17 @@ if(!empty($ic) || isset($pid))
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <?php
+        if(!empty($info)){
+?>
+            <div class="mt-1 ml-3 d-flex">
+                        <div class="info">
+                            <p class="text-white"><?php echo $info->nric;?></p>
+                            <p class="text-white"><?php echo $info->name;?></p>
+                            <p class="text-light">Balance Unclaimed | Owed</p>
+                        </div>
+            </div>
+<?php
+         }else{
             echo \hail812\adminlte\widgets\Menu::widget([
                       'items' => [
                          ['label' => 'Patient NRIC', 'iconClass' => '']  ]
@@ -89,12 +100,8 @@ if(!empty($ic) || isset($pid))
                 <p class="text-light">Balance Unclaimed | Owed</p>
             </div>
         </div>
-
         <?php
-        if(!empty($info))
-        {
-            echo $info->name;
-        }
+         }
                     if(!empty($info)){
                              echo \hail812\adminlte\widgets\Menu::widget([
                                 'items' => [
