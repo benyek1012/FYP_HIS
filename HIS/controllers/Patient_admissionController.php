@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Patient_admission;
 use app\models\Patient_admissionSearch;
+use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -71,7 +72,8 @@ class Patient_admissionController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'rn' => $model->rn]);
+                return $this->render('/site/index', [
+                    'model' => Patient_informationController::findModel($model->patient_uid)]);  
             }
         } else {
             $model->loadDefaultValues();
@@ -123,9 +125,18 @@ class Patient_admissionController extends Controller
      * @return Patient_admission the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($rn)
+    public function findModel($rn)
     {
         if (($model = Patient_admission::findOne(['rn' => $rn])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function findModel_pid($id)
+    {
+        if (($model = Patient_admission::findAll(['patient_uid' => $id])) !== null) {
             return $model;
         }
 

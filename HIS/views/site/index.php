@@ -1,6 +1,9 @@
 <?php
 use app\controllers\Patient_informationController;
 use yii\grid\GridView;
+use yii\helpers\Url;
+use yii\grid\ActionColumn;
+use yii\helpers\Html;
 
 $this->title = 'Home Page';
 //$this->params['breadcrumbs'] = ['label' => $this->title];
@@ -39,7 +42,13 @@ $this->title = 'Home Page';
                         'guarantor_nric',
                         'guarantor_phone_number',
                         'guarantor_email:email',
-                    ],
+                        [
+                            'class' => ActionColumn::className(),
+                            'urlCreator' => function ($action, $model) {
+                                return Url::toRoute(['patient_admission/'.$action.'?rn='.$model['rn']]);
+                             }
+                        ],
+                 ],
             ]) ?>
 
 <?php   } else echo "RN is not selected";
