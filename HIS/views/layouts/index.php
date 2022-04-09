@@ -1,30 +1,20 @@
 <?php
-echo (Yii::$app->user->isGuest);
-if (Yii::$app->user->isGuest){ 
-    $this->title = 'Please Sign In';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-    
-<style type="text/css">#card1{
-display:none;
-}</style>
+$this->title = 'Home Page';
+$this->params['breadcrumbs'] = [['label' => $this->title]];
 
-<?php
-    
-}
-else {
-    $this->title = 'Home Page';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-    <style type="text/css">#loginButton{
-display:none;
-}</style>
+use yii\filters\AccessControl;
+use yii\web\Controller;
+use yii\web\Response;
+use app\models\Patient_next_of_kin;
 
-<?php
-    }    
+if (!Yii::$app->user->isGuest):
+    header('Location: index.php/site/login');
+        
+    
+endif;
+
 ?>
-
-<div id="card1" class="container-fluid">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header text-white bg-primary">
             <h3 class="card-title">Patient Admission Summary</h3>
@@ -47,6 +37,7 @@ display:none;
         <div class="card-header text-white bg-primary">
             <h3 class="card-title">Patient Information</h3>
             <div class="card-tools">
+
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                         class="fas fa-minus"></i></button>
@@ -55,8 +46,13 @@ display:none;
         </div>
         <!-- /.card-header -->
         <div class="card-body d-flex flex-column">
-            The body of the card
-            <button type="button" class="btn btn-outline-primary align-self-end" style="width: 8rem;">Update</button>
+            <?php
+            if(!empty($model))
+            {
+            ?>
+            <?= $this->render('/patient_information/update', [
+                    'model' => $model]) ?>
+            <?php } else echo "Patient is not selected"; ?>
         </div>
         <!-- /.card-body -->
     </div>
@@ -74,14 +70,20 @@ display:none;
         </div>
         <!-- /.card-header -->
         <div class="card-body d-flex flex-column">
+
+        <?php   
+            // if(!empty($model))
+            // {
+            //      $NOK = Patient_next_of_kin::findOne(['patient_uid' => $model->patient_uid]);
+            //     if (!empty($NOK))
+            //         echo $this->render('/patient_next_of_kin/view', ['model'=>$NOK]);
+            // }
+        ?>
             <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;">Add
                 Waris</button>
         </div>
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-</div>
-    
-<div id="loginButton" class="container-fluid">
-<h1><a href="site/login" class="nav-link">Click here to login.</a></h1>
+
 </div>

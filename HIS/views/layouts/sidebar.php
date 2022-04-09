@@ -10,6 +10,18 @@ $model = new Patient_informationSearch();
 $ic = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
 $pid = Yii::$app->request->get('pid');
 
+if (Yii::$app->user->isGuest){ 
+    ?>
+  
+<style type="text/css">#sidebarx{
+display:none;
+}</style>
+
+<?php
+}
+
+
+
 if(!empty($ic) || isset($pid))
 {
     if(isset($ic))

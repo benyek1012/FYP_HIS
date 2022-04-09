@@ -1,7 +1,23 @@
 <?php
 
 use yii\helpers\Html;
+use yii\bootstrap4\Nav;
+use yii\bootstrap4\NavBar;
 
+if (Yii::$app->user->isGuest){ 
+    ?>
+  
+<style type="text/css">#dropdownSubMenu1{
+display:none;
+}</style>
+<style type="text/css">#dropdownSubMenu2{
+display:none;
+}</style>
+<style type="text/css">#report{
+display:none;
+}</style>
+<?php
+}
 ?>
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -40,12 +56,35 @@ use yii\helpers\Html;
 
 
     <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-        <!-- Navbar Search -->
-        <li class="nav-item">
-            <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Login</a>
-        </li>
-    </ul>
+<ul class="navbar-nav ml-auto">
+    <!-- Navbar Search -->
+    <li class="nav-item">
+        <li class="nav-item d-none d-sm-inline-block">
+        <!--<a href="?r=site%2Flogin" class="nav-link">Login</a> -->
+    
+    <?php
+    NavBar::begin();
+    echo Nav::widget([
+    'options' => ['class' => 'navbar-nav'],
+    'items' => [
+        Yii::$app->user->isGuest ? (
+            ['label' => 'Login', 'url' => ['/site/login']]
+        ) : (
+            '<li>'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>'
+        )      
+    ],
+]);
+NavBar::end();
+
+?>
+    </li>
+</ul>
 </nav>
 <!-- /.navbar -->
