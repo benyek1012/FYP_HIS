@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;;
 use app\models\Patient_information;
+use app\models\Patient_next_of_kin;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -69,7 +70,7 @@ class Patient_informationController extends Controller
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->render('/site/index', [
-                'model' => $this->findModel($model->patient_uid)]);  
+                'model' => $this->findModel($model->patient_uid)]);
         }
 
         return $this->render('/site/index', [
@@ -81,6 +82,21 @@ class Patient_informationController extends Controller
     public function getProvider($model){
 
         $sql = "SELECT * FROM patient_admission WHERE patient_uid = '".$model->patient_uid."'";
+    //    echo "<pre>";
+    //     var_dump($sql);
+    //     echo "</pre>";
+
+        $sqlProvider = new SqlDataProvider([
+            'sql' =>$sql,
+        ]);
+
+         return $sqlProvider;
+    }
+
+    // Function of return dataProvider for Patient Next Of Kin
+    public function getNOKProvider($model){
+
+        $sql = "SELECT * FROM patient_next_of_kin WHERE patient_uid = '".$model->patient_uid."'";
     //    echo "<pre>";
     //     var_dump($sql);
     //     echo "</pre>";

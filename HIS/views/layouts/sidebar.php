@@ -105,6 +105,7 @@ if(!empty($ic) || isset($pid))
                          ['label' => 'RN2, paid total, balance1', 'iconClass' => ''],
                          ['label' => 'RN3, paid total, balance1', 'iconClass' => ''],
                          ['label' => 'New R/N | Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'pid' => $info->patient_uid]],
+                         ['label' => 'New Waris', 'iconClass' => '', 'url' => ['patient_next_of_kin/create', 'pid' => $info->patient_uid]],
                          ['label' => 'Print Transaction Records', 'iconClass' => '']]]);
                                 }
                                

@@ -23,6 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'china' => 'China'
     );
 
+    $sex = array(
+        'male'=>'Male',
+        'female'=>'Female',
+    );
+
     $form = ActiveForm::begin([
         'action' => ['patient_information/create'],
         'id' => 'patient-information-form',
@@ -32,37 +37,52 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);     
 ?>
 
-    <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
-        ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
-        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
-        ])?>
-
-    <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Base64UID::generate(32)])->label(false); ?>
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
-
-    <?= $form->field($model, 'sex')->inline()->radioList(['male' => 'Male', 'female' => 'Female'])->label(true) ?>
-
-    <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'address2')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Create', ['class' => 'btn btn-outline-primary align-self-start']) ?>
+<div class="row">
+    <div class="col-sm-6">
+        <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
+            ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
+            'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
+            ])?>
     </div>
+    <div class="col-sn-6">
+        <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Base64UID::generate(32)])->label(false); ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'sex')->dropDownList($sex, ['prompt'=>'Please select sex','maxlength' => true]) ?> 
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'address2')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
+    </div>
+</div>
+    
+<div class="form-group">
+    <?= Html::submitButton('Create', ['class' => 'btn btn-outline-primary align-self-start']) ?>
+</div>
 
-    <?php ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>
 
 </div>

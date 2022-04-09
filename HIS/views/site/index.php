@@ -1,9 +1,11 @@
 <?php
 use app\controllers\Patient_informationController;
+use app\models\Patient_next_of_kin;
 use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\helpers\Html;
+use yii\bootstrap4\ActiveForm;
 
 $this->title = 'Home Page';
 //$this->params['breadcrumbs'] = ['label' => $this->title];
@@ -100,15 +102,34 @@ $this->title = 'Home Page';
         <div class="card-body d-flex flex-column">
 
             <?php   
-            // if(!empty($model))
-            // {
-            //      $NOK = Patient_next_of_kin::findOne(['patient_uid' => $model->patient_uid]);
-            //     if (!empty($NOK))
-            //         echo $this->render('/patient_next_of_kin/view', ['model'=>$NOK]);
-            // }
-        ?>
-            <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;">Add
-                Waris</button>
+            if(!empty($model))
+            {
+            ?>
+            <!-- This is the gridview that shows patient admission summary-->
+                <?= GridView::widget([
+                    'dataProvider' => Patient_informationController::getNOKProvider($model),
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                            'nok_name',
+                            'nok_relationship',
+                            'nok_phone_number',
+                            'nok_email',
+                        ],
+                ]) ?>
+            <?php } ?>
+            <!-- <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;">Add
+                Waris</button> -->
+                <!-- <?php $form = ActiveForm::begin([]); ?>
+                    <div class="form-group">
+                        <?= Html::submitButton('Add Waris', ['class' => 'btn btn-outline-primary align-self-start', 'name' => 'buttonAddWaris', 'value' => Yii::$app->request->get("pid")]) ?>
+                    </div>
+                <?php ActiveForm::end(); ?> -->
+                <?php
+                // if(isset($_POST['buttonAddWaris'])) {
+                //     $model_nok = new Patient_next_of_kin();
+                //     echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'pid' => $model->patient_uid]);
+                // }
+                ?>
         </div>
         <!-- /.card-body -->
     </div>
