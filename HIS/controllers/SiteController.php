@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Patient_informationSearch;
+use app\controllers\Patient_informationController;
 
 class SiteController extends Controller
 {
@@ -252,6 +254,18 @@ class SiteController extends Controller
         {
             $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
             $sqlCommand->execute();    
+        }
+
+        $model = new Patient_informationSearch();
+
+        if ($this->request->isPost && $model->load($this->request->post()))
+        {
+            if($model->search($model->nric)) {
+                return $this->render('/site/index', [
+                 'model' => Patient_informationController::findModel_nric($model->nric)]);  
+            }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index');
