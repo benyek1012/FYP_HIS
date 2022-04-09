@@ -15,8 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-admission-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Create Patient Admission', ['create'], ['class' => 'btn btn-success']) ?>
     </p>

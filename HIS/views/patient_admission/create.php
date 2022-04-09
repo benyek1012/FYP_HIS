@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\models\Patient_admission */
 
 $this->title = 'Create Patient Admission';
-$this->params['breadcrumbs'][] = ['label' => 'Patient Admissions', 'url' => ['index']];
+//$this->params['breadcrumbs'][] = ['label' => 'Patient Admissions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-admission-create">

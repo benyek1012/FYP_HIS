@@ -56,9 +56,9 @@ if(!empty($ic) || isset($pid))
     <?php */ ?>
     <div class="form-inline mt-3 d-flex">
         <?php $form = ActiveForm::begin([
-      'action' => ['patient_information/view'],
-    //  'action' => [\yii\helpers\Url::current()],
-      //  'method' => 'get',
+    //   'action' => ['patient_information/view'],
+    //   'action' => [\yii\helpers\Url::current()],
+    //   'method' => 'get',
         'options' => [
             'class' => 'input-group'
          ]
@@ -79,23 +79,19 @@ if(!empty($ic) || isset($pid))
         <?php
         if(!empty($info)){
 ?>
-            <div class="mt-1 ml-3 d-flex">
-                        <div class="info">
-                            <p class="text-white"><?php echo $info->nric;?></p>
-                            <p class="text-white"><?php echo $info->name;?></p>
-                            <p class="text-light">Balance Unclaimed | Owed</p>
-                        </div>
-            </div>
-<?php
-         }else{
-            echo \hail812\adminlte\widgets\Menu::widget([
-                      'items' => [
-                         ['label' => 'Patient NRIC', 'iconClass' => '']  ]
-                         ])
-                         ?>
-        <!-- Sidebar user panel (optional) -->
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
+                <p class="text-white"><?php echo $info->nric;?></p>
+                <p class="text-white"><?php echo $info->name;?></p>
+                <p class="text-light">Balance Unclaimed | Owed</p>
+            </div>
+        </div>
+        <?php
+         }else{
+?>
+        <div class="mt-1 ml-3 d-flex">
+            <div class="info">
+                <p class="text-white">Patient IC</p>
                 <p class="text-white">Patient Name</p>
                 <p class="text-light">Balance Unclaimed | Owed</p>
             </div>

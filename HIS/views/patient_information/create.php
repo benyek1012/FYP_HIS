@@ -10,7 +10,6 @@ use GpsLab\Component\Base64UID\Base64UID;
 /* @var $form yii\widgets\ActiveForm */
 
 $this->title = 'Create Patient Information';
-$this->params['breadcrumbs'][] = ['label' => 'Patient Informations', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-information-create">

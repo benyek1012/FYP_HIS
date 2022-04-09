@@ -7,8 +7,8 @@ use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\models\Patient_informationSearch;
-use yii\bootstrap4\Modal;
+
+use yii\data\SqlDataProvider;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -31,21 +31,6 @@ class Patient_informationController extends Controller
                 ],
             ]
         );
-    }
-
-    public function actionView()
-    {
-        $model = new Patient_informationSearch();
-
-        if ($this->request->isPost && $model->load($this->request->post()))
-        {
-            if($model->search($model->nric)) {
-                return $this->render('/site/index', [
-                 'model' => $this->findModel_nric($model->nric)]);  
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
     }
 
     /**
@@ -91,6 +76,22 @@ class Patient_informationController extends Controller
             'model' => $model,
         ]);
     }
+
+    // Function of return dataProvider for Admisison Summary
+    public function getProvider($model){
+
+        $sql = "SELECT * FROM patient_admission WHERE patient_uid = '".$model->patient_uid."'";
+    //    echo "<pre>";
+    //     var_dump($sql);
+    //     echo "</pre>";
+
+        $sqlProvider = new SqlDataProvider([
+            'sql' =>$sql,
+        ]);
+
+         return $sqlProvider;
+    }
+
 
     /**
      * Finds the Patient_information model based on its primary key value.
