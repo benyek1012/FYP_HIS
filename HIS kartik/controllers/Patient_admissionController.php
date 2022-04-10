@@ -66,14 +66,14 @@ class Patient_admissionController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($id)
     {
         $model = new Patient_admission();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->render('/site/index', [
-                    'model' => Patient_informationController::findModel($model->patient_uid)]);  
+                    'model' => Patient_informationController::findModel($id)]);  
             }
         } else {
             $model->loadDefaultValues();

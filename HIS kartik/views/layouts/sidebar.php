@@ -1,4 +1,6 @@
 <?php
+
+use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_informationSearch;
@@ -7,15 +9,33 @@ use yii\helpers\ArrayHelper;
 
 $model = new Patient_informationSearch();
 
+
 $ic = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
 $pid = Yii::$app->request->get('pid');
+$rn = Yii::$app->request->get('rn');
+$id = Yii::$app->request->get('id');
 
-if(!empty($ic) || isset($pid))
+
+if(!empty($ic) || isset($pid) || isset($rn)||isset($id))
 {
     if(isset($ic))
         $info = Patient_information::findOne(['nric' => $ic]);
-    else  $info = Patient_information::findOne(['patient_uid' => $pid]);
+    else if(isset($pid)) $info = Patient_information::findOne(['patient_uid' => $pid]);
+    else if(isset($id)) $info = Patient_information::findOne(['patient_uid' => $id]);
+    else $info = Patient_admission::findOne(['rn' => $rn]);
+    
+    if(isset($rn))
+    {
+        $info = Patient_information::findOne(['patient_uid' => $info->patient_uid]);
+        // echo '<pre>';
+        // var_dump($info);
+        // exit();
+        // echo '</pre>';
+    }
+   
 }
+
+
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -103,6 +123,27 @@ if(!empty($ic) || isset($pid))
             {
                 $ic = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
                 $info = Patient_information::findOne(['nric' => $ic]);
+                $rn = Yii::$app->request->get('rn');
+                $id = Yii::$app->request->get('id');
+                if(!empty($ic) || isset($pid) || isset($rn)||isset($id))
+                {
+                    if(isset($ic))
+                        $info = Patient_information::findOne(['nric' => $ic]);
+                    else if(isset($pid)) $info = Patient_information::findOne(['patient_uid' => $pid]);
+                    else if(isset($id)) $info = Patient_information::findOne(['patient_uid' => $id]);
+                    else $info = Patient_admission::findOne(['rn' => $rn]);
+                    
+                    if(isset($rn))
+                    {
+                        $info = Patient_information::findOne(['patient_uid' => $info->patient_uid]);
+                        // echo '<pre>';
+                        // var_dump($info);
+                        // exit();
+                        // echo '</pre>';
+                    }
+                
+                }
+
                 $rows = (new \yii\db\Query())
                 ->select(['rn'])
 
