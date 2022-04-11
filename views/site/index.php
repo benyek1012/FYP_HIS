@@ -36,10 +36,6 @@ display:none;
 }    
 ?>
 
-<div id="loginButton" class="container-fluid">
-<h1><a href="site/login" class="nav-link">Click here to login.</a></h1>
-</div>
-
 <body onload="hiddenForm()">
 
 <div id="card1" class="container-fluid">

@@ -68,7 +68,7 @@ class SiteController extends Controller
         $Tables = array(
             "CREATE TABLE IF NOT EXISTS `user` (
                 `user_uid` VARCHAR(64) NOT NULL,
-                `user_name` VARCHAR(100) NOT NULL,
+                `username` VARCHAR(100) NOT NULL,
                 `user_password` VARCHAR(20) NOT NULL,
                 `role` VARCHAR(20) NOT NULL,
                 `retire` BOOLEAN DEFAULT false,

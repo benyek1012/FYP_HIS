@@ -8,10 +8,11 @@ use yii\web\IdentityInterface;
 /**
  * This is the model class for table "new_user".
  *
- * @property int $id
- * @property string $username
- * @property string|null $email
- * @property string $password
+ * @property string $user_uid
+ * @property string|null $username
+ * @property string|null $user_password
+ * @property string|null $role
+ * @property int|null $retire
  * @property string|null $authKey
  */
 class NewUser extends \yii\db\ActiveRecord implements IdentityInterface
@@ -30,9 +31,13 @@ class NewUser extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
-            [['username'], 'string', 'max' => 15],
-            [['email', 'password', 'authKey'], 'string', 'max' => 255],
+            [['user_uid'], 'required'],
+            [['retire'], 'integer'],
+            [['user_uid'], 'string', 'max' => 64],
+            [['user_name'], 'string', 'max' => 100],
+            [['user_password', 'role'], 'string', 'max' => 20],
+            [['authKey'], 'string', 'max' => 45],
+            [['user_uid'], 'unique'],
         ];
     }
 
@@ -41,15 +46,15 @@ class NewUser extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public function getId() {
-        return $this->id;
+        return $this->user_uid;
     }
 
     public function validateAuthKey ($authKey) {
         return $this->authKey === $authKey;
     }
 
-    public static function findIdentity($id) {
-        return self::findOne($id);
+    public static function findIdentity($user_uid) {
+        return self::findOne($user_uid);
     }
 
     public static function findIdentityByAccessToken($token, $type = null)
@@ -62,18 +67,20 @@ class NewUser extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public function validatePassword($password){
-        return $this->password === $password;
+        return $this->user_password === $password;
     }
+
     /**
      * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'username' => Yii::t('app', 'Username'),
-            'email' => Yii::t('app', 'Email'),
-            'password' => Yii::t('app', 'Password'),
+            'user_uid' => Yii::t('app', 'User Uid'),
+            'username' => Yii::t('app', 'User Name'),
+            'user_password' => Yii::t('app', 'User Password'),
+            'role' => Yii::t('app', 'Role'),
+            'retire' => Yii::t('app', 'Retire'),
             'authKey' => Yii::t('app', 'Auth Key'),
         ];
     }
