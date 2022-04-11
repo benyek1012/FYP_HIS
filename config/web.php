@@ -4,6 +4,17 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
+    'modules' => [
+        'gridview' =>  [
+             'class' => '\kartik\grid\Module',
+             // your other grid module settings
+         ],
+        'gridviewKrajee' =>  [
+             'class' => '\kartik\grid\Module',
+             // your other grid module settings
+         ]
+     ],
+    
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -22,6 +33,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\NewUser',
             'enableAutoLogin' => true,
+            'enableSession'=>true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -43,14 +55,14 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+        
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        
         /*
         'view' => [
             'theme' => [
