@@ -68,7 +68,7 @@ class SiteController extends Controller
         $Tables = array(
             "CREATE TABLE IF NOT EXISTS `user` (
                 `user_uid` VARCHAR(64) NOT NULL,
-                `user_name` VARCHAR(100) NOT NULL,
+                `username` VARCHAR(100) NOT NULL,
                 `user_password` VARCHAR(20) NOT NULL,
                 `role` VARCHAR(20) NOT NULL,
                 `retire` BOOLEAN DEFAULT false,
@@ -263,15 +263,16 @@ class SiteController extends Controller
         if(Yii::$app->request->post('hasEditable')){
             $patient_uid = Yii::$app->request->post('editableKey');
             $patient = Patient_next_of_kin::findOne($patient_uid);
-
-            $out = Json::encode(['output'=>'','message'=>'']);
+            
             $post = [];
             $posted = current($_POST['Patient_next_of_kin']);
             $post['Patient_next_of_kin'] = $posted;
 
             if($patient->load($post)){
-                $patient -> save();
+             $patient-> save();
             }
+
+            $out = Json::encode(['output'=>'','message'=>'']);
             echo $out;
             return;
         }
@@ -287,6 +288,7 @@ class SiteController extends Controller
         }
 
         return $this->render('index');
+
     }
     /**
      * Login action.
@@ -318,7 +320,7 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
+        
         return $this->goHome();
     }
 
