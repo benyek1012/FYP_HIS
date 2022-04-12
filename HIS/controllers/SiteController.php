@@ -10,7 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Patient_informationSearch;
-use app\controllers\Patient_informationController;
+use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\helpers\Json;
 use yii\data\ActiveDataProvider;
@@ -299,17 +299,17 @@ class SiteController extends Controller
             return;
         }
 
-        
         if ($this->request->isPost && $model->load($this->request->post()))
         {
             if($model->search($model->nric)) {
-                return $this->render('/site/index', [
-                 'model' => Patient_informationController::findModel_nric($model->nric)]);  
+                $model_founded = Patient_information::findOne(['nric' => $model->nric]);
+                if(!$model_founded){
+                    echo '<script type="text/javascript">',
+                    'confirmAction('.$model->nric.');',
+                    '</script>';
+                }
+                else return $this->render('/site/index', ['model' => $model_founded]);  
             }
-        } else {
-            $model->loadDefaultValues();
-        }
-
         if ($this->request->isPost) {
             if ($modelNOK->load($this->request->post()) && $modelNOK->save()) {
                 return $this->render('/site/index', [
@@ -323,6 +323,8 @@ class SiteController extends Controller
         //     'model' => $model,
         // ]);
 
+        } else $model->loadDefaultValues();
+        
         return $this->render('index');
     }
     /**
@@ -387,3 +389,18 @@ class SiteController extends Controller
         return $this->render('about');
     }
 }
+
+?>
+
+
+<script>
+// The function below will start the confirmation dialog
+function confirmAction(ic) {
+    var answer = confirm("Are you sure to create patient information?");
+    if (answer) {
+        window.location.href = '/patient_information/create?ic='+ic;
+    }else{
+        window.location.href = '/site/index';
+    }
+}
+</script>

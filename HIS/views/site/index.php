@@ -1,8 +1,10 @@
 <?php
 
-use app\controllers\Patient_informationController;
+use app\models\Patient_admission;
 use app\models\Patient_next_of_kin;
 use yii\grid\GridView;
+//use kartik\grid\GridView;
+
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\data\ActiveDataProvider;
@@ -28,13 +30,22 @@ $this->title = 'Home Page';
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-<?php 
+<?php  
+        // Function of return dataProvider for Admisison Summary
         if(!empty($model))
         {
-?>
-<!-- This is the gridview that shows patient admission summary-->
+            $dataProvider = new ActiveDataProvider([
+                'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid]),
+                'pagination'=>['pageSize'=> 3],
+                ]);
+        }
+
+                if(!empty($model))
+                {
+        ?>
+            <!-- This is the gridview that shows patient admission summary-->
             <?= GridView::widget([
-                'dataProvider' => Patient_informationController::getProvider($model),
+                'dataProvider' => $dataProvider,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                         'rn',
@@ -57,7 +68,7 @@ $this->title = 'Home Page';
                  ],
             ]) ?>
 
-<?php   } else echo "RN is not selected";
+            <?php   } else echo "RN is not selected";
             ?>
 
         </div>
@@ -78,15 +89,15 @@ $this->title = 'Home Page';
         <!-- /.card-header -->
         <div class="card-body d-flex flex-column">
 
-    
-<!-- This is the form that shows patient information which can directly updating-->
-    <?php
+
+            <!-- This is the form that shows patient information which can directly updating-->
+            <?php
         if(!empty($model))
         {
     ?>
             <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-<?php   } else echo "Patient is not selected"; ?>
+            <?php   } else echo "Patient is not selected"; ?>
         </div>
         <!-- /.card-body -->
     </div>
@@ -106,6 +117,7 @@ $this->title = 'Home Page';
         <div class="card-body d-flex flex-column">
 
             <?php   
+            // Function of return dataProvider for NOk
             if(!empty($model))
             {
                 $dataProvider = new ActiveDataProvider([
@@ -114,7 +126,7 @@ $this->title = 'Home Page';
                     ]);
             ?>
             <!-- This is the gridview that shows patient admission summary-->
-                <?= kartik\grid\GridView::widget([
+            <?= kartik\grid\GridView::widget([
                     'dataProvider' => $dataProvider,
                     // 'filterModel' => $searchModel,
                     'columns' => [

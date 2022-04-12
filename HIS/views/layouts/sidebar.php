@@ -54,6 +54,7 @@ if(!empty($ic) || isset($pid) || isset($rn)||isset($id))
             <!-- href be escaped -->
             <?php /*  <div class="form-inline mt-3 pb-3 mb-4 d-flex">
                 <div class="input-group" data-widget="sidebar-search">
+
                     <?php $form = ActiveForm::begin([
                     'action' => ['index'],
                     'method' => 'post',

@@ -78,37 +78,6 @@ class Patient_informationController extends Controller
         ]);
     }
 
-    // Function of return dataProvider for Admisison Summary
-    public function getProvider($model){
-
-        $sql = "SELECT * FROM patient_admission WHERE patient_uid = '".$model->patient_uid."'";
-    //    echo "<pre>";
-    //     var_dump($sql);
-    //     echo "</pre>";
-
-        $sqlProvider = new SqlDataProvider([
-            'sql' =>$sql,
-        ]);
-
-         return $sqlProvider;
-    }
-
-    // Function of return dataProvider for Patient Next Of Kin
-    public function getNOKProvider($model){
-
-        $sql = "SELECT * FROM patient_next_of_kin WHERE patient_uid = '".$model->patient_uid."'";
-    //    echo "<pre>";
-    //     var_dump($sql);
-    //     echo "</pre>";
-
-        $sqlProvider = new SqlDataProvider([
-            'sql' =>$sql,
-        ]);
-
-         return $sqlProvider;
-    }
-
-
     /**
      * Finds the Patient_information model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -125,41 +94,6 @@ class Patient_informationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function findModel_nric($patient_nric)
-    {
-        if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
-            return $model;
-        }
-        else{
-            echo '<script type="text/javascript">',
-            'confirmAction();',
-            '</script>';
-        }
-    }
-
-    public function findModel_NOK($patient_uid)
-    {
-        if (($model = Patient_next_of_kin::findOne(['patient_uid' => $patient_uid])) !== null) {
-            return $model;
-        }
-        else{
-            echo '<script type="text/javascript">',
-            'confirmAction();',
-            '</script>';
-        }
-    }
 }
 
 ?>
-
-<script>
-// The function below will start the confirmation dialog
-function confirmAction() {
-    var answer = confirm("Are you sure to create patient information?");
-    if (answer) {
-        window.location.href = '/patient_information/create';
-    }else{
-        window.location.href = '/site/index';
-    }
-}
-</script>
