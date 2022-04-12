@@ -18,14 +18,26 @@ use kartik\datetime\DateTimePicker;
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
             ],
         ]); 
-    
-    $rn = date('Y')."/".substr(number_format(time() * rand(),0,'',''),0,6);
+    $rows = (new \yii\db\Query())
+    ->select(['rn'])
+
+    ->from('patient_admission')
+
+    ->all();
+    if(count($rows) <= 899998){
+        $SID = "1" + count($rows);
+    }
+    $rn = date('Y')."/".sprintf('%06d', $SID);
     ?>
 
     <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('id')])->label(false); ?>
     <div class="row">
         <div class="col-sm-6">
+            <?php if(Yii::$app->request->get('id')){ ?>
             <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => $rn]) ?>
+            <?php }else{ ?>
+            <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')]) ?>
+            <?php } ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(), 

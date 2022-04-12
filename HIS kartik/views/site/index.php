@@ -43,7 +43,7 @@ $this->title = 'Home Page';
         {
 ?>
                 <!-- This is the gridview that shows patient admission summary-->
-                <?= GridView::widget([
+                <?= kartik\grid\GridView::widget([
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
@@ -60,6 +60,7 @@ $this->title = 'Home Page';
                         'guarantor_email:email',
                         [
                             'class' => ActionColumn::className(),
+                            'template'=>'{view}',
                             'urlCreator' => function ($action, $model) {
                                 return Url::toRoute(['patient_admission/'.$action.'?rn='.$model['rn']]);
                              }

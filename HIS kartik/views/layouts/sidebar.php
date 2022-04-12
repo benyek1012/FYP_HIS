@@ -151,7 +151,6 @@ if(!empty($ic) || isset($pid) || isset($rn)||isset($id))
                 ->where(['patient_uid' => $info->patient_uid])
 
                 ->all();
-            
                 $items = [];
                 foreach ($rows as $row) {
                     array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['/patient_admission/view', 'rn' =>  $row['rn']]]);

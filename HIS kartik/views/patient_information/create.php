@@ -63,19 +63,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'address2')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
     </div>
 </div>
     

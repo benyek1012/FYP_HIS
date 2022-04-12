@@ -78,36 +78,6 @@ class Patient_informationController extends Controller
         ]);
     }
 
-    // Function of return dataProvider for Admisison Summary
-    public function getProvider($model){
-
-        $sql = "SELECT * FROM patient_admission WHERE patient_uid = '".$model->patient_uid."'";
-    //    echo "<pre>";
-    //     var_dump($sql);
-    //     echo "</pre>";
-
-        $sqlProvider = new SqlDataProvider([
-            'sql' =>$sql,
-        ]);
-
-         return $sqlProvider;
-    }
-
-    // Function of return dataProvider for Patient Next Of Kin
-    public function getNOKProvider($model){
-
-        $sql = "SELECT * FROM patient_next_of_kin WHERE patient_uid = '".$model->patient_uid."'";
-    //    echo "<pre>";
-    //     var_dump($sql);
-    //     echo "</pre>";
-
-        $sqlProvider = new SqlDataProvider([
-            'sql' =>$sql,
-        ]);
-
-         return $sqlProvider;
-    }
-
 
     /**
      * Finds the Patient_information model based on its primary key value.
@@ -132,7 +102,7 @@ class Patient_informationController extends Controller
         }
         else{
             echo '<script type="text/javascript">',
-            'confirmAction();',
+            'confirmAction('.$patient_nric.');',
             '</script>';
         }
     }
@@ -142,10 +112,10 @@ class Patient_informationController extends Controller
 
 <script>
 // The function below will start the confirmation dialog
-function confirmAction() {
+function confirmAction(ic) {
     var answer = confirm("Are you sure to create patient information?");
     if (answer) {
-        window.location.href = '/patient_information/create';
+        window.location.href = '/patient_information/create?ic='+ic;
     }else{
         window.location.href = '/site/index';
     }
