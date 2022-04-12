@@ -66,14 +66,14 @@ class Patient_admissionController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate($id)
+    public function actionCreate()
     {
         $model = new Patient_admission();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->render('/site/index', [
-                    'model' => Patient_information::findOne(['patient_uid' => $id])]);  
+                    'model' => Patient_informationController::findModel($model->patient_uid)]);  
             }
         } else {
             $model->loadDefaultValues();
@@ -128,6 +128,15 @@ class Patient_admissionController extends Controller
     public function findModel($rn)
     {
         if (($model = Patient_admission::findOne(['rn' => $rn])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function findModel_pid($id)
+    {
+        if (($model = Patient_admission::findAll(['patient_uid' => $id])) !== null) {
             return $model;
         }
 
