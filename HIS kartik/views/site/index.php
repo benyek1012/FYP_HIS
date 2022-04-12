@@ -1,6 +1,8 @@
 <?php
 
 use app\controllers\Patient_informationController;
+use app\models\Patient_admission;
+use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -15,26 +17,34 @@ $this->title = 'Home Page';
 
 <body onload="hiddenForm()">
 
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h3 class="card-title">Patient Admission Summary</h3>
-            <div class="card-tools">
-                <!-- Collapse Button -->
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                        class="fas fa-minus"></i></button>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title">Patient Admission Summary</h3>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+                <!-- /.card-tools -->
             </div>
-            <!-- /.card-tools -->
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
+            <!-- /.card-header -->
+            <div class="card-body">
 <?php 
         if(!empty($model))
         {
+            $dataProvider = new ActiveDataProvider([
+                'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid]),
+                'pagination'=>['pageSize'=>5],
+                ]);
+        }
+
+        if(!empty($model))
+        {
 ?>
-<!-- This is the gridview that shows patient admission summary-->
-            <?= GridView::widget([
-                'dataProvider' => Patient_informationController::getProvider($model),
+                <!-- This is the gridview that shows patient admission summary-->
+                <?= GridView::widget([
+                'dataProvider' => $dataProvider,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                         'rn',
@@ -57,55 +67,55 @@ $this->title = 'Home Page';
                  ],
             ]) ?>
 
-<?php   } else echo "RN is not selected";
+                <?php   } else echo "RN is not selected";
             ?>
 
-        </div>
-        <!-- /.card-body -->
-    </div>
-    <!-- /.card -->
-
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h3 class="card-title">Patient Information</h3>
-            <div class="card-tools">
-                <!-- Collapse Button -->
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                        class="fas fa-minus"></i></button>
             </div>
-            <!-- /.card-tools -->
+            <!-- /.card-body -->
         </div>
-        <!-- /.card-header -->
-        <div class="card-body d-flex flex-column">
+        <!-- /.card -->
 
-    
-<!-- This is the form that shows patient information which can directly updating-->
-    <?php
+        <div class="card">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title">Patient Information</h3>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body d-flex flex-column">
+
+
+                <!-- This is the form that shows patient information which can directly updating-->
+                <?php
         if(!empty($model))
         {
     ?>
-            <?= $this->render('/patient_information/update', [
+                <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-<?php   } else echo "Patient is not selected"; ?>
-        </div>
-        <!-- /.card-body -->
-    </div>
-    <!-- /.card -->
-
-    <div class="card">
-        <div class="card-header text-white bg-primary">
-            <h3 class="card-title">Waris</h3>
-            <div class="card-tools">
-                <!-- Collapse Button -->
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                        class="fas fa-minus"></i></button>
+                <?php   } else echo "Patient is not selected"; ?>
             </div>
-            <!-- /.card-tools -->
+            <!-- /.card-body -->
         </div>
-        <!-- /.card-header -->
-        <div class="card-body d-flex flex-column">
+        <!-- /.card -->
 
-            <?php   
+        <div class="card">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title">Waris</h3>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body d-flex flex-column">
+
+                <?php   
             if(!empty($model))
             {
                 $dataProvider = new ActiveDataProvider([
@@ -113,7 +123,7 @@ $this->title = 'Home Page';
                     'pagination'=>['pageSize'=>5],
                     ]);
             ?>
-            <!-- This is the gridview that shows patient admission summary-->
+                <!-- This is the gridview that shows patient admission summary-->
                 <?= kartik\grid\GridView::widget([
                     'dataProvider' => $dataProvider,
                     // 'filterModel' => $searchModel,
@@ -167,27 +177,29 @@ $this->title = 'Home Page';
                         ],
                     ],
                 ]); ?>
-            <?php } ?>
+                <?php } ?>
 
-            <div class="form-group">
-                <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;" onclick="showForm();">Add Waris</button>
-                <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;" onclick="hiddenForm();">Cancel</button>
-            </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                        onclick="showForm();">Add Waris</button>
+                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                        onclick="hiddenForm();">Cancel</button>
+                </div>
 
-            <?php
+                <?php
             if(!empty($model)){
                 $model_nok = new Patient_next_of_kin();
                 echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
             }
             ?>
+            </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.card-body -->
+        <!-- /.card -->
+
     </div>
-    <!-- /.card -->
 
-</div>
-
-<script>
+    <script>
     function showForm() {
         document.getElementById("patient-next-of-kin-form").style.visibility = "visible";
     }
@@ -195,4 +207,4 @@ $this->title = 'Home Page';
     function hiddenForm() {
         document.getElementById("patient-next-of-kin-form").style.visibility = "hidden";
     }
-</script>
+    </script>

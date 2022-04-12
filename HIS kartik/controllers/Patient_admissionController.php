@@ -133,13 +133,4 @@ class Patient_admissionController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
-    public function findModel_pid($id)
-    {
-        if (($model = Patient_admission::findAll(['patient_uid' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
 }

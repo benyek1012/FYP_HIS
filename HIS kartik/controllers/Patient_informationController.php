@@ -136,18 +136,6 @@ class Patient_informationController extends Controller
             '</script>';
         }
     }
-
-    public function findModel_NOK($patient_uid)
-    {
-        if (($model = Patient_next_of_kin::findOne(['patient_uid' => $patient_uid])) !== null) {
-            return $model;
-        }
-        else{
-            echo '<script type="text/javascript">',
-            'confirmAction();',
-            '</script>';
-        }
-    }
 }
 
 ?>
