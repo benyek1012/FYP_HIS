@@ -9,7 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use app\models\Patient_informationSearch;
+use app\models\Patient_information;
 use app\controllers\Patient_informationController;
 use app\models\Patient_next_of_kin;
 use app\models\Patient_next_of_kinSearch;
@@ -51,15 +51,41 @@ class SiteController extends Controller
      */
     public function actions()
     {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
+        // return [
+        //     'error' => [
+        //         'class' => 'yii\web\ErrorAction',
+        //     ],
+        //     'captcha' => [
+        //         'class' => 'yii\captcha\CaptchaAction',
+        //         'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+        //     ],
+        // ];
+
+        return ArrayHelper::merge(parent::actions(), [
+            'nok' => [                                                              // identifier for your editable action
+                'class' => EditableColumnAction::className(),                       // action class name
+                'modelClass' => Patient_next_of_kin::className(),                   // the update model class
+                'outputValue' => function ($model, $attribute, $key, $index) {
+                    $value = $model->$attribute;                                   // your attribute value
+                    if ($attribute === 'nok_name') {                                // selective validation by attribute
+                        return $value;                                             // return formatted value if desired
+                    } 
+                    elseif ($attribute === 'nok_relationship') {                   // selective validation by attribute
+                        return $value;                                             // return formatted value if desired
+                    } 
+                    elseif ($attribute === 'nok_phone_number') {                   // selective validation by attribute
+                        return $value;                                             // return formatted value if desired
+                    } 
+                    elseif ($attribute === 'nok_email') {                              // selective validation by attribute
+                        return $value;                                             // return formatted value if desired
+                    }                
+                    return '';                                                     // empty is same as $value
+                },                  
+                'outputMessage' => function($model, $attribute, $key, $index) {
+                    return '';                                                    // any custom error after model save
+                },
+            ]
+        ]);
     }
 
     /**
@@ -262,7 +288,7 @@ class SiteController extends Controller
             $sqlCommand->execute();    
         }
 
-        $model = new Patient_informationSearch();
+        $model = new Patient_information();
         $modelNOK = new Patient_next_of_kin();
 
         if(Yii::$app->request->post('hasEditable')){
