@@ -9,11 +9,14 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use app\models\Patient_information;
+use app\models\Patient_informationSearch;
 use app\controllers\Patient_informationController;
 use app\models\Patient_next_of_kin;
+use app\models\Patient_next_of_kinSearch;
 use yii\helpers\Json;
 use yii\data\ActiveDataProvider;
+use kartik\grid\EditableColumnAction;
+use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
 {
@@ -259,7 +262,7 @@ class SiteController extends Controller
             $sqlCommand->execute();    
         }
 
-        $model = new Patient_information();
+        $model = new Patient_informationSearch();
         $modelNOK = new Patient_next_of_kin();
 
         if(Yii::$app->request->post('hasEditable')){
@@ -275,25 +278,25 @@ class SiteController extends Controller
                 $model -> save();
                 $model = Patient_next_of_kin::findOne($nok_uid);
             }
+            
+            // if(isset($posted['nok_name'])){
+            //     $output = $model->nok_name;
+            // }
 
-            if(isset($posted['nok_name'])){
-                $output = $model->nok_name;
-            }
+            // if(isset($posted['nok_relationship'])){
+            //     $output = $model->nok_relationship;
+            // }
 
-            if(isset($posted['nok_relationship'])){
-                $output = $model->nok_relationship;
-            }
+            // if(isset($posted['nok_phone_number'])){
+            //     $output = $model->nok_phone_number;
+            // }
 
-            if(isset($posted['nok_phone_number'])){
-                $output = $model->nok_phone_number;
-            }
-
-            if(isset($posted['nok_email'])){
-                $output = $model->nok_email;
-            }
+            // if(isset($posted['nok_email'])){
+            //     $output = $model->nok_email;
+            // }
             
 
-            $out = Json::encode(['output'=>$output, 'message'=>'']);
+            // $out = Json::encode(['output'=>$output, 'message'=>'']);
 
             echo $out;
             return;

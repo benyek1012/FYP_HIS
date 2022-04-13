@@ -146,9 +146,10 @@ else
                         [
                             'class' => '\kartik\grid\EditableColumn',
                             'attribute' => 'nok_name',
-                            'editableOptions' => [                
+                            'editableOptions' =>  [                
                                 'asPopover' => false,
-                            ],
+                                'formOptions' => ['action' => ['/site/nok']],
+                            ]
                         ],
 
                         [
@@ -157,6 +158,7 @@ else
                             'editableOptions' => [
                                 'size' => 'md',
                                 'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                                'asPopover' => false,
                                 'data' => [
                                     'father'=>'Father',
                                     'monther'=>'Monther',
@@ -165,20 +167,28 @@ else
                                     'sister' => 'Sister',
                                     'other' => 'Other'
                                 ],
+                                'formOptions' => ['action' => ['/site/nok']],
                             ],
                         ],
 
                         [
                             'class' => '\kartik\grid\EditableColumn',
                             'attribute' => 'nok_phone_number',
+                            'editableOptions' => [
+                                'asPopover' => false,
+                                'formOptions' => ['action' => ['/site/nok']],
+                                ]
                         ],
 
                         [
                             'class' => '\kartik\grid\EditableColumn',
                             'attribute' => 'nok_email',
-                            'editableOptions' => [                
-                                'asPopover' => false,
-                            ],
+                            'editableOptions' => function ($model) {
+                                return [                
+                                    'asPopover' => false,
+                                    'formOptions' => ['action' => ['/site/nok']],
+                                ];
+                            }
                         ],
 
                         [
@@ -188,6 +198,7 @@ else
                                 return Url::toRoute(['patient_next_of_kin/'.$action.'?nok_uid='.$model['nok_uid']]);
                             }
                         ],
+                        
                     ],
                 ]); ?>
                 <?php } ?>
