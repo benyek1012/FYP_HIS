@@ -39,7 +39,7 @@ class Patient_information extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','nric', 'first_reg_date'], 'required'],
+            [['first_reg_date'], 'required'],
             [['name'], 'string', 'max' => 200],
             ['name', 'match', 'pattern' => '/^[a-z,.\s-]+$/i', 'message' => 'Name can only contain word characters'],
             [['first_reg_date'], 'safe'],
@@ -49,7 +49,6 @@ class Patient_information extends \yii\db\ActiveRecord
             [['nric', 'nationality', 'sex', 'job'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 200],
             [['phone_number', 'email', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
-            [['nric'], 'unique'],
             [['patient_uid'], 'unique'],
         ];
     }

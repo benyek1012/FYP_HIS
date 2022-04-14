@@ -3,7 +3,6 @@
 use kartik\date\DatePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
-use GpsLab\Component\Base64UID\Base64UID;
     
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_information */
@@ -46,7 +45,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>

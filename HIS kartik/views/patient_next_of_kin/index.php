@@ -10,9 +10,6 @@ use kartik\editable\Editable;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_next_of_kinSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Patient Next Of Kins';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-next-of-kin-index">
 

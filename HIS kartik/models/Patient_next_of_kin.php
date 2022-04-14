@@ -37,7 +37,7 @@ class Patient_next_of_kin extends \yii\db\ActiveRecord
             [['nok_name'], 'string', 'max' => 200],
             ['nok_name', 'match', 'pattern' => '/^[a-z,.\s-]+$/i', 'message' => 'Name can only contain word characters'],
             [['nok_relationship'], 'string', 'max' => 20],
-            [['nok_phone_number'], 'string', 'length' => [10], 'max' => 10],
+          //  [['nok_phone_number'], 'string', 'length' => [10], 'max' => 10],
             [['nok_phone_number'], 'integer'],
             [['nok_email'], 'email'],
             [['nok_email'], 'string', 'max' => 100],
