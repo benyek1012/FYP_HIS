@@ -70,6 +70,7 @@ if(isset($pid) || isset($rn)||isset($id))
     <?php */ ?>
     <div class="form-inline mt-3 d-flex">
         <?php $form = ActiveForm::begin([
+        'action' => ['site/index'],
         'options' => [
             'class' => 'input-group'
          ]
@@ -92,8 +93,8 @@ if(isset($pid) || isset($rn)||isset($id))
 ?>
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
-                <p class="text-white"><?php echo $info->nric;?></p>
                 <p class="text-white"><?php echo $info->name;?></p>
+                <p class="text-white"><?php echo $info->nric;?></p>
                 <p class="text-light">Balance Unclaimed | Owed</p>
             </div>
         </div>

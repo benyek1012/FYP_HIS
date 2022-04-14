@@ -20,7 +20,6 @@ else
     $session->set('patient_id', Yii::$app->request->get('id'));
     $session->set('patient_name', $model->name);
    
-
     $this->title = $model->name;
     $this->params['breadcrumbs'][] = ['label' => $model->name];
 }
@@ -92,7 +91,7 @@ else
             </div>
             <!-- /.card-header -->
             <div class="card-body d-flex flex-column">
-
+                 
 
                 <!-- This is the form that shows patient information which can directly updating-->
                 <?php
@@ -102,14 +101,8 @@ else
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
 <?php   } else{
-            if(Yii::$app->request->get('ic'))
-            {
-                $model_create = new Patient_information();
-                $model_create->first_reg_date = date("Y-m-d");                    
-?>              <?= $this->render('/patient_information/create', ['model' => $model_create]) ?>
-<?php       }
-            else echo "Patient is not selected";
-        } ?>
+             echo "Patient is not selected";
+        }  ?>
             </div>
             <!-- /.card-body -->
         </div>
