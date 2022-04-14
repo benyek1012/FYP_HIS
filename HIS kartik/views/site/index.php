@@ -26,7 +26,7 @@ else
 }
 ?>
 
-<body onload="hiddenForm()">
+<body>
 
     <div class="container-fluid">
         <div class="card">
@@ -41,7 +41,7 @@ else
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-<?php 
+                <?php 
         if(!empty($model))
         {
             $dataProvider = new ActiveDataProvider([
@@ -95,13 +95,13 @@ else
 
 
                 <!-- This is the form that shows patient information which can directly updating-->
-                  <?php
+                <?php
         if(!empty($model))
         {
     ?>
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-<?php   } else{
+                <?php   } else{
              echo "Patient is not selected";
         }  ?>
             </div>
@@ -131,16 +131,16 @@ else
                     ]);
                 echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider]);
             ?>
-            <?php 
+                <?php 
             } 
             ?>
 
-            <div class="form-group">
-                <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                    onclick="showForm();">Add Waris</button>
-                <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                    onclick="hiddenForm();">Cancel</button>
-            </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                        onclick="showDiv();">Add Waris</button>
+                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                        onclick="hiddenForm();">Cancel</button>
+                </div>
 
                 <?php
             if(!empty($model)){
@@ -156,11 +156,12 @@ else
     </div>
 
     <script>
-    function showForm() {
-        document.getElementById("patient-next-of-kin-form").style.visibility = "visible";
-    }
 
     function hiddenForm() {
-        document.getElementById("patient-next-of-kin-form").style.visibility = "hidden";
+        document.getElementById("NOk_Div").style.display = "none";
+    }
+
+    function showDiv() {
+        document.getElementById('NOk_Div').style.display = "block";
     }
     </script>

@@ -76,7 +76,7 @@ if(isset($pid) || isset($rn)||isset($id))
          ]
     ]); ?>
 
-        <?= $form->field($model , 'nric')->textInput(['class' => 'form-control form-control-sidebar',
+        <?= $form->field($model , 'nric')->textInput(['autocomplete' =>'off', 'class' => 'form-control form-control-sidebar',
                     'style' => 'text-color: white !important;','placeholder'=>"Search IC"])->label(false)?>
 
         <div class="input-group-append">

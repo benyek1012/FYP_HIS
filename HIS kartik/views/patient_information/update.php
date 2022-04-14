@@ -25,9 +25,10 @@ use yii\bootstrap4\Html;
         'female'=>'Female',
     );
 
-    $form = ActiveForm::begin([
+    $form = kartik\form\ActiveForm::begin([
         'action' => ['patient_information/update', 'id' =>  $model->patient_uid],
         'id' => 'patient-information-form',
+        'type' => 'vertical',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback']],
@@ -73,6 +74,6 @@ use yii\bootstrap4\Html;
         <?= Html::submitButton('Update', ['class' => 'btn btn-outline-primary align-self-start']) ?>    
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>

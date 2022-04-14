@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Patient_admission;
 use app\models\Patient_admissionSearch;
 use app\models\Patient_information;
@@ -96,7 +97,8 @@ class Patient_admissionController extends Controller
         $model = $this->findModel($rn);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'rn' => $model->rn]);
+            return Yii::$app->getResponse()->redirect(array('/site/index', 
+            'id' => $model->patient_uid));          
         }
 
         return $this->render('update', [

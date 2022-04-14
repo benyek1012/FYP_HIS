@@ -11,8 +11,9 @@ use kartik\datetime\DateTimePicker;
 
 <div class="patient-admission-form">
 
-    <?php $form = ActiveForm::begin([
+    <?php $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
+            'type' => 'vertical',
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -86,6 +87,6 @@ use kartik\datetime\DateTimePicker;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>

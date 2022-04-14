@@ -11,7 +11,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="patient-next-of-kin-form">
+<div class="patient-next-of-kin-form" id="NOk_Div"  style="display:none;">
 
 <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'patient-next-of-kin-form',
@@ -62,3 +62,4 @@ use GpsLab\Component\Base64UID\Base64UID;
     <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
+
