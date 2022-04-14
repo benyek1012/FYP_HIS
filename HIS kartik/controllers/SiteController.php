@@ -146,6 +146,7 @@ class SiteController extends Controller
                 `guarantor_nric` VARCHAR(20),
                 `guarantor_phone_number` VARCHAR(100),
                 `guarantor_email` VARCHAR(100),
+                `type` VARCHAR(20),
                 PRIMARY KEY (`rn`),
                 FOREIGN KEY (patient_uid) REFERENCES patient_information(patient_uid)
             );"

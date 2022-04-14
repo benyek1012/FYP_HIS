@@ -17,7 +17,7 @@ class Patient_admissionSearch extends Patient_admission
     public function rules()
     {
         return [
-            [['rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email'], 'safe'],
+            [['rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type'], 'safe'],
             [['medigal_legal_code', 'reminder_given'], 'integer'],
         ];
     }
@@ -71,7 +71,8 @@ class Patient_admissionSearch extends Patient_admission
             ->andFilterWhere(['like', 'guarantor_name', $this->guarantor_name])
             ->andFilterWhere(['like', 'guarantor_nric', $this->guarantor_nric])
             ->andFilterWhere(['like', 'guarantor_phone_number', $this->guarantor_phone_number])
-            ->andFilterWhere(['like', 'guarantor_email', $this->guarantor_email]);
+            ->andFilterWhere(['like', 'guarantor_email', $this->guarantor_email])
+            ->andFilterWhere(['like', 'type', $this->type]);
 
         return $dataProvider;
     }

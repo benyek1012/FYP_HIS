@@ -51,6 +51,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['guarantor_nric'], 'integer'],
             [['guarantor_email'], 'email'],
             [['guarantor_email'], 'string', 'max' => 100],
+            [['type'], 'string', 'max' => 20],
             [['rn'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
         ];
@@ -74,6 +75,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             'guarantor_nric' => 'Guarantor Nric',
             'guarantor_phone_number' => 'Guarantor Phone Number',
             'guarantor_email' => 'Guarantor Email',
+            'type' => 'Type'
         ];
     }
 

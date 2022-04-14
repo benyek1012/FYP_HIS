@@ -142,8 +142,14 @@ if(isset($pid) || isset($rn)||isset($id))
                 foreach ($rows as $row) {
                     array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
                 }
-                array_push($items, ['label' => 'New R/N | Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid]]);
-                array_push($items,['label' => 'Print Transaction Records', 'iconClass' => '']);
+               // array_push($items, ['label' => 'New R/N | Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid]]);
+               array_push($items,['label' => 'New R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid,'type' => 'Normal']],
+                                 ['label' => 'New Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid, 'type' => 'Labor']]
+                        );
+                
+               
+             
+               array_push($items,['label' => 'Print Transaction Records', 'iconClass' => '']);
                 
                 return $items;
             }
