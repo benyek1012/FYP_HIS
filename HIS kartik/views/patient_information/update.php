@@ -46,7 +46,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
+        <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>

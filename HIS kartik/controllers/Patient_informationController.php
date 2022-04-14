@@ -2,14 +2,12 @@
 
 namespace app\controllers;
 
-use app\models\Patient_admission;
 use Yii;
 use yii\helpers\Url;
 use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use GpsLab\Component\Base64UID\Base64UID;
 
 
 /**
@@ -40,17 +38,24 @@ class Patient_informationController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate($ic)
+    public function actionCreate()
     {
         $model = new Patient_information();
-        if($ic  == 'undefined') $model->nric = ' ';
-        else $model->nric = $ic;
-        $model->patient_uid = Base64UID::generate(32);
-        $model->first_reg_date = date("Y-m-d");     
-        $model->save();
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                $model_founded = $this->findModel($model->patient_uid);
+                if(!empty($model_founded))
+                    return Yii::$app->getResponse()->redirect(array('/site/index', 
+                        'id' => $model_founded->patient_uid));
+            }
+        } else {
+            $model->first_reg_date = date("yyyy-mm-dd");
+            $model->loadDefaultValues();
+        }
 
-        return Yii::$app->getResponse()->redirect(array('/site/index', 
-            'id' => $model->patient_uid));
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -93,38 +98,26 @@ class Patient_informationController extends Controller
 
     public function findModel_nric($patient_nric)
     {
-        if($patient_nric == '')
-        {
-            echo '<script type="text/javascript">',
-            'setTimeout(function(){',
-                 'confirmAction('.$patient_nric.');',
-                '},100);',
-            '</script>';
+        if (($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) {
+            return $model;
         }
         else{
-            if ((($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) ) {
-                return $model;
-            }
-            else{
-                echo '<script type="text/javascript">',
-                'setTimeout(function(){',
-                    'confirmAction('.$patient_nric.');',
-                    '},100);',
-                '</script>';
-            }
+            echo '<script type="text/javascript">',
+            'confirmAction('.$patient_nric.');',
+            '</script>';
         }
     }
 }
-?>
 
+?>
 
 <script>
 // The function below will start the confirmation dialog
 function confirmAction(ic) {
     var answer = confirm("Are you sure to create patient information?");
     if (answer) {
-        window.location.href = '/patient_information/create?ic=' + ic;
-    } else {
+        window.location.href = '/site/index?ic='+ic;
+    }else{
         window.location.href = '/site/index';
     }
 }
