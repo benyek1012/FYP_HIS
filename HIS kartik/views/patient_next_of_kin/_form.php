@@ -3,6 +3,7 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
+
 use GpsLab\Component\Base64UID\Base64UID;
 
 /* @var $this yii\web\View */
@@ -12,8 +13,9 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 <div class="patient-next-of-kin-form">
 
-<?php $form = ActiveForm::begin([
+<?php $form = kartik\form\ActiveForm::begin([
         'id' => 'patient-next-of-kin-form',
+        'type' => 'vertical',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -57,6 +59,6 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>

@@ -67,23 +67,24 @@ class SiteController extends Controller
                 'modelClass' => Patient_next_of_kin::className(),                   // the update model class
                 'outputValue' => function ($model, $attribute, $key, $index) {
                     $value = $model->$attribute;                                   // your attribute value
-                    if ($attribute === 'nok_name') {                                // selective validation by attribute
-                        return $value;                                             // return formatted value if desired
-                    } 
-                    elseif ($attribute === 'nok_relationship') {                   // selective validation by attribute
-                        return $value;                                             // return formatted value if desired
-                    } 
-                    elseif ($attribute === 'nok_phone_number') {                   // selective validation by attribute
-                        return $value;                                             // return formatted value if desired
-                    } 
-                    elseif ($attribute === 'nok_email') {                              // selective validation by attribute
-                        return $value;                                             // return formatted value if desired
-                    }                
-                    return '';                                                     // empty is same as $value
+                    // $value = $model->$attribute;                                   // your attribute value
+                    // if ($attribute === 'nok_name') {                                // selective validation by attribute
+                    //     return $value;                                             // return formatted value if desired
+                    // } 
+                    // elseif ($attribute === 'nok_relationship') {                   
+                    //     return $value;                                             
+                    // } 
+                    // elseif ($attribute === 'nok_phone_number') {                   
+                    //     return $value;                                             
+                    // } 
+                    // elseif ($attribute === 'nok_email') {                          
+                    //     return $value;                                             
+                    // }                
+                    // return '';                                                     // empty is same as $value
                 },                  
-                'outputMessage' => function($model, $attribute, $key, $index) {
-                    return '';                                                    // any custom error after model save
-                },
+                // 'outputMessage' => function($model, $attribute, $key, $index) {
+                //     return '';                                                    // any custom error after model save
+                // },
             ]
         ]);
     }
@@ -291,42 +292,42 @@ class SiteController extends Controller
         $model = new Patient_information();
         $modelNOK = new Patient_next_of_kin();
 
-        if(Yii::$app->request->post('hasEditable')){
-            $nok_uid = Yii::$app->request->post('editableKey');
-            $model = Patient_next_of_kin::findOne($nok_uid);
+        // if(Yii::$app->request->post('hasEditable')){
+        //     $nok_uid = Yii::$app->request->post('editableKey');
+        //     $model = Patient_next_of_kin::findOne($nok_uid);
 
-            $out = Json::encode(['output'=>'','message'=>'']);
-            $post = [];
-            $posted = current($_POST['Patient_next_of_kin']);
-            $post['Patient_next_of_kin'] = $posted;
+        //     $out = Json::encode(['output'=>'','message'=>'']);
+        //     $post = [];
+        //     $posted = current($_POST['Patient_next_of_kin']);
+        //     $post['Patient_next_of_kin'] = $posted;
 
-            if($model->load($post)){
-                $model -> save();
-                $model = Patient_next_of_kin::findOne($nok_uid);
-            }
+        //     if($model->load($post)){
+        //         $model -> save();
+        //         $model = Patient_next_of_kin::findOne($nok_uid);
+        //     }
             
-            // if(isset($posted['nok_name'])){
-            //     $output = $model->nok_name;
-            // }
+        //     if(isset($posted['nok_name'])){
+        //         $output = $model->nok_name;
+        //     }
 
-            // if(isset($posted['nok_relationship'])){
-            //     $output = $model->nok_relationship;
-            // }
+        //     if(isset($posted['nok_relationship'])){
+        //         $output = $model->nok_relationship;
+        //     }
 
-            // if(isset($posted['nok_phone_number'])){
-            //     $output = $model->nok_phone_number;
-            // }
+        //     if(isset($posted['nok_phone_number'])){
+        //         $output = $model->nok_phone_number;
+        //     }
 
-            // if(isset($posted['nok_email'])){
-            //     $output = $model->nok_email;
-            // }
+        //     if(isset($posted['nok_email'])){
+        //         $output = $model->nok_email;
+        //     }
             
 
-            // $out = Json::encode(['output'=>$output, 'message'=>'']);
+        //     $out = Json::encode(['output'=>$output, 'message'=>'']);
 
-            echo $out;
-            return;
-        }
+        //     echo $out;
+        //     return;
+        // }
 
         
         //Fucntions of search patient in sidebar

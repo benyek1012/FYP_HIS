@@ -135,80 +135,18 @@ else
                     'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
                     'pagination'=>['pageSize'=>5],
                     ]);
+                echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider]);
             ?>
-                <!-- This is the gridview that shows patient admission summary-->
-                <?= kartik\grid\GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    // 'filterModel' => $searchModel,
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+            <?php 
+            } 
+            ?>
 
-                        [
-                            'class' => '\kartik\grid\EditableColumn',
-                            'attribute' => 'nok_name',
-                            'editableOptions' =>  [                
-                                'asPopover' => false,
-                                'formOptions' => ['action' => ['/site/nok']],
-                            ]
-                        ],
-
-                        [
-                            'class' => '\kartik\grid\EditableColumn',
-                            'attribute' => 'nok_relationship',
-                            'editableOptions' => [
-                                'size' => 'md',
-                                'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                                'asPopover' => false,
-                                'data' => [
-                                    'father'=>'Father',
-                                    'monther'=>'Monther',
-                                    'couple' => 'Couple',
-                                    'brother' => 'Brother',
-                                    'sister' => 'Sister',
-                                    'other' => 'Other'
-                                ],
-                                'formOptions' => ['action' => ['/site/nok']],
-                            ],
-                        ],
-
-                        [
-                            'class' => '\kartik\grid\EditableColumn',
-                            'attribute' => 'nok_phone_number',
-                            'editableOptions' => [
-                                'asPopover' => false,
-                                'formOptions' => ['action' => ['/site/nok']],
-                                ]
-                        ],
-
-                        [
-                            'class' => '\kartik\grid\EditableColumn',
-                            'attribute' => 'nok_email',
-                            'editableOptions' => function ($model) {
-                                return [                
-                                    'asPopover' => false,
-                                    'formOptions' => ['action' => ['/site/nok']],
-                                ];
-                            }
-                        ],
-
-                        [
-                            'class' => ActionColumn::className(),
-                            'template' => '{view}',
-                            'urlCreator' => function ($action,  $model) {
-                                return Url::toRoute(['patient_next_of_kin/'.$action.'?nok_uid='.$model['nok_uid']]);
-                            }
-                        ],
-                        
-                    ],
-                ]); ?>
-                <?php } ?>
-
-                <div class="form-group">
-                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                        onclick="showForm();">Add Waris</button>
-                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                        onclick="hiddenForm();">Cancel</button>
-                </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                    onclick="showForm();">Add Waris</button>
+                <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                    onclick="hiddenForm();">Cancel</button>
+            </div>
 
                 <?php
             if(!empty($model)){
