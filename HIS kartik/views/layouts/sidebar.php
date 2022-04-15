@@ -139,19 +139,19 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel"> </div>
 
-        <?php
+<?php
+         if(!empty($info) && !empty(Yii::$app->request->get('rn'))){
         echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
-                ['label' => 'R/N Number', 'header' => true],
-                ['label' => 'Deposit', 'iconClass' => ''],
-                ['label' => 'Treatment Details', 'iconClass' => ''],
-                ['label' => 'Bill', 'iconClass' => ''],
+                ['label' => Yii::$app->request->get('rn'), 'header' => true],
+                ['label' => 'Bill', 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
                 ['label' => 'Payments', 'iconClass' => ''],
                       ]
-                ])
+            ]);
 ?>
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel"> <br></div>
+        <div class="user-panel"> </div>
+<?php        } ?>
     </nav>
     <!-- /.sidebar-menu -->
 

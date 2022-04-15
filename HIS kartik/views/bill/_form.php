@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use GpsLab\Component\Base64UID\Base64UID;
+use hail812\adminlte3\widgets\FlashAlert;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
 /* @var $form yii\widgets\ActiveForm */
@@ -22,13 +24,12 @@ use GpsLab\Component\Base64UID\Base64UID;
     $billuid = Base64UID::generate(32);
     $generationresponsibleuid = Base64UID::generate(32);
     $billprintresponsibleuid = Base64UID::generate(32);
-    $rn = date('Y')."/".substr(number_format(time() * rand(),0,'',''),0,6);
 
     ?>
 
-    <?= $form->field($model, 'bill_uid')->textInput(['readonly' => true, 'maxlength' => true,'value' => $billuid]) ?>
+    <?= $form->field($model, 'bill_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billuid])->label(false) ?>
 
-    <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => $rn]) ?>
+    <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')]) ?>
 
     <?= $form->field($model, 'status_code')->textInput(['maxlength' => true]) ?>
 
