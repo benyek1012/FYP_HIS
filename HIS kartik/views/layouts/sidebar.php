@@ -4,31 +4,47 @@ use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_information;
-use yii\helpers\ArrayHelper;
 
-$model = new Patient_information();
-
-$pid = Yii::$app->request->get('pid');
-$rn = Yii::$app->request->get('rn');
-$id = Yii::$app->request->get('id');
-
-
-if(isset($pid) || isset($rn)||isset($id))
+function getInfo()
 {
-    if(isset($pid)) $info = Patient_information::findOne(['patient_uid' => $pid]);
-    else if(isset($id)) $info = Patient_information::findOne(['patient_uid' => $id]);
-    else $info = Patient_admission::findOne(['rn' => $rn]);
-    
-    if(isset($rn))
-    {
-        $info = Patient_information::findOne(['patient_uid' => $info->patient_uid]);
-        // echo '<pre>';
-        // var_dump($info);
-        // exit();
-        // echo '</pre>';
+    if(!empty(Yii::$app->request->get('id'))){
+        $info = Patient_information::findOne(['patient_uid' => Yii::$app->request->get('id')]);
     }
+    else if(!empty(Yii::$app->request->get('rn')))
+    {
+        $info = Patient_admission::findOne(['rn' => Yii::$app->request->get('rn')]);
+        $info = Patient_information::findOne(['patient_uid' => $info->patient_uid]);
+    }
+    
+    return $info;
 }
 
+function items()
+{
+    $info = getInfo();
+
+    $rows = (new \yii\db\Query())
+    ->select(['rn'])
+    ->from('patient_admission')
+    ->where(['patient_uid' => $info->patient_uid])
+    ->all();
+
+    $items = [];
+
+    foreach ($rows as $row) {
+        array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
+    }
+    array_push($items,
+        ['label' => 'New R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid,'type' => 'Normal']],
+        ['label' => 'New Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid, 'type' => 'Labor']]
+    );
+    array_push($items,['label' => 'Print Transaction Records', 'iconClass' => '']);
+    
+    return $items;
+}
+
+if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
+    $info = getInfo();
 
 ?>
 
@@ -68,7 +84,9 @@ if(isset($pid) || isset($rn)||isset($id))
     ?>
     <?php */ ?>
     <div class="form-inline mt-3 d-flex">
-        <?php $form = ActiveForm::begin([
+        <?php 
+        $model = new Patient_information();
+        $form = ActiveForm::begin([
         'action' => ['site/index'],
         'enableClientValidation'=> false,
         'options' => [
@@ -85,102 +103,56 @@ if(isset($pid) || isset($rn)||isset($id))
         <?php ActiveForm::end(); ?>
     </div>
 
-
+    <div class="user-panel"><br /> </div>
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <?php
-        if(!empty($info)){
+    if(!empty($info)){
+         echo \hail812\adminlte\widgets\Menu::widget([
+            'items' => [['label' => $info->name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
+])
 ?>
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
-            <p class="text-white"><?php echo $info->name;?></p>
                 <p class="text-white"><?php echo $info->nric;?></p>
                 <p class="text-light">Balance Unclaimed | Owed</p>
             </div>
         </div>
         <?php
-         }else{
+    }else
+    {
 ?>
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
-                <p class="text-white">Patient IC</p>
                 <p class="text-white">Patient Name</p>
+                <p class="text-white">Patient IC</p>
                 <p class="text-light">Balance Unclaimed | Owed</p>
             </div>
         </div>
         <?php
-         }
-         if(!empty($info)){
-            function items()
-            {
-                $ic = ArrayHelper::getValue(Yii::$app->request->post(), 'Patient_informationSearch.nric');
-                $info = Patient_information::findOne(['nric' => $ic]);
-                $rn = Yii::$app->request->get('rn');
-                $id = Yii::$app->request->get('id');
-                if(isset($pid) || isset($rn)||isset($id))
-                {
-                    if(isset($pid)) $info = Patient_information::findOne(['patient_uid' => $pid]);
-                    else if(isset($id)) $info = Patient_information::findOne(['patient_uid' => $id]);
-                    else $info = Patient_admission::findOne(['rn' => $rn]);
-                    
-                    if(isset($rn))
-                    {
-                        $info = Patient_information::findOne(['patient_uid' => $info->patient_uid]);
-                        // echo '<pre>';
-                        // var_dump($info);
-                        // exit();
-                        // echo '</pre>';
-                    }
-                
-                }
-
-                $rows = (new \yii\db\Query())
-                ->select(['rn'])
-                ->from('patient_admission')
-                ->where(['patient_uid' => $info->patient_uid])
-                ->all();
-                $items = [];
-                foreach ($rows as $row) {
-                    array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
-                }
-               // array_push($items, ['label' => 'New R/N | Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid]]);
-               array_push($items,['label' => 'New R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid,'type' => 'Normal']],
-                                 ['label' => 'New Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid, 'type' => 'Labor']]
-                        );
-                
-               
-             
-               array_push($items,['label' => 'Print Transaction Records', 'iconClass' => '']);
-                
-                return $items;
-            }
-
-                 echo \hail812\adminlte\widgets\Menu::widget([
-                    'items' => items()]);
-            }
-                   
-             ?>
+    }
+    if(!empty($info))
+        echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+?>
 
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel"> </div>
 
         <?php
-                             echo \hail812\adminlte\widgets\Menu::widget([
-                                'items' => [
-
-                         ['label' => 'R/N Number', 'header' => true],
-                    ['label' => 'Deposit', 'iconClass' => ''],
-                    ['label' => 'Treatment Details', 'iconClass' => ''],
-                    ['label' => 'Bill', 'iconClass' => ''],
-                    ['label' => 'Payments', 'iconClass' => ''],
+        echo \hail812\adminlte\widgets\Menu::widget([
+            'items' => [
+                ['label' => 'R/N Number', 'header' => true],
+                ['label' => 'Deposit', 'iconClass' => ''],
+                ['label' => 'Treatment Details', 'iconClass' => ''],
+                ['label' => 'Bill', 'iconClass' => ''],
+                ['label' => 'Payments', 'iconClass' => ''],
                       ]
-                 ])
-                ?>
+                ])
+?>
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel"> <br></div>
     </nav>
     <!-- /.sidebar-menu -->
-
 
     </div>
     <!-- /.sidebar -->

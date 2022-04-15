@@ -12,9 +12,7 @@ use app\models\ContactForm;
 use app\models\Patient_information;
 use app\controllers\Patient_informationController;
 use app\models\Patient_next_of_kin;
-use app\models\Patient_next_of_kinSearch;
 use yii\helpers\Json;
-use yii\data\ActiveDataProvider;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 

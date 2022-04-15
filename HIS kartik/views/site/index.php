@@ -1,14 +1,9 @@
 <?php
 
-use app\controllers\Patient_informationController;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
-use yii\grid\GridView;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
 use yii\data\ActiveDataProvider;
-use kartik\editable\Editable;
 
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
@@ -20,7 +15,6 @@ else
     $session->set('patient_id', Yii::$app->request->get('id'));
     $session->set('patient_name', $model->name);
    
-
     $this->title = $model->name;
     $this->params['breadcrumbs'][] = ['label' => $model->name];
 }

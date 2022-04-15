@@ -9,7 +9,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use GpsLab\Component\Base64UID\Base64UID;
 
-
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
  */
@@ -61,10 +60,40 @@ class Patient_informationController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $flag = true;
+        $rowIC = (new \yii\db\Query())
+        ->select(['nric'])
+        ->from('patient_information')
+        ->where(['patient_uid' => $id])
+        ->one();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-           return Yii::$app->getResponse()->redirect(array('/site/index', 
-            'id' => $model->patient_uid));            
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $rows = (new \yii\db\Query())
+            ->select(['nric'])
+            ->from('patient_information')
+            ->all();
+            foreach ($rows as $row) {
+                // Check IC is existed in database, and allow empty IC input and allow unchanged IC could did update
+                if($model->nric == $row['nric'] && $model->nric != "" && $model->nric != $rowIC['nric']){
+                    $flag = false;
+                    break;
+                }
+            }
+        
+            if($flag == true){
+                if($model->save())
+                {
+                    return Yii::$app->getResponse()->redirect(array('/site/index', 
+                    'id' => $model->patient_uid));           
+                } 
+            }
+            else{
+                echo '<script type="text/javascript">',
+                'setTimeout(function(){',
+                    'duplicateIC('.$model->nric.');',
+                    '},100);',
+                '</script>';
+            }
         }
 
         return $this->render('/site/index', [
@@ -125,5 +154,10 @@ function confirmAction(ic) {
     } else {
         window.location.href = '/site/index';
     }
+}
+
+// The function below will start the confirmation dialog
+function duplicateIC(ic) {
+   alert('IC ' + ic + ' is existed in database!');
 }
 </script>
