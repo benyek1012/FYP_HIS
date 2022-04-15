@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Patient_information;
 use app\controllers\Patient_informationController;
+use app\models\Patient_admission;
 use app\models\Patient_next_of_kin;
 use yii\helpers\Json;
 use kartik\grid\EditableColumnAction;
@@ -329,14 +330,27 @@ class SiteController extends Controller
         // }
 
         
-        //Fucntions of search patient in sidebar
+        //Functions of search patient in sidebar
         if ($this->request->isPost && $model->load($this->request->post()))
         {
-            $model_founded = Patient_informationController::findModel_nric($model->nric);
-            if(!empty($model_founded))
+            $globalSearch = $model->nric;
+            $model_admission_founded = Patient_admissionController::findModel($globalSearch);
+            if(!empty( $model_admission_founded)){
+                // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                //  'rn' => $model_admission_founded->rn));
                 return Yii::$app->getResponse()->redirect(array('/site/index', 
-                    'id' => $model_founded->patient_uid));
-        } else {
+                'id' => $model_admission_founded->patient_uid));
+            }
+            else 
+            {
+                $model_founded = Patient_informationController::findModel_nric($globalSearch);
+                if(!empty($model_founded))
+                    return Yii::$app->getResponse()->redirect(array('/site/index', 
+                        'id' => $model_founded->patient_uid));
+            }
+        } 
+        else {
+
             $model->loadDefaultValues();
         }
 

@@ -132,7 +132,7 @@ class Patient_admissionController extends Controller
         if (($model = Patient_admission::findOne(['rn' => $rn])) !== null) {
             return $model;
         }
-
+        else return 0;
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

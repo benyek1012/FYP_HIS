@@ -95,7 +95,7 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
     ]); ?>
 
         <?= $form->field($model , 'nric')->textInput(['autocomplete' =>'off', 'class' => 'form-control form-control-sidebar',
-                    'style' => 'text-color: white !important;','placeholder'=>"Search IC"])->label(false)?>
+                    'style' => 'text-color: white !important;','placeholder'=>"Search IC/RN"])->label(false)?>
 
         <div class="input-group-append">
             <?= Html::submitButton('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar']) ?>
@@ -107,7 +107,8 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <?php
-    if(!empty($info)){
+    if(!empty($info) && $info->name != ""){
+
          echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [['label' => $info->name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
 ])
