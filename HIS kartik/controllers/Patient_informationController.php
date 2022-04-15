@@ -125,7 +125,7 @@ class Patient_informationController extends Controller
             echo '<script type="text/javascript">',
             'setTimeout(function(){',
                  'confirmAction('.$patient_nric.');',
-                '},100);',
+                '},200);',
             '</script>';
         }
         else{
@@ -136,7 +136,7 @@ class Patient_informationController extends Controller
                 echo '<script type="text/javascript">',
                 'setTimeout(function(){',
                     'confirmAction('.$patient_nric.');',
-                    '},100);',
+                    '},200);',
                 '</script>';
             }
         }
@@ -144,8 +144,8 @@ class Patient_informationController extends Controller
 }
 ?>
 
-
 <script>
+    
 // The function below will start the confirmation dialog
 function confirmAction(ic) {
     var answer = confirm("Are you sure to create patient information?");
