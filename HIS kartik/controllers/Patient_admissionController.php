@@ -73,8 +73,8 @@ class Patient_admissionController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->render('/site/index', [
-                    'model' => Patient_informationController::findModel($model->patient_uid)]);  
+                return Yii::$app->getResponse()->redirect(array('/site/index', 
+                'id' => $model->patient_uid));          
             }
         } else {
             $model->loadDefaultValues();

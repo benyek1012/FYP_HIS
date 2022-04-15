@@ -336,10 +336,10 @@ class SiteController extends Controller
             $globalSearch = $model->nric;
             $model_admission_founded = Patient_admissionController::findModel($globalSearch);
             if(!empty( $model_admission_founded)){
-                // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                //  'rn' => $model_admission_founded->rn));
-                return Yii::$app->getResponse()->redirect(array('/site/index', 
-                'id' => $model_admission_founded->patient_uid));
+                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                 'rn' => $model_admission_founded->rn));
+                // return Yii::$app->getResponse()->redirect(array('/site/index', 
+                // 'id' => $model_admission_founded->patient_uid));
             }
             else 
             {

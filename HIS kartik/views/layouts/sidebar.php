@@ -107,15 +107,16 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <?php
-    if(!empty($info) && $info->name != ""){
-
+    if(!empty($info)){
+        if($info->name == "") $temp_name = "User";
+        else $temp_name = $info->name;
          echo \hail812\adminlte\widgets\Menu::widget([
-            'items' => [['label' => $info->name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
+            'items' => [['label' => $temp_name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
 ])
 ?>
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
-                <p class="text-white"><?php echo $info->nric;?></p>
+                <p class="text-white"><?php echo "NRIC : ".$info->nric;?></p>
                 <p class="text-light">Balance Unclaimed | Owed</p>
             </div>
         </div>

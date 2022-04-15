@@ -13,10 +13,13 @@ else
 {
     $session = Yii::$app->session;
     $session->set('patient_id', Yii::$app->request->get('id'));
-    $session->set('patient_name', $model->name);
+
+    if($model->name != "")
+        $session->set('patient_name', $model->name);
+    else $session->set('patient_name', "User");
    
-    $this->title = $model->name;
-    $this->params['breadcrumbs'][] = ['label' => $model->name];
+    $this->title = $session['patient_name'];
+    $this->params['breadcrumbs'][] = ['label' => $session['patient_name']];
 }
 ?>
 
@@ -40,7 +43,7 @@ else
         {
             $dataProvider = new ActiveDataProvider([
                 'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid]),
-                'pagination'=>['pageSize'=>5],
+                'pagination'=>['pageSize'=>3],
                 ]);
         }
 
