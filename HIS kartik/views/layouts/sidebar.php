@@ -4,6 +4,7 @@ use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_information;
+use app\models\Receipt;
 
 function getInfo()
 {
@@ -14,6 +15,12 @@ function getInfo()
     {
         $info = Patient_admission::findOne(['rn' => Yii::$app->request->get('rn')]);
         $info = Patient_information::findOne(['patient_uid' => $info->patient_uid]);
+    }
+    else if(!empty(Yii::$app->request->get('receipt_uid')))
+    {
+        $info = Receipt::findOne(['receipt_uid'=> Yii::$app->request->get('receipt_uid')]);
+        $info = Patient_admission::findOne(['rn'=> $info->rn]);
+        $info = Patient_information::findOne(['patient_uid'=> $info->patient_uid]);
     }
     
     return $info;
@@ -43,7 +50,31 @@ function items()
     return $items;
 }
 
-if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
+function items_receipt()
+{
+    if(!empty(Yii::$app->request->get('rn'))) 
+        $rows = (new \yii\db\Query())
+        ->select(['*'])
+        ->from('receipt')
+        ->where(['rn' => Yii::$app->request->get('rn')])
+        ->all();
+    else
+        $rows = (new \yii\db\Query())
+        ->select(['*'])
+        ->from('receipt')
+        ->where(['receipt_uid' => Yii::$app->request->get('receipt_uid')])
+        ->all();
+
+    $items = [];
+
+    foreach ($rows as $row) {
+        array_push($items, ['label' => '' .  $row['rn'] .' receipt','iconClass' => '', 'url' => ['receipt/update', 'receipt_uid' =>  $row['receipt_uid']]]);
+    }
+    
+    return $items;
+}
+
+if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !empty(Yii::$app->request->get('receipt_uid'))))
     $info = getInfo();
 
 ?>
@@ -141,18 +172,26 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id')))
         <div class="user-panel"> </div>
 
 <?php
-         if(!empty($info) && !empty(Yii::$app->request->get('rn'))){
+    if(!empty($info) && !empty(Yii::$app->request->get('rn'))){
         echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
                 ['label' => Yii::$app->request->get('rn'), 'header' => true],
                 ['label' => 'Bill', 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
-                ['label' => 'Payments', 'iconClass' => ''],
+                ['label' => 'Payments', 'iconClass' => '', 'url' => ['receipt/create', 'rn' =>  Yii::$app->request->get('rn')]],
                       ]
             ]);
+    }
 ?>
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel"> </div>
-<?php        } ?>
+<?php       
+    if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid')))
+        echo \hail812\adminlte\widgets\Menu::widget(['items' => items_receipt()]);
+
+         ?>
+         <!-- Sidebar user panel (optional) -->
+         <div class="user-panel"> </div>
+
     </nav>
     <!-- /.sidebar-menu -->
 

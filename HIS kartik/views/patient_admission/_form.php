@@ -37,9 +37,6 @@ use kartik\datetime\DateTimePicker;
 
     <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('id')])->label(false); ?>
     <div class="row">
-    <div class="col-sm-6">
-            <?= $form->field($model, 'type')->textInput(['readonly' => true,'maxlength' => true, 'value' => Yii::$app->request->get('type')]) ?>
-        </div>
         <div class="col-sm-6">
             <?php if(Yii::$app->request->get('id')){ ?>
             <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => $rn]) ?>
@@ -47,6 +44,10 @@ use kartik\datetime\DateTimePicker;
             <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')]) ?>
             <?php } ?>
         </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'type')->hiddenInput(['readonly' => true,'maxlength' => true, 'value' => Yii::$app->request->get('type')])->label(false) ?>
+        </div>
+        
         <div class="col-sm-6">
             <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(), 
                 ['options' => ['placeholder' => 'Enter the entry date and time ...'],

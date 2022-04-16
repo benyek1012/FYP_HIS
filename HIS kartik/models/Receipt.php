@@ -40,8 +40,8 @@ class Receipt extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_sum', 'receipt_content_date_paid', 'receipt_content_payer_name', 'receipt_content_payment_method', 'receipt_responsible'], 'required'],
-            [['receipt_content_sum'], 'number'],
+            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_date_paid', 'receipt_content_payment_method', 'receipt_responsible', 'receipt_serial_number'], 'required'],
+        //    [['receipt_content_sum'], 'number'],
             [['receipt_content_date_paid'], 'safe'],
             [['receipt_uid', 'rn', 'receipt_responsible'], 'string', 'max' => 64],
             [['receipt_type', 'receipt_content_bill_id', 'receipt_content_payment_method', 'card_no', 'cheque_number', 'receipt_serial_number'], 'string', 'max' => 20],
@@ -61,7 +61,7 @@ class Receipt extends \yii\db\ActiveRecord
             'receipt_uid' => 'Receipt Uid',
             'rn' => 'Rn',
             'receipt_type' => 'Receipt Type',
-            'receipt_content_sum' => 'Receipt Content Sum',
+            'receipt_content_sum' => 'Receipt Content Summary',
             'receipt_content_bill_id' => 'Receipt Content Bill ID',
             'receipt_content_description' => 'Receipt Content Description',
             'receipt_content_date_paid' => 'Receipt Content Date Paid',

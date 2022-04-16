@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use GpsLab\Component\Base64UID\Base64UID;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
@@ -10,17 +10,29 @@ use yii\widgets\ActiveForm;
 
 <div class="receipt-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php  
+        $receipt = array(
+            'deposit'=>'Deposit',
+            'bill'=>'Bill',
+        );
+    
+        $form = kartik\form\ActiveForm::begin([
+        'id' => 'patient-information-form',
+        'type' => 'vertical',
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback']],
+    ]);      ?>
 
-    <?= $form->field($model, 'receipt_uid')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
-    <?= $form->field($model, 'rn')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
 
-    <?= $form->field($model, 'receipt_type')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt','maxlength' => true]) ?>
 
     <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
+    
+    <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'receipt_content_description')->textInput(['maxlength' => true]) ?>
 
@@ -42,6 +54,7 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php kartik\form\ActiveForm::end(); ?>
+
 
 </div>

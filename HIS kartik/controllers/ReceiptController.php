@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Receipt;
 use app\models\ReceiptSearch;
 use yii\web\Controller;
@@ -71,9 +72,11 @@ class ReceiptController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'receipt_uid' => $model->receipt_uid]);
+                return Yii::$app->getResponse()->redirect(array('/receipt/update', 
+                'receipt_uid' => $model->receipt_uid));   
             }
         } else {
+            $model->receipt_content_date_paid = date("Y-m-d");   
             $model->loadDefaultValues();
         }
 
@@ -94,7 +97,8 @@ class ReceiptController extends Controller
         $model = $this->findModel($receipt_uid);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'receipt_uid' => $model->receipt_uid]);
+            return Yii::$app->getResponse()->redirect(array('/receipt/update', 
+            'receipt_uid' => $model->receipt_uid));   
         }
 
         return $this->render('update', [

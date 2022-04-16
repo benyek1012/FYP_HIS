@@ -1,18 +1,23 @@
 <?php
 
 use yii\helpers\Html;
+use app\models\Patient_information;
+use app\models\Patient_admission;
+use app\models\Receipt;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
 
-$this->title = 'Update Receipt: ' . $model->receipt_uid;
-$this->params['breadcrumbs'][] = ['label' => 'Receipts', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->receipt_uid, 'url' => ['view', 'receipt_uid' => $model->receipt_uid]];
-$this->params['breadcrumbs'][] = 'Update';
+
+$temp2 = Patient_admission::findOne(['rn'=> $model->rn]);
+$temp3 = Patient_information::findOne(['patient_uid'=> $temp2->patient_uid]);
+
+$this->title = 'Update Receipt: ' . $model->rn;
+$this->params['breadcrumbs'][] = ['label' => $temp3->name, 'url' => ['site/index', 'id' => $temp3->patient_uid]];
+//$this->params['breadcrumbs'][] = ['label' => 'Receipts', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Receipt Update';
 ?>
 <div class="receipt-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

@@ -120,26 +120,32 @@ class Patient_informationController extends Controller
 
     public function findModel_nric($patient_nric)
     {
-        if($patient_nric == '')
+        // $rowIC = (new \yii\db\Query())
+        // ->select(['nric'])
+        // ->from('patient_information')
+        // ->where(['nric' => $patient_nric])
+        // ->one();
+
+        // echo '<pre>';
+        // var_dump($rowIC['nric']);
+        // exit();
+        // echo '</pre>';
+
+        $flag = false;
+        if($patient_nric == '') $flag = true;
+        else
         {
+            if ((($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) ) 
+                return $model;
+            else $flag = true;
+        }
+              
+        if($flag == true)  
             echo '<script type="text/javascript">',
             'setTimeout(function(){',
-                 'confirmAction('.$patient_nric.');',
+                'confirmAction('.$patient_nric.');',
                 '},200);',
             '</script>';
-        }
-        else{
-            if ((($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) ) {
-                return $model;
-            }
-            else{
-                echo '<script type="text/javascript">',
-                'setTimeout(function(){',
-                    'confirmAction('.$patient_nric.');',
-                    '},200);',
-                '</script>';
-            }
-        }
     }
 
 }

@@ -1,17 +1,15 @@
 <?php
 
-use yii\helpers\Html;
+use app\models\Patient_information;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
 
-$session = Yii::$app->session;
-$temp_id = $session['patient_id'];
-$temp_name = $session['patient_name'];
+$temp2 = Patient_information::findOne(['patient_uid'=> Yii::$app->request->get('id')]);
 
-$this->title = 'Create Patient Admission';
-$this->params['breadcrumbs'][] = ['label' => $temp_name, 'url' => ['site/index', 'id' => $temp_id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Create '.Yii::$app->request->get('type').' Patient Admission';
+$this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+$this->params['breadcrumbs'][] = 'Create';
 ?>
 <div class="patient-admission-create">
 

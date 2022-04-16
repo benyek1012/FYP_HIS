@@ -1,9 +1,6 @@
 <?php
 
-use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
-
-
 use GpsLab\Component\Base64UID\Base64UID;
 
 /* @var $this yii\web\View */

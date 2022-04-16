@@ -73,17 +73,20 @@ class Patient_admissionController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return Yii::$app->getResponse()->redirect(array('/site/index', 
-                'id' => $model->patient_uid));          
+                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                'rn' => $model->rn));          
             }
         } else {
+         //   $model->entry_datetime =  date("d-m-Y H:i:s");
             $model->loadDefaultValues();
         }
-
+        
+        
         return $this->render('create', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * Updates an existing Patient_admission model.
@@ -97,8 +100,8 @@ class Patient_admissionController extends Controller
         $model = $this->findModel($rn);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return Yii::$app->getResponse()->redirect(array('/site/index', 
-            'id' => $model->patient_uid));          
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                'rn' => $model->rn));      
         }
 
         return $this->render('update', [
