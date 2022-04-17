@@ -40,7 +40,7 @@ class Patient_admission extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reminder_given'], 'required'],
+            [['rn', 'entry_datetime', 'patient_uid', 'type'], 'required'],
             [['entry_datetime'], 'safe'],
             [['medigal_legal_code', 'reminder_given'], 'integer'],
             [['rn'], 'string', 'max' => 11],

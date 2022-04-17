@@ -19,30 +19,12 @@ use kartik\datetime\DateTimePicker;
             ],
         ]); 
 
-        $rows = (new \yii\db\Query())
-        ->select(['rn'])
-        ->from('patient_admission')
-        ->where(['type' => Yii::$app->request->get('type')])
-        ->all();
-        $SID = "1" + count($rows);
-
-        if(Yii::$app->request->get('type') == 'Normal'){
-            $rn = date('Y')."/".sprintf('%06d', $SID);
-        }
-        else{
-            $rn = date('Y')."/9".sprintf('%05d', $SID);
-        }
-
     ?>
 
     <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('id')])->label(false); ?>
     <div class="row">
         <div class="col-sm-6">
-            <?php if(Yii::$app->request->get('id')){ ?>
-            <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => $rn]) ?>
-            <?php }else{ ?>
-            <?= $form->field($model, 'rn')->textInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')]) ?>
-            <?php } ?>
+            <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'type')->hiddenInput(['readonly' => true,'maxlength' => true, 'value' => Yii::$app->request->get('type')])->label(false) ?>

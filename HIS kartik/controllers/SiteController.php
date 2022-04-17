@@ -95,6 +95,133 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $this->InitSQL();
+
+        $model_Patient = new Patient_information();
+        $model_NOK = new Patient_next_of_kin();
+
+        if ($this->request->isPost)
+        {
+            if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
+            else $model_Patient->loadDefaultValues();
+            
+            if ($model_NOK->load($this->request->post())) $this->actionNOK($model_NOK);
+            else $model_NOK->loadDefaultValues();
+        }
+
+        if(!empty(Yii::$app->request->get('type'))) Patient_admissionController::actionCreate();
+        
+        return $this->render('index');
+    }
+    /**
+     * Login action.
+     *
+     * @return Response|string
+     */
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->goBack();
+        }
+
+        $model->password = '';
+        return $this->render('login', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Logout action.
+     *
+     * @return Response
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
+    }
+
+
+    //Functions of search patient in sidebar
+    public function actionSidebar($model)
+    {
+        $globalSearch = $model->nric;
+        $model_admission_founded = Patient_admissionController::findModel($globalSearch);
+        if(!empty( $model_admission_founded)){
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                'rn' => $model_admission_founded->rn));
+            // return Yii::$app->getResponse()->redirect(array('/site/index', 
+            // 'id' => $model_admission_founded->patient_uid));
+        }
+        else 
+        {
+            $model_founded = Patient_informationController::findModel_nric($globalSearch);
+            if(!empty($model_founded))
+                return Yii::$app->getResponse()->redirect(array('/site/index', 
+                    'id' => $model_founded->patient_uid));
+        }
+    }
+
+    /**
+     * Displays about page.
+     *
+     * @return string
+     */
+    public function actionNOK($modelNOK)
+    {
+        // if(Yii::$app->request->post('hasEditable')){
+        //     $nok_uid = Yii::$app->request->post('editableKey');
+        //     $model = Patient_next_of_kin::findOne($nok_uid);
+
+        //     $out = Json::encode(['output'=>'','message'=>'']);
+        //     $post = [];
+        //     $posted = current($_POST['Patient_next_of_kin']);
+        //     $post['Patient_next_of_kin'] = $posted;
+
+        //     if($model->load($post)){
+        //         $model -> save();
+        //         $model = Patient_next_of_kin::findOne($nok_uid);
+        //     }
+            
+        //     if(isset($posted['nok_name'])){
+        //         $output = $model->nok_name;
+        //     }
+
+        //     if(isset($posted['nok_relationship'])){
+        //         $output = $model->nok_relationship;
+        //     }
+
+        //     if(isset($posted['nok_phone_number'])){
+        //         $output = $model->nok_phone_number;
+        //     }
+
+        //     if(isset($posted['nok_email'])){
+        //         $output = $model->nok_email;
+        //     }
+            
+
+        //     $out = Json::encode(['output'=>$output, 'message'=>'']);
+
+        //     echo $out;
+        //     return;
+        // }
+
+         //Fucntions of add NOK in sidebar
+        if ($modelNOK->save()) {
+            $model_founded = Patient_informationController::findModel($modelNOK->patient_uid);
+            if(!empty($model_founded))
+                return Yii::$app->getResponse()->redirect(array('/site/index', 
+                    'id' => $model_founded->patient_uid));
+        }
+    }
+
+    public function InitSQL(){
         $Tables = array(
             "CREATE TABLE IF NOT EXISTS `user` (
                 `user_uid` VARCHAR(64) NOT NULL,
@@ -288,149 +415,5 @@ class SiteController extends Controller
             $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
             $sqlCommand->execute();    
         }
-
-        $model = new Patient_information();
-        $modelNOK = new Patient_next_of_kin();
-
-        // if(Yii::$app->request->post('hasEditable')){
-        //     $nok_uid = Yii::$app->request->post('editableKey');
-        //     $model = Patient_next_of_kin::findOne($nok_uid);
-
-        //     $out = Json::encode(['output'=>'','message'=>'']);
-        //     $post = [];
-        //     $posted = current($_POST['Patient_next_of_kin']);
-        //     $post['Patient_next_of_kin'] = $posted;
-
-        //     if($model->load($post)){
-        //         $model -> save();
-        //         $model = Patient_next_of_kin::findOne($nok_uid);
-        //     }
-            
-        //     if(isset($posted['nok_name'])){
-        //         $output = $model->nok_name;
-        //     }
-
-        //     if(isset($posted['nok_relationship'])){
-        //         $output = $model->nok_relationship;
-        //     }
-
-        //     if(isset($posted['nok_phone_number'])){
-        //         $output = $model->nok_phone_number;
-        //     }
-
-        //     if(isset($posted['nok_email'])){
-        //         $output = $model->nok_email;
-        //     }
-            
-
-        //     $out = Json::encode(['output'=>$output, 'message'=>'']);
-
-        //     echo $out;
-        //     return;
-        // }
-
-        
-        //Functions of search patient in sidebar
-        if ($this->request->isPost && $model->load($this->request->post()))
-        {
-            $globalSearch = $model->nric;
-            $model_admission_founded = Patient_admissionController::findModel($globalSearch);
-            if(!empty( $model_admission_founded)){
-                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                 'rn' => $model_admission_founded->rn));
-                // return Yii::$app->getResponse()->redirect(array('/site/index', 
-                // 'id' => $model_admission_founded->patient_uid));
-            }
-            else 
-            {
-                $model_founded = Patient_informationController::findModel_nric($globalSearch);
-                if(!empty($model_founded))
-                    return Yii::$app->getResponse()->redirect(array('/site/index', 
-                        'id' => $model_founded->patient_uid));
-            }
-        } 
-        else {
-
-            $model->loadDefaultValues();
-        }
-
-         //Fucntions of add NOK in sidebar
-        if ($this->request->isPost) {
-            if ($modelNOK->load($this->request->post()) && $modelNOK->save()) {
-                $model_founded = Patient_informationController::findModel($modelNOK->patient_uid);
-                if(!empty($model_founded))
-                    return Yii::$app->getResponse()->redirect(array('/site/index', 
-                        'id' => $model_founded->patient_uid));
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        // return $this->render('create', [
-        //     'model' => $model,
-        // ]);
-
-        return $this->render('index');
-    }
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return Response
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 }

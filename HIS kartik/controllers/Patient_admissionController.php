@@ -5,7 +5,6 @@ namespace app\controllers;
 use Yii;
 use app\models\Patient_admission;
 use app\models\Patient_admissionSearch;
-use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -69,22 +68,37 @@ class Patient_admissionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Patient_admission();
+        if(Yii::$app->request->get('confirm') == 't')
+        {
+            $rows = (new \yii\db\Query())
+            ->select(['rn'])
+            ->from('patient_admission')
+            ->where(['type' => Yii::$app->request->get('type')])
+            ->all();
+            $SID = "1" + count($rows);
+    
+            if(Yii::$app->request->get('type') == 'Normal')
+                $rn = date('Y')."/".sprintf('%06d', $SID);
+            else $rn = date('Y')."/9".sprintf('%05d', $SID);
+            
+            $model = new Patient_admission();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                'rn' => $model->rn));          
-            }
-        } else {
-         //   $model->entry_datetime =  date("d-m-Y H:i:s");
-            $model->loadDefaultValues();
+            $model->rn = $rn;
+            $model->patient_uid = Yii::$app->request->get('id');
+            $model->entry_datetime = date("Y-m-d");     
+            $model->type = Yii::$app->request->get('type');
+            $model->save();
+
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+            'rn' => $model->rn));          
         }
+        else 
+            echo '<script type="text/javascript">',
+                    'setTimeout(function(){',
+                        'confirmAction();',
+                        '},200);',
+                '</script>';
         
-        
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
 
 
@@ -139,3 +153,18 @@ class Patient_admissionController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
+
+?>
+
+<script>
+// The function below will start the confirmation dialog
+function confirmAction() {
+    var answer = confirm("Are you sure to create patient admission?");
+    if (answer) {
+        window.location.href = window.location + '&confirm=t';
+    } else {
+        window.location.href = history.back();
+    }
+}
+
+</script>

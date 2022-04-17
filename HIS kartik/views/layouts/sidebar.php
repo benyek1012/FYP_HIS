@@ -42,8 +42,8 @@ function items()
         array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
     }
     array_push($items,
-        ['label' => 'New R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid,'type' => 'Normal']],
-        ['label' => 'New Labor R/N', 'iconClass' => '', 'url' => ['patient_admission/create', 'id' => $info->patient_uid, 'type' => 'Labor']]
+        ['label' => 'New R/N', 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
+        ['label' => 'New Labor R/N', 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
     array_push($items,['label' => 'Print Transaction Records', 'iconClass' => '']);
     
@@ -179,7 +179,7 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
                 ['label' => 'Bill', 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
                 ['label' => 'Payments', 'iconClass' => '', 'url' => ['receipt/create', 'rn' =>  Yii::$app->request->get('rn')]],
                       ]
-            ]);
+        ]);
     }
 ?>
         <!-- Sidebar user panel (optional) -->
