@@ -81,11 +81,14 @@ class Patient_admissionController extends Controller
                 $rn = date('Y')."/".sprintf('%06d', $SID);
             else $rn = date('Y')."/9".sprintf('%05d', $SID);
             
+            $date = new \DateTime();
+            $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+
             $model = new Patient_admission();
 
             $model->rn = $rn;
             $model->patient_uid = Yii::$app->request->get('id');
-            $model->entry_datetime = date("Y-m-d");     
+            $model->entry_datetime = $date->format('Y-m-d H:i');
             $model->type = Yii::$app->request->get('type');
             $model->save();
 

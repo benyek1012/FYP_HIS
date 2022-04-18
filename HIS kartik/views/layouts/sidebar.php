@@ -91,30 +91,8 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
         <!-- Search Bar -->
         <div class="user-panel">
             <!-- SidebarSearch Form -->
-            <!-- href be escaped -->
-            <?php /*  <div class="form-inline mt-3 pb-3 mb-4 d-flex">
-                <div class="input-group" data-widget="sidebar-search">
-                    <?php $form = ActiveForm::begin([
-                    'action' => ['index'],
-                    'method' => 'post',
-                     ]); ?>
-            <?= $form->field($model1, 'globalSearch')->textInput(['class' => 'form-control form-control-sidebar',
-                    'style' => 'text-color: white !important;','placeholder'=>"Search IC"])->label(false)?>
-            <div class="input-group-append">
-                <?php /*Html::submitButton('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar'], [ 'onclick' => '
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/sidebar/actionGlobalSearch" ']); */?>
-                <?php /*          <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-            </div>
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
-    </div>
-    ?>
-    <?php */ ?>
-    <div class="form-inline mt-3 d-flex">
-        <?php 
+            <div class="form-inline mt-3 d-flex">
+                <?php 
         $model = new Patient_information();
         $form = ActiveForm::begin([
         'action' => ['site/index'],

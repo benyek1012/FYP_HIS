@@ -4,7 +4,7 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\data\ActiveDataProvider;
-
+use yii\helpers\Html;
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 if(empty($model))
@@ -55,8 +55,23 @@ else
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-                        'rn',
-                        'entry_datetime',
+                        [
+                            'attribute' => 'rn',
+                            'label' => 'Registeration Number ',
+                            'format' => 'raw',
+                            'value'=>function ($data) {
+                                return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                            },
+                        ],
+                        [
+                            'attribute' => 'entry_datetime',
+                            'value'=>function ($data) {
+                                $date = new DateTime($data['entry_datetime']);
+                                return $date->format('Y-m-d');
+
+                               // return date_format($data['entry_datetime'], 'Y-m-d');
+                            },
+                        ],
                         'initial_ward_code',
                         'initial_ward_class',
                         'reference',
