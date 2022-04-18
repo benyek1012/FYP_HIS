@@ -66,7 +66,7 @@ use kartik\datetime\DateTimePicker;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

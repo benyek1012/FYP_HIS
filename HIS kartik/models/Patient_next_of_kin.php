@@ -53,11 +53,11 @@ class Patient_next_of_kin extends \yii\db\ActiveRecord
     {
         return [
             'nok_uid' => 'Nok Uid',
-            'patient_uid' => 'Patient Uid',
-            'nok_name' => 'Nok Name',
-            'nok_relationship' => 'Nok Relationship',
-            'nok_phone_number' => 'Nok Phone Number',
-            'nok_email' => 'Nok Email',
+            'patient_uid' => Yii::t('app','Patient Uid'),
+            'nok_name' => Yii::t('app','Nok Name'),
+            'nok_relationship' => Yii::t('app','Nok Relationship'),
+            'nok_phone_number' => Yii::t('app','Nok Phone Number'),
+            'nok_email' => Yii::t('app','Nok Email'),
         ];
     }
 

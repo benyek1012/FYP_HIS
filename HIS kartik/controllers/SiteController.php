@@ -30,7 +30,7 @@ class SiteController extends Controller
                 'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'language'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -414,6 +414,21 @@ class SiteController extends Controller
         {
             $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
             $sqlCommand->execute();    
+        }
+    }
+
+    public function actionLanguage()
+    {
+        if(isset($_POST['lang'])){
+            Yii::$app->language = $_POST['lang'];
+            // $cookie = new yii\web\Cookie([
+            //     'name' => 'lang',
+            //     'value' => $_POST['lang']
+            // ]);
+
+            // Yii::$app->getResponse()->getCookies()->add($cookie);
+
+            Yii::$app->session->set('language', $_POST['lang']);
         }
     }
 }

@@ -21,8 +21,8 @@ use yii\bootstrap4\Html;
     );
 
     $sex = array(
-        'male'=>'Male',
-        'female'=>'Female',
+        'male'=>Yii::t('app','Male'),
+        'female'=>Yii::t('app','Female'),
     );
 
     $form = kartik\form\ActiveForm::begin([
@@ -71,7 +71,7 @@ use yii\bootstrap4\Html;
 </div>
     
     <div class="form-group">
-        <?= Html::submitButton('Update', ['class' => 'btn btn-outline-primary align-self-start']) ?>    
+        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start']) ?>    
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

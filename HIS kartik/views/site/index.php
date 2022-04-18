@@ -8,7 +8,7 @@ use yii\data\ActiveDataProvider;
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 if(empty($model))
-    $this->title = 'Home Page';
+    $this->title = Yii::t('app','Home Page');
 else
 {
     $session = Yii::$app->session;
@@ -28,7 +28,7 @@ else
     <div class="container-fluid">
         <div class="card">
             <div class="card-header text-white bg-primary">
-                <h3 class="card-title">Patient Admission Summary</h3>
+                <h3 class="card-title"><?php echo Yii::t('app','Patient Admission Summary');?></h3>
                 <div class="card-tools">
                     <!-- Collapse Button -->
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -69,7 +69,7 @@ else
                  ],
             ]) ?>
 
-                <?php   } else echo "RN is not selected";
+                <?php   } else echo Yii::t('app','RN is not selected');
             ?>
 
             </div>
@@ -79,7 +79,7 @@ else
 
         <div class="card">
             <div class="card-header text-white bg-primary">
-                <h3 class="card-title">Patient Information</h3>
+                <h3 class="card-title"><?php echo Yii::t('app','Patient Information');?></h3>
                 <div class="card-tools">
                     <!-- Collapse Button -->
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -99,7 +99,7 @@ else
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
                 <?php   } else{
-             echo "Patient is not selected";
+             echo Yii::t('app','Patient is not selected');
         }  ?>
             </div>
             <!-- /.card-body -->
@@ -108,7 +108,7 @@ else
 
         <div class="card">
             <div class="card-header text-white bg-primary">
-                <h3 class="card-title">Waris</h3>
+                <h3 class="card-title"><?php echo Yii::t('app','Waris');?></h3>
                 <div class="card-tools">
                     <!-- Collapse Button -->
                     <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -134,9 +134,9 @@ else
 
                 <div class="form-group">
                     <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                        onclick="showDiv();">Add Waris</button>
+                        onclick="showDiv();"><?php echo Yii::t('app','Add Waris');?></button>
                     <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                        onclick="hiddenForm();">Cancel</button>
+                        onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
                 </div>
 
                 <?php

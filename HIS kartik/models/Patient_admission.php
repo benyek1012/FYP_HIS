@@ -64,18 +64,18 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return [
             'rn' => 'Rn',
-            'entry_datetime' => 'Entry Datetime',
-            'patient_uid' => 'Patient Uid',
-            'initial_ward_code' => 'Initial Ward Code',
-            'initial_ward_class' => 'Initial Ward Class',
-            'reference' => 'Reference',
-            'medigal_legal_code' => 'Medigal Legal Code',
-            'reminder_given' => 'Reminder Given',
-            'guarantor_name' => 'Guarantor Name',
-            'guarantor_nric' => 'Guarantor Nric',
-            'guarantor_phone_number' => 'Guarantor Phone Number',
-            'guarantor_email' => 'Guarantor Email',
-            'type' => 'Type'
+            'entry_datetime' => Yii::t('app','Entry Datetime'),
+            'patient_uid' => Yii::t('app','Patient Uid'),
+            'initial_ward_code' => Yii::t('app','Initial Ward Code'),
+            'initial_ward_class' => Yii::t('app','Initial Ward Class'),
+            'reference' => Yii::t('app','Reference'),
+            'medigal_legal_code' => Yii::t('app','Medical Legal Code'),
+            'reminder_given' => Yii::t('app','Reminder Given'),
+            'guarantor_name' => Yii::t('app','Guarantor Name'),
+            'guarantor_nric' => Yii::t('app','Guarantor Nric'),
+            'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
+            'guarantor_email' => Yii::t('app','Guarantor Email'),
+            'type' => Yii::t('app','Type')
         ];
     }
 

@@ -22,7 +22,22 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+   // 'language' => 'ms',
+    'sourceLanguage' => 'en',
     'components' => [
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                    'sourceLanguage' => 'en',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                        'app/error' => 'error.php',
+                    ],
+                ],
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'OIKHASKtMjagrENRWYA41KvQyYOokTXc',
@@ -72,6 +87,11 @@ $config = [
        ],
        */
     ],
+
+    'on beforeRequest' => function ($event) {
+        Yii::$app->language = Yii::$app->session->get('language', 'en');
+    },
+    
     'params' => $params,
 ];
 

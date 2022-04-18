@@ -22,8 +22,8 @@ use GpsLab\Component\Base64UID\Base64UID;
     );
 
     $sex = array(
-        'male'=>'Male',
-        'female'=>'Female',
+        'male'=>Yii::t('app','Male'),
+        'female'=>Yii::t('app','Female'),
     );
 
     $form = ActiveForm::begin([
@@ -77,7 +77,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 </div>
     
 <div class="form-group">
-    <?= Html::submitButton('Create', ['class' => 'btn btn-outline-primary align-self-start']) ?>
+<?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start']) ?>   
 </div>
 
 <?php ActiveForm::end(); ?>

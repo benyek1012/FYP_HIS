@@ -59,18 +59,18 @@ class Patient_information extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'patient_uid' => 'Patient Uid',
-            'first_reg_date' => 'First Reg Date',
+            'patient_uid' => Yii::t('app','Patient Uid'),
+            'first_reg_date' => Yii::t('app','First Reg Date'),
             'nric' => 'Nric',
-            'nationality' => 'Nationality',
-            'name' => 'Name',
-            'sex' => 'Sex',
-            'phone_number' => 'Phone Number',
-            'email' => 'Email',
-            'address1' => 'Address',
+            'nationality' => Yii::t('app','Nationality'),
+            'name' => Yii::t('app','Name'),
+            'sex' => Yii::t('app','Sex'),
+            'phone_number' => Yii::t('app','Phone Number'),
+            'email' => Yii::t('app','Email'),
+            'address1' => Yii::t('app','Address'),
             'address2' => 'Address 2',
             'address3' => 'Address 3',
-            'job' => 'Job',
+            'job' => Yii::t('app','Job'),
         ];
     }
 

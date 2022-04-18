@@ -42,11 +42,10 @@ function items()
         array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
     }
     array_push($items,
-        ['label' => 'New R/N', 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
-        ['label' => 'New Labor R/N', 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
+        ['label' => Yii::t('app','New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
+        ['label' =>  Yii::t('app','New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
-    array_push($items,['label' => 'Print Transaction Records', 'iconClass' => '']);
-    
+    array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
     return $items;
 }
 
@@ -126,7 +125,7 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
     ]); ?>
 
         <?= $form->field($model , 'nric')->textInput(['autocomplete' =>'off', 'class' => 'form-control form-control-sidebar',
-                    'style' => 'text-color: white !important;','placeholder'=>"Search IC/RN"])->label(false)?>
+                    'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/RN')])->label(false)?>
 
         <div class="input-group-append">
             <?= Html::submitButton('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar']) ?>
@@ -147,8 +146,8 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
 ?>
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
-                <p class="text-white"><?php echo "NRIC : ".$info->nric;?></p>
-                <p class="text-light">Balance Unclaimed | Owed</p>
+                <p class="text-white"><?php echo Yii::t('app','NRIC')." : ".$info->nric;?></p>
+                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
             </div>
         </div>
         <?php
@@ -157,9 +156,9 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
 ?>
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
-                <p class="text-white">Patient Name</p>
-                <p class="text-white">Patient IC</p>
-                <p class="text-light">Balance Unclaimed | Owed</p>
+                <p class="text-white"><?php echo Yii::t('app','Patient Name')?></p>
+                <p class="text-white"><?php echo Yii::t('app','Patient IC')?></p>
+                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
             </div>
         </div>
         <?php
@@ -176,8 +175,8 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
         echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
                 ['label' => Yii::$app->request->get('rn'), 'header' => true],
-                ['label' => 'Bill', 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
-                ['label' => 'Payments', 'iconClass' => '', 'url' => ['receipt/create', 'rn' =>  Yii::$app->request->get('rn')]],
+                ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
+                ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/create', 'rn' =>  Yii::$app->request->get('rn')]],
                       ]
         ]);
     }
