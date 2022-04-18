@@ -11,6 +11,7 @@ $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
 $this->title = 'Create Payment';
 $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+$this->params['breadcrumbs'][] = ['label' => 'Payments', 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-create">

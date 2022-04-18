@@ -59,8 +59,6 @@ use yii\bootstrap4\Dropdown;
                         echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
                     }
                 ?>
-                
-               
             </ul>
         </li>
     </ul>

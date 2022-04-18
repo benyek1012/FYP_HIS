@@ -34,6 +34,7 @@ function items()
     ->select(['rn'])
     ->from('patient_admission')
     ->where(['patient_uid' => $info->patient_uid])
+    ->orderBy(['entry_datetime' => SORT_DESC])
     ->all();
 
     $items = [];
@@ -149,12 +150,12 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
         <div class="user-panel"> </div>
 
 <?php
-    if(!empty($info) && !empty(Yii::$app->request->get('rn'))){
+    if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid'))){
         echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
                 ['label' => Yii::$app->request->get('rn'), 'header' => true],
                 ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
-                ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/create', 'rn' =>  Yii::$app->request->get('rn')]],
+                ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
                       ]
         ]);
     }
@@ -162,12 +163,12 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel"> </div>
 <?php       
-    if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid')))
-        echo \hail812\adminlte\widgets\Menu::widget(['items' => items_receipt()]);
+    // if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid')))
+    //     echo \hail812\adminlte\widgets\Menu::widget(['items' => items_receipt()]);
 
          ?>
          <!-- Sidebar user panel (optional) -->
-         <div class="user-panel"> </div>
+         <div class="user-panel"></div>
 
     </nav>
     <!-- /.sidebar-menu -->

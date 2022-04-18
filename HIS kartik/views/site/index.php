@@ -4,7 +4,6 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Html;
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 if(empty($model))
@@ -41,50 +40,14 @@ else
                 <?php 
         if(!empty($model))
         {
-            $dataProvider = new ActiveDataProvider([
-                'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid]),
+            $dataProvider1 = new ActiveDataProvider([
+                'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
+                ->orderBy(['entry_datetime' => SORT_DESC]),
                 'pagination'=>['pageSize'=>3],
-                ]);
-        }
-
-        if(!empty($model))
-        {
-?>
-                <!-- This is the gridview that shows patient admission summary-->
-                <?= kartik\grid\GridView::widget([
-                'dataProvider' => $dataProvider,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-                        [
-                            'attribute' => 'rn',
-                            'label' => 'Registeration Number ',
-                            'format' => 'raw',
-                            'value'=>function ($data) {
-                                return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
-                            },
-                        ],
-                        [
-                            'attribute' => 'entry_datetime',
-                            'value'=>function ($data) {
-                                $date = new DateTime($data['entry_datetime']);
-                                return $date->format('Y-m-d');
-
-                               // return date_format($data['entry_datetime'], 'Y-m-d');
-                            },
-                        ],
-                        'initial_ward_code',
-                        'initial_ward_class',
-                        'reference',
-                        'medigal_legal_code',
-                        'reminder_given',
-                        'guarantor_name',
-                        'guarantor_nric',
-                        'guarantor_phone_number',
-                        'guarantor_email:email',
-                 ],
-            ]) ?>
-
-                <?php   } else echo Yii::t('app','RN is not selected');
+            ]);
+            echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+        } 
+        else echo Yii::t('app','RN is not selected');
             ?>
 
             </div>
@@ -113,7 +76,7 @@ else
     ?>
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-                <?php   } else{
+<?php   } else{
              echo Yii::t('app','Patient is not selected');
         }  ?>
             </div>
@@ -137,13 +100,11 @@ else
                 <?php   
             if(!empty($model))
             {
-                $dataProvider = new ActiveDataProvider([
+                $dataProvider2 = new ActiveDataProvider([
                     'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
-                    'pagination'=>['pageSize'=>5],
+                    'pagination'=>['pageSize'=>3],
                     ]);
-                echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider]);
-            ?>
-                <?php 
+                echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider2]);
             } 
             ?>
 
@@ -168,7 +129,6 @@ else
     </div>
 
     <script>
-
     function hiddenForm() {
         document.getElementById("NOk_Div").style.display = "none";
     }

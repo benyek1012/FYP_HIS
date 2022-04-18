@@ -1,28 +1,30 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
+//use yii\widgets\DetailView;
+use kartik\detail\DetailView;
+use app\models\Patient_information;
+use app\models\Patient_admission;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
 
-$this->title = $model->receipt_uid;
-$this->params['breadcrumbs'][] = ['label' => 'Receipts', 'url' => ['index']];
+
+$temp2 = Patient_admission::findOne(['rn'=> $model->rn]);
+$temp3 = Patient_information::findOne(['patient_uid'=> $temp2->patient_uid]);
+
+$this->title = $model->rn;
+$this->params['breadcrumbs'][] = ['label' => $temp3->name, 'url' => ['site/index', 'id' => $temp3->patient_uid]];
+$this->params['breadcrumbs'][] = ['label' => 'Payments', 'url' => ['index', 'rn'=> $model->rn]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="receipt-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'receipt_uid' => $model->receipt_uid], ['class' => 'btn btn-primary']) ?>
-    </p>
-
     <?= DetailView::widget([
         'model' => $model,
+        'hover'=>true,
         'attributes' => [
-            'receipt_uid',
+           // 'receipt_uid',
             'rn',
             'receipt_type',
             'receipt_content_sum',

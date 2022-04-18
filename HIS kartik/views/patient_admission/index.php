@@ -1,61 +1,66 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
-use yii\grid\GridView;
-use kartik\datetime\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_admissionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Patient Admissions';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="patient-admission-index">
-
-    <p>
-        <?= Html::a('Create Patient Admission', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
+    
+    <!-- This is the gridview that shows patient admission summary-->
+    <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'rn',
-            [
-                'attribute' => 'entry_datetime',
-                'value' => 'entry_datetime',
-                'format' => 'raw',
-                'filter' => DateTimePicker::widget([
-                    'model' => $searchModel,
+                [
+                    'attribute' => 'rn',
+                    'label' => 'Registeration Number ',
+                    'format' => 'raw',
+                    'value'=>function ($data) {
+                        return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                    },
+                ],
+                [
                     'attribute' => 'entry_datetime',
-                    'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
-                ])
+                    "format"=>"raw",
+                    'value'=>function ($data) {
+                        $date = new DateTime($data['entry_datetime']);
+                        $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
+                            // title
+                            'title' => $date->format('Y-m-d H:i A') ,
+                            'data-placement' => 'top' ,
+                            'data-toggle'=>'tooltip',
+                            'style' => 'white-space:pre;'
+                        ] );
+                        return $tag;
+                    },
+                ],
+                'initial_ward_code',
+                'initial_ward_class',
+                'reference',
+                'medigal_legal_code',
+                'reminder_given',
+                'guarantor_name',
+              //  'guarantor_nric',
+                'guarantor_phone_number',
+                //'guarantor_email:email',
             ],
-            'patient_uid',
-            'initial_ward_code',
-            'initial_ward_class',
-            //'reference',
-            //'medigal_legal_code',
-            //'reminder_given',
-            //'guarantor_name',
-            //'guarantor_nric',
-            //'guarantor_phone_number',
-            //'guarantor_email:email',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'rn' => $model->rn]);
-                 }
-            ],
-        ],
-    ]); ?>
-
+    ]) ?>
 
 </div>
+
+<?php
+    $js = <<<SCRIPT
+    /* To initialize BS3 tooltips set this below */
+    $(function () { 
+       $('body').tooltip({
+        selector: '[data-toggle="tooltip"]',
+            html:true
+        });
+    });
+    SCRIPT;
+    // Register tooltip/popover initialization javascript
+    $this->registerJs ( $js );
+?>
