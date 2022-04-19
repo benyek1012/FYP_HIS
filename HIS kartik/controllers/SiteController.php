@@ -239,6 +239,7 @@ class SiteController extends Controller
                 `nationality` VARCHAR(20),
                 `name` VARCHAR(200),
                 `sex` VARCHAR(20),
+                `race` VARCHAR(20),
                 `phone_number` VARCHAR(100),
                 `email` VARCHAR(100),
                 `address1` VARCHAR(100),
