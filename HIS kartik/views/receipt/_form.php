@@ -14,6 +14,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         $receipt = array(
             'deposit'=>'Deposit',
             'bill'=>'Bill',
+            'refund'=>'Refund',
         );
     
         $form = kartik\form\ActiveForm::begin([
@@ -75,7 +76,7 @@ use GpsLab\Component\Base64UID\Base64UID;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

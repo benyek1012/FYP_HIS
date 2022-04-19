@@ -64,7 +64,7 @@ else
                 <!-- /.card-tools -->
             </div>
             <!-- /.card-header -->
-            <div class="card-body d-flex flex-column">
+            <div class="card-body">
 
 
                 <!-- This is the form that shows patient information which can directly updating-->
@@ -93,7 +93,7 @@ else
                 <!-- /.card-tools -->
             </div>
             <!-- /.card-header -->
-            <div class="card-body d-flex flex-column">
+            <div class="card-body">
 
                 <?php   
             if(!empty($model))

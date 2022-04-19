@@ -9,11 +9,14 @@ use app\models\Patient_admission;
 /* @var $model app\models\Receipt */
 
 
-$temp2 = Patient_admission::findOne(['rn'=> $model->rn]);
-$temp3 = Patient_information::findOne(['patient_uid'=> $temp2->patient_uid]);
+$temp = Patient_admission::findOne(['rn'=> $model->rn]);
+$temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-$this->title = $model->rn;
-$this->params['breadcrumbs'][] = ['label' => $temp3->name, 'url' => ['site/index', 'id' => $temp3->patient_uid]];
+$this->title = $model->rn.' Payment';
+if($temp2->name != "")
+    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+else 
+    $this->params['breadcrumbs'][] = ['label' => "User", 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = ['label' => 'Payments', 'url' => ['index', 'rn'=> $model->rn]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);

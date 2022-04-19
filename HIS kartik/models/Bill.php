@@ -74,7 +74,7 @@ class Bill extends \yii\db\ActiveRecord
             'rn' => 'Rn',
             'status_code' => 'Status Code',
             'status_description' => 'Status Description',
-            'class' => 'Class',
+            'class' => 'Ward Class',
             'daily_ward_cost' => 'Daily Ward Cost',
             'department_code' => 'Department Code',
             'department_name' => 'Department Name',
