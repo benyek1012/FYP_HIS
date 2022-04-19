@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Ward;
+use app\models\Model;
 use app\models\WardSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\base\Exception;
 
 /**
  * WardController implements the CRUD actions for Ward model.
@@ -68,10 +71,48 @@ class WardController extends Controller
     public function actionCreate()
     {
         $model = new Ward();
+        $modelWard = [new Ward];
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'ward_uid' => $model->ward_uid]);
+                $modelWard = Model::createMultiple(Ward::classname());
+                Model::loadMultiple($modelWard, Yii::$app->request->post());
+
+                // ajax validation
+                // if (Yii::$app->request->isAjax) {
+                //     Yii::$app->response->format = Response::FORMAT_JSON;
+                //     return ArrayHelper::merge(
+                //         ActiveForm::validateMultiple($modelsAddress),
+                //         ActiveForm::validate($modelCustomer)
+                //     );
+                // }
+
+                // validate all models
+                $valid = $model->validate();
+                $valid = Model::validateMultiple($modelWard) && $valid;
+                
+                if ($valid) {
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    try {
+                        if ($flag = $model->save(false)) {
+                            foreach ($modelWard as $modelWard) {
+                                $modelWard->bill_uid = $model->bill_uid;
+                                if (! ($flag = $modelWard->save(false))) {
+                                    $transaction->rollBack();
+                                    break;
+                                }
+                            }
+                        }
+                        if ($flag) {
+                            $transaction->commit();
+                            return $this->redirect(['view', 'id' => $model->bill_uid]);
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollBack();
+                    }
+                }
+
+                // return $this->redirect(['view', 'ward_uid' => $model->ward_uid]);
             }
         } else {
             $model->loadDefaultValues();
@@ -79,6 +120,7 @@ class WardController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
         ]);
     }
 

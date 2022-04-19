@@ -7,6 +7,7 @@ use app\models\BillSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Ward;
 
 /**
  * BillController implements the CRUD actions for Bill model.
@@ -68,10 +69,11 @@ class BillController extends Controller
     public function actionCreate()
     {
         $model = new Bill();
+        $modelWard = [new Ward];
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'bill_uid' => $model->bill_uid]);
+                return $this->redirect(['view', 'bill_uid' => $model->bill_uid, 'rn' => $model->rn]);
             }
         } else {
             $model->bill_generation_datetime =  date("d-m-Y H:i:s");
@@ -81,6 +83,7 @@ class BillController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
         ]);
     }
 
@@ -101,6 +104,7 @@ class BillController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
         ]);
     }
 

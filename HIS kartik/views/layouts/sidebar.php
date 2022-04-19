@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Bill;
 use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -19,6 +20,12 @@ function getInfo()
     else if(!empty(Yii::$app->request->get('receipt_uid')))
     {
         $info = Receipt::findOne(['receipt_uid'=> Yii::$app->request->get('receipt_uid')]);
+        $info = Patient_admission::findOne(['rn'=> $info->rn]);
+        $info = Patient_information::findOne(['patient_uid'=> $info->patient_uid]);
+    }
+    else if(!empty(Yii::$app->request->get('bill_uid')))
+    {
+        $info = Bill::findOne(['bill_uid'=> Yii::$app->request->get('bill_uid')]);
         $info = Patient_admission::findOne(['rn'=> $info->rn]);
         $info = Patient_information::findOne(['patient_uid'=> $info->patient_uid]);
     }
@@ -74,7 +81,7 @@ function items_receipt()
     return $items;
 }
 
-if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !empty(Yii::$app->request->get('receipt_uid'))))
+if(!empty(Yii::$app->request->queryParams))
     $info = getInfo();
 
 ?>
@@ -150,7 +157,7 @@ if(!empty(Yii::$app->request->get('rn') || Yii::$app->request->get('id') || !emp
         <div class="user-panel"> </div>
 
 <?php
-    if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid'))){
+    if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid') ||Yii::$app->request->get('bill_uid'))){
         echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
                 ['label' => Yii::$app->request->get('rn'), 'header' => true],

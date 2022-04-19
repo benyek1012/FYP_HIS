@@ -10,15 +10,13 @@ if(empty($model))
     $this->title = Yii::t('app','Home Page');
 else
 {
-    $session = Yii::$app->session;
-    $session->set('patient_id', Yii::$app->request->get('id'));
 
     if($model->name != "")
-        $session->set('patient_name', $model->name);
-    else $session->set('patient_name', "User");
+        $name = $model->name;
+    else $name = "User";
    
-    $this->title = $session['patient_name'];
-    $this->params['breadcrumbs'][] = ['label' => $session['patient_name']];
+    $this->title = $name;
+    $this->params['breadcrumbs'][] = ['label' => $name];
 }
 ?>
 

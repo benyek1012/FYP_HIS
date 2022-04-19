@@ -12,7 +12,10 @@ $temp2 = Patient_admission::findOne(['rn'=> $model->rn]);
 $temp3 = Patient_information::findOne(['patient_uid'=> $temp2->patient_uid]);
 
 $this->title = 'Update Payment: ' . $model->rn;
-$this->params['breadcrumbs'][] = ['label' => $temp3->name, 'url' => ['site/index', 'id' => $temp3->patient_uid]];
+if($temp3->name != "")
+    $this->params['breadcrumbs'][] = ['label' => $temp3->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+else 
+    $this->params['breadcrumbs'][] = ['label' => "User", 'url' => ['site/index', 'id' => $temp3->patient_uid]];
 $this->params['breadcrumbs'][] = ['label' => 'Payments', 'url' => ['index', 'rn'=> $model->rn]];
 $this->params['breadcrumbs'][] = 'Receipt Update';
 ?>
