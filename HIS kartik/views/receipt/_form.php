@@ -86,10 +86,11 @@ use yii\helpers\ArrayHelper;
 
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt','maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
+            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-6" id="bill_div" style="display:none;">
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
         </div>
 
@@ -101,19 +102,20 @@ use yii\helpers\ArrayHelper;
             <?= $form->field($model, 'receipt_content_description')->textInput(['maxlength' => true]) ?>
         </div>
 
-        <div class="col-sm-6" id="payment_div">
-            <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($payment_method, ['class'=>'payment', 'prompt'=>'Please select receipt','maxlength' => true]) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($payment_method, ['class'=>'payment',
+             'prompt'=>'Please select receipt','maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?>
         </div>
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_content_payer_name')->dropDownList(array_filter($namesList), ['prompt'=>'Please select payer name','maxlength' => true]) ?>
         </div>
 
-        <div class="col-sm-6" id="card_div"  style="display:none;">
+        <div class="col-sm-6" id="card_div" style="display:none;">
             <?= $form->field($model, 'card_no')->textInput(['maxlength' => true]) ?>
         </div>
 
-        <div class="col-sm-6" id="cheque_div"  style="display:none;">
+        <div class="col-sm-6" id="cheque_div" style="display:none;">
             <?= $form->field($model, 'cheque_number')->textInput(['maxlength' => true]) ?>
         </div>
 
@@ -136,24 +138,26 @@ use yii\helpers\ArrayHelper;
 </div>
 
 <script>
- $("#payment_div").change(function () {
-    var value = this.value;
-    // if(value == "cash"){
-    // $(".Salutation").val("0");
-    // }
-    if(value == "bill"){
-        $("#card_div").show();
+function myfunctionforValuecheck(val) {
+    if (val == "cash" || val == ""){
+        document.getElementById("cheque_div").style.display = "none";
+        document.getElementById('card_div').style.display = "none";
     }
-    if(value == "refund"){
-        document.getElementById('cheque_div').style.display = "block";
+    else if (val == "card"){
+        document.getElementById("cheque_div").style.display = "none";
+        document.getElementById('card_div').style.display = "block";
     }
-});
+    else if (val == "cheque"){
+        document.getElementById("cheque_div").style.display = "block";
+        document.getElementById('card_div').style.display = "none";
+    }
+}
 
-// function hiddenForm() {
-//     document.getElementById("NOk_Div").style.display = "none";
-// }
+function myfunctionforType(val) {
+    if (val == "bill")
+        document.getElementById("bill_div").style.display = "block";
+    else
+        document.getElementById("bill_div").style.display = "none";s
+}
 
-// function showDiv() {
-//     document.getElementById('NOk_Div').style.display = "block";
-// }
 </script>
