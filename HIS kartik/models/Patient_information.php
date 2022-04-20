@@ -94,6 +94,6 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientNextOfKins()
     {
-        return $this->hasMany(Patient_Next_Of_Kin::className(), ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_Next_Of_Kin::class, ['patient_uid' => 'patient_uid']);
     }
 }
