@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Patient_information;
 use app\models\Patient_admission;
+use phpDocumentor\Reflection\Types\Array_;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
@@ -28,12 +29,12 @@ use yii\helpers\ArrayHelper;
 
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 
-        $names = Patient_information::find()
-        ->joinWith('patientNextOfKins')
-        ->select('nok_name, `patient_information`.`name`')
-        ->where(['`patient_information`.`patient_uid`'=> $temp->patient_uid])
-        ->asArray()
-        ->all();
+        // $names = Patient_information::find()
+        // ->joinWith('patientNextOfKins')
+        // ->select('nok_name, `patient_information`.`name`')
+        // ->where(['`patient_information`.`patient_uid`'=> $temp->patient_uid, ])
+        // ->asArray()
+        // ->all();
         
         // $names = Patient_information::find()->where(['`patient_information`.`patient_uid`'=> $temp->patient_uid])
         //         ->joinWith('patientNextOfKins')
@@ -49,21 +50,22 @@ use yii\helpers\ArrayHelper;
         // echo "</pre>";
         // exit();
         
-        // $rows = (new \yii\db\Query())
-        // ->select(['*'])
-        // ->from('patient_information, patient_next_of_kin')
-        // ->where(['patient_information.patient_uid' => $temp->patient_uid])
-        // ->andWhere('patient_next_of_kin.patient_uid = patient_information.patient_uid')
-        // ->all();
+        $rows = (new \yii\db\Query())
+        ->select(['`patient_next_of_kin`.`nok_name`,`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
+        ->from('patient_information, patient_next_of_kin,patient_admission')
+        ->where(['patient_information.patient_uid' => $temp->patient_uid])
+        ->andWhere('patient_next_of_kin.patient_uid = patient_information.patient_uid')
+        ->andWhere('patient_admission.patient_uid = patient_information.patient_uid')
+        ->all();
+        $names = [];
+        foreach ($rows as $row) {
+           $names += $row;    
+        }
 
-        // foreach ($rows as $row) {
-        //     echo "1";
-        // }
-        // exit();
         
         
 
-        $namesList = ArrayHelper::map($names, 'patient_uid', 'name'); 
+       // $namesList = ArrayHelper::map($names, 'patient_uid', 'name'); 
                 
         // foreach($namesList as $n){
         //     if($n == '')
@@ -108,7 +110,7 @@ use yii\helpers\ArrayHelper;
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payer_name')->dropDownList(array_filter($namesList), ['prompt'=>'Please select payer name','maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, ['prompt'=>'Please select payer name','maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6" id="card_div" style="display:none;">
