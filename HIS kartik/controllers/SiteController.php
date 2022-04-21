@@ -297,7 +297,7 @@ class SiteController extends Controller
                 `description` VARCHAR(200),
                 `bill_print_responsible_uid` VARCHAR(64),
                 `bill_print_datetime` DATETIME,
-                `bill_print_id` VARCHAR(20) UNIQUE, 
+                `bill_print_id` VARCHAR(20), 
                  PRIMARY KEY (`bill_uid`),
                  FOREIGN KEY (rn) REFERENCES patient_admission(rn)
                 /* FOREIGN KEY (generation_responsible_uid) REFERENCES,

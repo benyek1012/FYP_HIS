@@ -58,8 +58,8 @@ class Bill extends \yii\db\ActiveRecord
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
-            [['bill_print_id'], 'unique'],
-            [['bill_uid'], 'unique'],
+            // [['bill_print_id'], 'unique'], //temporary comment
+            // [['bill_uid'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
@@ -83,9 +83,9 @@ class Bill extends \yii\db\ActiveRecord
             'nurse_responsilbe' => 'Nurse Responsilbe',
             'bill_generation_datetime' => 'Bill Generation Datetime',
             'generation_responsible_uid' => 'Generation Responsible Uid',
-            'bill_generation_billable_sum_rm' => 'Bill Generation Billable Sum Rm',
-            'bill_generation_final_fee_rm' => 'Bill Generation Final Fee Rm',
-            'description' => 'Description',
+            'bill_generation_billable_sum_rm' => 'Billable Total (RM)', //Bill Generation Billable Sum Rm
+            'bill_generation_final_fee_rm' => 'Final Fee (Rm)', //Bill Generation Final Fee Rm
+            'description' => 'Bill Description',
             'bill_print_responsible_uid' => 'Bill Print Responsible Uid',
             'bill_print_datetime' => 'Bill Print Datetime',
             'bill_print_id' => 'Bill Print ID',

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Bill;
 use app\models\BillSearch;
 use yii\web\Controller;
@@ -73,11 +74,15 @@ class BillController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'bill_uid' => $model->bill_uid, 'rn' => $model->rn]);
+                // return $this->render('update', [
+                //     'model' => $model,
+                //     'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+                //     'generate' => true,
+                // ]);
+                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid));        
             }
         } else {
-            $model->bill_generation_datetime =  date("d-m-Y H:i:s");
-            $model->bill_print_datetime =  date("d-m-Y H:i:s");
             $model->loadDefaultValues();
         }
 
@@ -103,6 +108,43 @@ class BillController extends Controller
         }
 
         return $this->render('update', [
+            'model' => $model,
+            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+        ]);
+    }
+
+      /**
+     * Updates an existing Bill model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param string $bill_uid Bill Uid
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionGenerate($bill_uid)
+    {
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+            
+        $model = $this->findModel($bill_uid);
+
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if(empty($model->bill_generation_datetime))
+            {
+                $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
+            }
+            if(!empty(Yii::$app->request->get('bill_print_responsible_uid')) && empty($model->bill_print_datetime))
+            {
+                $model->bill_print_datetime =  $date->format('Y-m-d H:i');
+            }
+            $model->save();
+          //  if(empty(Yii::$app->request->get('bill_print_responsible_uid')))
+                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'bill_print_responsible_uid' => $model->bill_print_responsible_uid));        
+            // else
+            //     return $this->redirect(['view', 'bill_uid' => $model->bill_uid]);
+        }
+
+        return $this->render('generate', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
         ]);

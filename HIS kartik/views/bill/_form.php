@@ -19,7 +19,14 @@ $billuid = Base64UID::generate(32);
 $generationresponsibleuid = Base64UID::generate(32);
 $billprintresponsibleuid = Base64UID::generate(32);
 
-$initial_ward_class = $admission_model->initial_ward_class;
+if(!empty( Yii::$app->request->get('rn')))
+    $initial_ward_class = $admission_model->initial_ward_class;
+
+
+$free = array(
+    0 =>'No', //false
+    1 =>'Yes',    //true
+);
 
 ?>
 
@@ -64,7 +71,11 @@ $initial_ward_class = $admission_model->initial_ward_class;
                 </div>
 
                 <div class="col-sm-6">
+                    <?php if(!empty( Yii::$app->request->get('rn'))){ ?>
                     <?= $form->field($model, 'class')->textInput(['maxlength' => true,'value' => $initial_ward_class]) ?>
+                    <?php }else{ ?>
+                    <?= $form->field($model, 'class')->textInput(['maxlength' => true]) ?>
+                    <?php } ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -80,7 +91,7 @@ $initial_ward_class = $admission_model->initial_ward_class;
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'is_free')->textInput() ?>
+                    <?= $form->field($model, 'is_free')->dropDownList($free) ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -225,7 +236,9 @@ $initial_ward_class = $admission_model->initial_ward_class;
 </div>
 <!-- /.card -->
 
-<div class="card">
+<div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
+            else echo 'style="display:block;"';
+    ?>>
     <div class="card-header text-white bg-primary">
         <h3 class="card-title"><?php echo "Bill Generation Details";?></h3>
         <div class="card-tools">
@@ -241,14 +254,10 @@ $initial_ward_class = $admission_model->initial_ward_class;
                 'readonly' => true, 'maxlength' => true,'value' => $generationresponsibleuid])->label(false) ?>
 
             <div class="col-sm-6">
-                <?= $form->field($model, 'bill_generation_datetime')->widget(DateTimePicker::classname(), 
-                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii' ]])?>
-            </div>
-
-            <div class="col-sm-6">
                 <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
             </div>
-
+        </div>
+        <div class="row">
             <div class="col-sm-6">
                 <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true]) ?>
             </div>
@@ -263,7 +272,7 @@ $initial_ward_class = $admission_model->initial_ward_class;
 </div>
 <!-- /.card -->
 
-<div class="card">
+<div class="card" id="print_div" style="display:none;">
     <div class="card-header text-white bg-primary">
         <h3 class="card-title"><?php echo "Printing Details";?></h3>
         <div class="card-tools">
@@ -276,14 +285,7 @@ $initial_ward_class = $admission_model->initial_ward_class;
     <div class="card-body">
         <div class="row">
             <?= $form->field($model, 'bill_print_responsible_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid])->label(false) ?>
-
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_print_datetime')->widget(DateTimePicker::classname(), 
-        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii' ]
-    ])?>
-            </div>
-
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
@@ -292,10 +294,32 @@ $initial_ward_class = $admission_model->initial_ward_class;
 </div>
 <!-- /.card -->
 
+
 <div class="form-group">
+
+    <?php if(!empty( Yii::$app->request->get('bill_print_responsible_uid') && Yii::$app->request->get('bill_uid'))){ ?>
+    <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
+    <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
+    <?= Html::submitButton('Generate', ['class' => 'btn btn-success']) ?>
+    <?php }else{ ?>
     <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <?php } ?>
 </div>
+
 
 <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
+
+
+<script>
+    
+<?php if(!empty( Yii::$app->request->get('bill_uid'))){?>
+document.getElementById("bill_div").style.display = "block";
+document.getElementById('print_div').style.display = "none";
+<?php } if(!empty( Yii::$app->request->get('bill_print_responsible_uid') && Yii::$app->request->get('bill_uid'))){ ?>
+document.getElementById("print_div").style.display = "block";
+document.getElementById('card_div').style.display = "block";
+<?php } ?>
+
+</script>
