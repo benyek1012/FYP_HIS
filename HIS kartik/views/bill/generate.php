@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = 'Generate';
     <?= $this->render('_form', [
         'model' => $model,
         'modelWard' => $modelWard,
+        'modelTreatment' => $modelTreatment,
     ]) ?>
 
 </div>

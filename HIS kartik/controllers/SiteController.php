@@ -311,7 +311,7 @@ class SiteController extends Controller
                 `ward_name` VARCHAR(50) NOT NULL,
                 `ward_start_datetime` DATETIME NOT NULL,
                 `ward_end_datetime` DATETIME NOT NULL,
-                `ward_number_of_days` DATETIME NOT NULL,
+                `ward_number_of_days` INT NOT NULL,
                 PRIMARY KEY (`ward_uid`),
                 FOREIGN KEY (bill_uid) REFERENCES bill(bill_uid)
             );"

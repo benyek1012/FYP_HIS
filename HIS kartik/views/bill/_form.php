@@ -41,9 +41,7 @@ $free = array(
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
         ],
     ]); 
-?>
-
-    <?php /*  $this->render('/ward/create', ['model' => $model, 'modelWard' => $modelWard]) */?>
+    ?>
 
     <div class="card">
         <div class="card-header text-white bg-primary">
@@ -119,93 +117,34 @@ $free = array(
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-
-            <div class="row">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><i class="glyphicon glyphicon-envelope"></i>Ward</h4>
-                    </div>
-                    <div class="panel-body">
-                        <?php DynamicFormWidget::begin([
-                'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                'widgetBody' => '.container-items', // required: css class selector
-                'widgetItem' => '.item', // required: css class
-                // 'limit' => 4, // the maximum times, an element can be cloned (default 999)
-                'min' => 1, // 0 or 1 (default 1)
-                'insertButton' => '.add-item', // css class
-                'deleteButton' => '.remove-item', // css class
-                'model' => $modelWard[0],
-                'formId' => 'ward-dynamic-form',
-                'formFields' => [
-                    'ward_uid',
-                    'bill_uid',
-                    'ward_code',
-                    'ward_name',
-                    'ward_start_datetime',
-                    'ward_end_datetime',
-                    'ward_numbers_of_days',
-                ],
-            ]); ?>
-
-                        <div class="container-items">
-                            <!-- widgetContainer -->
-                            <?php foreach ($modelWard as $i => $modelWard): ?>
-                            <div class="item panel panel-default">
-                                <!-- widgetBody -->
-                                <div class="panel-heading">
-                                    <!-- <h3 class="panel-title pull-left">Ward</h3> -->
-                                    <div class="pull-right">
-                                        <button type="button" class="add-item btn btn-success btn-xs"><i
-                                                class="glyphicon glyphicon-plus">+</i></button>
-                                        <button type="button" class="remove-item btn btn-danger btn-xs"><i
-                                                class="glyphicon glyphicon-minus">-</i></button>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="panel-body">
-                                    <?php
-                            // necessary for update action.
-                            // if (! $modelWard->modelWard) {
-                            //     echo Html::activeHiddenInput($modelWard, "[{$i}]ward_id");
-                            // }
-                        ?>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_uid")->textInput(['maxlength' => true, 'value' => Base64UID::generate(32)]);  ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]bill_uid")->textInput(['maxlength' => true, 'value' => $billuid]); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_code")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_name")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                    </div><!-- .row -->
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_start_datetime")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_end_datetime")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                    </div><!-- .row -->
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_number_of_days")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                    </div><!-- .row -->
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php DynamicFormWidget::end(); ?>
-                    </div>
-                </div>
-            </div>
+            <table>
+                <tr>
+                    <td>Ward Code</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward Name</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward Start Datetime</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward End Datetime</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward Number of Days</td>
+                </tr>
+                <?php foreach ($modelWard as $index => $modelWard) { ?>       
+                <tr>            
+                    <td><?= $form->field($modelWard, "[$index]ward_code")->textInput(['maxlength' => true])->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[$index]ward_name")->textInput()->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(), 
+                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(), 
+                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput()->label(false) ?></td> 
+                </tr> 
+                <?php } ?>
+            </table>
         </div>
         <!-- /.card-body -->
     </div>
@@ -223,13 +162,32 @@ $free = array(
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <?php
-                $dataProvider2 = new ActiveDataProvider([
-                'query'=> Treatment_details::find()->where(['bill_uid'=>$model->bill_uid]),
-                'pagination'=>['pageSize'=>3],
-                ]);
-                echo $this->render('/treatment_details/index', ['dataProvider'=>$dataProvider2]);
-            ?>
+            <table>
+                <tr>
+                    <td>Treatment Code</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Treatment Name</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Item Per Unit Cost (RM)</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Item Count</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Item Total Unit Cost (RM)</td>
+                </tr>
+                <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>       
+                <tr>            
+                    <td><?= $form->field($modelTreatment, "[$index]treatment_code")->textInput(['maxlength' => true])->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]treatment_name")->textInput()->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput()->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput()->label(false) ?></td>  
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput()->label(false) ?></td> 
+                </tr> 
+                <?php } ?>
+            </table>
         </div>
     </div>
     <!-- /.card-body -->

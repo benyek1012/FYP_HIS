@@ -33,7 +33,7 @@ class Treatment_details extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['treatment_details_uid', 'bill_uid', 'treatment_code', 'treatment_name', 'item_per_unit_cost_rm', 'item_count', 'item_total_unit_cost_rm'], 'required'],
+            [['treatment_code', 'treatment_name', 'item_per_unit_cost_rm', 'item_count', 'item_total_unit_cost_rm'], 'required'],
             [['item_per_unit_cost_rm', 'item_total_unit_cost_rm'], 'number'],
             [['item_count'], 'integer'],
             [['treatment_details_uid', 'bill_uid'], 'string', 'max' => 64],
