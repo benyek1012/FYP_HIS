@@ -12,7 +12,7 @@ use app\models\Patient_admission;
 $temp = Patient_admission::findOne(['rn'=> $model->rn]);
 $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-$this->title = $model->rn.' Payment';
+$this->title = $model->rn.Yii::t('app',' Payment');
 if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 else 

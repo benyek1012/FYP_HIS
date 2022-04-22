@@ -9,7 +9,7 @@ use app\models\Patient_information;
 $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-$this->title = 'Create Bill';
+$this->title = Yii::t('app','Create Bill');
 if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 else 

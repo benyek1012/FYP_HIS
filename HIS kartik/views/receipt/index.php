@@ -9,13 +9,13 @@ use kartik\grid\GridView;
 /* @var $searchModel app\models\ReceiptSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Payments';
+$this->title = Yii::t('app','Payments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">
 
     <p>
-        <?= Html::a('Create Payment', ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

@@ -47,7 +47,7 @@ $free = array(
 
     <div class="card">
         <div class="card-header text-white bg-primary">
-            <h3 class="card-title"><?php echo "Billing Details";?></h3>
+            <h3 class="card-title"><?php echo Yii::t('app','Billing Details');?></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -109,7 +109,7 @@ $free = array(
 
     <div class="card">
         <div class="card-header text-white bg-primary">
-            <h3 class="card-title"><?php echo "Ward Details";?></h3>
+            <h3 class="card-title"><?php echo Yii::t('app','Ward Details');?></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -213,7 +213,7 @@ $free = array(
 
     <div class="card">
         <div class="card-header text-white bg-primary">
-            <h3 class="card-title"><?php echo "Treatment Details";?></h3>
+            <h3 class="card-title"><?php echo Yii::t('app','Treatment Details');?></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -240,7 +240,7 @@ $free = array(
             else echo 'style="display:block;"';
     ?>>
     <div class="card-header text-white bg-primary">
-        <h3 class="card-title"><?php echo "Bill Generation Details";?></h3>
+        <h3 class="card-title"><?php echo Yii::t('app','Bill Generation Details');?></h3>
         <div class="card-tools">
             <!-- Collapse Button -->
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
@@ -274,7 +274,7 @@ $free = array(
 
 <div class="card" id="print_div" style="display:none;">
     <div class="card-header text-white bg-primary">
-        <h3 class="card-title"><?php echo "Printing Details";?></h3>
+        <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
         <div class="card-tools">
             <!-- Collapse Button -->
             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
@@ -300,9 +300,9 @@ $free = array(
     <?php if(!empty( Yii::$app->request->get('bill_print_responsible_uid') && Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-    <?= Html::submitButton('Generate', ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
     <?php }else{ ?>
-    <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     <?php } ?>
 </div>
 

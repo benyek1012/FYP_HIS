@@ -70,25 +70,25 @@ class Bill extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'bill_uid' => 'Bill Uid',
+            'bill_uid' => Yii::t('app','Bill Uid'),
             'rn' => 'Rn',
-            'status_code' => 'Status Code',
-            'status_description' => 'Status Description',
-            'class' => 'Ward Class',
-            'daily_ward_cost' => 'Daily Ward Cost',
-            'department_code' => 'Department Code',
-            'department_name' => 'Department Name',
-            'is_free' => 'Is Free',
-            'collection_center_code' => 'Collection Center Code',
-            'nurse_responsilbe' => 'Nurse Responsilbe',
-            'bill_generation_datetime' => 'Bill Generation Datetime',
-            'generation_responsible_uid' => 'Generation Responsible Uid',
-            'bill_generation_billable_sum_rm' => 'Billable Total (RM)', //Bill Generation Billable Sum Rm
-            'bill_generation_final_fee_rm' => 'Final Fee (Rm)', //Bill Generation Final Fee Rm
-            'description' => 'Bill Description',
-            'bill_print_responsible_uid' => 'Bill Print Responsible Uid',
-            'bill_print_datetime' => 'Bill Print Datetime',
-            'bill_print_id' => 'Bill Print ID',
+            'status_code' => Yii::t('app','Status Code'),
+            'status_description' => Yii::t('app','Status Description'),
+            'class' => Yii::t('app','Ward Class'),
+            'daily_ward_cost' => Yii::t('app','Daily Ward Cost'),
+            'department_code' => Yii::t('app','Department Code'),
+            'department_name' => Yii::t('app','Department Name'),
+            'is_free' => Yii::t('app','Is Free'),
+            'collection_center_code' => Yii::t('app','Collection Center Code'),
+            'nurse_responsilbe' => Yii::t('app','Nurse Responsilbe'),
+            'bill_generation_datetime' => Yii::t('app','Bill Generation Datetime'),
+            'generation_responsible_uid' => Yii::t('app','Generation Responsible Uid'),
+            'bill_generation_billable_sum_rm' => Yii::t('app','Billable Total (RM)'), //Bill Generation Billable Sum Rm
+            'bill_generation_final_fee_rm' => Yii::t('app','Final Fee (Rm)'), //Bill Generation Final Fee Rm
+            'description' => Yii::t('app','Bill Description'),
+            'bill_print_responsible_uid' => ('Bill Print Responsible Uid'),
+            'bill_print_datetime' => Yii::t('app','Bill Print Datetime'),
+            'bill_print_id' => Yii::t('app','Bill Print ID'),
         ];
     }
 

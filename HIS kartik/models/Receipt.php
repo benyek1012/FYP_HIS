@@ -58,19 +58,19 @@ class Receipt extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'receipt_uid' => 'Receipt Uid',
+            'receipt_uid' => Yii::t('app','Receipt Uid'),
             'rn' => 'Rn',
-            'receipt_type' => 'Receipt Type',
-            'receipt_content_sum' => 'Receipt Summary',
-            'receipt_content_bill_id' => 'Receipt Bill ID',
-            'receipt_content_description' => 'Receipt Description',
-            'receipt_content_date_paid' => 'Receipt Content Date Paid',
-            'receipt_content_payer_name' => 'Payer Name',
-            'receipt_content_payment_method' => 'Payment Method',
-            'card_no' => 'Card Number',
-            'cheque_number' => 'Cheque Number',
-            'receipt_responsible' => 'Receipt Responsible',
-            'receipt_serial_number' => 'Receipt Serial Number',
+            'receipt_type' => Yii::t('app','Receipt Type'),
+            'receipt_content_sum' => Yii::t('app','Receipt Summary'),
+            'receipt_content_bill_id' => Yii::t('app','Receipt Bill ID'),
+            'receipt_content_description' => Yii::t('app','Receipt Description'),
+            'receipt_content_date_paid' => Yii::t('app','Receipt Content Date Paid'),
+            'receipt_content_payer_name' => Yii::t('app','Payer Name'),
+            'receipt_content_payment_method' => Yii::t('app','Payment Method'),
+            'card_no' => Yii::t('app','Card Number'),
+            'cheque_number' => Yii::t('app','Cheque Number'),
+            'receipt_responsible' => Yii::t('app','Receipt Responsible'),
+            'receipt_serial_number' => Yii::t('app','Receipt Serial Number'),
         ];
     }
 
