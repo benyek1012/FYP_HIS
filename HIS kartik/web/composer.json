@@ -1,0 +1,5 @@
+{
+    "require": {
+        "gpslab/base64uid": "^1.2"
+    }
+}
