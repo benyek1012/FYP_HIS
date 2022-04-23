@@ -335,7 +335,7 @@ class SiteController extends Controller
                 `receipt_content_sum` DECIMAL(10,2) NOT NULL,
                 `receipt_content_bill_id` VARCHAR(20),
                 `receipt_content_description` VARCHAR(100),
-                `receipt_content_date_paid` DATE NOT NULL,
+                `receipt_content_datetime_paid` DATETIME NOT NULL,
                 `receipt_content_payer_name` VARCHAR(200) NOT NULL,
                 `receipt_content_payment_method` VARCHAR(20) NOT NULL,
                 `card_no` VARCHAR(20),
