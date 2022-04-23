@@ -143,14 +143,43 @@ $free = array(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelWard, "[$index]ward_name")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(), 
-                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(), 
-                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput()->label(false) ?></td>
-                </tr>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'end_date'], 
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
+                         'pluginEvents' => [
+                            'change' => 'function () {
+                                var date1 = new Date($(".start_date").val());
+                                var date2 = new Date($(".end_date").val());
+                            
+                                var timeDifference = date2.getTime() - date1.getTime();
+                                var milliSecondsOneSecond = 1000;
+                                var secondInOneHour = 3600;
+                                var hoursInOneDay = 24;
+
+                                var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
+                                var days = Math.ceil(daysDiff);
+                                
+                                $(".day").val(days);
+
+                              
+                             }',
+                        ],])->label(false)?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  
+                    
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true, 'class' => 'day'])->label(false) ?></td> 
+                </tr> 
+                <script>
+                    // function calDiff(){
+                    //     var date1 = new Date($("[{$index}]ward_start_datetime").val());
+                    //     var date2 = new Date($("[{$index}]ward_end_datetime").val());
+
+                    //     var timeDifference = date2.getTime() - date1.getTime();
+                    //     alert(timeDifference);
+                    // }
+
+                </script>
                 <?php } ?>
             </table>
         </div>
