@@ -15,12 +15,19 @@ use yii\data\ActiveDataProvider;
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 
+$row = (new \yii\db\Query())
+->select(['bill_generation_datetime'])
+->from('bill')
+->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
+->one();
+
+
 $billuid = Base64UID::generate(32);
 $generationresponsibleuid = Base64UID::generate(32);
 $billprintresponsibleuid = Base64UID::generate(32);
 
-if(!empty( Yii::$app->request->get('rn')))
-    $initial_ward_class = $admission_model->initial_ward_class;
+if(empty( Yii::$app->request->get('bill_uid')))
+$initial_ward_class = $admission_model->initial_ward_class;
 
 
 $free = array(
@@ -69,7 +76,7 @@ $free = array(
                 </div>
 
                 <div class="col-sm-6">
-                    <?php if(!empty( Yii::$app->request->get('rn'))){ ?>
+                    <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
                     <?= $form->field($model, 'class')->textInput(['maxlength' => true,'value' => $initial_ward_class]) ?>
                     <?php }else{ ?>
                     <?= $form->field($model, 'class')->textInput(['maxlength' => true]) ?>
@@ -129,9 +136,10 @@ $free = array(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>Ward Number of Days</td>
                 </tr>
-                <?php foreach ($modelWard as $index => $modelWard) { ?>       
-                <tr>            
-                    <td><?= $form->field($modelWard, "[$index]ward_code")->textInput(['maxlength' => true])->label(false) ?></td>
+                <?php foreach ($modelWard as $index => $modelWard) { ?>
+                <tr>
+                    <td><?= $form->field($modelWard, "[$index]ward_code")->textInput(['maxlength' => true])->label(false) ?>
+                    </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelWard, "[$index]ward_name")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -140,9 +148,9 @@ $free = array(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(), 
                         ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  
-                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput()->label(false) ?></td> 
-                </tr> 
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput()->label(false) ?></td>
+                </tr>
                 <?php } ?>
             </table>
         </div>
@@ -174,18 +182,21 @@ $free = array(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>Item Total Unit Cost (RM)</td>
                 </tr>
-                <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>       
-                <tr>            
-                    <td><?= $form->field($modelTreatment, "[$index]treatment_code")->textInput(['maxlength' => true])->label(false) ?></td>
+                <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
+                <tr>
+                    <td><?= $form->field($modelTreatment, "[$index]treatment_code")->textInput(['maxlength' => true])->label(false) ?>
+                    </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelTreatment, "[$index]treatment_name")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput()->label(false) ?></td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput()->label(false) ?>
+                    </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput()->label(false) ?></td>  
+                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput()->label(false) ?></td> 
-                </tr> 
+                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput()->label(false) ?>
+                    </td>
+                </tr>
                 <?php } ?>
             </table>
         </div>
@@ -194,68 +205,74 @@ $free = array(
 </div>
 <!-- /.card -->
 
-<div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
+<a name="b">
+    <div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
             else echo 'style="display:block;"';
     ?>>
-    <div class="card-header text-white bg-primary">
-        <h3 class="card-title"><?php echo Yii::t('app','Bill Generation Details');?></h3>
-        <div class="card-tools">
-            <!-- Collapse Button -->
-            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Bill Generation Details');?></h3>
+            <div class="card-tools">
+                <!-- Collapse Button -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                        class="fas fa-minus"></i></button>
+            </div>
+            <!-- /.card-tools -->
         </div>
-        <!-- /.card-tools -->
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-        <div class="row">
-            <?= $form->field($model, 'generation_responsible_uid')->hiddenInput([
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <?= $form->field($model, 'generation_responsible_uid')->hiddenInput([
                 'readonly' => true, 'maxlength' => true,'value' => $generationresponsibleuid])->label(false) ?>
 
-            <div class="col-sm-6">
-                <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true]) ?>
-            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true]) ?>
+                </div>
 
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true]) ?>
-            </div>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true]) ?>
+                </div>
 
-        </div>
-    </div>
-    <!-- /.card-body -->
-</div>
-<!-- /.card -->
-
-<div class="card" id="print_div" style="display:none;">
-    <div class="card-header text-white bg-primary">
-        <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
-        <div class="card-tools">
-            <!-- Collapse Button -->
-            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-        </div>
-        <!-- /.card-tools -->
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-        <div class="row">
-            <?= $form->field($model, 'bill_print_responsible_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid])->label(false) ?>
-            <div class="col-sm-12">
-                <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
+        <!-- /.card-body -->
     </div>
-    <!-- /.card-body -->
-</div>
-<!-- /.card -->
+    <!-- /.card -->
+</a>
+
+<a name="p">
+    <div class="card" id="print_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
+            <div class="card-tools">
+                <!-- Collapse Button -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                        class="fas fa-minus"></i></button>
+            </div>
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <?= $form->field($model, 'bill_print_responsible_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid])->label(false) ?>
+                <div class="col-sm-12">
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</a>
 
 
 <div class="form-group">
 
-    <?php if(!empty( Yii::$app->request->get('bill_print_responsible_uid') && Yii::$app->request->get('bill_uid'))){ ?>
+    <?php if(!empty( $row['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
@@ -271,13 +288,11 @@ $free = array(
 
 
 <script>
-    
 <?php if(!empty( Yii::$app->request->get('bill_uid'))){?>
 document.getElementById("bill_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
-<?php } if(!empty( Yii::$app->request->get('bill_print_responsible_uid') && Yii::$app->request->get('bill_uid'))){ ?>
+<?php } if(!empty( $row['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
-
 </script>

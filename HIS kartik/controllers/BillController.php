@@ -135,7 +135,7 @@ class BillController extends Controller
                             // exit();
                             // return $this->redirect(['view', 'bill_uid' => $model->bill_uid, 'rn' => $model->rn]);
                             return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                                'bill_uid' => $model->bill_uid));    
+                                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));    
                         }
                     } catch (Exception $e) {
                         $transaction->rollBack();
@@ -202,11 +202,9 @@ class BillController extends Controller
             }
             $model->bill_uid = Yii::$app->request->get('bill_uid');
             $model->save();
-          //  if(empty(Yii::$app->request->get('bill_print_responsible_uid')))
-                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                'bill_uid' => $model->bill_uid, 'bill_print_responsible_uid' => $model->bill_print_responsible_uid));        
-            // else
-            //     return $this->redirect(['view', 'bill_uid' => $model->bill_uid]);
+
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'p'));        
         }
 
         return $this->render('generate', [

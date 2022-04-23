@@ -42,7 +42,7 @@ use yii\helpers\ArrayHelper;
         //         ->asArray()->all(); 
 
         
-//         $result = mysqli_query($conn, "SELECT receipt_uid, pa.rn, receipt_type, receipt_content_sum, receipt_content_bill_id, receipt_content_description, receipt_content_date_paid, receipt_content_payer_name, receipt_content_payment_method, card_no, cheque_number, receipt_responsible, receipt_serial_number, receipt_time,
+//         $result = mysqli_query($conn, "SELECT receipt_uid, pa.rn, receipt_type, receipt_content_sum, receipt_content_bill_id, receipt_content_description, receipt_content_datetime_paid, receipt_content_payer_name, receipt_content_payment_method, card_no, cheque_number, receipt_responsible, receipt_serial_number, receipt_time,
 //  name, nric, guarantor_name FROM receipt r1 INNER JOIN patient_admission pa on r1.rn=pa.rn INNER JOIN patient_information pii on pa.patient_uid=pii.patient_uid ");
 
         // echo "<pre>";
@@ -84,7 +84,7 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
 
-    <?= $form->field($model, 'receipt_content_date_paid')->hiddenInput()->label(false) ?>
+    <?= $form->field($model, 'receipt_content_datetime_paid')->hiddenInput()->label(false) ?>
 
     <div class="row">
         <div class="col-sm-6">
