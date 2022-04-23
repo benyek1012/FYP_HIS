@@ -105,7 +105,13 @@ class SiteController extends Controller
             if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
             else $model_Patient->loadDefaultValues();
             
-            if ($model_NOK->load($this->request->post())) $this->actionNOK($model_NOK);
+            if ($model_NOK->load($this->request->post())) {
+                 $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model_NOK->nok_datetime_updated = $date->format('Y-m-d H:i');
+                $model_NOK->save();
+                $this->actionNOK($model_NOK);
+            }
             else $model_NOK->loadDefaultValues();
         }
 
@@ -256,6 +262,10 @@ class SiteController extends Controller
                 `nok_relationship` VARCHAR(20),
                 `nok_phone_number` VARCHAR(100),
                 `nok_email` VARCHAR(100),
+                `nok_address1` VARCHAR(100),
+                `nok_address2` VARCHAR(100),
+                `nok_address3` VARCHAR(100),
+                `nok_datetime_updated`  DATETIME NOT NULL,
                 PRIMARY KEY (`nok_uid`),
                 FOREIGN KEY (patient_uid) REFERENCES patient_information(patient_uid)
             );"

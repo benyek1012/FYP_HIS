@@ -83,7 +83,37 @@ use kartik\editable\Editable;
                         'formOptions' => ['action' => ['/site/nok']],
                     ];
                 }
-            ],                        
+            ],   
+            [
+                'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'nok_address1',
+                'editableOptions' => function ($model) {
+                    return [                
+                        'asPopover' => false,
+                        'formOptions' => ['action' => ['/site/nok']],
+                    ];
+                }
+            ],
+            [
+                'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'nok_address2',
+                'editableOptions' => function ($model) {
+                    return [                
+                        'asPopover' => false,
+                        'formOptions' => ['action' => ['/site/nok']],
+                    ];
+                }
+            ],
+            [
+                'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'nok_address3',
+                'editableOptions' => function ($model) {
+                    return [                
+                        'asPopover' => false,
+                        'formOptions' => ['action' => ['/site/nok']],
+                    ];
+                }
+            ],                     
         ],
     ]); ?>
 
