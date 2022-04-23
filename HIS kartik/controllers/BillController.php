@@ -188,13 +188,27 @@ class BillController extends Controller
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
             
         $model = $this->findModel($bill_uid);
-        $modelWard = $this->findModel_Ward($bill_uid);
-        $modelTreatment = $this->findModel_Treatment($bill_uid);
+        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+
+        // $totalWardDays = 0;
+        // $dailyWardCost = 0.0;
+        // $totalTreatmentCost = 0.0;
+        // $billable = 0.0;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->bill_generation_datetime))
             {
                 $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
+                // foreach ($modelWard as $index => $modelWard){
+                //     $totalWardDays += "[$index]ward_number_of_days";
+                //     $dailyWardCost = "[$index]daily_ward_cost";
+                //     $totalTreatmentCost += "[$index]item_per_unit_cost" * "[$index]item_count";
+                // }
+                
+                // $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
+                // $model->bill_generation_billable_sum_rm = $billable;
+                // $model->bill_generation_final_fee_rm = $billable;
             }
             if(!empty(Yii::$app->request->get('bill_print_responsible_uid')) && empty($model->bill_print_datetime))
             {
@@ -238,24 +252,6 @@ class BillController extends Controller
     protected function findModel($bill_uid)
     {
         if (($model = Bill::findOne(['bill_uid' => $bill_uid])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    protected function findModel_Ward($bill_uid)
-    {
-        if (($model = Ward::findAll(['bill_uid' => $bill_uid])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    protected function findModel_Treatment($bill_uid)
-    {
-        if (($model = Treatment_details::findAll(['bill_uid' => $bill_uid])) !== null) {
             return $model;
         }
 
