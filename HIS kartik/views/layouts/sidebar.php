@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Bill;
+use app\models\Lookup_general;
 use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -38,6 +39,9 @@ function getInfo()
         $info = Bill::findOne(['bill_uid'=> Yii::$app->request->get('bill_uid')]);
         $info = Patient_admission::findOne(['rn'=> $info->rn]);
         $info = Patient_information::findOne(['patient_uid'=> $info->patient_uid]);
+    }
+    else{
+        $info = null;
     }
     
     return $info;
