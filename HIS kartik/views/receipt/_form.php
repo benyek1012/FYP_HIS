@@ -6,6 +6,7 @@ use app\models\Patient_information;
 use app\models\Patient_admission;
 use phpDocumentor\Reflection\Types\Array_;
 use yii\helpers\ArrayHelper;
+use app\controllers\ReceiptController;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
@@ -131,7 +132,7 @@ use yii\helpers\ArrayHelper;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Print', ['class' => 'btn btn-success', 'onclick' => 'callPrint();'] ) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
@@ -161,5 +162,11 @@ function myfunctionforType(val) {
     else
         document.getElementById("bill_div").style.display = "none";s
 }
-
+function callPrint() {   
+<?php     
+    ReceiptController::actionPrint();
+      //$a=new \app\controllers\ReceiptController();   
+        //$a->actionPrint();         
+?>            
+                   }
 </script>

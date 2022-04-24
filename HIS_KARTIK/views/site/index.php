@@ -1,0 +1,159 @@
+<?php
+
+use app\models\Patient_admission;
+use app\models\Patient_information;
+use app\models\Patient_next_of_kin;
+use yii\data\ActiveDataProvider;
+
+$model = Patient_information::findOne(Yii::$app->request->get('id'));
+if(empty($model))
+    $this->title = Yii::t('app','Home Page');
+else
+{
+
+    if($model->name != "")
+        $name = $model->name;
+    else $name = "User";
+   
+    $this->title = $name;
+    $this->params['breadcrumbs'][] = ['label' => $name];
+}
+?>
+
+<?php
+   if (Yii::$app->user->isGuest){ 
+    $this->title = 'Please Sign In';
+    $this->params['breadcrumbs'] = [['label' => $this->title]];
+    ?>
+<style type="text/css">#card1{
+display:none;
+}</style>
+<?php
+}
+else {
+    $this->title = 'Home Page';
+    $this->params['breadcrumbs'] = [['label' => $this->title]];
+    ?>
+    <style type="text/css">#loginButton{
+display:none;
+}</style>
+
+<?php
+} 
+?>
+
+<body>
+
+    <div id="card1" class="container-fluid">
+        <div class="card">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title"><?php echo Yii::t('app','Patient Admission Summary');?></h3>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <?php 
+        if(!empty($model))
+        {
+            $dataProvider1 = new ActiveDataProvider([
+                'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
+                ->orderBy(['entry_datetime' => SORT_DESC]),
+                'pagination'=>['pageSize'=>3],
+            ]);
+            echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+        } 
+        else echo Yii::t('app','RN is not selected');
+            ?>
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+        <div class="card">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title"><?php echo Yii::t('app','Patient Information');?></h3>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+
+                <!-- This is the form that shows patient information which can directly updating-->
+                <?php
+        if(!empty($model))
+        {
+    ?>
+                <?= $this->render('/patient_information/update', [
+                    'model' => $model]) ?>
+<?php   } else{
+             echo Yii::t('app','Patient is not selected');
+        }  ?>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+        <div class="card">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title"><?php echo Yii::t('app','Waris');?></h3>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+
+                <?php   
+            if(!empty($model))
+            {
+                $dataProvider2 = new ActiveDataProvider([
+                    'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
+                    'pagination'=>['pageSize'=>3],
+                    ]);
+                echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider2]);
+            } 
+            ?>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                        onclick="showDiv();"><?php echo Yii::t('app','Add Waris');?></button>
+                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                        onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
+                </div>
+
+                <?php
+            if(!empty($model)){
+                $model_nok = new Patient_next_of_kin();
+                echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
+            }
+            ?>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </div>
+
+    <script>
+    function hiddenForm() {
+        document.getElementById("NOk_Div").style.display = "none";
+    }
+
+    function showDiv() {
+        document.getElementById('NOk_Div').style.display = "block";
+    }
+    </script>

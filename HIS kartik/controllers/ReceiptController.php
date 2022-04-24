@@ -1,13 +1,16 @@
 <?php
 
 namespace app\controllers;
-
 use Yii;
 use app\models\Receipt;
 use app\models\ReceiptSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\CapabilityProfile;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
@@ -140,5 +143,36 @@ class ReceiptController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    public function actionPrint()
+    {
+
+        /*
+        $rn1 = ArrayHelper::getColumn($pa2,'rn');
+        $ed1 = ArrayHelper::getColumn($pa2,'entry_datetime');
+        $piname = ArrayHelper::map($pa3,'name','nric');
+
+         $result = implode($rn1);
+        $result2 = implode($ed1);
+    */
+       // $pa = Patient_admission::find()->select(['rn','entry_datetime'])->one();
+        //print_r($pa);
+        //$getrn = Patient_admission::findOne(['rn'=> $receipt->rn]);
+
+        $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
+        $printer = new Printer($connector);
+       // $printer -> text(($x->clearVar($result));
+        $printer -> text("2022/008023". "\n");
+        $printer -> text("Did we sucessfully print from here?". "\n");
+
+
+
+        $printer -> cut();
+        $printer -> close(); 
+
+
+        return "";
     }
 }
