@@ -35,6 +35,66 @@ $free = array(
     1 =>'Yes',    //true
 );
 
+$this->registerJs(
+    "$('.item_num').on('change', function() { 
+        var itemPerUnit = $('.item_per_unit_cost').val();
+        var itemCount = $('.item_num').val();
+
+        if(itemPerUnit != ''){
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+        }
+        
+        $('.item_total_cost').val(totalCost); 
+        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
+    });"
+);
+
+$this->registerJs(
+    "$('.item_per_unit_cost').on('change', function() { 
+        var itemPerUnit = $('.item_per_unit_cost').val();
+        var itemCount = $('.item_num').val();
+
+        if(itemCount != ''){
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+        }
+        
+        $('.item_total_cost').val(totalCost); 
+        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
+    });"
+);
+
+$this->registerJs(
+    "$('.item_per_unit_cost').on('change', function() { 
+        var itemPerUnit = $('.item_per_unit_cost').val();
+        var itemCount = $('.item_num').val();
+
+        if(itemCount != ''){
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+        }
+        
+        $('.item_total_cost').val(totalCost); 
+        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
+    });"
+);
+
+// if(!empty(Yii::$app->request->get('bill_uid'))){
+//     $totalWardDays = 0;
+//     $dailyWardCost = 0.0;
+//     $totalTreatmentCost = 0.0;
+//     $billable = 0.0;
+
+//     foreach ($modelWard as $index => $modelWard){
+//         $totalWardDays += (float) "[$index]ward_number_of_days";
+//         $dailyWardCost = (float) "[$index]daily_ward_cost";
+//         $totalTreatmentCost += (float) "[$index]item_per_unit_cost" * (float) "[$index]item_count";
+//     }
+    
+//     $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
+
+//     var_dump(floatval($dailyWardCost));
+//     exit();
+// }
+
 ?>
 
 <div class="bill-form">
@@ -84,7 +144,7 @@ $free = array(
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'class' => 'daily_ward_cost']) ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -115,6 +175,8 @@ $free = array(
     <div class="card">
         <div class="card-header text-white bg-primary">
             <h3 class="card-title"><?php echo Yii::t('app','Ward Details');?></h3>
+            <br>
+            <h3 class="card-title total_ward_cost"></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -143,14 +205,71 @@ $free = array(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelWard, "[$index]ward_name")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(), 
-                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
+                        'pluginEvents' => [
+                            'change' => 'function () {
+                                var date1 = new Date($(".start_date").val());
+                                var date2 = new Date($(".end_date").val());
+                                var item = $(".item_count").val();
+                                var dailyWardCost = $(".daily_ward_cost").val();
+                            
+                                if(date2 != ""){
+                                    var timeDifference = date2.getTime() - date1.getTime();
+                                    var milliSecondsOneSecond = 1000;
+                                    var secondInOneHour = 3600;
+                                    var hoursInOneDay = 24;
+
+                                    var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
+                                    var days = Math.ceil(daysDiff);
+
+                                    var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
+                                    
+                                    $(".day").val(days);
+                                    $(".total_ward_cost").html("(RM " + totalWardCost + ")");
+                                }
+                             }',
+                        ],])->label(false)?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(), 
-                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii']])->label(false)?></td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput()->label(false) ?></td>
-                </tr>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'end_date'], 
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
+                        'pluginEvents' => [
+                            'change' => 'function () {
+                                var date1 = new Date($(".start_date").val());
+                                var date2 = new Date($(".end_date").val());
+                                var item = $(".item_count").val();
+                                var dailyWardCost = $(".daily_ward_cost").val();
+                            
+                                if(date1 != ""){
+                                    var timeDifference = date2.getTime() - date1.getTime();
+                                    var milliSecondsOneSecond = 1000;
+                                    var secondInOneHour = 3600;
+                                    var hoursInOneDay = 24;
+
+                                    var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
+                                    var days = Math.ceil(daysDiff);
+
+                                    var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
+                                    
+                                    $(".day").val(days);
+                                    $(".total_ward_cost").html("(RM " + totalWardCost + ")");
+                                }
+                             }',
+                        ],])->label(false)?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  
+                    
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true, 'class' => 'day'])->label(false) ?></td> 
+                </tr> 
+                <script>
+                    // function calDiff(){
+                    //     var date1 = new Date($("[{$index}]ward_start_datetime").val());
+                    //     var date2 = new Date($("[{$index}]ward_end_datetime").val());
+
+                    //     var timeDifference = date2.getTime() - date1.getTime();
+                    //     alert(timeDifference);
+                    // }
+
+                </script>
                 <?php } ?>
             </table>
         </div>
@@ -161,6 +280,8 @@ $free = array(
     <div class="card">
         <div class="card-header text-white bg-primary">
             <h3 class="card-title"><?php echo Yii::t('app','Treatment Details');?></h3>
+            <br>
+            <h3 class="card-title total_treatment_amount"></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -189,14 +310,12 @@ $free = array(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelTreatment, "[$index]treatment_name")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput()->label(false) ?>
-                    </td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost'])->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput()->label(false) ?></td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num'])->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput()->label(false) ?>
-                    </td>
-                </tr>
+                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput(['class' => 'item_total_cost'])->label(false) ?></td>
+                <tr>
                 <?php } ?>
             </table>
         </div>
@@ -230,11 +349,11 @@ $free = array(
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true, 'class' => 'billalbe']) ?>
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true, 'class' => 'finalFee']) ?>
                 </div>
 
             </div>

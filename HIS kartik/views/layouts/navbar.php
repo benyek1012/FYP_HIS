@@ -14,16 +14,6 @@ use yii\bootstrap4\Dropdown;
         </li>
 
         <li class="nav-item dropdown">
-            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="/patient_admission" class="dropdown-item"><?php echo Yii::t('app','Search'); ?></a></li>
-                <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
-                <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-            </ul>
-        </li>
-
-        <li class="nav-item dropdown">
             <a href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
         </li>
         <li class="nav-item dropdown">
@@ -35,6 +25,16 @@ use yii\bootstrap4\Dropdown;
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Kod Taraf'); ?></a></li>
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Kod Rawatan'); ?></a></li>
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Other Codes'); ?></a></li>
+            </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                class="nav-link dropdown-toggle"><?php echo "Others"; ?></a>
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                <!-- <li><a href="/patient_admission" class="dropdown-item"><?php echo Yii::t('app','Search'); ?></a></li> -->
+                <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
+                <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
             </ul>
         </li>
 
