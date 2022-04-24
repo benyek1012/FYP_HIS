@@ -77,7 +77,7 @@ class BillController extends Controller
 
         //Find out how many ward have been submitted by the form
         // $count = count(Yii::$app->request->post('Ward', []));
-        $count = 2;
+        $count = 1;
 
         //Send at least one model to the form
         $modelWard = [new Ward];
