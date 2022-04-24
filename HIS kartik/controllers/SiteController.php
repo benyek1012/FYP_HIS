@@ -229,12 +229,13 @@ class SiteController extends Controller
 
     public function InitSQL(){
         $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `user` (
+            "CREATE TABLE IF NOT EXISTS `new_user` (
                 `user_uid` VARCHAR(64) NOT NULL,
-                `user_name` VARCHAR(100) NOT NULL,
+                `username` VARCHAR(100) NOT NULL,
                 `user_password` VARCHAR(20) NOT NULL,
                 `role` VARCHAR(20) NOT NULL,
                 `retire` BOOLEAN DEFAULT false,
+                `authKey` VARCHAR(45) NOT NULL,
                 PRIMARY KEY (`user_uid`)
             );"
             ,
