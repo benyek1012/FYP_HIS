@@ -12,7 +12,7 @@ use app\models\Patient_admission;
 $temp = Patient_admission::findOne(['rn'=> $model->rn]);
 $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-$this->title = $model->rn.' Payment';
+$this->title = $model->rn.Yii::t('app',' Payment');
 if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 else 
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'receipt_content_sum',
             'receipt_content_bill_id',
             'receipt_content_description',
-            'receipt_content_date_paid',
+            'receipt_content_datetime_paid',
             'receipt_content_payer_name',
             'receipt_content_payment_method',
             'card_no',

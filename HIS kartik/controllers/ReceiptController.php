@@ -68,15 +68,20 @@ class ReceiptController extends Controller
      */
     public function actionCreate()
     {
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model = new Receipt();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return Yii::$app->getResponse()->redirect(array('/receipt/update', 
-                'receipt_uid' => $model->receipt_uid));   
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if(empty($model->receipt_content_datetime_paid))
+            {
+                $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
             }
+            $model->save();
+            return Yii::$app->getResponse()->redirect(array('/receipt/update', 
+            'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
         } else {
-            $model->receipt_content_date_paid = date("Y-m-d");   
+            $model->receipt_content_datetime_paid = date("Y-m-d H:i");
             $model->loadDefaultValues();
         }
 

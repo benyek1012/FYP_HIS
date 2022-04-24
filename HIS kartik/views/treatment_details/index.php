@@ -13,7 +13,7 @@ use kartik\grid\GridView;
 <div class="treatment-details-index">
 
     <p>
-        <?= Html::a('Create Treatment Details', ['/treatment_details/create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app','Create Treatment Details'), ['/treatment_details/create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

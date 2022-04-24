@@ -33,7 +33,7 @@ class Treatment_details extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['treatment_details_uid', 'bill_uid', 'treatment_code', 'treatment_name', 'item_per_unit_cost_rm', 'item_count', 'item_total_unit_cost_rm'], 'required'],
+            [['treatment_code', 'treatment_name', 'item_per_unit_cost_rm', 'item_count', 'item_total_unit_cost_rm'], 'required'],
             [['item_per_unit_cost_rm', 'item_total_unit_cost_rm'], 'number'],
             [['item_count'], 'integer'],
             [['treatment_details_uid', 'bill_uid'], 'string', 'max' => 64],
@@ -50,13 +50,13 @@ class Treatment_details extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'treatment_details_uid' => 'Treatment Details Uid',
-            'bill_uid' => 'Bill Uid',
-            'treatment_code' => 'Treatment Code',
-            'treatment_name' => 'Treatment Name',
-            'item_per_unit_cost_rm' => 'Item Per Unit Cost Rm',
-            'item_count' => 'Item Count',
-            'item_total_unit_cost_rm' => 'Item Total Unit Cost Rm',
+            'treatment_details_uid' => Yii::t('app','Treatment Details Uid'),
+            'bill_uid' => Yii::t('app','Bill Uid'),
+            'treatment_code' => Yii::t('app','Treatment Code'),
+            'treatment_name' => Yii::t('app','Treatment Name'),
+            'item_per_unit_cost_rm' => Yii::t('app','Item Per Unit Cost Rm'),
+            'item_count' => Yii::t('app','Item Count'),
+            'item_total_unit_cost_rm' => Yii::t('app','Item Total Unit Cost Rm'),
         ];
     }
 

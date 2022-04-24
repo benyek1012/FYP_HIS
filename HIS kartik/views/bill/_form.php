@@ -15,11 +15,85 @@ use yii\data\ActiveDataProvider;
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 
+$row = (new \yii\db\Query())
+->select(['bill_generation_datetime'])
+->from('bill')
+->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
+->one();
+
+
 $billuid = Base64UID::generate(32);
 $generationresponsibleuid = Base64UID::generate(32);
 $billprintresponsibleuid = Base64UID::generate(32);
 
+if(empty( Yii::$app->request->get('bill_uid')))
 $initial_ward_class = $admission_model->initial_ward_class;
+
+
+$free = array(
+    0 =>'No', //false
+    1 =>'Yes',    //true
+);
+
+$this->registerJs(
+    "$('.item_num').on('change', function() { 
+        var itemPerUnit = $('.item_per_unit_cost').val();
+        var itemCount = $('.item_num').val();
+
+        if(itemPerUnit != ''){
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+        }
+        
+        $('.item_total_cost').val(totalCost); 
+        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
+    });"
+);
+
+$this->registerJs(
+    "$('.item_per_unit_cost').on('change', function() { 
+        var itemPerUnit = $('.item_per_unit_cost').val();
+        var itemCount = $('.item_num').val();
+
+        if(itemCount != ''){
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+        }
+        
+        $('.item_total_cost').val(totalCost); 
+        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
+    });"
+);
+
+$this->registerJs(
+    "$('.item_per_unit_cost').on('change', function() { 
+        var itemPerUnit = $('.item_per_unit_cost').val();
+        var itemCount = $('.item_num').val();
+
+        if(itemCount != ''){
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+        }
+        
+        $('.item_total_cost').val(totalCost); 
+        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
+    });"
+);
+
+// if(!empty(Yii::$app->request->get('bill_uid'))){
+//     $totalWardDays = 0;
+//     $dailyWardCost = 0.0;
+//     $totalTreatmentCost = 0.0;
+//     $billable = 0.0;
+
+//     foreach ($modelWard as $index => $modelWard){
+//         $totalWardDays += (float) "[$index]ward_number_of_days";
+//         $dailyWardCost = (float) "[$index]daily_ward_cost";
+//         $totalTreatmentCost += (float) "[$index]item_per_unit_cost" * (float) "[$index]item_count";
+//     }
+    
+//     $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
+
+//     var_dump(floatval($dailyWardCost));
+//     exit();
+// }
 
 ?>
 
@@ -34,13 +108,11 @@ $initial_ward_class = $admission_model->initial_ward_class;
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
         ],
     ]); 
-?>
-
-    <?php /*  $this->render('/ward/create', ['model' => $model, 'modelWard' => $modelWard]) */?>
+    ?>
 
     <div class="card">
         <div class="card-header text-white bg-primary">
-            <h3 class="card-title"><?php echo "Billing Details";?></h3>
+            <h3 class="card-title"><?php echo Yii::t('app','Billing Details');?></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -64,11 +136,15 @@ $initial_ward_class = $admission_model->initial_ward_class;
                 </div>
 
                 <div class="col-sm-6">
+                    <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
                     <?= $form->field($model, 'class')->textInput(['maxlength' => true,'value' => $initial_ward_class]) ?>
+                    <?php }else{ ?>
+                    <?= $form->field($model, 'class')->textInput(['maxlength' => true]) ?>
+                    <?php } ?>
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'class' => 'daily_ward_cost']) ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -80,7 +156,7 @@ $initial_ward_class = $admission_model->initial_ward_class;
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'is_free')->textInput() ?>
+                    <?= $form->field($model, 'is_free')->dropDownList($free) ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -98,7 +174,9 @@ $initial_ward_class = $admission_model->initial_ward_class;
 
     <div class="card">
         <div class="card-header text-white bg-primary">
-            <h3 class="card-title"><?php echo "Ward Details";?></h3>
+            <h3 class="card-title"><?php echo Yii::t('app','Ward Details');?></h3>
+            <br>
+            <h3 class="card-title total_ward_cost"></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -108,93 +186,92 @@ $initial_ward_class = $admission_model->initial_ward_class;
         </div>
         <!-- /.card-header -->
         <div class="card-body">
+            <table>
+                <tr>
+                    <td>Ward Code</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward Name</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward Start Datetime</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward End Datetime</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Ward Number of Days</td>
+                </tr>
+                <?php foreach ($modelWard as $index => $modelWard) { ?>
+                <tr>
+                    <td><?= $form->field($modelWard, "[$index]ward_code")->textInput(['maxlength' => true])->label(false) ?>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[$index]ward_name")->textInput()->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
+                        'pluginEvents' => [
+                            'change' => 'function () {
+                                var date1 = new Date($(".start_date").val());
+                                var date2 = new Date($(".end_date").val());
+                                var item = $(".item_count").val();
+                                var dailyWardCost = $(".daily_ward_cost").val();
+                            
+                                if(date2 != ""){
+                                    var timeDifference = date2.getTime() - date1.getTime();
+                                    var milliSecondsOneSecond = 1000;
+                                    var secondInOneHour = 3600;
+                                    var hoursInOneDay = 24;
 
-            <div class="row">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><i class="glyphicon glyphicon-envelope"></i>Ward</h4>
-                    </div>
-                    <div class="panel-body">
-                        <?php DynamicFormWidget::begin([
-                'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
-                'widgetBody' => '.container-items', // required: css class selector
-                'widgetItem' => '.item', // required: css class
-                // 'limit' => 4, // the maximum times, an element can be cloned (default 999)
-                'min' => 1, // 0 or 1 (default 1)
-                'insertButton' => '.add-item', // css class
-                'deleteButton' => '.remove-item', // css class
-                'model' => $modelWard[0],
-                'formId' => 'ward-dynamic-form',
-                'formFields' => [
-                    'ward_uid',
-                    'bill_uid',
-                    'ward_code',
-                    'ward_name',
-                    'ward_start_datetime',
-                    'ward_end_datetime',
-                    'ward_numbers_of_days',
-                ],
-            ]); ?>
+                                    var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
+                                    var days = Math.ceil(daysDiff);
 
-                        <div class="container-items">
-                            <!-- widgetContainer -->
-                            <?php foreach ($modelWard as $i => $modelWard): ?>
-                            <div class="item panel panel-default">
-                                <!-- widgetBody -->
-                                <div class="panel-heading">
-                                    <!-- <h3 class="panel-title pull-left">Ward</h3> -->
-                                    <div class="pull-right">
-                                        <button type="button" class="add-item btn btn-success btn-xs"><i
-                                                class="glyphicon glyphicon-plus">+</i></button>
-                                        <button type="button" class="remove-item btn btn-danger btn-xs"><i
-                                                class="glyphicon glyphicon-minus">-</i></button>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="panel-body">
-                                    <?php
-                            // necessary for update action.
-                            // if (! $modelWard->modelWard) {
-                            //     echo Html::activeHiddenInput($modelWard, "[{$i}]ward_id");
-                            // }
-                        ?>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_uid")->textInput(['maxlength' => true, 'value' => Base64UID::generate(32)]);  ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]bill_uid")->textInput(['maxlength' => true, 'value' => $billuid]); ?>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_code")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_name")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                    </div><!-- .row -->
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_start_datetime")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_end_datetime")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                    </div><!-- .row -->
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <?= $form->field($modelWard, "[{$i}]ward_number_of_days")->textInput(['maxlength' => true]) ?>
-                                        </div>
-                                    </div><!-- .row -->
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php DynamicFormWidget::end(); ?>
-                    </div>
-                </div>
-            </div>
+                                    var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
+                                    
+                                    $(".day").val(days);
+                                    $(".total_ward_cost").html("(RM " + totalWardCost + ")");
+                                }
+                             }',
+                        ],])->label(false)?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'end_date'], 
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
+                        'pluginEvents' => [
+                            'change' => 'function () {
+                                var date1 = new Date($(".start_date").val());
+                                var date2 = new Date($(".end_date").val());
+                                var item = $(".item_count").val();
+                                var dailyWardCost = $(".daily_ward_cost").val();
+                            
+                                if(date1 != ""){
+                                    var timeDifference = date2.getTime() - date1.getTime();
+                                    var milliSecondsOneSecond = 1000;
+                                    var secondInOneHour = 3600;
+                                    var hoursInOneDay = 24;
+
+                                    var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
+                                    var days = Math.ceil(daysDiff);
+
+                                    var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
+                                    
+                                    $(".day").val(days);
+                                    $(".total_ward_cost").html("(RM " + totalWardCost + ")");
+                                }
+                             }',
+                        ],])->label(false)?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  
+                    
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true, 'class' => 'day'])->label(false) ?></td> 
+                </tr> 
+                <script>
+                    // function calDiff(){
+                    //     var date1 = new Date($("[{$index}]ward_start_datetime").val());
+                    //     var date2 = new Date($("[{$index}]ward_end_datetime").val());
+
+                    //     var timeDifference = date2.getTime() - date1.getTime();
+                    //     alert(timeDifference);
+                    // }
+
+                </script>
+                <?php } ?>
+            </table>
         </div>
         <!-- /.card-body -->
     </div>
@@ -202,7 +279,9 @@ $initial_ward_class = $admission_model->initial_ward_class;
 
     <div class="card">
         <div class="card-header text-white bg-primary">
-            <h3 class="card-title"><?php echo "Treatment Details";?></h3>
+            <h3 class="card-title"><?php echo Yii::t('app','Treatment Details');?></h3>
+            <br>
+            <h3 class="card-title total_treatment_amount"></h3>
             <div class="card-tools">
                 <!-- Collapse Button -->
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -212,90 +291,127 @@ $initial_ward_class = $admission_model->initial_ward_class;
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <?php
-                $dataProvider2 = new ActiveDataProvider([
-                'query'=> Treatment_details::find()->where(['bill_uid'=>$model->bill_uid]),
-                'pagination'=>['pageSize'=>3],
-                ]);
-                echo $this->render('/treatment_details/index', ['dataProvider'=>$dataProvider2]);
-            ?>
+            <table>
+                <tr>
+                    <td>Treatment Code</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Treatment Name</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Item Per Unit Cost (RM)</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Item Count</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>Item Total Unit Cost (RM)</td>
+                </tr>
+                <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
+                <tr>
+                    <td><?= $form->field($modelTreatment, "[$index]treatment_code")->textInput(['maxlength' => true])->label(false) ?>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]treatment_name")->textInput()->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost'])->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num'])->label(false) ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput(['class' => 'item_total_cost'])->label(false) ?></td>
+                <tr>
+                <?php } ?>
+            </table>
         </div>
     </div>
     <!-- /.card-body -->
 </div>
 <!-- /.card -->
 
-<div class="card">
-    <div class="card-header text-white bg-primary">
-        <h3 class="card-title"><?php echo "Bill Generation Details";?></h3>
-        <div class="card-tools">
-            <!-- Collapse Button -->
-            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+<a name="b">
+    <div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
+            else echo 'style="display:block;"';
+    ?>>
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Bill Generation Details');?></h3>
+            <div class="card-tools">
+                <!-- Collapse Button -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                        class="fas fa-minus"></i></button>
+            </div>
+            <!-- /.card-tools -->
         </div>
-        <!-- /.card-tools -->
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-        <div class="row">
-            <?= $form->field($model, 'generation_responsible_uid')->hiddenInput([
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <?= $form->field($model, 'generation_responsible_uid')->hiddenInput([
                 'readonly' => true, 'maxlength' => true,'value' => $generationresponsibleuid])->label(false) ?>
 
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_generation_datetime')->widget(DateTimePicker::classname(), 
-                        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii' ]])?>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+                </div>
             </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true, 'class' => 'billalbe']) ?>
+                </div>
 
-            <div class="col-sm-6">
-                <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
-            </div>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true, 'class' => 'finalFee']) ?>
+                </div>
 
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true]) ?>
-            </div>
-
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true]) ?>
-            </div>
-
-        </div>
-    </div>
-    <!-- /.card-body -->
-</div>
-<!-- /.card -->
-
-<div class="card">
-    <div class="card-header text-white bg-primary">
-        <h3 class="card-title"><?php echo "Printing Details";?></h3>
-        <div class="card-tools">
-            <!-- Collapse Button -->
-            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-        </div>
-        <!-- /.card-tools -->
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-        <div class="row">
-            <?= $form->field($model, 'bill_print_responsible_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid])->label(false) ?>
-
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_print_datetime')->widget(DateTimePicker::classname(), 
-        ['pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii' ]
-    ])?>
-            </div>
-
-            <div class="col-sm-6">
-                <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
             </div>
         </div>
+        <!-- /.card-body -->
     </div>
-    <!-- /.card-body -->
-</div>
-<!-- /.card -->
+    <!-- /.card -->
+</a>
+
+<a name="p">
+    <div class="card" id="print_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
+            <div class="card-tools">
+                <!-- Collapse Button -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                        class="fas fa-minus"></i></button>
+            </div>
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <?= $form->field($model, 'bill_print_responsible_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid])->label(false) ?>
+                <div class="col-sm-12">
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</a>
+
 
 <div class="form-group">
-    <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+
+    <?php if(!empty( $row['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+    <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
+    <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
+    <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
+    <?php }else{ ?>
+    <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+    <?php } ?>
 </div>
+
 
 <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
+
+
+<script>
+<?php if(!empty( Yii::$app->request->get('bill_uid'))){?>
+document.getElementById("bill_div").style.display = "block";
+document.getElementById('print_div').style.display = "none";
+<?php } if(!empty( $row['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+document.getElementById("print_div").style.display = "block";
+document.getElementById('card_div').style.display = "block";
+<?php } ?>
+</script>

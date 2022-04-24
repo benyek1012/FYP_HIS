@@ -7,6 +7,16 @@ use yii\widgets\ActiveForm;
 use app\models\Patient_information;
 use app\models\Receipt;
 
+if (Yii::$app->user->isGuest){ 
+    ?>
+  
+<style type="text/css">#sidebarx{
+display:none;
+}</style>
+
+<?php
+}
+
 function getInfo()
 {
     if(!empty(Yii::$app->request->get('id'))){
@@ -95,7 +105,7 @@ if(!empty(Yii::$app->request->queryParams))
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div id="sidebarx" class="sidebar">
         <!-- Search Bar -->
         <div class="user-panel">
             <!-- SidebarSearch Form -->

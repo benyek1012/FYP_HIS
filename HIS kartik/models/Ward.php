@@ -33,7 +33,7 @@ class Ward extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ward_uid', 'bill_uid', 'ward_code', 'ward_name', 'ward_start_datetime', 'ward_end_datetime', 'ward_number_of_days'], 'required'],
+            [['ward_code', 'ward_name', 'ward_start_datetime', 'ward_end_datetime', 'ward_number_of_days'], 'required'],
             [['ward_start_datetime', 'ward_end_datetime', 'ward_number_of_days'], 'safe'],
             [['ward_uid', 'bill_uid'], 'string', 'max' => 64],
             [['ward_code'], 'string', 'max' => 20],
@@ -49,13 +49,13 @@ class Ward extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'ward_uid' => 'Ward Uid',
-            'bill_uid' => 'Bill Uid',
-            'ward_code' => 'Ward Code',
-            'ward_name' => 'Ward Name',
-            'ward_start_datetime' => 'Ward Start Datetime',
-            'ward_end_datetime' => 'Ward End Datetime',
-            'ward_number_of_days' => 'Ward Number Of Days',
+            'ward_uid' => Yii::t('app','Ward Uid'),
+            'bill_uid' => Yii::t('app','Bill Uid'),
+            'ward_code' => Yii::t('app','Ward Code'),
+            'ward_name' => Yii::t('app','Ward Name'),
+            'ward_start_datetime' => Yii::t('app','Ward Start Datetime'),
+            'ward_end_datetime' => Yii::t('app','Ward End Datetime'),
+            'ward_number_of_days' => Yii::t('app','Ward Number Of Days'),
         ];
     }
 

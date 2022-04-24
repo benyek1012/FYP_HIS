@@ -13,7 +13,7 @@ use Yii;
  * @property float $receipt_content_sum
  * @property string|null $receipt_content_bill_id
  * @property string|null $receipt_content_description
- * @property string $receipt_content_date_paid
+ * @property string $receipt_content_datetime_paid
  * @property string $receipt_content_payer_name
  * @property string $receipt_content_payment_method
  * @property string|null $card_no
@@ -40,9 +40,9 @@ class Receipt extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_date_paid', 'receipt_content_payment_method', 'receipt_responsible', 'receipt_serial_number'], 'required'],
+            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_datetime_paid','receipt_content_sum', 'receipt_content_payment_method', 'receipt_responsible', 'receipt_serial_number'], 'required'],
         //    [['receipt_content_sum'], 'number'],
-            [['receipt_content_date_paid'], 'safe'],
+            [['receipt_content_datetime_paid'], 'safe'],
             [['receipt_uid', 'rn', 'receipt_responsible'], 'string', 'max' => 64],
             [['receipt_type', 'receipt_content_bill_id', 'receipt_content_payment_method', 'card_no', 'cheque_number', 'receipt_serial_number'], 'string', 'max' => 20],
             [['receipt_content_description'], 'string', 'max' => 100],
@@ -58,19 +58,19 @@ class Receipt extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'receipt_uid' => 'Receipt Uid',
+            'receipt_uid' => Yii::t('app','Receipt Uid'),
             'rn' => 'Rn',
-            'receipt_type' => 'Receipt Type',
-            'receipt_content_sum' => 'Receipt Content Summary',
-            'receipt_content_bill_id' => 'Receipt Content Bill ID',
-            'receipt_content_description' => 'Receipt Content Description',
-            'receipt_content_date_paid' => 'Receipt Content Date Paid',
-            'receipt_content_payer_name' => 'Receipt Content Payer Name',
-            'receipt_content_payment_method' => 'Receipt Content Payment Method',
-            'card_no' => 'Card No',
-            'cheque_number' => 'Cheque Number',
-            'receipt_responsible' => 'Receipt Responsible',
-            'receipt_serial_number' => 'Receipt Serial Number',
+            'receipt_type' => Yii::t('app','Receipt Type'),
+            'receipt_content_sum' => Yii::t('app','Receipt Summary'),
+            'receipt_content_bill_id' => Yii::t('app','Receipt Bill ID'),
+            'receipt_content_description' => Yii::t('app','Receipt Description'),
+            'receipt_content_datetime_paid' => Yii::t('app','Receipt Content Date Time Paid'),
+            'receipt_content_payer_name' => Yii::t('app','Payer Name'),
+            'receipt_content_payment_method' => Yii::t('app','Payment Method'),
+            'card_no' => Yii::t('app','Card Number'),
+            'cheque_number' => Yii::t('app','Cheque Number'),
+            'receipt_responsible' => Yii::t('app','Receipt Responsible'),
+            'receipt_serial_number' => Yii::t('app','Receipt Serial Number'),
         ];
     }
 

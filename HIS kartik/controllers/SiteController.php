@@ -105,7 +105,13 @@ class SiteController extends Controller
             if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
             else $model_Patient->loadDefaultValues();
             
-            if ($model_NOK->load($this->request->post())) $this->actionNOK($model_NOK);
+            if ($model_NOK->load($this->request->post())) {
+                 $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model_NOK->nok_datetime_updated = $date->format('Y-m-d H:i');
+                $model_NOK->save();
+                $this->actionNOK($model_NOK);
+            }
             else $model_NOK->loadDefaultValues();
         }
 
@@ -256,6 +262,10 @@ class SiteController extends Controller
                 `nok_relationship` VARCHAR(20),
                 `nok_phone_number` VARCHAR(100),
                 `nok_email` VARCHAR(100),
+                `nok_address1` VARCHAR(100),
+                `nok_address2` VARCHAR(100),
+                `nok_address3` VARCHAR(100),
+                `nok_datetime_updated`  DATETIME NOT NULL,
                 PRIMARY KEY (`nok_uid`),
                 FOREIGN KEY (patient_uid) REFERENCES patient_information(patient_uid)
             );"
@@ -297,7 +307,7 @@ class SiteController extends Controller
                 `description` VARCHAR(200),
                 `bill_print_responsible_uid` VARCHAR(64),
                 `bill_print_datetime` DATETIME,
-                `bill_print_id` VARCHAR(20) UNIQUE, 
+                `bill_print_id` VARCHAR(20), 
                  PRIMARY KEY (`bill_uid`),
                  FOREIGN KEY (rn) REFERENCES patient_admission(rn)
                 /* FOREIGN KEY (generation_responsible_uid) REFERENCES,
@@ -311,7 +321,7 @@ class SiteController extends Controller
                 `ward_name` VARCHAR(50) NOT NULL,
                 `ward_start_datetime` DATETIME NOT NULL,
                 `ward_end_datetime` DATETIME NOT NULL,
-                `ward_number_of_days` DATETIME NOT NULL,
+                `ward_number_of_days` INT NOT NULL,
                 PRIMARY KEY (`ward_uid`),
                 FOREIGN KEY (bill_uid) REFERENCES bill(bill_uid)
             );"
@@ -335,7 +345,7 @@ class SiteController extends Controller
                 `receipt_content_sum` DECIMAL(10,2) NOT NULL,
                 `receipt_content_bill_id` VARCHAR(20),
                 `receipt_content_description` VARCHAR(100),
-                `receipt_content_date_paid` DATE NOT NULL,
+                `receipt_content_datetime_paid` DATETIME NOT NULL,
                 `receipt_content_payer_name` VARCHAR(200) NOT NULL,
                 `receipt_content_payment_method` VARCHAR(20) NOT NULL,
                 `card_no` VARCHAR(20),

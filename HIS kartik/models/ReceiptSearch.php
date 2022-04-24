@@ -17,7 +17,7 @@ class ReceiptSearch extends Receipt
     public function rules()
     {
         return [
-            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_bill_id', 'receipt_content_description', 'receipt_content_date_paid', 'receipt_content_payer_name', 'receipt_content_payment_method', 'card_no', 'cheque_number', 'receipt_responsible', 'receipt_serial_number'], 'safe'],
+            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_bill_id', 'receipt_content_description', 'receipt_content_datetime_paid', 'receipt_content_payer_name', 'receipt_content_payment_method', 'card_no', 'cheque_number', 'receipt_responsible', 'receipt_serial_number'], 'safe'],
             [['receipt_content_sum'], 'number'],
         ];
     }
@@ -59,7 +59,7 @@ class ReceiptSearch extends Receipt
         // grid filtering conditions
         $query->andFilterWhere([
             'receipt_content_sum' => $this->receipt_content_sum,
-            'receipt_content_date_paid' => $this->receipt_content_date_paid,
+            'receipt_content_datetime_paid' => $this->receipt_content_datetime_paid,
         ]);
 
         $query->andFilterWhere(['like', 'receipt_uid', $this->receipt_uid])

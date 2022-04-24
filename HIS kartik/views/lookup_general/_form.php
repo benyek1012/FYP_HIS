@@ -1,6 +1,7 @@
 <?php
 
-use yii\bootstrap4\Html;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use GpsLab\Component\Base64UID\Base64UID;
 
 /* @var $this yii\web\View */
@@ -10,7 +11,8 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 <div class="lookup-general-form" id="LOK_div" style="display:none;">
 
-<?php $form = kartik\form\ActiveForm::begin([
+    <?php $form = kartik\form\ActiveForm::begin([
+        'action' => ['lookup_general/create', 'lookup_general_uid'=>$model['lookup_general_uid']],
         'id' => 'lookup-general-form',
         'type' => 'vertical',
         'fieldConfig' => [
@@ -21,10 +23,10 @@ use GpsLab\Component\Base64UID\Base64UID;
     ]); 
     $lookup_general_uid = Base64UID::generate(32);
     ?>
-    
+
     <div class ="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'lookup_general_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $lookup_general_uid])?>
+            <?= $form->field($model, 'lookup_general_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $lookup_general_uid]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
@@ -37,15 +39,14 @@ use GpsLab\Component\Base64UID\Base64UID;
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'long_description')->textInput(['maxlength' => true]) ?>
-        </div> 
+        </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'recommend')->textInput() ?>
         </div>
     </div>
-    
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
