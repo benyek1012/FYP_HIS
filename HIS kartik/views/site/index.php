@@ -20,9 +20,31 @@ else
 }
 ?>
 
+<?php
+   if (Yii::$app->user->isGuest){ 
+    $this->title = 'Please Sign In';
+    $this->params['breadcrumbs'] = [['label' => $this->title]];
+    ?>
+<style type="text/css">#card1{
+display:none;
+}</style>
+<?php
+}
+else {
+    $this->title = 'Home Page';
+    $this->params['breadcrumbs'] = [['label' => $this->title]];
+    ?>
+    <style type="text/css">#loginButton{
+display:none;
+}</style>
+
+<?php
+} 
+?>
+
 <body>
 
-    <div class="container-fluid">
+    <div id="card1" class="container-fluid">
         <div class="card">
             <div class="card-header text-white bg-primary">
                 <h3 class="card-title"><?php echo Yii::t('app','Patient Admission Summary');?></h3>

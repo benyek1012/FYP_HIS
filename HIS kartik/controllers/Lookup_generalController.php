@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Lookup_general;
 use app\models\Lookup_generalSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\grid\EditableColumnAction;
+use yii\helpers\ArrayHelper;
 
 /**
  * Lookup_generalController implements the CRUD actions for Lookup_general model.
@@ -31,6 +34,19 @@ class Lookup_generalController extends Controller
         );
     }
 
+    public function actions()
+    {
+        return ArrayHelper::merge(parent::actions(), [
+            'lookup' => [                                                              // identifier for your editable action
+                'class' => EditableColumnAction::className(),                       // action class name
+                'modelClass' => Lookup_general::className(),                   // the update model class
+                'outputValue' => function ($model, $attribute, $key, $index) {
+                    $value = $model->$attribute;  
+                }
+            ]
+        ]);
+    }
+
     /**
      * Lists all Lookup_general models.
      *
@@ -38,13 +54,50 @@ class Lookup_generalController extends Controller
      */
     public function actionIndex()
     {
+
+        $modelLOK = new Lookup_general();
         $searchModel = new Lookup_generalSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        if ($this->request->isPost)
+        {
+            if ($modelLOK->load($this->request->post())) $this->actionLOK($modelLOK);
+            else $modelLOK->loadDefaultValues();
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionLOK($modelLOK){
+       if ($modelLOK->save()) {
+            $model_founded = Lookup_generalController::findModel($modelLOK->lookup_general_uid);
+            if(!empty($model_founded))
+                return Yii::$app->getResponse()->redirect(array('/lookup_general/index', 
+                    'lok' => $model_founded->lookup_general_uid));
+        }
+    }
+
+    public function InitSQL(){
+        $Tables = array(
+            "CREATE TABLE IF NOT EXISTS `lookup_general` (
+                `lookup_general_uid` VARCHAR(64) NOT NULL,
+                `code` VARCHAR(20) UNIQUE NOT NULL,
+                `category` VARCHAR(20) NOT NULL,
+                `name` VARCHAR(50) NOT NULL,
+                `long_description` VARCHAR(100) NOT NULL,
+                `recommend` BOOLEAN NOT NULL DEFAULT true,
+                PRIMARY KEY (`lookup_general_uid`)
+           );"
+        );
+
+        for($i=0; $i < count($Tables); $i++)
+        {
+            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
+            $sqlCommand->execute();    
+        }
     }
 
     /**
@@ -71,7 +124,7 @@ class Lookup_generalController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'lookup_general_uid' => $model->lookup_general_uid]);
+                return $this->redirect(['index', 'lookup_general_uid' => $model->lookup_general_uid]);
             }
         } else {
             $model->loadDefaultValues();

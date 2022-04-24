@@ -1,11 +1,22 @@
 <?php
 
 use app\models\Bill;
+use app\models\Lookup_general;
 use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_information;
 use app\models\Receipt;
+
+if (Yii::$app->user->isGuest){ 
+    ?>
+  
+<style type="text/css">#sidebarx{
+display:none;
+}</style>
+
+<?php
+}
 
 function getInfo()
 {
@@ -28,6 +39,9 @@ function getInfo()
         $info = Bill::findOne(['bill_uid'=> Yii::$app->request->get('bill_uid')]);
         $info = Patient_admission::findOne(['rn'=> $info->rn]);
         $info = Patient_information::findOne(['patient_uid'=> $info->patient_uid]);
+    }
+    else{
+        $info = null;
     }
     
     return $info;
@@ -95,7 +109,7 @@ if(!empty(Yii::$app->request->queryParams))
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div id="sidebarx" class="sidebar">
         <!-- Search Bar -->
         <div class="user-panel">
             <!-- SidebarSearch Form -->
