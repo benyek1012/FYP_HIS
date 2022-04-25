@@ -117,7 +117,9 @@ class SiteController extends Controller
 
         if(!empty(Yii::$app->request->get('type'))) Patient_admissionController::actionCreate();
         
-        return $this->render('index');
+        if (Yii::$app->user->isGuest)
+            return $this->redirect('/site/login');
+        else return $this->render('index');
     }
     /**
      * Login action.

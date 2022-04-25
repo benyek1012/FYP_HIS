@@ -10,7 +10,6 @@ if(empty($model))
     $this->title = Yii::t('app','Home Page');
 else
 {
-
     if($model->name != "")
         $name = $model->name;
     else $name = "User";
@@ -18,28 +17,6 @@ else
     $this->title = $name;
     $this->params['breadcrumbs'][] = ['label' => $name];
 }
-?>
-
-<?php
-   if (Yii::$app->user->isGuest){ 
-    $this->title = 'Please Sign In';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-<style type="text/css">#card1{
-display:none;
-}</style>
-<?php
-}
-else {
-    $this->title = 'Home Page';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-    <style type="text/css">#loginButton{
-display:none;
-}</style>
-
-<?php
-} 
 ?>
 
 <body>
