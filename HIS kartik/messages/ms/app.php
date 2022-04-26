@@ -108,7 +108,7 @@ return[
     'Receipt Summary' => 'Ringkasan Resit',
     'Receipt Bill ID' => 'ID Bil Resit',
     'Receipt Description'=> 'Perihalan Resit',
-    'Receipt Content Date Time Paid'=>'Tarikh Kandungan Resit Dibayar',
+    'Payment Date'=>'Tarikh bayaran',
     'Payer Name' => 'Nama Pembayar',
     'Payment Method' => 'Kaedah Pembayaran',
     'Card Number' => 'Nombor kad',

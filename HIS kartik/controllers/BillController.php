@@ -164,14 +164,23 @@ class BillController extends Controller
     public function actionUpdate($bill_uid)
     {
         $model = $this->findModel($bill_uid);
+        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'bill_uid' => $model->bill_uid]);
+        if ($this->request->isPost) {
+            foreach($modelWard as $w)
+                $w->save();
+            foreach($modelTreatment as $t)
+                $t->save();
+          //  $model->save();
+            return Yii::$app->getResponse()->redirect(array('/bill/update', 
+            'bill_uid' => $model->bill_uid, 'rn' => $model->rn));     
         }
 
         return $this->render('update', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+            'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details()] : $modelTreatment,
         ]);
     }
 

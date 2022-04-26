@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Patient_information;
+use app\models\Bill;
 use app\models\Patient_admission;
 use phpDocumentor\Reflection\Types\Array_;
 use yii\helpers\ArrayHelper;
@@ -15,11 +16,18 @@ use yii\helpers\ArrayHelper;
 <div class="receipt-form">
 
     <?php  
-        $receipt = array(
-            'deposit'=>'Deposit',
-            'bill'=>'Bill',
-            'refund'=>'Refund',
-        );
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+        if(!empty($model_bill))
+            // Once bill is generated, can't pay deposit. Only allow bill or refund
+            $receipt = array(
+                'bill'=>'Bill',
+                'refund'=>'Refund',
+            );
+        else
+            $receipt = array(
+                'deposit'=>'Deposit',
+                'refund'=>'Refund',
+            );
 
         $payment_method = array(
             'cash'=>'Cash',
@@ -51,15 +59,15 @@ use yii\helpers\ArrayHelper;
         // exit();
         
         $rows = (new \yii\db\Query())
-        ->select(['`patient_next_of_kin`.`nok_name`,`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
-        ->from('patient_information, patient_next_of_kin,patient_admission')
+        ->select(['`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
+        ->from('patient_information,  patient_admission')
         ->where(['patient_information.patient_uid' => $temp->patient_uid])
-        ->andWhere('patient_next_of_kin.patient_uid = patient_information.patient_uid')
-        ->andWhere('patient_admission.patient_uid = patient_information.patient_uid')
+        ->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
         ->all();
+        
         $names = [];
-        foreach ($rows as $row) {
-           $names += $row;    
+        foreach($rows as $row){
+            $names += $row;
         }
 
         
@@ -93,11 +101,11 @@ use yii\helpers\ArrayHelper;
         </div>
 
         <div class="col-sm-6" id="bill_div" style="display:none;">
-            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id]) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'value' => $model_bill->bill_generation_billable_sum_rm]) ?>
         </div>
 
         <div class="col-sm-6">

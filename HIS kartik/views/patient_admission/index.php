@@ -12,6 +12,8 @@ use yii\helpers\Html;
     <!-- This is the gridview that shows patient admission summary-->
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
+        'showOnEmpty' => false,
+        'emptyText' => 'No Admission Record Founded!',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
                 [
