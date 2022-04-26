@@ -71,8 +71,10 @@ else
         if(!empty($model))
         {
     ?>
+            <a name="pa"> </a>
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
+           
 <?php   } else{
              echo Yii::t('app','Patient is not selected');
         }  ?>
@@ -111,7 +113,7 @@ else
                     <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
                         onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
                 </div>
-
+                <a name='nok'></a>
                 <?php
             if(!empty($model)){
                 $model_nok = new Patient_next_of_kin();

@@ -225,7 +225,7 @@ class SiteController extends Controller
             $model_founded = Patient_informationController::findModel($modelNOK->patient_uid);
             if(!empty($model_founded))
                 return Yii::$app->getResponse()->redirect(array('/site/index', 
-                    'id' => $model_founded->patient_uid));
+                    'id' => $model_founded->patient_uid, '#' => 'nok'));        
         }
     }
 
