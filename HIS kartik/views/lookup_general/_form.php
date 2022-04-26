@@ -41,7 +41,7 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'long_description')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'recommend')->textInput() ?>
+            <?= $form->field($model, 'recommend')->textInput(['value' => '1']) ?>
         </div>
     </div>
 

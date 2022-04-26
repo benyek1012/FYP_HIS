@@ -38,11 +38,11 @@ display:none;
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li><a href="/lookup_general" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a></li>
-            <?php /*    <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Users'); ?></a></li> */ ?>
-                <li><a href="/lookup_ward" class="dropdown-item"><?php echo Yii::t('app','Kod Wad'); ?></a></li>
-                <li><a href="/lookup_status" class="dropdown-item"><?php echo Yii::t('app','Kod Taraf'); ?></a></li>
-                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Kod Rawatan'); ?></a></li>
-                <li><a href="/lookup_department" class="dropdown-item"><?php echo Yii::t('app','Other Codes'); ?></a></li>
+                <!--<li><a href="#" class="dropdown-item"><//?php echo Yii::t('app','Users'); ?></a></li> -->
+                <li><a href="/lookup_ward" class="dropdown-item"><?php echo Yii::t('app','Ward codes'); ?></a></li>
+                <li><a href="/lookup_status" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
+                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Treatment codes'); ?></a></li>
+                <li><a href="/lookup_department" class="dropdown-item"><?php echo Yii::t('app','Department codes'); ?></a></li>
             </ul>
         </li>
 
