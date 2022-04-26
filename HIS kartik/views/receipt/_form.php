@@ -59,15 +59,15 @@ use yii\helpers\ArrayHelper;
         // exit();
         
         $rows = (new \yii\db\Query())
-        ->select(['`patient_next_of_kin`.`nok_name`,`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
-        ->from('patient_information, patient_next_of_kin,patient_admission')
+        ->select(['`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
+        ->from('patient_information,  patient_admission')
         ->where(['patient_information.patient_uid' => $temp->patient_uid])
-        ->andWhere('patient_next_of_kin.patient_uid = patient_information.patient_uid')
-        ->andWhere('patient_admission.patient_uid = patient_information.patient_uid')
+        ->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
         ->all();
+        
         $names = [];
-        foreach ($rows as $row) {
-           $names += $row;    
+        foreach($rows as $row){
+            $names += $row;
         }
 
         
