@@ -4,6 +4,9 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\data\ActiveDataProvider;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Button;
+use yii\helpers\Url;
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 if(empty($model))
@@ -37,12 +40,22 @@ else
                 <?php 
         if(!empty($model))
         {
+
             $dataProvider1 = new ActiveDataProvider([
                 'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
                 ->orderBy(['entry_datetime' => SORT_DESC]),
                 'pagination'=>['pageSize'=>3],
             ]);
             echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+            ?>
+            <div class="form-group">
+                <br/>
+                 <?= Html::a(Yii::t('app','Add New Admission'),['site/index', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+                 &nbsp;&nbsp;
+                 <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/index', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+                
+             </div>
+            <?php
         } 
         else echo Yii::t('app','RN is not selected');
             ?>
@@ -71,10 +84,8 @@ else
         if(!empty($model))
         {
     ?>
-            <a name="pa"> </a>
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-           
 <?php   } else{
              echo Yii::t('app','Patient is not selected');
         }  ?>
@@ -113,7 +124,7 @@ else
                     <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
                         onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
                 </div>
-                <a name='nok'></a>
+
                 <?php
             if(!empty($model)){
                 $model_nok = new Patient_next_of_kin();
