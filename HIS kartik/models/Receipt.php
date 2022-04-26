@@ -64,7 +64,7 @@ class Receipt extends \yii\db\ActiveRecord
             'receipt_content_sum' => Yii::t('app','Receipt Summary'),
             'receipt_content_bill_id' => Yii::t('app','Receipt Bill ID'),
             'receipt_content_description' => Yii::t('app','Receipt Description'),
-            'receipt_content_datetime_paid' => Yii::t('app','Receipt Content Date Time Paid'),
+            'receipt_content_datetime_paid' => Yii::t('app','Payment Date'),
             'receipt_content_payer_name' => Yii::t('app','Payer Name'),
             'receipt_content_payment_method' => Yii::t('app','Payment Method'),
             'card_no' => Yii::t('app','Card Number'),

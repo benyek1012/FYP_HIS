@@ -172,7 +172,21 @@ if(!empty(Yii::$app->request->queryParams))
 
 <?php
     if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid') ||Yii::$app->request->get('bill_uid'))){
-        echo \hail812\adminlte\widgets\Menu::widget([
+
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+        if(!empty($model_bill))
+        {
+            echo \hail812\adminlte\widgets\Menu::widget([
+                'items' => [
+                    ['label' => $model_bill->rn, 'header' => true],
+                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/update', 
+                        'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
+                    ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
+                          ]
+            ]);
+        }
+        else 
+            echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
                 ['label' => Yii::$app->request->get('rn'), 'header' => true],
                 ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],

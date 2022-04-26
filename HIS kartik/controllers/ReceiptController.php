@@ -8,6 +8,8 @@ use app\models\ReceiptSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Patient_admission;
+use yii\data\ActiveDataProvider;
 
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
@@ -39,12 +41,18 @@ class ReceiptController extends Controller
      */
     public function actionIndex()
     {
+
         $searchModel = new ReceiptSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider1 = new ActiveDataProvider([
+            'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
+            ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
+            'pagination'=>['pageSize'=>5],
+        ]);
+     //   $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider1,
         ]);
     }
 
@@ -78,8 +86,10 @@ class ReceiptController extends Controller
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
             }
             $model->save();
-            return Yii::$app->getResponse()->redirect(array('/receipt/update', 
-            'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
+            // return Yii::$app->getResponse()->redirect(array('/receipt/update', 
+            // 'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
+            return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+            'rn' => $model->rn));   
         } else {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
             $model->loadDefaultValues();
