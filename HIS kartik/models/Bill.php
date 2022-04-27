@@ -48,16 +48,19 @@ class Bill extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'daily_ward_cost'], 'required'],
+            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'daily_ward_cost','bill_print_id'], 'required'],
             [['daily_ward_cost', 'bill_generation_billable_sum_rm', 'bill_generation_final_fee_rm'], 'number'],
             [['is_free'], 'integer'],
             [['bill_generation_datetime', 'bill_print_datetime'], 'safe'],
             [['bill_uid', 'generation_responsible_uid', 'bill_print_responsible_uid'], 'string', 'max' => 64],
             [['rn'], 'string', 'max' => 11],
-            [['status_code', 'class', 'department_code', 'collection_center_code', 'nurse_responsilbe', 'bill_print_id'], 'string', 'max' => 20],
+            [['status_code', 'class', 'department_code', 'collection_center_code', 'nurse_responsilbe'], 'string', 'max' => 20],
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
+            [['bill_print_id'], 'number'],
+            [['bill_print_id'], 'string', 'length' => 7],
+            [['bill_print_id'], 'unique'],
             // [['bill_print_id'], 'unique'], //temporary comment
             // [['bill_uid'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],

@@ -18,7 +18,7 @@ return[
     'New R/N' => 'R/N Baru',
     'New Labor R/N' => 'R/N Labor Baru',
     'Reminder Letters' => 'Surat Peringatan',
-    'Batch Entry' => 'Memasukkan Pesakit Baru',
+    'Batch Entry' => 'Memasukkan Pesakit Baru(Batch)',
     'Admission' => ' Masuk',
     'Reports' => 'Laporan',
     'Maintenance' => 'Penyelenggaraan',
@@ -123,7 +123,8 @@ return[
     'Treatment Details'=>'Butiran Rawatan',
     'Ward Details'=>'Butiran Wad',
     'Billing Details'=>'Maklumat Bil',
-    
+    'Add New Admission' => 'Tambah Kemasukan Baharu',
+    'Add New Labor Admission' => 'Tambah Kemasukan Buruh Baharu'
 
 ];
 ?>
