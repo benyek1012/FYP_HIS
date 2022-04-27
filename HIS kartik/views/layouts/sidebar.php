@@ -147,7 +147,7 @@ if(!empty(Yii::$app->request->queryParams))
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
                 <p class="text-white"><?php echo Yii::t('app','NRIC')." : ".$info->nric;?></p>
-                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
+                <p class="text-light"><?php echo Patient_information::getBalance($info->patient_uid);?></p>
             </div>
         </div>
         <?php
