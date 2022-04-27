@@ -147,7 +147,7 @@ if(!empty(Yii::$app->request->queryParams))
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
                 <p class="text-white"><?php echo Yii::t('app','NRIC')." : ".$info->nric;?></p>
-                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
+                <p class="text-light"><?php echo Patient_information::getBalance($info->patient_uid);?></p>
             </div>
         </div>
         <?php
@@ -179,7 +179,7 @@ if(!empty(Yii::$app->request->queryParams))
             echo \hail812\adminlte\widgets\Menu::widget([
                 'items' => [
                     ['label' => $model_bill->rn, 'header' => true],
-                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/update', 
+                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/print', 
                         'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
                     ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
                           ]

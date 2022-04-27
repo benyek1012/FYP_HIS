@@ -40,7 +40,7 @@ else
                 <?php 
         if(!empty($model))
         {
-
+            echo "<div align = 'right'>".Patient_information::getBalance($model->patient_uid)."</div>";
             $dataProvider1 = new ActiveDataProvider([
                 'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
                 ->orderBy(['entry_datetime' => SORT_DESC]),

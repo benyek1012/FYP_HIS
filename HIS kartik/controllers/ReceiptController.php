@@ -43,16 +43,16 @@ class ReceiptController extends Controller
     {
 
         $searchModel = new ReceiptSearch();
-        $dataProvider1 = new ActiveDataProvider([
-            'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
-            ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
-            'pagination'=>['pageSize'=>5],
-        ]);
-     //   $dataProvider = $searchModel->search($this->request->queryParams);
+        // $dataProvider1 = new ActiveDataProvider([
+        //     'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
+        //     ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
+        //     'pagination'=>['pageSize'=>5],
+        // ]);
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider1,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
