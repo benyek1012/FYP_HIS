@@ -48,7 +48,7 @@ class Bill extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'daily_ward_cost','bill_print_id'], 'required'],
+            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'daily_ward_cost'], 'required'],
             [['daily_ward_cost', 'bill_generation_billable_sum_rm', 'bill_generation_final_fee_rm'], 'number'],
             [['is_free'], 'integer'],
             [['bill_generation_datetime', 'bill_print_datetime'], 'safe'],

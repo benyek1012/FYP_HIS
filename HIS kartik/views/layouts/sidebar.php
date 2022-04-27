@@ -179,7 +179,7 @@ if(!empty(Yii::$app->request->queryParams))
             echo \hail812\adminlte\widgets\Menu::widget([
                 'items' => [
                     ['label' => $model_bill->rn, 'header' => true],
-                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/update', 
+                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/print', 
                         'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
                     ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
                           ]
