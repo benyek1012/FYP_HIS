@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Receipt;
@@ -40,7 +41,23 @@ class ReceiptSearch extends Receipt
      */
     public function search($params)
     {
-        $query = Receipt::find();
+        $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+        $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
+      
+        $rn_array = array();
+        foreach($model_rn as $model)
+        {
+            $rn_array[] = $model->rn;
+          //  var_dump($model->rn);
+        }
+      //  var_dump($model->rn);
+        // exit();
+      
+
+        // foreach($model_rn as $model){
+        //     $query = Receipt::find()->where(['rn' => $model->rn]);
+        // }
+        $query = Receipt::find()->where(['rn' => $rn_array]);
 
         // add conditions that should always apply here
 
