@@ -60,6 +60,14 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
+
+            // Cookie for login
+            $newCookie= new \yii\web\Cookie();
+            $newCookie->name='cookie_login';
+            $newCookie->value = $this->getUserId();
+            $newCookie->expire = time() + 60 * 60 * 24 * 180;
+            Yii::$app->getResponse()->getCookies()->add($newCookie); 
+            
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;
@@ -77,5 +85,19 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+
+        /**
+     * Finds user by [[userId]]
+     *
+     * @return User|null
+     */
+    public function getUserId()
+    {
+        if ($this->_user === false) {
+            $this->_user = NewUser::findByUsername($this->username);
+        }
+
+        return $this->_user->user_uid;
     }
 }

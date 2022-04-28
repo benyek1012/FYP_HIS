@@ -82,16 +82,18 @@ class ReceiptController extends Controller
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->receipt_content_datetime_paid))
-            {
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
+
+            if($model->validate() && $model->save()){
+                // return Yii::$app->getResponse()->redirect(array('/receipt/update', 
+                // 'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
+                return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                'rn' => $model->rn));   
             }
-            $model->save();
-            // return Yii::$app->getResponse()->redirect(array('/receipt/update', 
-            // 'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
-            return Yii::$app->getResponse()->redirect(array('/receipt/index', 
-            'rn' => $model->rn));   
         } else {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
+            $cookies = Yii::$app->request->cookies;
+            $model->receipt_responsible = $cookies->getValue('cookie_login');
             $model->loadDefaultValues();
         }
 

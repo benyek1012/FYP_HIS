@@ -48,14 +48,14 @@ else
             ]);
             echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
             ?>
-            <div class="form-group">
-                <br/>
-                 <?= Html::a(Yii::t('app','Add New Admission'),['site/index', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
-                 &nbsp;&nbsp;
-                 <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/index', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
-                
-             </div>
-            <?php
+                <div class="form-group">
+                    <br />
+                    <?= Html::a(Yii::t('app','Add New Admission'),['site/index', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+                    &nbsp;&nbsp;
+                    <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/index', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+
+                </div>
+                <?php
         } 
         else echo Yii::t('app','RN is not selected');
             ?>
@@ -84,11 +84,11 @@ else
         if(!empty($model))
         {
     ?>
-            <a name="pa"> </a>
+                <a name="pa"> </a>
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-           
-<?php   } else{
+
+                <?php   } else{
              echo Yii::t('app','Patient is not selected');
         }  ?>
             </div>

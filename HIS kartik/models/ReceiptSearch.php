@@ -48,16 +48,10 @@ class ReceiptSearch extends Receipt
         foreach($model_rn as $model)
         {
             $rn_array[] = $model->rn;
-          //  var_dump($model->rn);
+        
         }
-      //  var_dump($model->rn);
-        // exit();
-      
 
-        // foreach($model_rn as $model){
-        //     $query = Receipt::find()->where(['rn' => $model->rn]);
-        // }
-        $query = Receipt::find()->where(['rn' => $rn_array]);
+        $query = Receipt::find()->where(['rn' => $rn_array])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
 
         // add conditions that should always apply here
 

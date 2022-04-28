@@ -151,6 +151,10 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
+        
+        $cookies = Yii::$app->response->cookies;
+        $cookies->remove('cookie_login');
+        //unset($cookies['username']);
 
         return $this->goHome();
     }

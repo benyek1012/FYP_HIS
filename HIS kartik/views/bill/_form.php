@@ -1,5 +1,6 @@
 <?php
 
+use app\controllers\BillController;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
@@ -7,7 +8,11 @@ use GpsLab\Component\Base64UID\Base64UID;
 use wbraganca\dynamicform\DynamicFormWidget;
 use app\models\Patient_admission;
 use app\models\Treatment_details;
+use app\models\Ward;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
@@ -23,8 +28,6 @@ $row = (new \yii\db\Query())
 
 
 $billuid = Base64UID::generate(32);
-$generationresponsibleuid = Base64UID::generate(32);
-$billprintresponsibleuid = Base64UID::generate(32);
 
 if(empty( Yii::$app->request->get('bill_uid')))
 $initial_ward_class = $admission_model->initial_ward_class;
@@ -41,20 +44,6 @@ $this->registerJs(
         var itemCount = $('.item_num').val();
 
         if(itemPerUnit != ''){
-            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
-        }
-        
-        $('.item_total_cost').val(totalCost); 
-        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
-    });"
-);
-
-$this->registerJs(
-    "$('.item_per_unit_cost').on('change', function() { 
-        var itemPerUnit = $('.item_per_unit_cost').val();
-        var itemCount = $('.item_num').val();
-
-        if(itemCount != ''){
             var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
         }
         
@@ -166,6 +155,10 @@ $this->registerJs(
                 <div class="col-sm-6">
                     <?= $form->field($model, 'nurse_responsilbe')->textInput(['maxlength' => true]) ?>
                 </div>
+
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+                </div>
             </div>
         </div>
         <!-- /.card-body -->
@@ -256,19 +249,19 @@ $this->registerJs(
                                 }
                              }',
                         ],])->label(false)?></td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  
-                    
-                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true, 'class' => 'day'])->label(false) ?></td> 
-                </tr> 
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true, 'class' => 'day'])->label(false) ?>
+                    </td>
+                </tr>
                 <script>
-                    // function calDiff(){
-                    //     var date1 = new Date($("[{$index}]ward_start_datetime").val());
-                    //     var date2 = new Date($("[{$index}]ward_end_datetime").val());
+                // function calDiff(){
+                //     var date1 = new Date($("[{$index}]ward_start_datetime").val());
+                //     var date2 = new Date($("[{$index}]ward_end_datetime").val());
 
-                    //     var timeDifference = date2.getTime() - date1.getTime();
-                    //     alert(timeDifference);
-                    // }
-
+                //     var timeDifference = date2.getTime() - date1.getTime();
+                //     alert(timeDifference);
+                // }
                 </script>
                 <?php } ?>
             </table>
@@ -310,13 +303,16 @@ $this->registerJs(
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelTreatment, "[$index]treatment_name")->textInput()->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost'])->label(false) ?></td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost'])->label(false) ?>
+                    </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num'])->label(false) ?></td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num'])->label(false) ?>
+                    </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput(['class' => 'item_total_cost'])->label(false) ?></td>
+                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput(['class' => 'item_total_cost'])->label(false) ?>
+                    </td>
                 <tr>
-                <?php } ?>
+                    <?php } ?>
             </table>
         </div>
     </div>
@@ -339,21 +335,24 @@ $this->registerJs(
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <div class="row">
-                <?= $form->field($model, 'generation_responsible_uid')->hiddenInput([
-                'readonly' => true, 'maxlength' => true,'value' => $generationresponsibleuid])->label(false) ?>
 
-                <div class="col-sm-6">
-                    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true, 'class' => 'billalbe']) ?>
+                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
+                        [
+                            'maxlength' => true, 
+                            'class' => 'billalbe', 
+                            'value' => BillController::getBillable(Yii::$app->request->get('bill_uid'))
+                        ]) ?>
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true, 'class' => 'finalFee']) ?>
+                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(
+                        [
+                            'maxlength' => true, 
+                            'class' => 'finalFee', 
+                            'value' => BillController::getFinalFee(Yii::$app->request->get('bill_uid'))
+                        ]) ?>
                 </div>
 
             </div>
@@ -377,7 +376,6 @@ $this->registerJs(
         <!-- /.card-header -->
         <div class="card-body">
             <div class="row">
-                <?= $form->field($model, 'bill_print_responsible_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billprintresponsibleuid])->label(false) ?>
                 <div class="col-sm-12">
                     <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
                 </div>
