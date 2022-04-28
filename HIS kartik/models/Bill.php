@@ -58,10 +58,12 @@ class Bill extends \yii\db\ActiveRecord
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
-            [['bill_print_id'], 'number'],
-            [['bill_print_id'], 'string', 'length' => 7],
+            [['bill_print_id'], 'integer'],
+            [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['bill_print_id'], 'unique'],
-            // [['bill_print_id'], 'unique'], //temporary comment
+            // [['bill_print_id'], 'number'],
+            // [['bill_print_id'], 'string', 'length' => 7],
+            // [['bill_print_id'], 'unique'],
             // [['bill_uid'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];

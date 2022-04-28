@@ -221,7 +221,8 @@ class BillController extends Controller
                 // $model->bill_generation_billable_sum_rm = $billable;
                 // $model->bill_generation_final_fee_rm = $billable;
             }
-           
+            $cookies = Yii::$app->request->cookies;
+            $model->generation_responsible_uid = $cookies->getValue('cookie_login');
             $model->bill_uid = Yii::$app->request->get('bill_uid');
             $model->save();
 
@@ -265,6 +266,8 @@ class BillController extends Controller
             $model->bill_print_datetime =  $date->format('Y-m-d H:i');
             // }
             $model->bill_uid = Yii::$app->request->get('bill_uid');
+            $cookies = Yii::$app->request->cookies;
+            $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
