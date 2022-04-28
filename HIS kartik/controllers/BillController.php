@@ -268,7 +268,7 @@ class BillController extends Controller
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn));        
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));             
         }
 
         return $this->render('print', [

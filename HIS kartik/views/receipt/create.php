@@ -16,11 +16,7 @@ else
 $this->params['breadcrumbs'][] = ['label' => 'Payments', 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
 $this->params['breadcrumbs'][] = $this->title;
 
-// $names = Patient_information::find()
-//     ->join('patient_next_of_kin')
-//     ->select('depart.id, translate.text')
-//     ->asArray()
-//     ->all();
+
 ?>
 <div class="receipt-create">
 

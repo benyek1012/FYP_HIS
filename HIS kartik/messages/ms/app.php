@@ -105,7 +105,7 @@ return[
     'Create Treatment Details' => 'Buat Butiran Rawatan',
     'Receipt Uid' => 'Uid Resit',
     'Receipt Type' => 'Jenis Resit',
-    'Receipt Summary' => 'Ringkasan Resit',
+    'Receipt Summary (RM)' => 'Ringkasan Resit (RM)',
     'Receipt Bill ID' => 'ID Bil Resit',
     'Receipt Description'=> 'Perihalan Resit',
     'Payment Date'=>'Tarikh bayaran',

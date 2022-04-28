@@ -5,6 +5,8 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
 use app\models\Bill;
+use app\models\NewUser;
+use app\models\Receipt;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ReceiptSearch */
@@ -17,12 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?php 
-        $info = Bill::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        if(!empty($info)){
+        // $info = Bill::findOne(['rn'=> Yii::$app->request->get('rn')]);
+        // if(!empty($info)){
         ?>
         <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
         <?php
-        }
+       // }
         ?>
     </p>
 
@@ -66,7 +68,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'receipt_content_payment_method',
             //'card_no',
             //'cheque_number',
-            'receipt_responsible',
+            [
+                'attribute' => 'receipt_responsible',
+                'value'=>function ($data) {
+                    $model_User = NewUser::findOne(['user_uid' => $data['receipt_responsible']]);
+                    return $model_User->username;
+                },
+            ],
             'receipt_serial_number',
             [
                 'class' => ActionColumn::className(),
