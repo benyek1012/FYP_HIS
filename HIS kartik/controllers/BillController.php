@@ -306,8 +306,8 @@ class BillController extends Controller
     }
 
     public static function getFinalFee($bill_uid) {
-        var_dump($bill_uid);
-        exit();
+        // var_dump($bill_uid);
+        // exit();
         return Bill::calculateFinalFee($bill_uid);
     }
 }

@@ -78,7 +78,7 @@ return[
     'Department Name' => 'Nama Jabatan',
     'Is Free' => 'Adalah Percuma',
     'Collection Center Code' => 'Kod Pusat Pengumpulan',
-    'Nurse Responsilbe' => 'Jururawat Responsilbe',
+    'Nurse Responsible' => 'Jururawat Responsible',
     'Bill Generation Datetime' => 'Tarikh Penjanaan Bil',
     'Generation Responsible Uid' => 'Uid Bertanggungjawab Generasi',
     'Billable Total (RM)' => 'Jumlah Boleh Dibilkan (RM)',
