@@ -202,24 +202,10 @@ class BillController extends Controller
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-        // $totalWardDays = 0;
-        // $dailyWardCost = 0.0;
-        // $totalTreatmentCost = 0.0;
-        // $billable = 0.0;
-
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->bill_generation_datetime))
             {
                 $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
-                // foreach ($modelWard as $index => $modelWard){
-                //     $totalWardDays += "[$index]ward_number_of_days";
-                //     $dailyWardCost = "[$index]daily_ward_cost";
-                //     $totalTreatmentCost += "[$index]item_per_unit_cost" * "[$index]item_count";
-                // }
-                
-                // $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
-                // $model->bill_generation_billable_sum_rm = $billable;
-                // $model->bill_generation_final_fee_rm = $billable;
             }
             $cookies = Yii::$app->request->cookies;
             $model->generation_responsible_uid = $cookies->getValue('cookie_login');
@@ -309,5 +295,19 @@ class BillController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public static function getTreatmentCost($bill_uid) {
+        return Bill::calculateTreatmentCost($bill_uid);
+    }
+
+    public static function getBillable($bill_uid) {
+        return Bill::calculateBillable($bill_uid);
+    }
+
+    public static function getFinalFee($bill_uid) {
+        var_dump($bill_uid);
+        exit();
+        return Bill::calculateFinalFee($bill_uid);
     }
 }

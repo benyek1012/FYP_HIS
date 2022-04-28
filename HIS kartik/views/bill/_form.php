@@ -1,5 +1,6 @@
 <?php
 
+use app\controllers\BillController;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
@@ -7,7 +8,11 @@ use GpsLab\Component\Base64UID\Base64UID;
 use wbraganca\dynamicform\DynamicFormWidget;
 use app\models\Patient_admission;
 use app\models\Treatment_details;
+use app\models\Ward;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
@@ -39,20 +44,6 @@ $this->registerJs(
         var itemCount = $('.item_num').val();
 
         if(itemPerUnit != ''){
-            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
-        }
-        
-        $('.item_total_cost').val(totalCost); 
-        $('.total_treatment_amount').html('(RM ' + totalCost + ')');
-    });"
-);
-
-$this->registerJs(
-    "$('.item_per_unit_cost').on('change', function() { 
-        var itemPerUnit = $('.item_per_unit_cost').val();
-        var itemCount = $('.item_num').val();
-
-        if(itemCount != ''){
             var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
         }
         
@@ -347,11 +338,21 @@ $this->registerJs(
 
             <div class="row">
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(['maxlength' => true, 'class' => 'billalbe']) ?>
+                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
+                        [
+                            'maxlength' => true, 
+                            'class' => 'billalbe', 
+                            'value' => BillController::getBillable(Yii::$app->request->get('bill_uid'))
+                        ]) ?>
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(['maxlength' => true, 'class' => 'finalFee']) ?>
+                    <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(
+                        [
+                            'maxlength' => true, 
+                            'class' => 'finalFee', 
+                            'value' => BillController::getFinalFee(Yii::$app->request->get('bill_uid'))
+                        ]) ?>
                 </div>
 
             </div>
