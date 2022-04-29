@@ -15,7 +15,7 @@ else
 {
     if($model->name != "")
         $name = $model->name;
-    else $name = "User";
+    else $name = "Unknown";
    
     $this->title = $name;
     $this->params['breadcrumbs'][] = ['label' => $name];
@@ -28,10 +28,17 @@ else
         <div class="card">
             <div class="card-header text-white bg-primary">
                 <h3 class="card-title"><?php echo Yii::t('app','Patient Admission Summary');?></h3>
-                <div class="card-tools">
-                    <!-- Collapse Button -->
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i></button>
+                <div class="d-flex justify-content-end">
+                    <?php
+                    if(!empty($model))
+                        echo "<div>".Patient_information::getBalance($model->patient_uid)."&nbsp&nbsp&nbsp&nbsp&nbsp".
+                        Patient_information::getUnclaimedBalance($model->patient_uid)."&nbsp&nbsp&nbsp</div>";
+                    ?>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
                 </div>
                 <!-- /.card-tools -->
             </div>
@@ -40,7 +47,6 @@ else
                 <?php 
         if(!empty($model))
         {
-            echo "<div align = 'right'>".Patient_information::getBalance($model->patient_uid)."</div>";
             $dataProvider1 = new ActiveDataProvider([
                 'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
                 ->orderBy(['entry_datetime' => SORT_DESC]),

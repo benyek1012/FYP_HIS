@@ -4,15 +4,22 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
-use app\models\Bill;
 use app\models\NewUser;
-use app\models\Receipt;
+use app\models\Patient_admission;
+use app\models\Patient_information;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ReceiptSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+$temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+$temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
+
 $this->title = Yii::t('app','Payments');
+if($temp2->name != "")
+    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+else 
+    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">
