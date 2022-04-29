@@ -153,7 +153,7 @@ $this->registerJs(
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'nurse_responsilbe')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'nurse_responsible')->textInput(['maxlength' => true]) ?>
                 </div>
 
                 <div class="col-sm-6">

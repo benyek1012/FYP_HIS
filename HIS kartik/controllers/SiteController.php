@@ -306,7 +306,7 @@ class SiteController extends Controller
                 `department_name` VARCHAR(50),
                 `is_free` BOOLEAN NOT NULL DEFAULT false,
                 `collection_center_code` VARCHAR(20),
-                `nurse_responsilbe` VARCHAR(20),
+                `nurse_responsible` VARCHAR(20),
                 `bill_generation_datetime` DATETIME,
                 `generation_responsible_uid` VARCHAR(64),
                 `bill_generation_billable_sum_rm` DECIMAL(10,2),

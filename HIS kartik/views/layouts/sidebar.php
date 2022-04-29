@@ -138,7 +138,7 @@ if(!empty(Yii::$app->request->queryParams))
     <nav class="mt-2">
         <?php
     if(!empty($info)){
-        if($info->name == "") $temp_name = "User";
+        if($info->name == "") $temp_name = "Unknown";
         else $temp_name = $info->name;
          echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [['label' => $temp_name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
@@ -147,7 +147,9 @@ if(!empty(Yii::$app->request->queryParams))
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
                 <p class="text-white"><?php echo Yii::t('app','NRIC')." : ".$info->nric;?></p>
-                <p class="text-light"><?php echo Patient_information::getBalance($info->patient_uid);?></p>
+                <p class="text-light">
+                    <?php echo Patient_information::getBalance($info->patient_uid)."<br/>".Patient_information::getUnclaimedBalance($info->patient_uid);?>
+                </p>
             </div>
         </div>
         <?php
@@ -158,7 +160,7 @@ if(!empty(Yii::$app->request->queryParams))
             <div class="info">
                 <p class="text-white"><?php echo Yii::t('app','Patient Name')?></p>
                 <p class="text-white"><?php echo Yii::t('app','Patient IC')?></p>
-                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
+                <p class="text-light"><?php echo Yii::t('app','Amount Due / Unclaimed')?></p>
             </div>
         </div>
         <?php

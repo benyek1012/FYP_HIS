@@ -6,7 +6,7 @@ return[
     'File' => 'Fail',
     'Patient Name' => 'Nama Pesakit',
     'Patient IC' => 'IC Pesakit',
-    'Balance Unclaimed | Owed' => 'Bil yang telah dibayar | Berhutang',
+    'Amount Due / Unclaimed' => 'Bil Dibayar | Berhutang',
     'R/N Number' => 'R/N Nombor',
     'Deposit' => 'Deposit',
     'Treatment Details' => 'Caj',
@@ -130,7 +130,8 @@ return[
     'Ward Details'=>'Butiran Wad',
     'Billing Details'=>'Maklumat Bil',
     'Add New Admission' => 'Tambah Kemasukan Baharu',
-    'Add New Labor Admission' => 'Tambah Kemasukan Buruh Baharu'
-
+    'Add New Labor Admission' => 'Tambah Kemasukan Buruh Baharu',
+    'Amount Dued' => 'Dibayar Bil',
+    'Unclaimed Balance' => 'Hutang Bil',
 ];
 ?>
