@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_departmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Departments';
+$this->title = Yii::t('app','Department Registration codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-department-index">
