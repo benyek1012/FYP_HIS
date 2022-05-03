@@ -10,7 +10,26 @@ use kartik\datetime\DateTimePicker;
 
 <div class="patient-admission-form">
 
-    <?php $form = kartik\form\ActiveForm::begin([
+    <?php 
+    
+    $rows = (new \yii\db\Query())
+    ->select('ward_code')
+    ->from('lookup_ward')
+    ->all();
+
+    $ward_code = array();
+    foreach($rows as $row){
+      $ward_code[$row['ward_code']] = $row['ward_code'];
+    }  
+
+    $ward_class = array(
+        "1a" =>'1a', 
+        "1b" =>'1b', 
+        "1c" =>'1c', 
+        "2" =>'2', 
+        "3" =>'3', 
+    );
+    $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
             'fieldConfig' => [
@@ -36,12 +55,19 @@ use kartik\datetime\DateTimePicker;
                 'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
             ])?>
         </div>
+
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_code')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
+             ['prompt'=>'Please select ward code']
+            ) ?>
         </div>
+
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_class')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
+             ['prompt'=>'Please select ward class']
+            ) ?>
         </div>
+
         <div class="col-sm-6">
             <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?>
         </div>

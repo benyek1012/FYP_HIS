@@ -47,12 +47,12 @@ class Lookup_general extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'lookup_general_uid' => 'Lookup General Uid',
-            'code' => 'Code',
-            'category' => 'Category',
-            'name' => 'Name',
-            'long_description' => 'Long Description',
-            'recommend' => 'Recommend',
+            'lookup_general_uid' => Yii::t('app','Lookup General Uid'),
+            'code' =>  Yii::t('app','Code'),
+            'category' =>  Yii::t('app','Category'),
+            'name' =>  Yii::t('app','Name'),
+            'long_description' =>  Yii::t('app','Long Description'),
+            'recommend' => Yii::t('app','Recommend'),
         ];
     }
 }

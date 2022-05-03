@@ -20,6 +20,18 @@ use yii\helpers\Url;
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 
+if(empty( Yii::$app->request->get('bill_uid'))) $initial_ward_class = $admission_model->initial_ward_class;
+else{
+    $rows = (new \yii\db\Query())
+    ->select(['*'])
+    ->from('patient_admission')
+    ->where(['rn' => Yii::$app->request->get('rn')])
+    ->all();
+    foreach($rows as $row){
+        $initial_ward_class = $row['initial_ward_class'];
+    }  
+}
+
 $row = (new \yii\db\Query())
 ->select(['bill_generation_datetime'])
 ->from('bill')
@@ -27,15 +39,138 @@ $row = (new \yii\db\Query())
 ->one();
 
 
+$rows = (new \yii\db\Query())
+->select('*')
+->from('lookup_status')
+->all();
+
+$dayly_ward_cost = "";
+$status_code = array();
+$unit_class = "";
+foreach($rows as $row){
+  $status_code[$row['status_code']] = $row['status_code'];
+  if($initial_ward_class == "1a"){
+      $unit_class = "1";
+  }
+  else if($initial_ward_class == "1b"){
+    $unit_class = "1";
+  }
+  else if($initial_ward_class == "1c"){
+    $unit_class = "1";
+  }
+  else if($initial_ward_class == "2"){
+    $unit_class = "2";
+  }
+  else if($initial_ward_class == "3"){
+    $unit_class = "3";
+  }
+}  
+
+$rows = (new \yii\db\Query())
+->select('*')
+->from('lookup_department')
+->all();
+
+$department_code = array();
+foreach($rows as $row){
+    $department_code[$row['department_code']] = $row['department_code'];
+}  
+
+$rows = (new \yii\db\Query())
+->select('*')
+->from('patient_admission')
+->where(['rn'=> Yii::$app->request->get('rn')])
+->all();
+
+$ward_code = "";
+foreach($rows as $row){
+    $ward_code = $row['initial_ward_code'];
+} 
+
+$rows = (new \yii\db\Query())
+->select('*')
+->from('lookup_ward')
+->where(['ward_code'=> $ward_code])
+->all();
+
+$ward_name = "";
+foreach($rows as $row){
+    $ward_name = $row['ward_name'];
+} 
+
+$rows = (new \yii\db\Query())
+->select('*')
+->from('lookup_treatment')
+->all();
+
+$treatment_code = array();
+$unit_cost = "";
+foreach($rows as $row){
+    $treatment_code[$row['treatment_code']] = $row['treatment_code'];
+    if($unit_class == "1"){
+        $unit_cost = $row['class_1_cost_per_unit'];
+    }
+    else if($unit_class == "2"){
+        $unit_cost = $row['class_2_cost_per_unit'];
+    }
+    else if($unit_class == "3"){
+        $unit_cost = $row['class_3_cost_per_unit'];
+    }
+} 
+
 $billuid = Base64UID::generate(32);
 
-if(empty( Yii::$app->request->get('bill_uid')))
-$initial_ward_class = $admission_model->initial_ward_class;
+
 
 
 $free = array(
     0 =>'No', //false
     1 =>'Yes',    //true
+);
+
+$this->registerJs(
+    "$('#statusCode').change(function() {
+    var statusCode = $(this).val();
+    $.get('/bill/status', {status : statusCode}, function(data){
+    var data = $.parseJSON(data);
+    $('#status_des').attr('value', data.status_description);
+    $('#1a_ward_cost').attr('value', data.class_1a_ward_cost);
+    $('#1b_ward_cost').attr('value', data.class_1b_ward_cost);
+    $('#1c_ward_cost').attr('value', data.class_1c_ward_cost);
+    $('#2_ward_cost').attr('value', data.class_2_ward_cost);
+    $('#3_ward_cost').attr('value', data.class_3_ward_cost);
+    });
+    });",
+);
+
+$this->registerJs(
+    "$('#departmentCode').change(function() {
+    var departmentCode = $(this).val();
+    $.get('/bill/department', {department : departmentCode}, function(data){
+    var data = $.parseJSON(data);
+    $('#departmentName').attr('value', data.department_name);
+    });
+    });",
+);
+
+$this->registerJs(
+    "$('#wardCode').change(function() {
+    var wardCode = $(this).val();
+    $.get('/bill/ward', {ward : wardCode}, function(data){
+    var data = $.parseJSON(data);
+    $('#wardName').attr('value', data.ward_name);
+    });
+    });",
+);
+
+$this->registerJs(
+    "$('#treatmentCode').change(function() {
+    var treatmentCode = $(this).val();
+    $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+    var data = $.parseJSON(data);
+    $('#treatmentName').attr('value', data.treatment_name);
+    });
+    });",
 );
 
 $this->registerJs(
@@ -117,11 +252,12 @@ $this->registerJs(
                 <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'status_code')->textInput(['maxlength' => true]) ?>
-                </div>
+                    <?= $form->field($model, 'status_code')->dropDownList($status_code, ['id'=>'statusCode',
+                    'prompt'=>'Please select status code','maxlength' => true]) ?>
+                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'status_description')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des']) ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -133,16 +269,46 @@ $this->registerJs(
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'class' => 'daily_ward_cost']) ?>
+                    <?php 
+                      if($initial_ward_class == "1a"){?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1a_ward_cost']) ?>
+                      <?php 
+                      }
+                      
+                      else if($initial_ward_class == "1b"){?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1b_ward_cost']) ?>
+                      <?php 
+                      }
+
+                      else if($initial_ward_class == "1c"){?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1c_ward_cost']) ?>
+                      <?php 
+                      }
+
+                      else if($initial_ward_class == "2"){?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'2_ward_cost']) ?>
+                      <?php 
+                      }
+
+                      else if($initial_ward_class == "3"){?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'3_ward_cost']) ?>
+                      <?php 
+                      }
+                      ?>
+                  
                 </div>
 
-                <div class="col-sm-6">
-                    <?= $form->field($model, 'department_code')->textInput(['maxlength' => true]) ?>
-                </div>
+
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'department_name')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
+                    'prompt'=>'Please select department code','maxlength' => true]) ?>
+                 </div>
+
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName']) ?>
                 </div>
+
 
                 <div class="col-sm-6">
                     <?= $form->field($model, 'is_free')->dropDownList($free) ?>
@@ -181,22 +347,26 @@ $this->registerJs(
         <div class="card-body">
             <table>
                 <tr>
-                    <td>Ward Code</td>
+                    <td><?php echo Yii::t('app','Ward Code');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Ward Name</td>
+                    <td><?php echo Yii::t('app','Ward Name');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Ward Start Datetime</td>
+                    <td><?php echo Yii::t('app','Ward Start Datetime');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Ward End Datetime</td>
+                    <td><?php echo Yii::t('app','Ward End Datetime');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Ward Number of Days</td>
+                    <td><?php echo Yii::t('app','Ward Number of Days');?></td>
                 </tr>
+
+
+
                 <?php foreach ($modelWard as $index => $modelWard) { ?>
                 <tr>
-                    <td><?= $form->field($modelWard, "[$index]ward_code")->textInput(['maxlength' => true])->label(false) ?>
+                    <td><?= $form->field($modelWard, "[$index]ward_code")->textInput([  'id'=>'wardCode',
+                    'value'=>$ward_code,'maxlength' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[$index]ward_name")->textInput()->label(false) ?></td>
+                    <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'id'=>'wardName','value'=>$ward_name])->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
@@ -286,24 +456,28 @@ $this->registerJs(
         <div class="card-body">
             <table>
                 <tr>
-                    <td>Treatment Code</td>
+                    <td><?php echo Yii::t('app','Treatment Code');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Treatment Name</td>
+                    <td><?php echo Yii::t('app','Treatment Name');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Item Per Unit Cost (RM)</td>
+                    <td><?php echo Yii::t('app','Item Per Unit Cost (RM)');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Item Count</td>
+                    <td><?php echo Yii::t('app','Item Count');?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>Item Total Unit Cost (RM)</td>
+                    <td><?php echo Yii::t('app','Item Total Unit Cost (RM)');?></td>
                 </tr>
                 <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
                 <tr>
-                    <td><?= $form->field($modelTreatment, "[$index]treatment_code")->textInput(['maxlength' => true])->label(false) ?>
+
+
+                    <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['id'=>'treatmentCode',
+                    'prompt'=>'Select reatment code','maxlength' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]treatment_name")->textInput()->label(false) ?></td>
+                    <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'id'=>'treatmentName'])->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost'])->label(false) ?>
+
+                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost', 'value' => $unit_cost])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num'])->label(false) ?>
@@ -389,7 +563,7 @@ $this->registerJs(
 
 <div class="form-group">
 
-    <?php if(!empty( $row['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+    <?php if(!empty( $row['bill_generation_datetime']) && (!empty(Yii::$app->request->get('bill_uid')))){ ?>
     <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
@@ -408,8 +582,11 @@ $this->registerJs(
 <?php if(!empty( Yii::$app->request->get('bill_uid'))){?>
 document.getElementById("bill_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
-<?php } if(!empty( $row['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+<?php } if(!empty( $row['bill_generation_datetime']) && (!empty(Yii::$app->request->get('bill_uid')))){ ?>
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
+
+
+
 </script>

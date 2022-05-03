@@ -5,13 +5,18 @@ namespace app\controllers;
 use Yii;
 use app\models\Bill;
 use app\models\BillSearch;
+use app\models\Lookup_department;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\Ward;
 use yii\base\Exception;
 use app\models\Model;
+use yii\helpers\Json;
 use app\models\Treatment_details;
+use app\models\Lookup_status;
+use app\models\Lookup_ward;
+use app\models\Lookup_treatment;
 use GpsLab\Component\Base64UID\Base64UID;
 
 /**
@@ -53,6 +58,20 @@ class BillController extends Controller
         ]);
     }
 
+    public function actionStatus($status) {
+        $model = Lookup_status::findOne( ['status_code' => $status]);
+        echo Json::encode($model);
+    }
+
+    public function actionDepartment($department) {
+        $model = Lookup_department::findOne( ['department_code' => $department]);
+        echo Json::encode($model);
+    }
+
+    public function actionTreatment($treatment) {
+        $model = Lookup_treatment::findOne( ['treatment_code' => $treatment]);
+        echo Json::encode($model);
+    }
     /**
      * Displays a single Bill model.
      * @param string $bill_uid Bill Uid

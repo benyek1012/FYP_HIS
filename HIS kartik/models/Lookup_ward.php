@@ -46,12 +46,12 @@ class Lookup_ward extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'ward_uid' => 'Ward Uid',
-            'ward_code' => 'Ward Code',
-            'ward_name' => 'Ward Name',
-            'sex' => 'Sex',
-            'min_age' => 'Min Age',
-            'max_age' => 'Max Age',
+            'ward_uid' => Yii::t('app','Ward Uid'),
+            'ward_code' => Yii::t('app','Ward Code'),
+            'ward_name' => Yii::t('app','Ward Name'),
+            'sex' => Yii::t('app','Sex'),
+            'min_age' => Yii::t('app','Min Age'),
+            'max_age' => Yii::t('app','Max Age'),
         ];
     }
 }
