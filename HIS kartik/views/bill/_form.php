@@ -33,7 +33,7 @@ else{
     }  
 }
 
-$row = (new \yii\db\Query())
+$row_bill = (new \yii\db\Query())
 ->select(['bill_generation_datetime'])
 ->from('bill')
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
@@ -170,6 +170,9 @@ $this->registerJs(
     $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
     var data = $.parseJSON(data);
     $('#treatmentName').attr('value', data.treatment_name);
+    $('#1_unit_cost').attr('value', data.class_1_cost_per_unit);
+    $('#2_unit_cost').attr('value', data.class_2_cost_per_unit);
+    $('#3_unit_cost').attr('value', data.class_3_cost_per_unit);
     });
     });",
 );
@@ -478,8 +481,40 @@ $this->registerJs(
                     <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'id'=>'treatmentName'])->label(false) ?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-                    <td><?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost', 'value' => $unit_cost])->label(false) ?>
-                    </td>
+
+
+                    <div class="col-sm-6">
+                        <td>
+                    <?php 
+                      if($initial_ward_class == "1a"){?>
+                        <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost','id'=>'1_unit_cost'])->label(false) ?>
+                        <?php 
+                      }
+                      
+                      else if($initial_ward_class == "1b"){?>
+                        <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost','id'=>'1_unit_cost'])->label(false) ?>
+                         <?php 
+                      }
+
+                      else if($initial_ward_class == "1c"){?>
+                       <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost','id'=>'1_unit_cost'])->label(false) ?>
+                        <?php 
+                      }
+
+                      else if($initial_ward_class == "2"){?>
+                       <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost','id'=>'2_unit_cost'])->label(false) ?>
+                         <?php 
+                      }
+
+                      else if($initial_ward_class == "3"){?>
+                        <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => 'item_per_unit_cost','id'=>'3_unit_cost'])->label(false) ?>
+                         <?php 
+                      }
+                      ?>
+                        </td>
+                </div>
+
+                    
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num'])->label(false) ?>
                     </td>
@@ -566,7 +601,7 @@ $this->registerJs(
 
 <div class="form-group">
 
-    <?php if(!empty( $row['bill_generation_datetime']) && (!empty(Yii::$app->request->get('bill_uid')))){ ?>
+    <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
@@ -585,7 +620,7 @@ $this->registerJs(
 <?php if(!empty( Yii::$app->request->get('bill_uid'))){?>
 document.getElementById("bill_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
-<?php } if(!empty( $row['bill_generation_datetime']) && (!empty(Yii::$app->request->get('bill_uid')))){ ?>
+<?php } if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
