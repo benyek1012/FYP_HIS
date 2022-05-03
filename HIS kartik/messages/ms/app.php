@@ -125,7 +125,7 @@ return[
     'Billing Details'=>'Maklumat Bil',
     'Add New Admission' => 'Tambah Kemasukan Baharu',
     'Add New Labor Admission' => 'Tambah Kemasukan Buruh Baharu',
-    'Amount Dued' => 'Dibayar Bil',
+    'Amount Due' => 'Dibayar Bil',
     'Unclaimed Balance' => 'Hutang Bil',
     'Lookup General Uid' => 'Uid Carian Umum',
     'Code' => 'Kod',

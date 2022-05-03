@@ -173,8 +173,14 @@ class Bill extends \yii\db\ActiveRecord
         return $billable;
     }
 
+    // Get Unclaimed balance 
     public static function getUnclaimed($bill_uid) {
-        return 0 - Bill::calculateFinalFee($bill_uid);
+        return (0 - Bill::calculateFinalFee($bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($bill_uid));
+    }
+
+    // Get Amt Due
+    public static function getAmtDued($bill_uid) {
+        return Bill::calculateFinalFee($bill_uid) < 0 ? 0.0 : Bill::calculateFinalFee($bill_uid);
     }
 
     public static function calculateFinalFee($bill_uid) {
@@ -182,7 +188,7 @@ class Bill extends \yii\db\ActiveRecord
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         if(!empty($modelBill))
         {
-            // Billable_sum - sum of deposit
+            // Billable_sum - sum of deposit - sum of payed - sum of refund
             $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($bill_uid)
              - Bill::getPayedAmt($bill_uid) - Bill::getRefund($bill_uid);
         }

@@ -64,19 +64,17 @@ use app\models\Patient_admission;
 
     <div class="row">
         <div class="col-lg-12">
-            <?php if(!empty($model_bill)){
-             if(Bill::calculateFinalFee($model_bill->bill_uid) >= 0)
-             {
-                 $str_final_fees = '<br/><b>Amount Dued</b> : RM'.Bill::calculateFinalFee($model_bill->bill_uid);
-             }
-             else $str_final_fees = '<br/><b>Refund Fees</b> : RM'.Bill::getUnclaimed($model_bill->bill_uid); 
-            
+            <?php 
+             $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+            if(!empty($model_bill)){
             ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
                 'body' => '<b>Sum of Deposit</b> : RM'.Bill::getDeposit($model_bill->bill_uid).
-                            '<br/><b>Billable Total</b> : RM'.$model_bill->bill_generation_billable_sum_rm.$str_final_fees
+                            '<br/><b>Billable Total</b> : RM'.$model_bill->bill_generation_billable_sum_rm.
+                            '<br/><b>Amount Due</b> : RM'.Bill::getAmtDued($model_bill->bill_uid).
+                            '<br/><b>Unclaimed Balance</b> : RM'.Bill::getUnclaimed($model_bill->bill_uid)
             ]) ?>
             <?php } ?>
         </div>
@@ -85,8 +83,6 @@ use app\models\Patient_admission;
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
-
-    <?= $form->field($model, 'receipt_content_datetime_paid')->hiddenInput()->label(false) ?>
 
     <?= $form->field($model, 'receipt_responsible')->hiddenInput(['maxlength' => true])->label(false) ?>
 

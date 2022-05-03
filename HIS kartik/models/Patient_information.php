@@ -112,7 +112,7 @@ class Patient_information extends \yii\db\ActiveRecord
         $billable_sum = 0.0;
         foreach($info_bill as $y)
         {
-            $billable_sum += Bill::calculateFinalFee($y->bill_uid);
+            $billable_sum += Bill::getAmtDued($y->bill_uid);
         }
 
         if($billable_sum < 0)
@@ -120,7 +120,7 @@ class Patient_information extends \yii\db\ActiveRecord
             $billable_sum = 0.0;           
         }
 
-        return Yii::t('app','Amount Dued')." : RM". $billable_sum;                
+        return Yii::t('app','Amount Due')." : RM". $billable_sum;                
     }
 
     public static function getUnclaimedBalance($patient_uid)
@@ -135,17 +135,10 @@ class Patient_information extends \yii\db\ActiveRecord
 
         $info_bill = Bill::findAll(['rn' => $adm]);
 
-        $billable_sum = 0.0;
         $unclaimed_sum = 0.0;
         foreach($info_bill as $y)
         {
-            $billable_sum += Bill::calculateFinalFee($y->bill_uid);
-        }
-
-        if($billable_sum < 0)
-        {
-            $unclaimed_sum = 0 - $billable_sum;
-            $billable_sum = 0.0;           
+            $unclaimed_sum += Bill::getUnclaimed($y->bill_uid);
         }
 
         return Yii::t('app','Unclaimed Balance')." : RM". $unclaimed_sum;                
