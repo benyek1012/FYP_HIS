@@ -47,7 +47,7 @@ use app\models\Patient_admission;
         $names = array();
         foreach($rows as $row){
             if($row['name'] == '')
-                $row['name'] = "User"; 
+                $row['name'] = "Unknown"; 
             $names[$row['name']] = $row['name'];
             $names[$row['guarantor_name']] = $row['guarantor_name'];
         }
@@ -62,6 +62,26 @@ use app\models\Patient_admission;
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback']],
     ]);      ?>
 
+    <div class="row">
+        <div class="col-lg-12">
+            <?php if(!empty($model_bill)){
+             if(Bill::calculateFinalFee($model_bill->bill_uid) >= 0)
+             {
+                 $str_final_fees = '<br/><b>Amount Dued</b> : RM'.Bill::calculateFinalFee($model_bill->bill_uid);
+             }
+             else $str_final_fees = '<br/><b>Refund Fees</b> : RM'.Bill::getUnclaimed($model_bill->bill_uid); 
+            
+            ?>
+            <?= \hail812\adminlte\widgets\Callout::widget([
+                'type' => 'info',
+               // 'head' => 'I am a danger callout!',
+                'body' => '<b>Sum of Deposit</b> : RM'.Bill::getDeposit($model_bill->bill_uid).
+                            '<br/><b>Billable Total</b> : RM'.$model_bill->bill_generation_billable_sum_rm.$str_final_fees
+            ]) ?>
+            <?php } ?>
+        </div>
+    </div>
+
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
@@ -72,30 +92,35 @@ use app\models\Patient_admission;
 
     <div class="row">
         <div class="col-sm-6">
-        <?php  if(!empty($model_bill)){ ?> 
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
-            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)', 'value' => 'bill']) ?>
-         <?php }else{ ?>
+            <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
             'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
-        <?php } ?>
+            <?php }else{ ?>
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
+            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
+            <?php } ?>
         </div>
 
-        <div class="col-sm-6" id="bill_div" 
-            <?php if(empty($model_bill)) echo 'style="display:none;"'; ?> >
-        <?php  if(!empty($model_bill)){ ?> 
+        <div class="col-sm-6" id="bill_div" <?php if(empty($model_bill)) echo 'style="display:none;"'; ?>>
+            <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id]) ?>
-        <?php }else{ ?>
+            <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
-        <?php } ?>
+            <?php } ?>
         </div>
 
         <div class="col-sm-6">
-        <?php  if(!empty($model_bill)){ ?> 
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'value' => $model_bill->bill_generation_billable_sum_rm]) ?>
-        <?php }else{ ?>
+            <?php  if(!empty($model_bill)){
+                    if(Bill::calculateFinalFee($model_bill->bill_uid) >= 0){
+        ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => Bill::calculateFinalFee($model_bill->bill_uid)]) ?>
+            <?php }else{ ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => Bill::getUnclaimed($model_bill->bill_uid)]) ?>
+
+            <?php }
+            }else{ ?>
             <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
-        <?php } ?>
+            <?php } ?>
         </div>
 
         <div class="col-sm-6">
@@ -117,7 +142,7 @@ use app\models\Patient_admission;
 
         <div class="col-sm-6" id="cheque_div" style="display:none;">
             <?= $form->field($model, 'cheque_number')->textInput(['maxlength' => true]) ?>
-        </div>     
+        </div>
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number')->textInput(['maxlength' => true]) ?>
@@ -135,15 +160,13 @@ use app\models\Patient_admission;
 
 <script>
 function myfunctionforValuecheck(val) {
-    if (val == "cash" || val == ""){
+    if (val == "cash" || val == "") {
         document.getElementById("cheque_div").style.display = "none";
         document.getElementById('card_div').style.display = "none";
-    }
-    else if (val == "card"){
+    } else if (val == "card") {
         document.getElementById("cheque_div").style.display = "none";
         document.getElementById('card_div').style.display = "block";
-    }
-    else if (val == "cheque"){
+    } else if (val == "cheque") {
         document.getElementById("cheque_div").style.display = "block";
         document.getElementById('card_div').style.display = "none";
     }
@@ -153,7 +176,7 @@ function myfunctionforType(val) {
     if (val == "bill")
         document.getElementById("bill_div").style.display = "block";
     else
-        document.getElementById("bill_div").style.display = "none";s
+        document.getElementById("bill_div").style.display = "none";
+    s
 }
-
 </script>

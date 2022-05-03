@@ -7,6 +7,7 @@ use kartik\datetime\DateTimePicker;
 use GpsLab\Component\Base64UID\Base64UID;
 use wbraganca\dynamicform\DynamicFormWidget;
 use app\models\Patient_admission;
+use app\models\Bill;
 use app\models\Treatment_details;
 use app\models\Ward;
 use yii\data\ActiveDataProvider;
@@ -514,18 +515,20 @@ $this->registerJs(
                 <div class="col-sm-6">
                     <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
                         [
+                            'readonly' => true,
                             'maxlength' => true, 
                             'class' => 'billalbe', 
-                            'value' => BillController::getBillable(Yii::$app->request->get('bill_uid'))
+                            'value' => Bill::calculateBillable(Yii::$app->request->get('bill_uid'))
                         ]) ?>
                 </div>
 
                 <div class="col-sm-6">
                     <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(
                         [
+                            'readonly' => true,
                             'maxlength' => true, 
                             'class' => 'finalFee', 
-                            'value' => BillController::getFinalFee(Yii::$app->request->get('bill_uid'))
+                            'value' => Bill::calculateFinalFee(Yii::$app->request->get('bill_uid'))
                         ]) ?>
                 </div>
 

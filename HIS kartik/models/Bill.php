@@ -173,30 +173,70 @@ class Bill extends \yii\db\ActiveRecord
         return $billable;
     }
 
+    public static function getUnclaimed($bill_uid) {
+        return 0 - Bill::calculateFinalFee($bill_uid);
+    }
+
     public static function calculateFinalFee($bill_uid) {
-        $totalWardDays = 0;
-        $dailyWardCost = 0.0;
-        $totalTreatmentCost = 0.0;
         $billable = 0.0;
-
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
-        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
-        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
-
-        if($modelBill != ""){
-            $dailyWardCost = $modelBill->daily_ward_cost;
+        if(!empty($modelBill))
+        {
+            // Billable_sum - sum of deposit
+            $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($bill_uid)
+             - Bill::getPayedAmt($bill_uid) - Bill::getRefund($bill_uid);
         }
-        
-        foreach ($modelWard as $index => $modelWard){            
-            $totalWardDays += $modelWard->ward_number_of_days;
-        }
-
-        foreach($modelTreatment as $index => $modelTreatment){
-            $totalTreatmentCost += $modelTreatment->item_total_unit_cost_rm;
-        }
-        
-        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
-
         return $billable;
     }
+
+    public static function getDeposit($bill_uid){
+        $sum_deposit = 0.0;
+        $sum_bill = 0.0;
+        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
+        $model_receipt = Receipt::findAll(['rn' => $modelBill->rn]);
+        foreach($model_receipt as $model)
+        {
+            if($model->receipt_type == 'deposit')
+                $sum_deposit += $model->receipt_content_sum;
+            if($model->receipt_type == 'bill')
+                $sum_bill += $model->receipt_content_sum;
+        }
+
+        $sum_deposit -= $sum_bill;
+
+        return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
+    }
+
+    public static function getPayedAmt($bill_uid){
+        $payed_amt = 0.0;
+        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
+
+        $info_receipt = Receipt::findAll(['rn' => $modelBill->rn, 'receipt_type' => 'bill']);
+        if(!empty($info_receipt))
+        {
+            foreach($info_receipt as $r)
+            {
+                $payed_amt += $r->receipt_content_sum;
+            }
+        }
+        return $payed_amt;
+    }
+
+    public static function getRefund($bill_uid){
+        $sum_refund = 0.0;
+        $sum_bill = 0.0;
+        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
+        $model_receipt = Receipt::findAll(['rn' => $modelBill->rn]);
+        foreach($model_receipt as $model)
+        {
+            if($model->receipt_type == 'refund')
+                $sum_refund += $model->receipt_content_sum;
+        }
+        // var_dump($sum_refund);
+        // exit();
+
+        return 0 - $sum_refund;
+    }
+
+    
 }
