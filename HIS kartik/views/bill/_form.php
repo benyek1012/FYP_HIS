@@ -222,6 +222,11 @@ $this->registerJs(
 //     var_dump(floatval($dailyWardCost));
 //     exit();
 // }
+$this->registerJs(
+    "$('.daily_ward_cost').on('change', function() { 
+        calculateCost();
+    });"
+);
 
 ?>
 
@@ -376,25 +381,7 @@ $this->registerJs(
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         'pluginEvents' => [
                             'change' => 'function () {
-                                var date1 = new Date($(".start_date").val());
-                                var date2 = new Date($(".end_date").val());
-                                var item = $(".item_count").val();
-                                var dailyWardCost = $(".daily_ward_cost").val();
-                            
-                                if(date2 != ""){
-                                    var timeDifference = date2.getTime() - date1.getTime();
-                                    var milliSecondsOneSecond = 1000;
-                                    var secondInOneHour = 3600;
-                                    var hoursInOneDay = 24;
-
-                                    var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
-                                    var days = Math.ceil(daysDiff);
-
-                                    var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
-                                    
-                                    $(".day").val(days);
-                                    $(".total_ward_cost").html("(RM " + totalWardCost + ")");
-                                }
+                                calculateDays();
                              }',
                         ],])->label(false)?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -402,25 +389,7 @@ $this->registerJs(
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
                         'pluginEvents' => [
                             'change' => 'function () {
-                                var date1 = new Date($(".start_date").val());
-                                var date2 = new Date($(".end_date").val());
-                                var item = $(".item_count").val();
-                                var dailyWardCost = $(".daily_ward_cost").val();
-                            
-                                if(date1 != ""){
-                                    var timeDifference = date2.getTime() - date1.getTime();
-                                    var milliSecondsOneSecond = 1000;
-                                    var secondInOneHour = 3600;
-                                    var hoursInOneDay = 24;
-
-                                    var daysDiff = timeDifference  / ( milliSecondsOneSecond * secondInOneHour *  hoursInOneDay);
-                                    var days = Math.ceil(daysDiff);
-
-                                    var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
-                                    
-                                    $(".day").val(days);
-                                    $(".total_ward_cost").html("(RM " + totalWardCost + ")");
-                                }
+                                calculateDays();
                              }',
                         ],])->label(false)?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -625,6 +594,49 @@ document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
 
+function calculateCost() {
+    var dailyWardCost = $(".daily_ward_cost").val();
+    var days = $(".day").val();
 
+    if(dailyWardCost != "") {
+        var totalWardCost = parseFloat(dailyWardCost) * parseFloat(days);
+        $(".total_ward_cost").html("(RM " + totalWardCost + ")");
+    }
+}
 
+function calculateDays() {
+    var date1 = new Date($(".start_date").val());
+    var date2 = new Date($(".end_date").val());
+    var item = $(".item_count").val();
+
+    var SDT =  date1.getDate() + "/" + (date1.getMonth()+1) + "/" + date1.getFullYear();
+    var EDT =  date2.getDate() + "/" + (date2.getMonth()+1) + "/" + date2.getFullYear();
+
+    function parseDate(str) {
+        var mdy = str.split("/");
+        return new Date(mdy[2], mdy[1]-1, mdy[0]);
+    }
+    
+    function datediff(first, second) {
+        // Take the difference between the dates and divide by milliseconds per day.
+        // Round to nearest whole number to deal with DST.
+        return Math.round((second-first)/(1000*60*60*24));
+    }
+    
+    if(date1 != "Invalid Date" && date2 != "Invalid Date"){
+        var timeDifference = datediff(parseDate(SDT), parseDate(EDT));
+        var daysDiff = timeDifference;
+        var days = Math.round(daysDiff);
+
+        if(date2.getHours() >=12)
+            days += 1;
+
+        if(date1.getDate() == date2.getDate())
+            days = 1;
+
+        $(".day").val(days);
+    }
+
+    calculateCost();
+}
 </script>

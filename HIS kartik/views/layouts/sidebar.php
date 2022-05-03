@@ -67,7 +67,7 @@ function items()
         ['label' => Yii::t('app','New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
         ['label' =>  Yii::t('app','New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
-    array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
+    // array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
     return $items;
 }
 
