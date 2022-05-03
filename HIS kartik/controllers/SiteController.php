@@ -117,7 +117,9 @@ class SiteController extends Controller
 
         if(!empty(Yii::$app->request->get('type'))) Patient_admissionController::actionCreate();
         
-        return $this->render('index');
+        if (Yii::$app->user->isGuest)
+            return $this->redirect('/site/login');
+        else return $this->render('index');
     }
     /**
      * Login action.
@@ -149,6 +151,10 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
+        
+        $cookies = Yii::$app->response->cookies;
+        $cookies->remove('cookie_login');
+        //unset($cookies['username']);
 
         return $this->goHome();
     }
@@ -223,18 +229,19 @@ class SiteController extends Controller
             $model_founded = Patient_informationController::findModel($modelNOK->patient_uid);
             if(!empty($model_founded))
                 return Yii::$app->getResponse()->redirect(array('/site/index', 
-                    'id' => $model_founded->patient_uid));
+                    'id' => $model_founded->patient_uid, '#' => 'nok'));        
         }
     }
 
     public function InitSQL(){
         $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `user` (
+            "CREATE TABLE IF NOT EXISTS `new_user` (
                 `user_uid` VARCHAR(64) NOT NULL,
-                `user_name` VARCHAR(100) NOT NULL,
+                `username` VARCHAR(100) NOT NULL,
                 `user_password` VARCHAR(20) NOT NULL,
                 `role` VARCHAR(20) NOT NULL,
                 `retire` BOOLEAN DEFAULT false,
+                `authKey` VARCHAR(45) NOT NULL,
                 PRIMARY KEY (`user_uid`)
             );"
             ,
@@ -299,7 +306,7 @@ class SiteController extends Controller
                 `department_name` VARCHAR(50),
                 `is_free` BOOLEAN NOT NULL DEFAULT false,
                 `collection_center_code` VARCHAR(20),
-                `nurse_responsilbe` VARCHAR(20),
+                `nurse_responsible` VARCHAR(20),
                 `bill_generation_datetime` DATETIME,
                 `generation_responsible_uid` VARCHAR(64),
                 `bill_generation_billable_sum_rm` DECIMAL(10,2),

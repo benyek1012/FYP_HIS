@@ -2,15 +2,9 @@
 
 use yii\helpers\Html;
 use GpsLab\Component\Base64UID\Base64UID;
-use app\models\Patient_information;
+use app\models\Bill;
 use app\models\Patient_admission;
-<<<<<<< Updated upstream
-use phpDocumentor\Reflection\Types\Array_;
-use yii\helpers\ArrayHelper;
-use app\controllers\ReceiptController;
-=======
 use app\controllers\receiptController;
->>>>>>> Stashed changes
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
@@ -20,11 +14,20 @@ use app\controllers\receiptController;
 <div class="receipt-form">
 
     <?php  
-        $receipt = array(
-            'deposit'=>'Deposit',
-            'bill'=>'Bill',
-            'refund'=>'Refund',
-        );
+    // var_dump($userId);
+    // exit();
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+        if(!empty($model_bill))
+            // Once bill is generated, can't pay deposit. Only allow bill or refund
+            $receipt = array(
+                'bill'=>'Bill',
+                'refund'=>'Refund',
+            );
+        else
+            $receipt = array(
+                'deposit'=>'Deposit',
+                'refund'=>'Refund',
+            );
 
         $payment_method = array(
             'cash'=>'Cash',
@@ -33,49 +36,24 @@ use app\controllers\receiptController;
         );
 
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-
-        // $names = Patient_information::find()
-        // ->joinWith('patientNextOfKins')
-        // ->select('nok_name, `patient_information`.`name`')
-        // ->where(['`patient_information`.`patient_uid`'=> $temp->patient_uid, ])
-        // ->asArray()
-        // ->all();
-        
-        // $names = Patient_information::find()->where(['`patient_information`.`patient_uid`'=> $temp->patient_uid])
-        //         ->joinWith('patientNextOfKins')
-        //         ->select('nok_name, name')
-        //         ->asArray()->all(); 
-
-        
-//         $result = mysqli_query($conn, "SELECT receipt_uid, pa.rn, receipt_type, receipt_content_sum, receipt_content_bill_id, receipt_content_description, receipt_content_datetime_paid, receipt_content_payer_name, receipt_content_payment_method, card_no, cheque_number, receipt_responsible, receipt_serial_number, receipt_time,
-//  name, nric, guarantor_name FROM receipt r1 INNER JOIN patient_admission pa on r1.rn=pa.rn INNER JOIN patient_information pii on pa.patient_uid=pii.patient_uid ");
-
-        // echo "<pre>";
-        // var_dump($names);
-        // echo "</pre>";
-        // exit();
         
         $rows = (new \yii\db\Query())
-        ->select(['`patient_next_of_kin`.`nok_name`,`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
-        ->from('patient_information, patient_next_of_kin,patient_admission')
+        ->select(['`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
+        ->from('patient_information,  patient_admission')
         ->where(['patient_information.patient_uid' => $temp->patient_uid])
-        ->andWhere('patient_next_of_kin.patient_uid = patient_information.patient_uid')
-        ->andWhere('patient_admission.patient_uid = patient_information.patient_uid')
+        ->andWhere(['patient_admission.rn' => Yii::$app->request->get('rn')])
+        ->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
         ->all();
-        $names = [];
-        foreach ($rows as $row) {
-           $names += $row;    
+        
+        $names = array();
+        foreach($rows as $row){
+            if($row['name'] == '')
+                $row['name'] = "User"; 
+            $names[$row['name']] = $row['name'];
+            $names[$row['guarantor_name']] = $row['guarantor_name'];
         }
-
-        
-        
-
-       // $namesList = ArrayHelper::map($names, 'patient_uid', 'name'); 
-                
-        // foreach($namesList as $n){
-        //     if($n == '')
-        //         $namesList['name'] = "User";
-        // }
+        $names = array_unique($names);
+        $names = array_filter($names);
     
         $form = kartik\form\ActiveForm::begin([
         'id' => 'patient-information-form',
@@ -91,18 +69,34 @@ use app\controllers\receiptController;
 
     <?= $form->field($model, 'receipt_content_datetime_paid')->hiddenInput()->label(false) ?>
 
+    <?= $form->field($model, 'receipt_responsible')->hiddenInput(['maxlength' => true])->label(false) ?>
+
     <div class="row">
         <div class="col-sm-6">
+        <?php  if(!empty($model_bill)){ ?> 
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
+            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)', 'value' => 'bill']) ?>
+         <?php }else{ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
             'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
+        <?php } ?>
         </div>
 
-        <div class="col-sm-6" id="bill_div" style="display:none;">
+        <div class="col-sm-6" id="bill_div" 
+            <?php if(empty($model_bill)) echo 'style="display:none;"'; ?> >
+        <?php  if(!empty($model_bill)){ ?> 
+            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id]) ?>
+        <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
+        <?php } ?>
         </div>
 
         <div class="col-sm-6">
+        <?php  if(!empty($model_bill)){ ?> 
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'value' => $model_bill->bill_generation_billable_sum_rm]) ?>
+        <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
+        <?php } ?>
         </div>
 
         <div class="col-sm-6">
@@ -124,11 +118,7 @@ use app\controllers\receiptController;
 
         <div class="col-sm-6" id="cheque_div" style="display:none;">
             <?= $form->field($model, 'cheque_number')->textInput(['maxlength' => true]) ?>
-        </div>
-
-        <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_responsible')->textInput(['maxlength' => true]) ?>
-        </div>
+        </div>     
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number')->textInput(['maxlength' => true]) ?>
@@ -136,7 +126,7 @@ use app\controllers\receiptController;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Print', ['class' => 'btn btn-success', 'onclick' => 'callPrint();'] ) ?>
+        <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
@@ -166,17 +156,7 @@ function myfunctionforType(val) {
     else
         document.getElementById("bill_div").style.display = "none";s
 }
-<<<<<<< Updated upstream
-function callPrint() {   
-<?php     
-    ReceiptController::actionPrint();
-      //$a=new \app\controllers\ReceiptController();   
-        //$a->actionPrint();         
-?>            
-                   }
-=======
 
 
 
->>>>>>> Stashed changes
 </script>

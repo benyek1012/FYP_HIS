@@ -4,42 +4,22 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\data\ActiveDataProvider;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Button;
+use yii\helpers\Url;
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 if(empty($model))
     $this->title = Yii::t('app','Home Page');
 else
 {
-
     if($model->name != "")
         $name = $model->name;
-    else $name = "User";
+    else $name = "Unknown";
    
     $this->title = $name;
     $this->params['breadcrumbs'][] = ['label' => $name];
 }
-?>
-
-<?php
-   if (Yii::$app->user->isGuest){ 
-    $this->title = 'Please Sign In';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-<style type="text/css">#card1{
-display:none;
-}</style>
-<?php
-}
-else {
-    $this->title = 'Home Page';
-    $this->params['breadcrumbs'] = [['label' => $this->title]];
-    ?>
-    <style type="text/css">#loginButton{
-display:none;
-}</style>
-
-<?php
-} 
 ?>
 
 <body>
@@ -48,10 +28,17 @@ display:none;
         <div class="card">
             <div class="card-header text-white bg-primary">
                 <h3 class="card-title"><?php echo Yii::t('app','Patient Admission Summary');?></h3>
-                <div class="card-tools">
-                    <!-- Collapse Button -->
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i></button>
+                <div class="d-flex justify-content-end">
+                    <?php
+                    if(!empty($model))
+                        echo "<div>".Patient_information::getBalance($model->patient_uid)."&nbsp&nbsp&nbsp&nbsp&nbsp".
+                        Patient_information::getUnclaimedBalance($model->patient_uid)."&nbsp&nbsp&nbsp</div>";
+                    ?>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
                 </div>
                 <!-- /.card-tools -->
             </div>
@@ -66,6 +53,15 @@ display:none;
                 'pagination'=>['pageSize'=>3],
             ]);
             echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+            ?>
+                <div class="form-group">
+                    <br />
+                    <?= Html::a(Yii::t('app','Add New Admission'),['site/index', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+                    &nbsp;&nbsp;
+                    <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/index', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+
+                </div>
+                <?php
         } 
         else echo Yii::t('app','RN is not selected');
             ?>
@@ -94,9 +90,11 @@ display:none;
         if(!empty($model))
         {
     ?>
+                <a name="pa"> </a>
                 <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
-<?php   } else{
+
+                <?php   } else{
              echo Yii::t('app','Patient is not selected');
         }  ?>
             </div>
@@ -134,7 +132,7 @@ display:none;
                     <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
                         onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
                 </div>
-
+                <a name='nok'></a>
                 <?php
             if(!empty($model)){
                 $model_nok = new Patient_next_of_kin();

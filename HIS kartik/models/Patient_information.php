@@ -96,4 +96,110 @@ class Patient_information extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Patient_Next_Of_Kin::class, ['patient_uid' => 'patient_uid']);
     }
+
+    public static function getBalance($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+        // echo "<pre>";
+        // var_dump($info);
+        // echo "</pre>";
+        // exit();
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $info_bill = Bill::findAll(['rn' => $adm]);
+
+        $billable_sum = 0.0;
+        $refund_sum = 0.0;
+        $unclaimed_sum = 0.0;
+        foreach($info_bill as $y)
+        {
+            $billable_sum += $y->bill_generation_billable_sum_rm; 
+        }
+
+        foreach($info_bill as $y)
+        {
+            $info_receipt = Receipt::findOne(['rn' => $y->rn, 'receipt_type' => 'bill']);
+            if(!empty($info_receipt))
+                $billable_sum -= $info_receipt->receipt_content_sum;
+            $info_refund = Receipt::findAll(['rn' => $y->rn, 'receipt_type' => 'refund']);
+            if(!empty($info_refund))
+            {
+                foreach($info_refund as $refund)
+                {
+                    $refund_sum += $refund->receipt_content_sum;
+                }
+            }
+        }
+
+        $billable_sum = $billable_sum - $refund_sum;
+        if($billable_sum < 0)
+        {
+            $unclaimed_sum = 0 - $billable_sum;
+            $billable_sum = 0.0;           
+        }
+
+
+        //  echo "<pre>";
+        // var_dump($info_bill);
+        // echo "</pre>";
+        // exit();
+        return Yii::t('app','Amount Dued')." : RM". $billable_sum;                
+    }
+
+    public static function getUnclaimedBalance($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+        // echo "<pre>";
+        // var_dump($info);
+        // echo "</pre>";
+        // exit();
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $info_bill = Bill::findAll(['rn' => $adm]);
+
+        $billable_sum = 0.0;
+        $refund_sum = 0.0;
+        $unclaimed_sum = 0.0;
+        foreach($info_bill as $y)
+        {
+            $billable_sum += $y->bill_generation_billable_sum_rm; 
+        }
+
+        foreach($info_bill as $y)
+        {
+            $info_receipt = Receipt::findOne(['rn' => $y->rn, 'receipt_type' => 'bill']);
+            if(!empty($info_receipt))
+                $billable_sum -= $info_receipt->receipt_content_sum;
+            $info_refund = Receipt::findAll(['rn' => $y->rn, 'receipt_type' => 'refund']);
+            if(!empty($info_refund))
+            {
+                foreach($info_refund as $refund)
+                {
+                    $refund_sum += $refund->receipt_content_sum;
+                }
+            }
+        }
+
+        $billable_sum = $billable_sum - $refund_sum;
+        if($billable_sum < 0)
+        {
+            $unclaimed_sum = 0 - $billable_sum;
+            $billable_sum = 0.0;           
+        }
+
+
+        //  echo "<pre>";
+        // var_dump($info_bill);
+        // echo "</pre>";
+        // exit();
+        return Yii::t('app','Unclaimed Balance')." : RM". $unclaimed_sum;                
+    }
 }

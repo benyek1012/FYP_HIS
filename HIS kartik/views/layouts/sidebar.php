@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Bill;
+use app\models\Lookup_general;
 use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -38,6 +39,9 @@ function getInfo()
         $info = Bill::findOne(['bill_uid'=> Yii::$app->request->get('bill_uid')]);
         $info = Patient_admission::findOne(['rn'=> $info->rn]);
         $info = Patient_information::findOne(['patient_uid'=> $info->patient_uid]);
+    }
+    else{
+        $info = null;
     }
     
     return $info;
@@ -134,7 +138,7 @@ if(!empty(Yii::$app->request->queryParams))
     <nav class="mt-2">
         <?php
     if(!empty($info)){
-        if($info->name == "") $temp_name = "User";
+        if($info->name == "") $temp_name = "Unknown";
         else $temp_name = $info->name;
          echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [['label' => $temp_name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
@@ -143,7 +147,9 @@ if(!empty(Yii::$app->request->queryParams))
         <div class="mt-1 ml-3 d-flex">
             <div class="info">
                 <p class="text-white"><?php echo Yii::t('app','NRIC')." : ".$info->nric;?></p>
-                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
+                <p class="text-light">
+                    <?php echo Patient_information::getBalance($info->patient_uid)."<br/>".Patient_information::getUnclaimedBalance($info->patient_uid);?>
+                </p>
             </div>
         </div>
         <?php
@@ -154,7 +160,7 @@ if(!empty(Yii::$app->request->queryParams))
             <div class="info">
                 <p class="text-white"><?php echo Yii::t('app','Patient Name')?></p>
                 <p class="text-white"><?php echo Yii::t('app','Patient IC')?></p>
-                <p class="text-light"><?php echo Yii::t('app','Balance Unclaimed | Owed')?></p>
+                <p class="text-light"><?php echo Yii::t('app','Amount Due / Unclaimed')?></p>
             </div>
         </div>
         <?php
@@ -168,7 +174,21 @@ if(!empty(Yii::$app->request->queryParams))
 
 <?php
     if(!empty($info) && !empty(Yii::$app->request->get('rn')||Yii::$app->request->get('receipt_uid') ||Yii::$app->request->get('bill_uid'))){
-        echo \hail812\adminlte\widgets\Menu::widget([
+
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+        if(!empty($model_bill))
+        {
+            echo \hail812\adminlte\widgets\Menu::widget([
+                'items' => [
+                    ['label' => $model_bill->rn, 'header' => true],
+                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/print', 
+                        'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
+                    ['label' => Yii::t('app','Payment'), 'iconClass' => '', 'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
+                          ]
+            ]);
+        }
+        else 
+            echo \hail812\adminlte\widgets\Menu::widget([
             'items' => [
                 ['label' => Yii::$app->request->get('rn'), 'header' => true],
                 ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],

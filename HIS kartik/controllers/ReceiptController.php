@@ -1,28 +1,18 @@
 <?php
 
 namespace app\controllers;
-<<<<<<< Updated upstream
-=======
 
 require 'vendor/autoload.php';
->>>>>>> Stashed changes
 use Yii;
 use app\models\Receipt;
 use app\models\ReceiptSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-<<<<<<< Updated upstream
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-=======
 use app\models\Patient_admission;
 use yii\data\ActiveDataProvider;
 use app\models\Patient_information;
 use yii\helpers\ArrayHelper;
->>>>>>> Stashed changes
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
@@ -72,7 +62,13 @@ class ReceiptController extends Controller
      */
     public function actionIndex()
     {
+
         $searchModel = new ReceiptSearch();
+        // $dataProvider1 = new ActiveDataProvider([
+        //     'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
+        //     ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
+        //     'pagination'=>['pageSize'=>5],
+        // ]);
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -107,10 +103,7 @@ class ReceiptController extends Controller
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->receipt_content_datetime_paid))
-            {
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
-<<<<<<< Updated upstream
-=======
 
             if($model->validate() && $model->save()){
                 // return Yii::$app->getResponse()->redirect(array('/receipt/update', 
@@ -179,13 +172,11 @@ class ReceiptController extends Controller
                 
 
                 
->>>>>>> Stashed changes
             }
-            $model->save();
-            return Yii::$app->getResponse()->redirect(array('/receipt/update', 
-            'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
         } else {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
+            $cookies = Yii::$app->request->cookies;
+            $model->receipt_responsible = $cookies->getValue('cookie_login');
             $model->loadDefaultValues();
         }
 
@@ -273,36 +264,5 @@ class ReceiptController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-
-    public function actionPrint()
-    {
-
-        /*
-        $rn1 = ArrayHelper::getColumn($pa2,'rn');
-        $ed1 = ArrayHelper::getColumn($pa2,'entry_datetime');
-        $piname = ArrayHelper::map($pa3,'name','nric');
-
-         $result = implode($rn1);
-        $result2 = implode($ed1);
-    */
-       // $pa = Patient_admission::find()->select(['rn','entry_datetime'])->one();
-        //print_r($pa);
-        //$getrn = Patient_admission::findOne(['rn'=> $receipt->rn]);
-
-        $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
-        $printer = new Printer($connector);
-       // $printer -> text(($x->clearVar($result));
-        $printer -> text("2022/008023". "\n");
-        $printer -> text("Did we sucessfully print from here?". "\n");
-
-
-
-        $printer -> cut();
-        $printer -> close(); 
-
-
-        return "";
     }
 }

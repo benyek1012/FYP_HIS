@@ -186,14 +186,25 @@ class BillController extends Controller
     public function actionUpdate($bill_uid)
     {
         $model = $this->findModel($bill_uid);
+        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'bill_uid' => $model->bill_uid]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            foreach($modelWard as $w)
+                $w->save();
+            foreach($modelTreatment as $t)
+                $t->save();
+
+            $model->bill_uid = Yii::$app->request->get('bill_uid');
+            $model->save();
+            return Yii::$app->getResponse()->redirect(array('/bill/update', 
+            'bill_uid' => $bill_uid, 'rn' => $model->rn));     
         }
 
         return $this->render('update', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+            'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details()] : $modelTreatment,
         ]);
     }
 
@@ -213,8 +224,6 @@ class BillController extends Controller
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-<<<<<<< Updated upstream
-=======
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->bill_generation_datetime))
             {
@@ -256,37 +265,12 @@ class BillController extends Controller
 
         
 
->>>>>>> Stashed changes
         // $totalWardDays = 0;
         // $dailyWardCost = 0.0;
         // $totalTreatmentCost = 0.0;
         // $billable = 0.0;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-<<<<<<< Updated upstream
-            if(empty($model->bill_generation_datetime))
-            {
-                $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
-                // foreach ($modelWard as $index => $modelWard){
-                //     $totalWardDays += "[$index]ward_number_of_days";
-                //     $dailyWardCost = "[$index]daily_ward_cost";
-                //     $totalTreatmentCost += "[$index]item_per_unit_cost" * "[$index]item_count";
-                // }
-                
-                // $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
-                // $model->bill_generation_billable_sum_rm = $billable;
-                // $model->bill_generation_final_fee_rm = $billable;
-            }
-            if(!empty(Yii::$app->request->get('bill_print_responsible_uid')) && empty($model->bill_print_datetime))
-            {
-                $model->bill_print_datetime =  $date->format('Y-m-d H:i');
-            }
-            $model->bill_uid = Yii::$app->request->get('bill_uid');
-            $model->save();
-
-            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'p'));        
-=======
 
             if($model->validate())
             {
@@ -413,20 +397,13 @@ class BillController extends Controller
             }
           
            
->>>>>>> Stashed changes
         }
 
-        return $this->render('generate', [
+        return $this->render('print', [
             'model' => $model,
-<<<<<<< Updated upstream
-            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-            'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-        ]);
-=======
             'modelWard' => $modelWard,
             'modelTreatment' => $modelTreatment,
         ]); 
->>>>>>> Stashed changes
     }
 
     /**
@@ -457,5 +434,19 @@ class BillController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public static function getTreatmentCost($bill_uid) {
+        return Bill::calculateTreatmentCost($bill_uid);
+    }
+
+    public static function getBillable($bill_uid) {
+        return Bill::calculateBillable($bill_uid);
+    }
+
+    public static function getFinalFee($bill_uid) {
+        // var_dump($bill_uid);
+        // exit();
+        return Bill::calculateFinalFee($bill_uid);
     }
 }
