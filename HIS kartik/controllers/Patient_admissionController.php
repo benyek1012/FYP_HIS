@@ -59,7 +59,7 @@ class Patient_admissionController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public static function actionCreate()
     {
         if(Yii::$app->request->get('confirm') == 't')
         {
@@ -140,7 +140,7 @@ class Patient_admissionController extends Controller
      * @return Patient_admission the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function findModel($rn)
+    public static function findModel($rn)
     {
         if (($model = Patient_admission::findOne(['rn' => $rn])) !== null) {
             return $model;

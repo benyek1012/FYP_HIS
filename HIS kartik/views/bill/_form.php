@@ -8,6 +8,13 @@ use wbraganca\dynamicform\DynamicFormWidget;
 use app\models\Patient_admission;
 use app\models\Treatment_details;
 use yii\data\ActiveDataProvider;
+<<<<<<< Updated upstream
+=======
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+use app\controller\receiptController;
+
+>>>>>>> Stashed changes
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
@@ -396,7 +403,7 @@ $this->registerJs(
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
     <?php }else{ ?>
-    <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success', ]) ?>
     <?php } ?>
 </div>
 
@@ -414,4 +421,6 @@ document.getElementById('print_div').style.display = "none";
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
+
+
 </script>

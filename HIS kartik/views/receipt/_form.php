@@ -4,9 +4,13 @@ use yii\helpers\Html;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Patient_information;
 use app\models\Patient_admission;
+<<<<<<< Updated upstream
 use phpDocumentor\Reflection\Types\Array_;
 use yii\helpers\ArrayHelper;
 use app\controllers\ReceiptController;
+=======
+use app\controllers\receiptController;
+>>>>>>> Stashed changes
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
@@ -162,6 +166,7 @@ function myfunctionforType(val) {
     else
         document.getElementById("bill_div").style.display = "none";s
 }
+<<<<<<< Updated upstream
 function callPrint() {   
 <?php     
     ReceiptController::actionPrint();
@@ -169,4 +174,9 @@ function callPrint() {
         //$a->actionPrint();         
 ?>            
                    }
+=======
+
+
+
+>>>>>>> Stashed changes
 </script>
