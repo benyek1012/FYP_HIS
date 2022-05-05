@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Receipt Sum (RM)',
               //  'format' => 'raw',
                 'value'=>function ($data) {
-                    if($data['receipt_type'] == 'bill')
+                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
                         return '+'.$data['receipt_content_sum'];
                     else return '-'.$data['receipt_content_sum'];
                 },

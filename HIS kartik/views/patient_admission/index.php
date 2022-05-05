@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Patient_admission;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -46,8 +47,14 @@ use yii\helpers\Html;
                 'reminder_given',
                 'guarantor_name',
               //  'guarantor_nric',
-                'guarantor_phone_number',
+              //  'guarantor_phone_number',
                 //'guarantor_email:email',
+                [
+                    'attribute' => 'bill.bill_generation_final_fee_rm',
+                    'value' => function($data){
+                        return Patient_admission::get_bill($data->rn);
+                    },
+                ],
             ],
     ]) ?>
 

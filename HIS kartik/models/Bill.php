@@ -222,19 +222,13 @@ class Bill extends \yii\db\ActiveRecord
 
     public static function getDeposit($bill_uid){
         $sum_deposit = 0.0;
-        $sum_bill = 0.0;
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         $model_receipt = Receipt::findAll(['rn' => $modelBill->rn]);
         foreach($model_receipt as $model)
         {
             if($model->receipt_type == 'deposit')
                 $sum_deposit += $model->receipt_content_sum;
-            if($model->receipt_type == 'bill')
-                $sum_bill += $model->receipt_content_sum;
         }
-
-        $sum_deposit -= $sum_bill;
-
         return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
     }
 
