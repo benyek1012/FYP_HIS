@@ -178,8 +178,10 @@ if(!empty(Yii::$app->request->queryParams))
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
         if(!empty($model_bill))
         {
-            if(empty($model_bill->bill_generation_datetime))
+            if(empty($model_bill))
                 $url_bill = 'bill/create';
+            else if(empty($model_bill->bill_generation_datetime))
+                $url_bill = 'bill/generate';
             else $url_bill = 'bill/print';
 
             echo \hail812\adminlte\widgets\Menu::widget([
