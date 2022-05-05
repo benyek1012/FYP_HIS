@@ -11,6 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_departmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+
 $this->title = Yii::t('app','Lookup Departments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>

@@ -38,6 +38,7 @@ class Lookup_general extends \yii\db\ActiveRecord
             [['long_description'], 'string', 'max' => 100],
             [['code'], 'unique'],
             [['lookup_general_uid'], 'unique'],
+            [['name'], 'exist', 'skipOnError' => true, 'targetClass' => Lookup_general::className(), 'targetAttribute' => ['name' => 'name']],
         ];
     }
 
