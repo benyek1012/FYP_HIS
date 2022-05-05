@@ -64,19 +64,22 @@ use app\models\Patient_admission;
 
     <div class="row">
         <div class="col-lg-12">
-            <?php 
-             $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
-            if(!empty($model_bill)){
-            ?>
+        <?php 
+            $billable = 0.0;
+            $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+            if(!empty($model_bill))
+                $billable = $model_bill->bill_generation_billable_sum_rm;
+            if(!empty(Yii::$app->request->get('rn'))){
+        ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
-                'body' => '<b>Sum of Deposit</b> : RM'.Bill::getDeposit($model_bill->bill_uid).
-                            '<br/><b>Billable Total</b> : RM'.$model_bill->bill_generation_billable_sum_rm.
-                            '<br/><b>Amount Due</b> : RM'.Bill::getAmtDued($model_bill->bill_uid).
-                            '<br/><b>Unclaimed Balance</b> : RM'.Bill::getUnclaimed($model_bill->bill_uid)
+                'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+                            '<br/><b>Billable Total</b> : '.Yii::$app->formatter->asCurrency($billable).
+                            '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+                            '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
-            <?php } ?>
+        <?php } ?>
         </div>
     </div>
 
@@ -141,7 +144,8 @@ use app\models\Patient_admission;
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_serial_number')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_serial_number', 
+                ['labelOptions' => [ 'id' => 'receipt_label' ]])->textInput(['maxlength' => true]) ?>
         </div>
     </div>
 
@@ -173,6 +177,9 @@ function myfunctionforType(val) {
         document.getElementById("bill_div").style.display = "block";
     else
         document.getElementById("bill_div").style.display = "none";
-    s
+
+    if (val == "refund")
+        document.getElementById("receipt_label").innerHTML = 'Document Number';
+    else document.getElementById("receipt_label").innerHTML = 'Receipt Serial Number';
 }
 </script>

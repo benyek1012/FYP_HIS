@@ -255,7 +255,7 @@ $this->registerJs(
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des']) ?>
+                    <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des', 'readonly' => true]) ?>
                 </div>
 
                 <div class="col-sm-6">
@@ -269,34 +269,32 @@ $this->registerJs(
                 <div class="col-sm-6">
                     <?php 
                       if($initial_ward_class == "1a"){?>
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1a_ward_cost']) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1a_ward_cost', 'readonly' => true,]) ?>
                     <?php 
                       }
                       
                       else if($initial_ward_class == "1b"){?>
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1b_ward_cost']) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1b_ward_cost', 'readonly' => true,]) ?>
                     <?php 
                       }
 
                       else if($initial_ward_class == "1c"){?>
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1c_ward_cost']) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1c_ward_cost', 'readonly' => true]) ?>
                     <?php 
                       }
 
                       else if($initial_ward_class == "2"){?>
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'2_ward_cost']) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'2_ward_cost',  'readonly' => true]) ?>
                     <?php 
                       }
 
                       else if($initial_ward_class == "3"){?>
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'3_ward_cost']) ?>
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'3_ward_cost',  'readonly' => true]) ?>
                     <?php 
                       }
                       ?>
 
                 </div>
-
-
 
                 <div class="col-sm-6">
                     <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
@@ -304,7 +302,7 @@ $this->registerJs(
                 </div>
 
                 <div class="col-sm-6">
-                    <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName']) ?>
+                    <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName',  'readonly' => true]) ?>
                 </div>
 
 
@@ -391,7 +389,8 @@ $this->registerJs(
                     'value'=>$ward_code,'maxlength' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'id'=>'wardName','value'=>$ward_name])->label(false) ?>
+                    <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'id'=>'wardName',
+                                            'value'=>$ward_name, 'readonly' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
@@ -411,7 +410,8 @@ $this->registerJs(
                         ],])->label(false)?></td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true, 'class' => 'day'])->label(false) ?>
+                    <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true,
+                                             'class' => 'day', 'readonly' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>
@@ -491,10 +491,11 @@ $this->registerJs(
                 <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
                 <tr>
                     <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['id'=>'treatmentCode',
-                    'prompt'=>'Select reatment code','maxlength' => true])->label(false) ?>
+                    'prompt'=>'Select treatment code','maxlength' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'id'=>'treatmentName'])->label(false) ?>
+                    <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true,
+                                     'id'=>'treatmentName', 'readonly' => true])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -504,27 +505,32 @@ $this->registerJs(
                         <td>
                             <?php 
                       if($initial_ward_class == "1a"){?>
-                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
+                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                        'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                             <?php 
                       }
                       
                       else if($initial_ward_class == "1b"){?>
-                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
+                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                        'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                             <?php 
                       }
 
                       else if($initial_ward_class == "1c"){?>
-                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
+                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                        'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                             <?php 
                       }
 
                       else if($initial_ward_class == "2"){?>
-                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => '2_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
+                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                        'class' => '2_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                             <?php 
                       }
 
                       else if($initial_ward_class == "3"){?>
-                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(['class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
+                            <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                        'class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
                             <?php 
                       }
                       ?>
@@ -536,7 +542,8 @@ $this->registerJs(
                     <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput(['class' => 'item_total_cost'])->label(false) ?>
+                    <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true, 
+                                                'class' => 'item_total_cost'])->label(false) ?>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>
