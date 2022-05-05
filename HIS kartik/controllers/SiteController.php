@@ -323,7 +323,7 @@ class SiteController extends Controller
             ,
             "CREATE TABLE IF NOT EXISTS `ward` (
                 `ward_uid` VARCHAR(64) NOT NULL,
-                `bill_uid` VARCHAR(64) NOT NULL,
+                `bill_uid` VARCHAR(64),
                 `ward_code` VARCHAR(20) NOT NULL,
                 `ward_name` VARCHAR(50) NOT NULL,
                 `ward_start_datetime` DATETIME NOT NULL,
@@ -335,7 +335,7 @@ class SiteController extends Controller
             ,
             "CREATE TABLE IF NOT EXISTS `treatment_details` (
                 `treatment_details_uid` VARCHAR(64) NOT NULL,
-                `bill_uid` VARCHAR(64) NOT NULL,
+                `bill_uid` VARCHAR(64),
                 `treatment_code` VARCHAR(20) NOT NULL,
                 `treatment_name` VARCHAR(50) NOT NULL,
                 `item_per_unit_cost_rm` DECIMAL(10,2) NOT NULL,
