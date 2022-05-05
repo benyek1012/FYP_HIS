@@ -21,7 +21,11 @@ use yii\helpers\Url;
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 
-if(empty( Yii::$app->request->get('bill_uid'))) $initial_ward_class = $admission_model->initial_ward_class;
+if(empty( Yii::$app->request->get('bill_uid')))
+{ 
+    $initial_ward_class = $admission_model->initial_ward_class;
+    $initial_ward_code = $admission_model->initial_ward_code;
+}
 else{
     $rows = (new \yii\db\Query())
     ->select(['*'])
@@ -30,6 +34,7 @@ else{
     ->all();
     foreach($rows as $row){
         $initial_ward_class = $row['initial_ward_class'];
+        $initial_ward_code = $row['initial_ward_code'];
     }  
 }
 
@@ -67,6 +72,15 @@ foreach($rows as $row){
   }
 }  
 
+
+$ward_class = array(
+    "1a" =>'1a', 
+    "1b" =>'1b', 
+    "1c" =>'1c', 
+    "2" =>'2', 
+    "3" =>'3', 
+);
+
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_department')
@@ -97,6 +111,17 @@ $rows = (new \yii\db\Query())
 $ward_name = "";
 foreach($rows as $row){
     $ward_name = $row['ward_name'];
+} 
+
+
+$rows_ward = (new \yii\db\Query())
+->select('ward_code')
+->from('lookup_ward')
+->all();
+
+$wardcode = array();
+foreach($rows_ward as $row_ward){
+  $wardcode[$row_ward['ward_code']] = $row_ward['ward_code'];
 } 
 
 $rows = (new \yii\db\Query())
@@ -132,14 +157,31 @@ $free = array(
 $this->registerJs(
     "$('#statusCode').change(function() {
     var statusCode = $(this).val();
+    var wardClass = $('#wardClass :selected').text();
     $.get('/bill/status', {status : statusCode}, function(data){
     var data = $.parseJSON(data);
     $('#status_des').attr('value', data.status_description);
-    $('#1a_ward_cost').attr('value', data.class_1a_ward_cost);
-    $('#1b_ward_cost').attr('value', data.class_1b_ward_cost);
-    $('#1c_ward_cost').attr('value', data.class_1c_ward_cost);
-    $('#2_ward_cost').attr('value', data.class_2_ward_cost);
-    $('#3_ward_cost').attr('value', data.class_3_ward_cost);
+    if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
+    else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
+    else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
+    else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
+    else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+    });
+    });",
+);
+
+$this->registerJs(
+    "$('#wardClass').change(function() {
+    var wardClass = $(this).val();
+    var statusCode = $('#statusCode :selected').text();
+    $.get('/bill/status', {status : statusCode}, function(data){
+    var data = $.parseJSON(data);
+        
+    if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
+    else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
+    else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
+    else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
+    else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
     });
     });",
 );
@@ -260,40 +302,17 @@ $this->registerJs(
 
                     <div class="col-sm-6">
                         <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
-                        <?= $form->field($model, 'class')->textInput(['maxlength' => true,'value' => $initial_ward_class]) ?>
+                        <?= $form->field($model, 'class')->dropDownList($ward_class, 
+                            ['id'=>'wardClass','prompt'=>'Please select ward class', 'value' => $initial_ward_class]) ?>
                         <?php }else{ ?>
-                        <?= $form->field($model, 'class')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'class')->dropDownList($ward_class, 
+                            ['id'=>'wardClass','prompt'=>'Please select ward class']) ?>
                         <?php } ?>
+
                     </div>
 
                     <div class="col-sm-6">
-                        <?php 
-                      if($initial_ward_class == "1a"){?>
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1a_ward_cost', 'readonly' => true,]) ?>
-                        <?php 
-                      }
-                      
-                      else if($initial_ward_class == "1b"){?>
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1b_ward_cost', 'readonly' => true,]) ?>
-                        <?php 
-                      }
-
-                      else if($initial_ward_class == "1c"){?>
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'1c_ward_cost', 'readonly' => true]) ?>
-                        <?php 
-                      }
-
-                      else if($initial_ward_class == "2"){?>
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'2_ward_cost',  'readonly' => true]) ?>
-                        <?php 
-                      }
-
-                      else if($initial_ward_class == "3"){?>
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'3_ward_cost',  'readonly' => true]) ?>
-                        <?php 
-                      }
-                      ?>
-
+                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost', 'readonly' => true,]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -387,8 +406,12 @@ $this->registerJs(
 
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
-                        <td><?= $form->field($modelWard, "[$index]ward_code")->textInput([  'id'=>'wardCode',
-                    'value'=>$ward_code,'maxlength' => true])->label(false) ?>
+                        <td>
+                
+                            <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['id'=>'wardCode',
+                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $ward_code])->label(false) ?>
+                       
+                
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'id'=>'wardName',
