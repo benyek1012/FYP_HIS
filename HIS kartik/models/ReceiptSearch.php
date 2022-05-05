@@ -41,17 +41,21 @@ class ReceiptSearch extends Receipt
      */
     public function search($params)
     {
-        $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
-      
-        $rn_array = array();
-        foreach($model_rn as $model)
-        {
-            $rn_array[] = $model->rn;
-        
-        }
 
-        $query = Receipt::find()->where(['rn' => $rn_array])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
+        // This is showing all RN from payment 
+        // $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+        // $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
+      
+        // $rn_array = array();
+        // foreach($model_rn as $model)
+        // {
+        //     $rn_array[] = $model->rn;
+        
+        // }
+
+        // $query = Receipt::find()->where(['rn' => $rn_array])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
+
+        $query = Receipt::find()->where(['rn' => Yii::$app->request->get('rn')])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
 
         // add conditions that should always apply here
 

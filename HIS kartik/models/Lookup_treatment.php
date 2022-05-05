@@ -46,12 +46,12 @@ class Lookup_treatment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'treatment_uid' => 'Treatment Uid',
-            'treatment_code' => 'Treatment Code',
-            'treatment_name' => 'Treatment Name',
-            'class_1_cost_per_unit' => 'Class  1 Cost Per Unit',
-            'class_2_cost_per_unit' => 'Class  2 Cost Per Unit',
-            'class_3_cost_per_unit' => 'Class  3 Cost Per Unit',
+            'treatment_uid' => Yii::t('app','Treatment Uid'),
+            'treatment_code' => Yii::t('app','Treatment Code'),
+            'treatment_name' => Yii::t('app','Treatment Name'),
+            'class_1_cost_per_unit' => Yii::t('app','Class  1 Cost Per Unit'),
+            'class_2_cost_per_unit' => Yii::t('app','Class  2 Cost Per Unit'),
+            'class_3_cost_per_unit' => Yii::t('app','Class  3 Cost Per Unit'),
         ];
     }
 }

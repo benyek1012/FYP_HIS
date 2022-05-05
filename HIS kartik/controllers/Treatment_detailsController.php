@@ -7,6 +7,10 @@ use app\models\Treatment_detailsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\grid\EditableColumnAction;
+use yii\helpers\ArrayHelper;
+use GpsLab\Component\Base64UID\Base64UID;
+use Yii;
 
 /**
  * Treatment_detailsController implements the CRUD actions for Treatment_details model.
@@ -24,7 +28,7 @@ class Treatment_detailsController extends Controller
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete' => ['GET'],
                     ],
                 ],
             ]
@@ -68,16 +72,12 @@ class Treatment_detailsController extends Controller
     public function actionCreate()
     {
         $model = new Treatment_details();
+        $model->treatment_details_uid = Base64UID::generate(32);
+        $model->loadDefaultValues();
+        $model-> save();
+        return $this->redirect(['bill/create', 'rn' => Yii::$app->request->get('rn')]);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'treatment_details_uid' => $model->treatment_details_uid]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
+        return $this->renderPartial('create', [
             'model' => $model,
         ]);
     }
@@ -113,7 +113,14 @@ class Treatment_detailsController extends Controller
     {
         $this->findModel($treatment_details_uid)->delete();
 
-        return $this->redirect(['index']);
+        if(!empty( Yii::$app->request->get('bill_uid'))){ 
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'))); 
+        } 
+        else{
+            return Yii::$app->getResponse()->redirect(array('/bill/create', 
+                'rn' => Yii::$app->request->get('rn')));  
+        }
     }
 
     /**
