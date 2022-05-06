@@ -146,9 +146,6 @@ foreach($rows as $row){
 
 $billuid = Base64UID::generate(32);
 
-
-
-
 $free = array(
     0 =>'No', //false
     1 =>'Yes',    //true
@@ -197,25 +194,6 @@ $this->registerJs(
 );
 
 $this->registerJs(
-    // "$('#wardCode').change(function() {
-    // var wardCode = $(this).val();
-    // $.get('/bill/ward', {ward : wardCode}, function(data){
-    // var data = $.parseJSON(data);
-    // $('#wardName').attr('value', data.ward_name);
-    // });
-    // });"
-    
-    // "var countWard = $('#countWard').val();
-    // for(var indexWard = 0; indexWard < countWard; indexWard++){
-    //     $('#ward-'+indexWard+'-ward_code').change(function() {
-    //         var wardCode = $('#ward-'+(indexWard-1)+'-ward_code').val();
-    //         $.get('/bill/ward', {ward : wardCode}, function(data){
-    //             var data = $.parseJSON(data);
-    //             $('#ward-'+(indexWard-1)+'-ward_name').attr('value', data.ward_name);
-    //         });
-    //     });
-    // }",
-
     "$('.wardCode', document).each(function(index, item){
         $(item).on('change', function() {
             var wardCode = this.value;
@@ -229,41 +207,6 @@ $this->registerJs(
 );
 
 $this->registerJs(
-    // "$('#treatmentCode').change(function() {
-    // var treatmentCode = $(this).val();
-    // $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
-    // var data = $.parseJSON(data);
-    // $('#treatmentName').attr('value', data.treatment_name);
-    // $('.1_unit_cost').attr('value', data.class_1_cost_per_unit);
-    // $('.2_unit_cost').attr('value', data.class_2_cost_per_unit);
-    // $('.3_unit_cost').attr('value', data.class_3_cost_per_unit);
-    // });
-    // });",
-
-    // "var countTreatment = $('#countTreatment').val();
-    // var billClass = $('#wardClass').val(); 
-    // for(var i = 0; i < countTreatment; i++){
-    //     // alert('treatment_details-'+i+'-treatment_code');
-    //     var count = i;
-    //     $('#treatment_details-'+i+'-treatment_code').change(function() {
-    //         // alert('treatment_details-'+i+'-treatment_code');
-    //         var treatmentCode = $(this).val();
-    //         $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
-    //             var data = $.parseJSON(data);
-    //             $('#treatment_details-'+(i-1)+'-treatment_name').attr('value', data.treatment_name);
-    //             if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
-    //                 $('#treatment_details-'+(i-1)+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
-    //             }
-    //             if(billClass == '2'){
-    //                 $('#treatment_details-'+(i-1)+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
-    //             }
-    //             if(billClass == '3'){
-    //                 $('#treatment_details-'+(i-1)+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
-    //             }
-    //         });
-    //     });
-    // }",
-
     "$('.treatmentCode', document).each(function(index, item){
         var billClass = $('#wardClass').val();
         $(item).on('change', function() {
@@ -493,11 +436,11 @@ $this->registerJs(
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
                         <td>
-                
+
                             <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
                              'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code])->label(false) ?>
-                       
-                
+
+
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
@@ -616,6 +559,7 @@ $this->registerJs(
                         <div class="col-sm-6">
                             <td>
                                 <?php 
+                                  if(empty( Yii::$app->request->get('bill_uid'))){ 
                       if($initial_ward_class == "1a"){?>
                                 <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
                                         'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
@@ -645,10 +589,12 @@ $this->registerJs(
                                         'class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
-                      ?>
+                    }else{ ?>
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,])->label(false) ?>
+                                <?php    }
+              ?>
                             </td>
                         </div>
-
 
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num', 'onchange' => 'calculateItemCost();'])->label(false) ?>
@@ -846,7 +792,7 @@ function calculateDays() {
 
             $("#ward-" + i + "-ward_number_of_days").val(days);
         }
-    }    
+    }
 }
 
 function calculateItemCost() {
