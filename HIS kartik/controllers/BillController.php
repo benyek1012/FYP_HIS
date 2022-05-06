@@ -148,7 +148,6 @@ class BillController extends Controller
                     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
             }
         }
-
         return $this->render('create', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
@@ -274,14 +273,14 @@ class BillController extends Controller
                                     foreach ($modelWardUpdate as $modelWardUpdate) {
                                         $modelWardUpdate->save();
                                     }
-                                    return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'w'));
                                 }
                             }
                         }
                     }
                 }
             } 
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'w'));
         }
 
         // Insert and Update Treatment
@@ -330,11 +329,11 @@ class BillController extends Controller
                                 }
                             }
                         }
-                        return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 't'));
                     }
                 }
             } 
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 't'));
         }
 
         // Add Ward Row

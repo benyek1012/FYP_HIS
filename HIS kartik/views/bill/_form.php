@@ -280,30 +280,48 @@ $this->registerJs(
                 if(billClass == '3'){
                     $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
                 }
-                calculateItemCost();
+                // calculateItemCost();
             });
         });
     });
     ",
 );
 
-$this->registerJs(
-    "var countTeatment = $('#countTreatment').val();
-    for(var i = 0; i < countTreatment; i++) {
-        $('#treatment_details-'+i+'-item_count').on('change', function() { 
-            calculateItemCost();
-        });
-    }"
-);
+// $this->registerJs(
+    // "var countTeatment = $('#countTreatment').val();
+    // for(var i = 0; i < countTreatment; i++) {
+    //     $('#treatment_details-'+i+'-item_count').on('change', function() { 
+    //         calculateItemCost();
+    //     });
+    // }",
 
-$this->registerJs(
-    "var countTeatment = $('#countTreatment').val();
-    for(var i = 0; i < countTreatment; i++) {
-        $('#'+i+'_unit_cost').on('change', function() { 
-            calculateItemCost();
-        });
-    }"
-);
+    // "$('.item_num', document).each(function(index, item){
+    //     $(item).on('change', function() {
+    //         calculateItemCost();
+    //     });
+    // });
+    // ",
+
+    // "$('.wardCode', document).each(function(index, item){
+    //     $(item).on('change', function() {
+    //         var wardCode = this.value;
+    //         $.get('/bill/ward', {ward : wardCode}, function(data){
+    //             var data = $.parseJSON(data);
+    //             $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
+    //         });
+    //     });
+    // });
+    // ",
+// );
+
+// $this->registerJs(
+//     "var countTeatment = $('#countTreatment').val();
+//     for(var i = 0; i < countTreatment; i++) {
+//         $('#'+i+'_unit_cost').on('change', function() { 
+//             calculateItemCost();
+//         });
+//     }"
+// );
 
 $this->registerJs(
     "$('#addWardRow').on('click', function() { 
@@ -475,11 +493,11 @@ $this->registerJs(
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
                         <td>
-
+                
                             <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
                              'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code])->label(false) ?>
-
-
+                       
+                
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
@@ -598,7 +616,6 @@ $this->registerJs(
                         <div class="col-sm-6">
                             <td>
                                 <?php 
-                                 if(empty( Yii::$app->request->get('bill_uid'))){ 
                       if($initial_ward_class == "1a"){?>
                                 <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
                                         'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
@@ -628,9 +645,6 @@ $this->registerJs(
                                         'class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
-                    }else{ ?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true])->label(false) ?>
-                                <?php    }
                       ?>
                             </td>
                         </div>
@@ -832,7 +846,7 @@ function calculateDays() {
 
             $("#ward-" + i + "-ward_number_of_days").val(days);
         }
-    }
+    }    
 }
 
 function calculateItemCost() {
@@ -844,9 +858,8 @@ function calculateItemCost() {
 
         if (itemCount != '' && itemPerUnit != "") {
             var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+            $('#treatment_details-' + i + '-item_total_unit_cost_rm').val(totalCost);
         }
-
-        $('#treatment_details-' + i + '-item_total_unit_cost_rm').val(totalCost);
     }
 }
 </script>
