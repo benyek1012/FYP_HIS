@@ -31,14 +31,13 @@ class Lookup_general extends \yii\db\ActiveRecord
     {
         return [
             [['lookup_general_uid', 'code', 'category', 'name', 'long_description'], 'required'],
-            [['recommend'], 'integer'],
+            [['recommend'], 'boolean', 'strict' => true],
             [['lookup_general_uid'], 'string', 'max' => 64],
             [['code', 'category'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 50],
             [['long_description'], 'string', 'max' => 100],
             [['code'], 'unique'],
             [['lookup_general_uid'], 'unique'],
-            [['name'], 'exist', 'skipOnError' => true, 'targetClass' => Lookup_general::className(), 'targetAttribute' => ['name' => 'name']],
         ];
     }
 
