@@ -147,13 +147,13 @@ class BillController extends Controller
                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
                     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
             }
-
-            return $this->render('create', [
-                'model' => $model,
-                'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-                'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-            ]);
         }
+
+        return $this->render('create', [
+            'model' => $model,
+            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+            'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
+        ]);
     }
 
 
@@ -275,7 +275,7 @@ class BillController extends Controller
                                         $modelWardUpdate->save();
                                     }
                                     return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
+                                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'w'));
                                 }
                             }
                         }
@@ -327,11 +327,11 @@ class BillController extends Controller
                                     foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
                                         $modelTreatmentUpdate->save();
                                     }
-                                    return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
                                 }
                             }
                         }
+                        return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 't'));
                     }
                 }
             } 

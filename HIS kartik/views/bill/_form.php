@@ -380,7 +380,7 @@ $this->registerJs(
                     </div>
 
                     <div class="col-sm-6">
-                    <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost', 'readonly' => true,]) ?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost', 'readonly' => true,]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -475,11 +475,11 @@ $this->registerJs(
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
                         <td>
-                
+
                             <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
                              'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code])->label(false) ?>
-                       
-                
+
+
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
@@ -598,6 +598,7 @@ $this->registerJs(
                         <div class="col-sm-6">
                             <td>
                                 <?php 
+                                 if(empty( Yii::$app->request->get('bill_uid'))){ 
                       if($initial_ward_class == "1a"){?>
                                 <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
                                         'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
@@ -627,6 +628,9 @@ $this->registerJs(
                                         'class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
+                    }else{ ?>
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true])->label(false) ?>
+                                <?php    }
                       ?>
                             </td>
                         </div>
