@@ -197,31 +197,99 @@ $this->registerJs(
 );
 
 $this->registerJs(
-    "$('#wardCode').change(function() {
-    var wardCode = $(this).val();
-    $.get('/bill/ward', {ward : wardCode}, function(data){
-    var data = $.parseJSON(data);
-    $('#wardName').attr('value', data.ward_name);
+    // "$('#wardCode').change(function() {
+    // var wardCode = $(this).val();
+    // $.get('/bill/ward', {ward : wardCode}, function(data){
+    // var data = $.parseJSON(data);
+    // $('#wardName').attr('value', data.ward_name);
+    // });
+    // });"
+    
+    // "var countWard = $('#countWard').val();
+    // for(var indexWard = 0; indexWard < countWard; indexWard++){
+    //     $('#ward-'+indexWard+'-ward_code').change(function() {
+    //         var wardCode = $('#ward-'+(indexWard-1)+'-ward_code').val();
+    //         $.get('/bill/ward', {ward : wardCode}, function(data){
+    //             var data = $.parseJSON(data);
+    //             $('#ward-'+(indexWard-1)+'-ward_name').attr('value', data.ward_name);
+    //         });
+    //     });
+    // }",
+
+    "$('.wardCode', document).each(function(index, item){
+        $(item).on('change', function() {
+            var wardCode = this.value;
+            $.get('/bill/ward', {ward : wardCode}, function(data){
+                var data = $.parseJSON(data);
+                $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
+            });
+        });
     });
-    });",
+    ",
 );
 
 $this->registerJs(
-    "$('#treatmentCode').change(function() {
-    var treatmentCode = $(this).val();
-    $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
-    var data = $.parseJSON(data);
-    $('#treatmentName').attr('value', data.treatment_name);
-    $('.1_unit_cost').attr('value', data.class_1_cost_per_unit);
-    $('.2_unit_cost').attr('value', data.class_2_cost_per_unit);
-    $('.3_unit_cost').attr('value', data.class_3_cost_per_unit);
+    // "$('#treatmentCode').change(function() {
+    // var treatmentCode = $(this).val();
+    // $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+    // var data = $.parseJSON(data);
+    // $('#treatmentName').attr('value', data.treatment_name);
+    // $('.1_unit_cost').attr('value', data.class_1_cost_per_unit);
+    // $('.2_unit_cost').attr('value', data.class_2_cost_per_unit);
+    // $('.3_unit_cost').attr('value', data.class_3_cost_per_unit);
+    // });
+    // });",
+
+    // "var countTreatment = $('#countTreatment').val();
+    // var billClass = $('#wardClass').val(); 
+    // for(var i = 0; i < countTreatment; i++){
+    //     // alert('treatment_details-'+i+'-treatment_code');
+    //     var count = i;
+    //     $('#treatment_details-'+i+'-treatment_code').change(function() {
+    //         // alert('treatment_details-'+i+'-treatment_code');
+    //         var treatmentCode = $(this).val();
+    //         $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+    //             var data = $.parseJSON(data);
+    //             $('#treatment_details-'+(i-1)+'-treatment_name').attr('value', data.treatment_name);
+    //             if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
+    //                 $('#treatment_details-'+(i-1)+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
+    //             }
+    //             if(billClass == '2'){
+    //                 $('#treatment_details-'+(i-1)+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
+    //             }
+    //             if(billClass == '3'){
+    //                 $('#treatment_details-'+(i-1)+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
+    //             }
+    //         });
+    //     });
+    // }",
+
+    "$('.treatmentCode', document).each(function(index, item){
+        var billClass = $('#wardClass').val();
+        $(item).on('change', function() {
+            var treatmentCode = this.value;
+            $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+                var data = $.parseJSON(data);
+                $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
+                if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
+                    $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
+                }
+                if(billClass == '2'){
+                    $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
+                }
+                if(billClass == '3'){
+                    $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
+                }
+                calculateItemCost();
+            });
+        });
     });
-    });",
+    ",
 );
 
 $this->registerJs(
     "var countTeatment = $('#countTreatment').val();
-    for(i = 0; i < countTreatment; i++) {
+    for(var i = 0; i < countTreatment; i++) {
         $('#treatment_details-'+i+'-item_count').on('change', function() { 
             calculateItemCost();
         });
@@ -230,7 +298,7 @@ $this->registerJs(
 
 $this->registerJs(
     "var countTeatment = $('#countTreatment').val();
-    for(i = 0; i < countTreatment; i++) {
+    for(var i = 0; i < countTreatment; i++) {
         $('#'+i+'_unit_cost').on('change', function() { 
             calculateItemCost();
         });
@@ -241,7 +309,7 @@ $this->registerJs(
     "$('#addWardRow').on('click', function() { 
         var countWard = $('#countWard').val();    
        
-        $.get('/bill/ward', {ward : countWard}, function(data){
+        $.get('/bill/wardRow', {ward : countWard}, function(data){
             var data = $.parseJSON(data);
             $('#countWard').attr('value', data.length);
         });
@@ -408,14 +476,14 @@ $this->registerJs(
                     <tr>
                         <td>
                 
-                            <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['id'=>'wardCode',
-                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $ward_code])->label(false) ?>
+                            <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code])->label(false) ?>
                        
                 
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'id'=>'wardName',
-                                            'value'=>$ward_name, 'readonly' => true])->label(false) ?>
+                        <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
+                                            'value'=>$modelWard->ward_name, 'readonly' => true])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
@@ -453,7 +521,6 @@ $this->registerJs(
                 <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton('Save Ward', ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success']) ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateWard', 'value' => 'true','class' => 'btn btn-success']) ?>
                 <?php }else{ ?>
                 <?= Html::submitButton('Save Ward', ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success']) ?>
                 <?php } ?>
@@ -517,12 +584,12 @@ $this->registerJs(
                     </tr>
                     <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
                     <tr>
-                        <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['id'=>'treatmentCode',
+                        <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
                     'prompt'=>'Select treatment code','maxlength' => true])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true,
-                                     'id'=>'treatmentName', 'readonly' => true])->label(false) ?>
+                        <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
+                                    'readonly' => true])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -587,7 +654,6 @@ $this->registerJs(
                 <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateTreatment', 'value' => 'true','class' => 'btn btn-success']) ?>
                 <?php }else{ ?>
                 <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
                 <?php } ?>
@@ -731,7 +797,7 @@ document.getElementById('card_div').style.display = "block";
 function calculateDays() {
     var countWard = $("#countWard").val();
 
-    for (i = 0; i < countWard; i++) {
+    for (var i = 0; i < countWard; i++) {
         var date1 = new Date($("#ward-" + i + "-ward_start_datetime").val());
         var date2 = new Date($("#ward-" + i + "-ward_end_datetime").val());
 
@@ -768,7 +834,7 @@ function calculateDays() {
 function calculateItemCost() {
     var countTeatment = $("#countTreatment").val();
 
-    for (i = 0; i < countTeatment; i++) {
+    for (var i = 0; i < countTeatment; i++) {
         var itemPerUnit = $('#treatment_details-' + i + '-item_per_unit_cost_rm').val();
         var itemCount = $('#treatment_details-' + i + '-item_count').val();
 
