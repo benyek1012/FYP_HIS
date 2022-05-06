@@ -81,11 +81,23 @@ class Patient_admission extends \yii\db\ActiveRecord
 
 
     public static function get_bill($rn){
-        if(Bill::getSumDeposit($rn) > 0)
-            return Yii::t('app','Unclaimed Balance')." : ".Yii::$app->formatter->asCurrency(Bill::getUnclaimed($rn));
-        else return Yii::t('app','Amount Due')." : ".Yii::$app->formatter->asCurrency(Bill::getAmtDued($rn));
+        if( Bill::getUnclaimed($rn) <= 0 )
+            return Yii::t('app','Amount Due')." : ".Yii::$app->formatter->asCurrency(Bill::getAmtDued($rn));
+        else return Yii::t('app','Unclaimed Balance')." : ".Yii::$app->formatter->asCurrency(Bill::getUnclaimed($rn));
 
         return null;
+    }
+
+    public static function get_billable_sum($rn){
+        $billable = 0;
+        $model_bill = Bill::findOne(['rn' => $rn]);
+        if(!empty($model_bill))
+        {
+            $billable = $model_bill->bill_generation_billable_sum_rm;
+            // If billable sum in database in not set, assign to 0
+            if(empty($billable)) $billable = 0;
+        }
+        return Yii::$app->formatter->asCurrency($billable);
     }
 
      /**
@@ -93,7 +105,7 @@ class Patient_admission extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBill()
+    public function getBills()
     {
         return $this->hasOne(Bill::className(), ['rn' => 'rn']);
     }

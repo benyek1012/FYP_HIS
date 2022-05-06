@@ -52,6 +52,7 @@ else
                 ->orderBy(['entry_datetime' => SORT_DESC]),
                 'pagination'=>['pageSize'=>10],
             ]);
+            
             echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
             ?>
                 <div class="form-group">

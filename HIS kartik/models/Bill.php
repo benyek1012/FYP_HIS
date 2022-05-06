@@ -227,6 +227,17 @@ class Bill extends \yii\db\ActiveRecord
         return $billable;
     }
 
+        // Return Negative values
+        public static function determineFinalFee($rn) {
+            $model_bill = Bill::findOne(['rn' => $rn]);
+            $billable = 0.0;
+            if(!empty($model_bill))
+            {
+                return Bill::calculateFinalFee($model_bill->bill_uid);
+            }
+            return $billable;
+        }
+
     // All Deposit
     public static function getDeposit($rn){
         $sum_deposit = 0.0;

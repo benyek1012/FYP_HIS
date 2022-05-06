@@ -73,15 +73,11 @@ class BillController extends Controller
         echo Json::encode($model);
     }
 
-    public function actionWard($ward){
-        for($i = 0; $i < $ward; $i++) {
-            $modelWard[] = new Ward();
-        }
-        $modelWard[] = new Ward();
-
-        echo Json::encode($modelWard);
+    public function actionWard($ward) {
+        $model = Lookup_ward::findOne( ['ward_code' => $ward]);
+        echo Json::encode($model);
     }
-
+    
     public function actionTreatmentRow($treatment){
         for($i = 0; $i < $treatment; $i++) {
             $modelTreatment[] = new Treatment_details();
