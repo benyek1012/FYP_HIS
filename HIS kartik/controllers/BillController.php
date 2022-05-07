@@ -68,12 +68,12 @@ class BillController extends Controller
         echo Json::encode($model);
     }
 
-    public function actionLookUpTreatment($treatment) {
+    public function actionTreatment($treatment) {
         $model = Lookup_treatment::findOne( ['treatment_code' => $treatment]);
         echo Json::encode($model);
     }
 
-    public function actionLookUpWard($ward) {
+    public function actionWard($ward) {
         $model = Lookup_ward::findOne( ['ward_code' => $ward]);
         echo Json::encode($model);
     }

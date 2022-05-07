@@ -183,7 +183,7 @@ $this->registerJs(
             $('.treatmentCode', document).each(function(index, item){
                 var billClass = $('#wardClass').val();
                 var treatmentCode = this.value;
-                $.get('/bill/lookUpTreatment', {treatment : treatmentCode}, function(data){
+                $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
                     var data = $.parseJSON(data);
                     $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
                     if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
@@ -216,7 +216,7 @@ $this->registerJs(
     "$('.wardCode', document).each(function(index, item){
         $(item).on('change', function() {
             var wardCode = this.value;
-            $.get('/bill/lookUpWard', {ward : wardCode}, function(data){
+            $.get('/bill/ward', {ward : wardCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
             });
@@ -230,7 +230,7 @@ $this->registerJs(
         var billClass = $('#wardClass').val();
         $(item).on('change', function() {
             var treatmentCode = this.value;
-            $.get('/bill/lookUpTreatment', {treatment : treatmentCode}, function(data){
+            $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
                 if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
@@ -588,8 +588,8 @@ if(empty($print_readonly)) $print_readonly = false;
                                     'disabled' => $print_readonly, 'onchange' => 'calculateItemCost();'])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'disabled' => $print_readonly, 
-                                                'class' => 'item_total_cost'])->label(false) ?>
+                        <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
+                                     'disabled' => $print_readonly, 'class' => 'item_total_cost'])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
@@ -648,6 +648,7 @@ if(empty($print_readonly)) $print_readonly = false;
                 <div class="col-sm-6">
                     <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
                         [
+                            'readonly' => true, 
                             'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'billalbe', 
@@ -658,6 +659,7 @@ if(empty($print_readonly)) $print_readonly = false;
                 <div class="col-sm-6">
                     <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(
                         [
+                            'readonly' => true, 
                             'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'finalFee', 
