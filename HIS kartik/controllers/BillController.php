@@ -145,7 +145,7 @@ class BillController extends Controller
                 }
                 
                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'w'));
+                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'));
             }
         }
         return $this->render('create', [
@@ -215,7 +215,7 @@ class BillController extends Controller
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));        
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
         }
 
         // Update Bill
@@ -298,7 +298,7 @@ class BillController extends Controller
                 }
             } 
             return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'w'));
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'));
         }
 
         // Insert and Update Treatment
@@ -351,7 +351,7 @@ class BillController extends Controller
                 }
             } 
             return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 't'));
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'treatment'));
         }
 
         // Add Ward Row
@@ -467,7 +467,7 @@ class BillController extends Controller
                 $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
                 $model->save();
                 return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));         
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         
             }
             else
             {
