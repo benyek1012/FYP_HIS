@@ -61,10 +61,6 @@ class Bill extends \yii\db\ActiveRecord
             [['bill_print_id'], 'integer'],
          //   [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['bill_print_id'], 'unique'],
-            // [['bill_print_id'], 'number'],
-            // [['bill_print_id'], 'string', 'length' => 7],
-            // [['bill_print_id'], 'unique'],
-            // [['bill_uid'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
@@ -95,6 +91,14 @@ class Bill extends \yii\db\ActiveRecord
             'bill_print_datetime' => Yii::t('app','Bill Print Datetime'),
             'bill_print_id' => Yii::t('app','Bill Print ID'),
         ];
+    }
+
+    public static function checkExistPrint($rn)
+    {
+        $model = Bill::findOne( [ 'rn' => $rn] );
+        if(!empty($model->bill_print_id))
+            return true;
+        else return false;
     }
 
     /**
@@ -194,6 +198,9 @@ class Bill extends \yii\db\ActiveRecord
         }
         
         $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
+
+        if(!empty($modelBill) && $modelBill->is_free == 1)
+            $billable = 0;
 
         return $billable;
     }

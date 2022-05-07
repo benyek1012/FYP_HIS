@@ -39,7 +39,7 @@ else{
 }
 
 $row_bill = (new \yii\db\Query())
-->select(['bill_generation_datetime'])
+->select(['bill_generation_datetime', 'is_free'])
 ->from('bill')
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
 ->one();
@@ -288,6 +288,8 @@ $this->registerJs(
     });"
 );
 
+if(empty($print_readonly)) $print_readonly = false;
+
 ?>
 
 <div class="bill-form">
@@ -322,11 +324,11 @@ $this->registerJs(
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'status_code')->dropDownList($status_code, ['id'=>'statusCode',
-                    'prompt'=>'Please select status code','maxlength' => true]) ?>
+                    'prompt'=>'Please select status code','maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des', 'readonly' => true]) ?>
+                        <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -335,39 +337,40 @@ $this->registerJs(
                             ['id'=>'wardClass','prompt'=>'Please select ward class', 'value' => $initial_ward_class]) ?>
                         <?php }else{ ?>
                         <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=>'Please select ward class']) ?>
+                            ['id'=>'wardClass','prompt'=>'Please select ward class', 'disabled' => $print_readonly]) ?>
                         <?php } ?>
 
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost', 'readonly' => true,]) ?>
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost',  
+                                'readonly' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
-                    'prompt'=>'Please select department code','maxlength' => true]) ?>
+                    'prompt'=>'Please select department code','maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName',  'readonly' => true]) ?>
-                    </div>
-
-
-                    <div class="col-sm-6">
-                        <?= $form->field($model, 'is_free')->dropDownList($free) ?>
+                        <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName', 
+                             'readonly' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'collection_center_code')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'is_free')->dropDownList($free, ['disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'nurse_responsible')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'collection_center_code')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'nurse_responsible')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
                 </div>
                 <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
@@ -436,18 +439,17 @@ $this->registerJs(
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
                         <td>
-
                             <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code])->label(false) ?>
-
-
+                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code,
+                              'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
-                                            'value'=>$modelWard->ward_name, 'readonly' => true])->label(false) ?>
+                                            'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'start_date'],
+                        <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        'options' => ['class' => 'start_date', 'disabled' => $print_readonly],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         'pluginEvents' => [
                             'change' => 'function () {
@@ -455,7 +457,8 @@ $this->registerJs(
                              }',
                         ],])->label(false)?></td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),['options' => ['class' => 'end_date'], 
+                        <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
+                        'options' => ['class' => 'end_date', 'disabled' => $print_readonly], 
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
                         'pluginEvents' => [
                             'change' => 'function () {
@@ -465,7 +468,7 @@ $this->registerJs(
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
                         <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true,
-                                             'class' => 'day', 'readonly' => true])->label(false) ?>
+                                             'class' => 'day',  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
@@ -546,11 +549,11 @@ $this->registerJs(
                     <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
                     <tr>
                         <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
-                    'prompt'=>'Select treatment code','maxlength' => true])->label(false) ?>
+                                'prompt'=>'Select treatment code','maxlength' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
-                                    'readonly' => true])->label(false) ?>
+                                    'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -561,46 +564,48 @@ $this->registerJs(
                                 <?php 
                                   if(empty( Yii::$app->request->get('bill_uid'))){ 
                       if($initial_ward_class == "1a"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
                                         'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
                       
                       else if($initial_ward_class == "1b"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
                                         'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
 
                       else if($initial_ward_class == "1c"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
                                         'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
 
                       else if($initial_ward_class == "2"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
                                         'class' => '2_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
 
                       else if($initial_ward_class == "3"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
                                         'class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
                                 <?php 
                       }
                     }else{ ?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'readonly' => true,])->label(false) ?>
+                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(
+                                    [ 'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
                                 <?php    }
               ?>
                             </td>
                         </div>
 
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num', 'onchange' => 'calculateItemCost();'])->label(false) ?>
+                        <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
+                                    'disabled' => $print_readonly, 'onchange' => 'calculateItemCost();'])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true, 
+                        <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'disabled' => $print_readonly, 
                                                 'class' => 'item_total_cost'])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -660,7 +665,7 @@ $this->registerJs(
                 <div class="col-sm-6">
                     <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
                         [
-                            'readonly' => true,
+                            'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'billalbe', 
                             'value' => Bill::calculateBillable(Yii::$app->request->get('bill_uid'))
@@ -670,7 +675,7 @@ $this->registerJs(
                 <div class="col-sm-6">
                     <?= $form->field($model, 'bill_generation_final_fee_rm')->textInput(
                         [
-                            'readonly' => true,
+                            'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'finalFee', 
                             'value' => Bill::calculateFinalFee(Yii::$app->request->get('bill_uid'))
@@ -681,8 +686,10 @@ $this->registerJs(
             <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
             <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success']) ?>
-            <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
             <?php }?>
+            <?php if($row_bill['is_free'] == 1){ ?> 
+            <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
+            <?php } ?>
         </div>
         <!-- /.card-body -->
     </div>
@@ -715,7 +722,7 @@ $this->registerJs(
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::checkExistPrint(Yii::$app->request->get('rn'))]) ?>
                 </div>
             </div>
             <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
@@ -753,7 +760,8 @@ document.getElementById("bill_div").style.display = "block";
 document.getElementById("ward_div").style.display = "block";
 document.getElementById("treatment_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
-<?php } if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+<?php } if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid')) 
+            && $row_bill['is_free'] != 1){ ?>
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>

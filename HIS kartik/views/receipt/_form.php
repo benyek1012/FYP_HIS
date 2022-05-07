@@ -63,21 +63,17 @@ use app\models\Patient_admission;
     ]);      ?>
 
     <div class="row">
-        <div class="col-lg-12">
+    <div class="col-lg-12">
         <?php 
-            $billable = 0.0;
-            $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
-            if(!empty($model_bill))
-                $billable = $model_bill->bill_generation_billable_sum_rm;
             if(!empty(Yii::$app->request->get('rn'))){
         ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
-                'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
-                            '<br/><b>Billable Total</b> : '.Yii::$app->formatter->asCurrency($billable).
-                            '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
-                            '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
         <?php } ?>
         </div>

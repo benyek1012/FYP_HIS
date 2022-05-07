@@ -145,7 +145,7 @@ class BillController extends Controller
                 }
                 
                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
+                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'w'));
             }
         }
         return $this->render('create', [
@@ -441,18 +441,21 @@ class BillController extends Controller
 
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-           
-            // if(empty($model->bill_print_datetime))
-            // {
-            $model->bill_print_datetime =  $date->format('Y-m-d H:i');
-            // }
-            $model->bill_uid = Yii::$app->request->get('bill_uid');
-            $cookies = Yii::$app->request->cookies;
-            $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
-            $model->save();
-
-            return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));             
+            if($model->validate() && $model->bill_print_id != "")
+            {
+                $model->bill_print_datetime =  $date->format('Y-m-d H:i');
+                $model->bill_uid = Yii::$app->request->get('bill_uid');
+                $cookies = Yii::$app->request->cookies;
+                $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
+                $model->save();
+                return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));         
+            }
+            else
+            {
+                $message = 'Bill Print ID should not be empty.';
+                $model->addError('bill_print_id', $message);
+            }
         }
 
         return $this->render('print', [

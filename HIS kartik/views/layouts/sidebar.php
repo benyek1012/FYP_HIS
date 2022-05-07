@@ -141,7 +141,7 @@ if(!empty(Yii::$app->request->queryParams))
         if($info->name == "") $temp_name = "Unknown";
         else $temp_name = $info->name;
          echo \hail812\adminlte\widgets\Menu::widget([
-            'items' => [['label' => $temp_name, 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid]]]
+            'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/index', 'id' => $info->patient_uid]]]
 ])
 ?>
         <div class="mt-1 ml-3 d-flex">
