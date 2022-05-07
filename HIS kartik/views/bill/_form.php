@@ -169,17 +169,36 @@ $this->registerJs(
 
 $this->registerJs(
     "$('#wardClass').change(function() {
-    var wardClass = $(this).val();
-    var statusCode = $('#statusCode :selected').text();
-    $.get('/bill/status', {status : statusCode}, function(data){
-    var data = $.parseJSON(data);
+        var wardClass = $(this).val();
+        var statusCode = $('#statusCode :selected').text();
+        $.get('/bill/status', {status : statusCode}, function(data){
+            var data = $.parseJSON(data);
         
-    if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
-    else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
-    else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
-    else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
-    else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
-    });
+            if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
+            else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
+            else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
+            else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
+            else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+            
+            $('.treatmentCode', document).each(function(index, item){
+                var billClass = $('#wardClass').val();
+                var treatmentCode = this.value;
+                $.get('/bill/lookUpTreatment', {treatment : treatmentCode}, function(data){
+                    var data = $.parseJSON(data);
+                    $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
+                    if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
+                        $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
+                    }
+                    if(billClass == '2'){
+                        $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
+                    }
+                    if(billClass == '3'){
+                        $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
+                    }
+                    // calculateItemCost();
+                });
+            });
+        });        
     });",
 );
 
@@ -197,7 +216,7 @@ $this->registerJs(
     "$('.wardCode', document).each(function(index, item){
         $(item).on('change', function() {
             var wardCode = this.value;
-            $.get('/bill/ward', {ward : wardCode}, function(data){
+            $.get('/bill/lookUpWard', {ward : wardCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
             });
@@ -211,7 +230,7 @@ $this->registerJs(
         var billClass = $('#wardClass').val();
         $(item).on('change', function() {
             var treatmentCode = this.value;
-            $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+            $.get('/bill/lookUpTreatment', {treatment : treatmentCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
                 if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
@@ -229,42 +248,6 @@ $this->registerJs(
     });
     ",
 );
-
-// $this->registerJs(
-    // "var countTeatment = $('#countTreatment').val();
-    // for(var i = 0; i < countTreatment; i++) {
-    //     $('#treatment_details-'+i+'-item_count').on('change', function() { 
-    //         calculateItemCost();
-    //     });
-    // }",
-
-    // "$('.item_num', document).each(function(index, item){
-    //     $(item).on('change', function() {
-    //         calculateItemCost();
-    //     });
-    // });
-    // ",
-
-    // "$('.wardCode', document).each(function(index, item){
-    //     $(item).on('change', function() {
-    //         var wardCode = this.value;
-    //         $.get('/bill/ward', {ward : wardCode}, function(data){
-    //             var data = $.parseJSON(data);
-    //             $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
-    //         });
-    //     });
-    // });
-    // ",
-// );
-
-// $this->registerJs(
-//     "var countTeatment = $('#countTreatment').val();
-//     for(var i = 0; i < countTreatment; i++) {
-//         $('#'+i+'_unit_cost').on('change', function() { 
-//             calculateItemCost();
-//         });
-//     }"
-// );
 
 $this->registerJs(
     "$('#addWardRow').on('click', function() { 
@@ -388,13 +371,13 @@ if(empty($print_readonly)) $print_readonly = false;
 
     <a name="w">
         <?php $form = kartik\form\ActiveForm::begin([
-        'id' => 'ward-form',
-        'type' => 'vertical',
-        'fieldConfig' => [
-            'template' => "{label}\n{input}\n{error}",
-            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-        ],
-    ]); 
+            'id' => 'ward-form',
+            'type' => 'vertical',
+            'fieldConfig' => [
+                'template' => "{label}\n{input}\n{error}",
+                'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+            ],
+        ]); 
     ?>
 
         <div class="card" id="ward_div" style="display:none;">

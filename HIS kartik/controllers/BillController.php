@@ -68,12 +68,12 @@ class BillController extends Controller
         echo Json::encode($model);
     }
 
-    public function actionTreatment($treatment) {
+    public function actionLookUpTreatment($treatment) {
         $model = Lookup_treatment::findOne( ['treatment_code' => $treatment]);
         echo Json::encode($model);
     }
 
-    public function actionWard($ward) {
+    public function actionLookUpWard($ward) {
         $model = Lookup_ward::findOne( ['ward_code' => $ward]);
         echo Json::encode($model);
     }
@@ -224,11 +224,29 @@ class BillController extends Controller
 
             if ($this->request->isPost && $model->load($this->request->post())) {
                 $model->bill_uid = $bill_uid;
-                $model->save();
-
-                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
+                $model->save();           
             }
+
+            $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+            $wardClass = $model->class;
+
+            foreach($modelTreatment as $modelTreatment){
+                $modelLoopUpTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatment->treatment_code]);
+                if($wardClass == '1a' || $wardClass == '1b' || $wardClass == '1c') {
+                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_1_cost_per_unit;
+                }
+                if($wardClass == '2'){
+                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_2_cost_per_unit;
+                }
+                if($wardClass == '3'){
+                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_3_cost_per_unit;
+                }
+
+                $modelTreatment->save();
+            }            
+            
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
         }
 
         // Insert and Update Ward
