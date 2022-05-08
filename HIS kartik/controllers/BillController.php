@@ -204,7 +204,8 @@ class BillController extends Controller
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && Yii::$app->request->post('generate') == 'true') {
+        // if ($this->request->isPost && $model->load($this->request->post()) && Yii::$app->request->post('generate') == 'true') {
+        if(Yii::$app->request->get('generate') == 'true' && Yii::$app->request->get('confirm') == 'true'){
             if(empty($model->bill_generation_datetime))
             {
                 $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
@@ -216,6 +217,15 @@ class BillController extends Controller
 
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
                 'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
+        }
+
+        // Popup Generation
+        if(Yii::$app->request->get('generate') == 'true' && Yii::$app->request->get('confirm') != 'true'){
+            echo '<script type="text/javascript">',
+                'setTimeout(function(){',
+                    'confirmAction();',
+                    '},200);',
+            '</script>';
         }
 
         // Update Bill

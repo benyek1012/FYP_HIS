@@ -141,6 +141,7 @@ class Bill extends \yii\db\ActiveRecord
         return $this->hasMany(Ward::className(), ['bill_uid' => 'bill_uid']);
     }
 
+    // Get Ward Total Days Cost
     public static function getTotalWardCost($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
@@ -162,6 +163,7 @@ class Bill extends \yii\db\ActiveRecord
         return Yii::t('app','Total')." : RM". $totalWardCost;                
     }
 
+    // Get Treatment Total Item Cost
     public static function getTotalTreatmentCost($bill_uid) {
         $totalItemCost = 0.0;
 
@@ -175,6 +177,7 @@ class Bill extends \yii\db\ActiveRecord
         return Yii::t('app','Total')." : RM". $totalItemCost;                
     }
 
+    // Calculate Billable
     public static function calculateBillable($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;

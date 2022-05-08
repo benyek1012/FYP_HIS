@@ -670,7 +670,8 @@ if(empty($print_readonly)) $print_readonly = false;
             </div>
             <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-            <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
+            <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
+            <?= Html::a('Generate', ['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), 'generate' => 'true'], ['class'=>'btn btn-success']) ?>
             <?php }?>
             <?php if($row_bill['is_free'] == 1){ ?> 
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
@@ -820,4 +821,15 @@ function getDailyWardCost() {
         else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
     });   
 }
+
+// The function below will start the confirmation dialog
+function confirmAction() {
+    var answer = confirm("Are you sure to generate bill?");
+    if (answer) {
+        window.location.href = window.location + '&confirm=true';
+    } else {
+        window.location.href = history.back();
+    }
+}
+
 </script>
