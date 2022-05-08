@@ -50,8 +50,9 @@ else
             $dataProvider1 = new ActiveDataProvider([
                 'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
                 ->orderBy(['entry_datetime' => SORT_DESC]),
-                'pagination'=>['pageSize'=>3],
+                'pagination'=>['pageSize'=>10],
             ]);
+            
             echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
             ?>
                 <div class="form-group">

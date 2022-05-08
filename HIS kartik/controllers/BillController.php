@@ -73,7 +73,12 @@ class BillController extends Controller
         echo Json::encode($model);
     }
 
-    public function actionWard($ward){
+    public function actionWard($ward) {
+        $model = Lookup_ward::findOne( ['ward_code' => $ward]);
+        echo Json::encode($model);
+    }
+
+    public function actionWardRow($ward){
         for($i = 0; $i < $ward; $i++) {
             $modelWard[] = new Ward();
         }
@@ -140,160 +145,9 @@ class BillController extends Controller
                 }
                 
                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
+                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'));
             }
-
-            // Insert Ward
-            if(Yii::$app->request->post('saveWard') == 'true' && Yii::$app->request->post('Ward', [])) {
-                $dbWard = Ward::findAll(['bill_uid' => null]);   
-                $modelWard = Model::createMultiple(Ward::className());
-
-                if(empty($dbWard)) {
-                    if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
-                        $valid = Model::validateMultiple($modelWard);
-                        
-                        if($valid) {                    
-                            foreach ($modelWard as $modelWard) {
-                                $modelWard->ward_uid = Base64UID::generate(32);
-                                $modelWard->save();
-                            }
-                        }
-                    }
-                }
-                else {
-                    $countWard = count(Yii::$app->request->post('Ward', []));
-                    $countdb = count($dbWard);
-
-                    if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
-                        $valid = Model::validateMultiple($modelWard);
-                        
-                        if($valid) {                    
-                            for($i = $countWard; $i > $countdb; $i--) {
-                                $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
-                                $modelWard[$i - 1]->save();
-                            }
-                        }
-                    }
-                } 
-            }
-    
-            // Insert Treatment
-            if(Yii::$app->request->post('saveTreatment') == 'true' && Yii::$app->request->post('Treatment_details', [])) {
-                $dbTreatment = Treatment_details::findAll(['bill_uid' => null]);   
-                $modelTreatment = Model::createMultiple(Treatment_details::className());
-
-                if(empty($dbTreatment)) {
-                    if( Model::loadMultiple($modelTreatment, Yii::$app->request->post())) {
-                        $valid = Model::validateMultiple($modelTreatment);
-                        
-                        if($valid) {                    
-                            foreach ($modelTreatment as $modelTreatment) {
-                                $modelTreatment->treatment_details_uid = Base64UID::generate(32);
-                                $modelTreatment->save();
-                            }
-                        }
-                    }
-                }
-                else {
-                    $countTreatment = count(Yii::$app->request->post('Treatment_details', []));
-                    $countdb = count($dbTreatment);
-
-                    if( Model::loadMultiple($modelTreatment, Yii::$app->request->post())) {
-                        $valid = Model::validateMultiple($modelTreatment);
-                        
-                        if($valid) {                    
-                            for($i = $countTreatment; $i > $countdb; $i--) {
-                                $modelTreatment[$i - 1]->treatment_details_uid = Base64UID::generate(32);
-                                $modelTreatment[$i - 1]->save();
-                            }
-                        }
-                    }
-                } 
-            }
-
-            // Add Ward Row
-            if (Yii::$app->request->post('addWardRow') == 'true') {
-                $dbWard = Ward::findAll(['bill_uid' => null]);   
-
-                if(empty($dbWard)) {
-                    $countWard = count(Yii::$app->request->post('Ward', []));
-                    for($i = 0; $i < $countWard; $i++) {
-                        $modelWard[] = new Ward();
-                    }
-                    $modelWard[] = new Ward();
-                }
-                else {
-                    $modelWard = $dbWard;
-                    $countWard = count(Yii::$app->request->post('Ward', [])) - count($dbWard);
-                    for($i = 0; $i < $countWard; $i++) {
-                        $modelWard[] = new Ward();
-                    }
-                    $modelWard[] = new Ward();
-                }   
-    
-                return $this->render('create', [
-                    'model' => $model,
-                    'modelWard' => $modelWard,
-                    'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-                ]);
-            }
-
-            // Add Treatment Row
-            if (Yii::$app->request->post('addTreatmentRow') == 'true') {
-                $dbTreatment = Treatment_details::findAll(['bill_uid' => null]);
-
-                if(empty($dbTreatment)) {
-                    $count = count(Yii::$app->request->post('Treatment_details', []));
-                    for($i = 0; $i < $count; $i++) {
-                        $modelTreatment[] = new Treatment_details();
-                    }
-                    $modelTreatment[] = new Treatment_details();
-                }
-                else {
-                    $modelTreatment = $dbTreatment;
-                    $count = count(Yii::$app->request->post('Treatment_details', [])) - count($dbTreatment) ;
-                    for($i = 0; $i < $count; $i++) {
-                        $modelTreatment[] = new Treatment_details();
-                    }
-                    $modelTreatment[] = new Treatment_details();
-                }
-    
-                return $this->render('create', [
-                    'model' => $model,
-                    'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-                    'modelTreatment' => $modelTreatment
-                ]);
-            }
-        } 
-
-        // Remove Ward Row
-        // if (Yii::$app->request->post('removeWardRow') == 'true') {
-        //     $count = count(Yii::$app->request->post('Ward', [])) ;
-        //     $modelWard[] = new Ward();
-        //     $modelWard->removeAt($count - 1);
-
-        //     return $this->render('create', [
-        //         'model' => $model,
-        //         'modelWard' => $modelWard,
-        //         'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-        //     ]);
-        // }
-
-        // Remove Treatment Row
-        // if (Yii::$app->request->post('removeTreatmentRow') == 'true') {
-        //     $count = count(Yii::$app->request->post('Treatment_details', [])) ;
-        //     $modelTreatment->removeAt($count - 1);
-
-        //     return $this->render('create', [
-        //         'model' => $model,
-        //         'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-        //         'modelTreatment' => $modelTreatment,
-        //     ]);
-        // }
-
-        $modelWard = Ward::findAll(['bill_uid' => null]);   
-        $modelTreatment = Treatment_details::findAll(['bill_uid' => null]);
-
+        }
         return $this->render('create', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
@@ -350,68 +204,79 @@ class BillController extends Controller
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
+        // Post method from form
         if ($this->request->isPost && $model->load($this->request->post()) && Yii::$app->request->post('generate') == 'true') {
+            Yii::$app->session->set('billable_sum', $model->bill_generation_billable_sum_rm);
+            Yii::$app->session->set('final_fee', $model->bill_generation_final_fee_rm);
+            
+            // Popup Generation
+            if(Yii::$app->request->get('confirm') != 'true'){
+                echo '<script type="text/javascript">',
+                    'setTimeout(function(){',
+                        'confirmAction();',
+                        '},200);',
+                '</script>';
+            }
+        }   
+
+        if (Yii::$app->request->get('confirm') == 'true'){
             if(empty($model->bill_generation_datetime))
             {
                 $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
             }
+            // var_dump(Yii::$app->session->get('billable_sum'));
+            // exit();
+            $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
+            $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
+
+            if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
+            if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+
             $cookies = Yii::$app->request->cookies;
             $model->generation_responsible_uid = $cookies->getValue('cookie_login');
             $model->bill_uid = Yii::$app->request->get('bill_uid');
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));        
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
         }
-
+        // else{
+        //     if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
+        //     if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+        // }
+        
         // Update Bill
         if(Yii::$app->request->post('updateBill') == 'true') {
             $model = $this->findModel($bill_uid);
 
             if ($this->request->isPost && $model->load($this->request->post())) {
                 $model->bill_uid = $bill_uid;
-                $model->save();
-
-                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                    'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
+                $model->save();           
             }
-        }
 
-        // Update Ward
-        if(Yii::$app->request->post('updateWard') == 'true') {
-            $modelWard = Ward::findAll(['bill_uid' => $bill_uid]); 
-                
-            if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
-                $valid = Model::validateMultiple($modelWard);
-                
-                if($valid) {            
-                    foreach ($modelWard as $modelWard) {
-                        $modelWard->save();
-                    }
-                    return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
+            $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+            $wardClass = $model->class;
+
+            foreach($modelTreatment as $modelTreatment){
+                $modelLoopUpTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatment->treatment_code]);
+                if($wardClass == '1a' || $wardClass == '1b' || $wardClass == '1c') {
+                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_1_cost_per_unit;
                 }
-            }
-        }
-
-        // Update Treatment
-        if(Yii::$app->request->post('updateTreatment') == 'true') {
-            $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]); 
-                
-            if( Model::loadMultiple($modelTreatment, Yii::$app->request->post())) {
-                $valid = Model::validateMultiple($modelTreatment);
-                
-                if($valid) {                    
-                    foreach ($modelTreatment as $modelTreatment) {
-                        $modelTreatment->save();
-                    }
-                    return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                        'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'b'));
+                if($wardClass == '2'){
+                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_2_cost_per_unit;
                 }
-            }
+                if($wardClass == '3'){
+                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_3_cost_per_unit;
+                }
+
+                $modelTreatment->save();
+            }            
+            
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
         }
 
-        // Insert Ward
+        // Insert and Update Ward
         if(Yii::$app->request->post('saveWard') == 'true' && Yii::$app->request->post('Ward', [])) {
             $dbWard = Ward::findAll(['bill_uid' => $bill_uid]);   
             $modelWard = Model::createMultiple(Ward::className());
@@ -436,18 +301,34 @@ class BillController extends Controller
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
                     $valid = Model::validateMultiple($modelWard);
                     
-                    if($valid) {                    
-                        for($i = $countWard; $i > $countdb; $i--) {
-                            $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
-                            $modelWard[$i - 1]->bill_uid = $bill_uid;
-                            $modelWard[$i - 1]->save();
+                    if($valid) {         
+                        if($countWard > $countdb){
+                            for($i = $countWard; $i > $countdb; $i--) {
+                                $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
+                                $modelWard[$i - 1]->bill_uid = $bill_uid;
+                                $modelWard[$i - 1]->save();
+                            }
+                        }   
+                        else if($countWard == $countdb){   
+                            $modelWardUpdate = Ward::findAll(['bill_uid' => $bill_uid]); 
+                            if( Model::loadMultiple($modelWardUpdate, Yii::$app->request->post())) {
+                                $valid = Model::validateMultiple($modelWardUpdate);
+                                
+                                if($valid) {            
+                                    foreach ($modelWardUpdate as $modelWardUpdate) {
+                                        $modelWardUpdate->save();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             } 
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'));
         }
 
-        // Insert Treatment
+        // Insert and Update Treatment
         if(Yii::$app->request->post('saveTreatment') == 'true' && Yii::$app->request->post('Treatment_details', [])) {
             $dbTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);   
             $modelTreatment = Model::createMultiple(Treatment_details::className());
@@ -472,15 +353,32 @@ class BillController extends Controller
                 if( Model::loadMultiple($modelTreatment, Yii::$app->request->post())) {
                     $valid = Model::validateMultiple($modelTreatment);
                     
-                    if($valid) {                    
-                        for($i = $countTreatment; $i > $countdb; $i--) {
-                            $modelTreatment[$i - 1]->treatment_details_uid = Base64UID::generate(32);
-                            $modelTreatment[$i - 1]->bill_uid = $bill_uid;
-                            $modelTreatment[$i - 1]->save();
+                    if($valid) {    
+                        if($countTreatment > $countdb){                
+                            for($i = $countTreatment; $i > $countdb; $i--) {
+                                $modelTreatment[$i - 1]->treatment_details_uid = Base64UID::generate(32);
+                                $modelTreatment[$i - 1]->bill_uid = $bill_uid;
+                                $modelTreatment[$i - 1]->save();
+                            }
+                        }
+                        else if($countTreatment == $countdb){
+                            $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => $bill_uid]); 
+                
+                            if( Model::loadMultiple($modelTreatmentUpdate, Yii::$app->request->post())) {
+                                $valid = Model::validateMultiple($modelTreatmentUpdate);
+                                
+                                if($valid) {                    
+                                    foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
+                                        $modelTreatmentUpdate->save();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             } 
+            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'treatment'));
         }
 
         // Add Ward Row
@@ -503,7 +401,7 @@ class BillController extends Controller
                 $modelWard[] = new Ward();
             }   
 
-            return $this->render('create', [
+            return $this->render('generate', [
                 'model' => $model,
                 'modelWard' => $modelWard,
                 'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
@@ -523,14 +421,14 @@ class BillController extends Controller
             }
             else {
                 $modelTreatment = $dbTreatment;
-                $count = count(Yii::$app->request->post('Treatment_details', [])) - count($dbTreatment) ;
+                $count = count(Yii::$app->request->post('Treatment_details', [])) - count($dbTreatment);
                 for($i = 0; $i < $count; $i++) {
                     $modelTreatment[] = new Treatment_details();
                 }
                 $modelTreatment[] = new Treatment_details();
             }
 
-            return $this->render('create', [
+            return $this->render('generate', [
                 'model' => $model,
                 'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
                 'modelTreatment' => $modelTreatment
@@ -541,7 +439,7 @@ class BillController extends Controller
         if (Yii::$app->request->post('removeWardRow') == 'true') {
             // $modelWard = array_pop($modelWard);
 
-            return $this->render('create', [
+            return $this->render('generate', [
                 'model' => $model,
                 'modelWard' => $modelWard,
                 'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
@@ -552,7 +450,7 @@ class BillController extends Controller
         if (Yii::$app->request->post('removeTreatmentRow') == 'true') {
             // $modelTreatment = array_pop($modelTreatment);
 
-            return $this->render('create', [
+            return $this->render('generate', [
                 'model' => $model,
                 'modelWard' => $modelWard,
                 'modelTreatment' => $modelTreatment,
@@ -564,8 +462,8 @@ class BillController extends Controller
 
         return $this->render('generate', [
             'model' => $model,
-            'modelWard' => $modelWard,
-            'modelTreatment' => $modelTreatment,
+            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+            'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
         ]);
     }
 
@@ -588,18 +486,21 @@ class BillController extends Controller
 
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-           
-            // if(empty($model->bill_print_datetime))
-            // {
-            $model->bill_print_datetime =  $date->format('Y-m-d H:i');
-            // }
-            $model->bill_uid = Yii::$app->request->get('bill_uid');
-            $cookies = Yii::$app->request->cookies;
-            $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
-            $model->save();
-
-            return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'p'));             
+            if($model->validate() && $model->bill_print_id != "")
+            {
+                $model->bill_print_datetime =  $date->format('Y-m-d H:i');
+                $model->bill_uid = Yii::$app->request->get('bill_uid');
+                $cookies = Yii::$app->request->cookies;
+                $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
+                $model->save();
+                return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         
+            }
+            else
+            {
+                $message = 'Bill Print ID should not be empty.';
+                $model->addError('bill_print_id', $message);
+            }
         }
 
         return $this->render('print', [

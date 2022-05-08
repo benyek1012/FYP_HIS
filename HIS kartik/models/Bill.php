@@ -59,12 +59,8 @@ class Bill extends \yii\db\ActiveRecord
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
             [['bill_print_id'], 'integer'],
-            [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
+         //   [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['bill_print_id'], 'unique'],
-            // [['bill_print_id'], 'number'],
-            // [['bill_print_id'], 'string', 'length' => 7],
-            // [['bill_print_id'], 'unique'],
-            // [['bill_uid'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
@@ -95,6 +91,14 @@ class Bill extends \yii\db\ActiveRecord
             'bill_print_datetime' => Yii::t('app','Bill Print Datetime'),
             'bill_print_id' => Yii::t('app','Bill Print ID'),
         ];
+    }
+
+    public static function checkExistPrint($rn)
+    {
+        $model = Bill::findOne( [ 'rn' => $rn] );
+        if(!empty($model->bill_print_id))
+            return true;
+        else return false;
     }
 
     /**
@@ -137,6 +141,7 @@ class Bill extends \yii\db\ActiveRecord
         return $this->hasMany(Ward::className(), ['bill_uid' => 'bill_uid']);
     }
 
+    // Get Ward Total Days Cost
     public static function getTotalWardCost($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
@@ -158,6 +163,7 @@ class Bill extends \yii\db\ActiveRecord
         return Yii::t('app','Total')." : RM". $totalWardCost;                
     }
 
+    // Get Treatment Total Item Cost
     public static function getTotalTreatmentCost($bill_uid) {
         $totalItemCost = 0.0;
 
@@ -171,6 +177,7 @@ class Bill extends \yii\db\ActiveRecord
         return Yii::t('app','Total')." : RM". $totalItemCost;                
     }
 
+    // Calculate Billable
     public static function calculateBillable($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
@@ -195,35 +202,56 @@ class Bill extends \yii\db\ActiveRecord
         
         $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
 
+        if(!empty($modelBill) && $modelBill->is_free == 1)
+            $billable = 0;
+
         return $billable;
     }
 
     // Get Unclaimed balance 
-    public static function getUnclaimed($bill_uid) {
-        return (0 - Bill::calculateFinalFee($bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($bill_uid));
+    public static function getUnclaimed($rn) {
+        $model_bill = Bill::findOne(['rn' => $rn]);
+        if(!empty($model_bill))
+            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
+        else return (Bill::getDeposit($rn) + Bill::getRefund($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn)) ;
     }
 
     // Get Amt Due
-    public static function getAmtDued($bill_uid) {
-        return Bill::calculateFinalFee($bill_uid) < 0 ? 0.0 : Bill::calculateFinalFee($bill_uid);
+    public static function getAmtDued($rn) {
+        $model_bill = Bill::findOne(['rn' => $rn]);
+        if(!empty($model_bill))
+            return Bill::calculateFinalFee($model_bill->bill_uid) < 0 ? 0.0 : Bill::calculateFinalFee($model_bill->bill_uid);
+        else return (0 - (Bill::getDeposit($rn) + Bill::getRefund($rn)))  < 0 ? 0 : (0 -(Bill::getDeposit($rn) + Bill::getRefund($rn))) ;
     }
 
+    // Return Negative values
     public static function calculateFinalFee($bill_uid) {
         $billable = 0.0;
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         if(!empty($modelBill))
         {
             // Billable_sum - sum of deposit - sum of payed - sum of refund
-            $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($bill_uid)
-             - Bill::getPayedAmt($bill_uid) - Bill::getRefund($bill_uid);
+            $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($modelBill->rn)
+             - Bill::getPayedAmt($bill_uid) - Bill::getRefund($modelBill->rn);
         }
         return $billable;
     }
 
-    public static function getDeposit($bill_uid){
+        // Return Negative values
+        public static function determineFinalFee($rn) {
+            $model_bill = Bill::findOne(['rn' => $rn]);
+            $billable = 0.0;
+            if(!empty($model_bill))
+            {
+                return Bill::calculateFinalFee($model_bill->bill_uid);
+            }
+            return $billable;
+        }
+
+    // All Deposit
+    public static function getDeposit($rn){
         $sum_deposit = 0.0;
-        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
-        $model_receipt = Receipt::findAll(['rn' => $modelBill->rn]);
+        $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
         {
             if($model->receipt_type == 'deposit')
@@ -232,6 +260,15 @@ class Bill extends \yii\db\ActiveRecord
         return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
     }
 
+    // Deposit - Refund
+    public static function getSumDeposit($rn)
+    {
+        $sum_deposit = 0.0;
+        $sum_deposit = Bill::getDeposit($rn) + Bill::getRefund($rn);
+        return $sum_deposit < 0 ?  0.0 : $sum_deposit;
+    }
+
+    // Payed Amount
     public static function getPayedAmt($bill_uid){
         $payed_amt = 0.0;
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
@@ -247,11 +284,10 @@ class Bill extends \yii\db\ActiveRecord
         return $payed_amt;
     }
 
-    public static function getRefund($bill_uid){
+    // REfund Amount
+    public static function getRefund($rn){
         $sum_refund = 0.0;
-        $sum_bill = 0.0;
-        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
-        $model_receipt = Receipt::findAll(['rn' => $modelBill->rn]);
+        $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
         {
             if($model->receipt_type == 'refund')

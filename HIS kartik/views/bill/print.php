@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = 'Generate';
         'model' => $model,
         'modelWard' => $modelWard,
         'modelTreatment' => $modelTreatment,
+        'print_readonly' => true,
     ]) ?>
 
 </div>

@@ -49,7 +49,7 @@ class Receipt extends \yii\db\ActiveRecord
             [['receipt_content_payer_name'], 'string', 'max' => 200],
             [['receipt_uid'], 'unique'],
             [['receipt_serial_number'], 'integer'],
-            [['receipt_serial_number'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
+          //  [['receipt_serial_number'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['receipt_serial_number'], 'unique'],
            // [['receipt_serial_number'], 'exist', 'skipOnError' => true, 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_serial_number' => 'receipt_serial_number']],
          //    [['receipt_serial_number', 'unique', 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_serial_number' => 'receipt_serial_number'],

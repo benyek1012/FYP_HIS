@@ -26,19 +26,18 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="receipt-index">
     <div class="row">
         <div class="col-lg-12">
-            <?php 
-             $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
-            if(!empty($model_bill)){
-            ?>
+        <?php 
+            if(!empty(Yii::$app->request->get('rn'))){
+        ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
-                'body' => '<b>Sum of Deposit</b> : RM'.Bill::getDeposit($model_bill->bill_uid).
-                            '<br/><b>Billable Total</b> : RM'.$model_bill->bill_generation_billable_sum_rm.
-                            '<br/><b>Amount Due</b> : RM'.Bill::getAmtDued($model_bill->bill_uid).
-                            '<br/><b>Unclaimed Balance</b> : RM'.Bill::getUnclaimed($model_bill->bill_uid)
+               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
-            <?php } ?>
+        <?php } ?>
         </div>
     </div>
 

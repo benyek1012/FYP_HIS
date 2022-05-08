@@ -79,20 +79,25 @@ class Patient_admission extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * Gets query for [[Bills]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
+
     public static function get_bill($rn){
-        $model = Bill::find()->where(["rn" => $rn])->one();
-        if(!empty($model)){
-            if($model->bill_generation_final_fee_rm >= 0)
-                return Yii::t('app','Amount Due')." : RM".Bill::getAmtDued($model->bill_uid);
-            else return Yii::t('app','Unclaimed Balance')." : RM".Bill::getUnclaimed($model->bill_uid);
-        }
+        if( Bill::getUnclaimed($rn) <= 0 )
+            return Yii::t('app','Amount Due')." : ".Yii::$app->formatter->asCurrency(Bill::getAmtDued($rn));
+        else return Yii::t('app','Unclaimed Balance')." : ".Yii::$app->formatter->asCurrency(Bill::getUnclaimed($rn));
 
         return null;
+    }
+
+    public static function get_billable_sum($rn){
+        $billable = 0;
+        $model_bill = Bill::findOne(['rn' => $rn]);
+        if(!empty($model_bill))
+        {
+            $billable = $model_bill->bill_generation_billable_sum_rm;
+            // If billable sum in database in not set, assign to 0
+            if(empty($billable)) $billable = 0;
+        }
+        return Yii::$app->formatter->asCurrency($billable);
     }
 
      /**
@@ -100,7 +105,7 @@ class Patient_admission extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBill()
+    public function getBills()
     {
         return $this->hasOne(Bill::className(), ['rn' => 'rn']);
     }
