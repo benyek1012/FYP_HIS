@@ -204,12 +204,34 @@ class BillController extends Controller
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-        // if ($this->request->isPost && $model->load($this->request->post()) && Yii::$app->request->post('generate') == 'true') {
-        if(Yii::$app->request->get('generate') == 'true' && Yii::$app->request->get('confirm') == 'true'){
+        // Post method from form
+        if ($this->request->isPost && $model->load($this->request->post()) && Yii::$app->request->post('generate') == 'true') {
+            Yii::$app->session->set('billable_sum', $model->bill_generation_billable_sum_rm);
+            Yii::$app->session->set('final_fee', $model->bill_generation_final_fee_rm);
+            
+            // Popup Generation
+            if(Yii::$app->request->get('confirm') != 'true'){
+                echo '<script type="text/javascript">',
+                    'setTimeout(function(){',
+                        'confirmAction();',
+                        '},200);',
+                '</script>';
+            }
+        }   
+
+        if (Yii::$app->request->get('confirm') == 'true'){
             if(empty($model->bill_generation_datetime))
             {
                 $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
             }
+            // var_dump(Yii::$app->session->get('billable_sum'));
+            // exit();
+            $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
+            $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
+
+            if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
+            if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+
             $cookies = Yii::$app->request->cookies;
             $model->generation_responsible_uid = $cookies->getValue('cookie_login');
             $model->bill_uid = Yii::$app->request->get('bill_uid');
@@ -218,16 +240,11 @@ class BillController extends Controller
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
                 'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
         }
-
-        // Popup Generation
-        if(Yii::$app->request->get('generate') == 'true' && Yii::$app->request->get('confirm') != 'true'){
-            echo '<script type="text/javascript">',
-                'setTimeout(function(){',
-                    'confirmAction();',
-                    '},200);',
-            '</script>';
-        }
-
+        // else{
+        //     if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
+        //     if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+        // }
+        
         // Update Bill
         if(Yii::$app->request->post('updateBill') == 'true') {
             $model = $this->findModel($bill_uid);

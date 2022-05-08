@@ -115,7 +115,7 @@ class Treatment_detailsController extends Controller
 
         if(!empty( Yii::$app->request->get('bill_uid'))){ 
             return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), "#" => 't')); 
+                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), "#" => 'treatment')); 
         } 
     }
 

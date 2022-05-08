@@ -360,7 +360,7 @@ if(empty($print_readonly)) $print_readonly = false;
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getDailyWardCost();']) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getDailyWardCost();']) ?>
                 <?php } ?>
             </div>
             <!-- /.card-body -->
@@ -670,9 +670,10 @@ if(empty($print_readonly)) $print_readonly = false;
             </div>
             <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-            <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
-            <?= Html::a('Generate', ['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), 'generate' => 'true'], ['class'=>'btn btn-success']) ?>
-            <?php }?>
+            <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
+            <!-- <?= Html::a('Generate', ['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), 'generate' => 'true'], 
+                        ['class'=>'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
+            <?php }?> 
             <?php if($row_bill['is_free'] == 1){ ?> 
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
             <?php } ?>
@@ -790,17 +791,31 @@ function calculateDays() {
 }
 
 function calculateItemCost() {
-    var countTeatment = $("#countTreatment").val();
+    $('.treatmentCode', document).each(function(index, item){
+        var billClass = $('#wardClass').val();
+        var treatmentCode = this.value;
+        $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+            var data = $.parseJSON(data);
+            $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
+            if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
+                $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
+            }
+            if(billClass == '2'){
+                $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
+            }
+            if(billClass == '3'){
+                $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
+            }
 
-    for (var i = 0; i < countTeatment; i++) {
-        var itemPerUnit = $('#treatment_details-' + i + '-item_per_unit_cost_rm').val();
-        var itemCount = $('#treatment_details-' + i + '-item_count').val();
+            var itemPerUnit = $('#treatment_details-' + index + '-item_per_unit_cost_rm').val();
+            var itemCount = $('#treatment_details-' + index + '-item_count').val();
 
-        if (itemCount != '' && itemPerUnit != "") {
-            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
-            $('#treatment_details-' + i + '-item_total_unit_cost_rm').val(totalCost);
-        }
-    }
+            if (itemCount != '' && itemPerUnit != "") {
+                var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+                $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
+            }
+        });
+    });
 }
 
 function getBillableAndFinalFee(){
@@ -813,7 +828,7 @@ function getDailyWardCost() {
     var statusCode = $('#statusCode :selected').text();
     $.get('/bill/status', {status : statusCode}, function(data){
         var data = $.parseJSON(data);
-    
+
         if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
         else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
         else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
