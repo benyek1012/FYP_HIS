@@ -85,7 +85,7 @@ class Bill extends \yii\db\ActiveRecord
             'bill_generation_datetime' => Yii::t('app','Bill Generation Datetime'),
             'generation_responsible_uid' => Yii::t('app','Generation Responsible Uid'),
             'bill_generation_billable_sum_rm' => Yii::t('app','Billable Total (RM)'), //Bill Generation Billable Sum Rm
-            'bill_generation_final_fee_rm' => Yii::t('app','Final Fee (Rm)'), //Bill Generation Final Fee Rm
+            'bill_generation_final_fee_rm' => Yii::t('app','Final Fee (RM)'), //Bill Generation Final Fee Rm
             'description' => Yii::t('app','Bill Description'),
             'bill_print_responsible_uid' => ('Bill Print Responsible Uid'),
             'bill_print_datetime' => Yii::t('app','Bill Print Datetime'),
