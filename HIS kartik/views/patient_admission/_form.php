@@ -10,7 +10,26 @@ use kartik\datetime\DateTimePicker;
 
 <div class="patient-admission-form">
 
-    <?php $form = kartik\form\ActiveForm::begin([
+    <?php 
+    
+    $rows = (new \yii\db\Query())
+    ->select('ward_code')
+    ->from('lookup_ward')
+    ->all();
+
+    $ward_code = array();
+    foreach($rows as $row){
+      $ward_code[$row['ward_code']] = $row['ward_code'];
+    }  
+
+    $ward_class = array(
+        "1a" =>'1a', 
+        "1b" =>'1b', 
+        "1c" =>'1c', 
+        "2" =>'2', 
+        "3" =>'3', 
+    );
+    $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
             'fieldConfig' => [
@@ -36,12 +55,19 @@ use kartik\datetime\DateTimePicker;
                 'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
             ])?>
         </div>
+
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_code')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
+             ['prompt'=>'Please select ward code']
+            ) ?>
         </div>
+
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_class')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
+             ['prompt'=>'Please select ward class']
+            ) ?>
         </div>
+
         <div class="col-sm-6">
             <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?>
         </div>
@@ -67,8 +93,17 @@ use kartik\datetime\DateTimePicker;
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
+
+</div>
+<div >
+<?= Html::a('Registration Form', ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a('Charge Sheet', ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a('Case History Sheet', ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a('Sticker', ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+
 
 </div>

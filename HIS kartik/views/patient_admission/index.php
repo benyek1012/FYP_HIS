@@ -1,11 +1,14 @@
 <?php
 
+use app\models\Patient_admission;
+use app\models\Bill;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_admissionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+$taxInfo = Bill::find()->indexBy('tax_type')->all();
 ?>
 <div class="patient-admission-index">
     
@@ -46,8 +49,22 @@ use yii\helpers\Html;
                 'reminder_given',
                 'guarantor_name',
               //  'guarantor_nric',
-                'guarantor_phone_number',
+              //  'guarantor_phone_number',
                 //'guarantor_email:email',
+                [
+                    'attribute' => 'billable_sum',
+                    'label' => 'Billable Summary (RM)',
+                    'value' => function($data){
+                        return  Patient_admission::get_billable_sum($data->rn);
+                    },
+                ],
+                [
+                    'attribute' => 'final_fee',
+                    'label' => 'Amount Due / Unclaimed (RM)',
+                    'value' => function($data){
+                        return Patient_admission::get_bill($data->rn);
+                    },
+                ],
             ],
     ]) ?>
 

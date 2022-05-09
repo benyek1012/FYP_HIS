@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
 use app\models\NewUser;
+use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 
@@ -23,6 +24,22 @@ else
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">
+    <div class="row">
+        <div class="col-lg-12">
+        <?php 
+            if(!empty(Yii::$app->request->get('rn'))){
+        ?>
+            <?= \hail812\adminlte\widgets\Callout::widget([
+                'type' => 'info',
+               // 'head' => 'I am a danger callout!',
+               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+            ]) ?>
+        <?php } ?>
+        </div>
+    </div>
 
     <p>
         <?php 
@@ -53,7 +70,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'receipt_type',
-            'receipt_content_sum',
+            [
+                'attribute' => 'receipt_content_sum',
+                'label' => 'Receipt Sum (RM)',
+              //  'format' => 'raw',
+                'value'=>function ($data) {
+                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
+                        return '+'.$data['receipt_content_sum'];
+                    else return '-'.$data['receipt_content_sum'];
+                },
+            ],
           //  'receipt_content_bill_id',
             //'receipt_content_description',
             [

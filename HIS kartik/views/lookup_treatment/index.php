@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_treatmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Treatments';
+$this->title = Yii::t('app','Lookup Treatments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-treatment-index">
@@ -24,9 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">

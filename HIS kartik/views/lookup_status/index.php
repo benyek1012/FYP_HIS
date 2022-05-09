@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_statusSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Status Lookup');
+$this->title = Yii::t('app','Lookup Statuses');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-status-index">
@@ -19,14 +19,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <!--<h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Lookup Status', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app','Create Lookup Status'), ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">

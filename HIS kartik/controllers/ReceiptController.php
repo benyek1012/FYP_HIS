@@ -1,8 +1,8 @@
 <?php
 
 namespace app\controllers;
-
 require 'vendor/autoload.php';
+
 use Yii;
 use app\models\Receipt;
 use app\models\ReceiptSearch;
@@ -19,19 +19,6 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-/*
-class clearText {
-
-    public function clearVar($text)
-    {
-        $updateTxt = ltrim($text,"Array ( [0] => ");
-        $updateTxt = rtrim($updateTxt," )");
-
-        return $updateTxt;
-        
-    }
-}
-*/
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
  */
@@ -97,81 +84,92 @@ class ReceiptController extends Controller
      */
     public function actionCreate()
     {
-        $date = new \DateTime();
-        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model = new Receipt();
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->receipt_content_datetime_paid))
+            {
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
+            }
 
             if($model->validate() && $model->save()){
-                // return Yii::$app->getResponse()->redirect(array('/receipt/update', 
-                // 'receipt_uid' => $model->receipt_uid, 'rn' => $model->rn));   
-                
 
-                //$pa2 = new Patient_admission();
+                $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
+                $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
 
-                $pa2 = receipt::find()->orderBy(['rn' => SORT_DESC])->limit(1)->all();
+                $getresitno = ArrayHelper::toArray($model->receipt_serial_number);
+                $getic = ArrayHelper::toArray($modelpatient->nric);
+                $getpaymentdate = arrayHelper::toArray($model->receipt_content_datetime_paid);
+                $getrn = arrayHelper::toArray($model->rn);
+                $getbillno = arrayHelper::toArray($model->receipt_content_bill_id);
+                $gettotal = arrayHelper::toArray($model->receipt_content_sum);
+                $getpayername = arrayHelper::toArray($model->receipt_content_payer_name);
+                $getname = ArrayHelper::toArray($modelpatient->name);
+                $getpaymentmethod = arrayHelper::toArray($model->receipt_content_payment_method);
+                $getreceiptcontent = arrayHelper::toArray($model->receipt_content_description);
                 
-               $pa3 = Patient_information::find()->all();
-              // $pa = ArrayHelper::getColumn(Patient_admission::find()->limit(1)->all(), 'rn');
-    
-                $rn1 = ArrayHelper::getColumn($pa2,'rn');
-                
-                $ed1 = ArrayHelper::getColumn($pa2,'receipt_content_datetime_paid');
-                $piname = ArrayHelper::map($pa3,'name','nric');
-               
-                $result = implode($rn1);
-                $result2 = implode($ed1);
+                if($model->receipt_type !='refund')
+              {
+                $printresit = implode($getresitno);
+                $printic = implode($getic);
+                $printpaydatetime = implode($getpaymentdate);
+                $printrn = implode($getrn);
+                $printbil = implode($getbillno);
+                $printtotal = implode($gettotal);
+                $printpayername = implode($getpayername);
+                $printpatientname = implode($getname);
+                $printpaymentmethod = implode($getpaymentmethod);
+                $printreceiptcontent = implode($getreceiptcontent);
+                $nocagaran = " ";
+            
                
     
                $blankfront = str_repeat("\x20", 15); // adds 14 spaces
                 $fixbackblank = str_repeat("\x20", 33);
                 $fixbackblank2 = str_repeat("\x20", 31);
                 $fixbackblank3 = str_repeat("\x20", 32);
-    
-                $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
+
+                $connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
                 $printer = new Printer($connector);
                 $printer -> text("\n\n\x20\n\n\x20\n\n");
                 $printer -> text($blankfront); // space= 0.3cm， receipt column 1
-                $printer -> text($resitno); // receipt number
+                $printer -> text($printresit); // receipt number
                 $printer -> text($fixbackblank); //receipt column 2
-                $printer -> text($ic."\n"); // no.K/P
+                $printer -> text($printic."\n"); // no.K/P
                 $printer -> text($blankfront);
-                $printer -> text(date("d/m/Y", strtotime($result2))."  ");
+                $printer -> text(date("d/m/Y", strtotime($printpaydatetime))."  ");
                 $printer -> text($fixbackblank2);
-                $printer -> text($result."\n"); // rn
+                $printer -> text($printrn."\n"); // rn
                 $printer -> text($blankfront);
-                $printer -> text(date("H:i:s", strtotime($result2))."\n");
+                $printer -> text(date("H:i:s", strtotime($printpaydatetime))."\n");
                 $printer -> text($fixbackblank);
-                $printer -> text($bil."\n"); //no.Bil
+                $printer -> text($printbil."\n"); //no.Bil
                 $printer -> text($blankfront);
                 $printer -> text(""); // Akaun
                 $printer -> text($fixbackblank3 ."         ");
-                $printer -> text($total."\n"); //total price
+                $printer -> text($printtotal."\n"); //total price
                 $printer -> text($blankfront);
                 $printer -> text("  \n"); // Op (example required)
                 $printer -> text($blankfront);
-                $printer -> text($cagaran); // No.Cagaran
-                $printer -> text($fixbackblank);
-                $printer -> text(mb_strimwidth($payer_name,0, 50)."\n\n"); // guarrantor name
+                $printer -> text($nocagaran); // No.Cagaran
+                $printer -> text(str_repeat("\x20", 56 - 15 - strlen($nocagaran)));// fixbackblank
+                $printer -> text(mb_strimwidth($printpayername,0, 30)."\n\n"); // guarrantor name
                 $printer -> text($blankfront);
-                $blankback = str_repeat("\x20", 55 - 14 - strlen($patientname));
-                $printer -> text($patientname); // patient name
+                $blankback = str_repeat("\x20", 55 - 14 - strlen($printpatientname));
+                $printer -> text($printpatientname); // patient name
                 $printer -> text($blankback);
-                $printer -> text("cash"."\n\n"); //Cara Bayaran
+                $printer -> text($printpaymentmethod."\n\n"); //Cara Bayaran
                 $printer -> text(str_repeat("\x20" , 7)."Penjelasan :");
+                $printer ->text($printreceiptcontent);
                 
                 
                 $printer -> close(); 
-                
-                //put print
+              
                 return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                 'rn' => $model->rn));   
-                
-
-                
+              }
             }
         } else {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
@@ -206,35 +204,6 @@ class ReceiptController extends Controller
             'model' => $model,
         ]);
     }
-/*
-    public function actionPrint($receipt_uid)
-    {
-
-        $model = $this->findModel($receipt_uid);
-        if ($this->request->isPost && $model->load($this->request->post())) {
-
-           $pa2 = new Patient_admission();
-
-                $pa2 = Patient_admission::find()->all();
-                $pa3 = Patient_information::find()->all();
-    
-                $rn1 = ArrayHelper::getColumn($pa2,'rn');
-                $ed1 = ArrayHelper::getColumn($pa2,'entry_datetime');
-                $piname = ArrayHelper::map($pa3,'name','nric');
-               
-                $result = implode($rn1);
-                $result2 = implode($ed1);
-    
-                $x = new clearText();
-    
-                $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
-                $printer = new Printer($connector);
-                $printer -> text($result."\n"); // receipt number
-                $printer -> text($result2."\n");
-    
-                $printer -> close(); 
-        }
-    } */
 
     /**
      * Deletes an existing Receipt model.

@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Bill;
 use app\models\Patient_admission;
-use app\controllers\receiptController;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
@@ -48,7 +47,7 @@ use app\controllers\receiptController;
         $names = array();
         foreach($rows as $row){
             if($row['name'] == '')
-                $row['name'] = "User"; 
+                $row['name'] = "Unknown"; 
             $names[$row['name']] = $row['name'];
             $names[$row['guarantor_name']] = $row['guarantor_name'];
         }
@@ -63,40 +62,60 @@ use app\controllers\receiptController;
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback']],
     ]);      ?>
 
+    <div class="row">
+    <div class="col-lg-12">
+        <?php 
+            if(!empty(Yii::$app->request->get('rn'))){
+        ?>
+            <?= \hail812\adminlte\widgets\Callout::widget([
+                'type' => 'info',
+               // 'head' => 'I am a danger callout!',
+               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+            ]) ?>
+        <?php } ?>
+        </div>
+    </div>
+
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
-
-    <?= $form->field($model, 'receipt_content_datetime_paid')->hiddenInput()->label(false) ?>
 
     <?= $form->field($model, 'receipt_responsible')->hiddenInput(['maxlength' => true])->label(false) ?>
 
     <div class="row">
         <div class="col-sm-6">
-        <?php  if(!empty($model_bill)){ ?> 
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
-            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)', 'value' => 'bill']) ?>
-         <?php }else{ ?>
+            <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
             'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
-        <?php } ?>
+            <?php }else{ ?>
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
+            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
+            <?php } ?>
         </div>
 
-        <div class="col-sm-6" id="bill_div" 
-            <?php if(empty($model_bill)) echo 'style="display:none;"'; ?> >
-        <?php  if(!empty($model_bill)){ ?> 
+        <div class="col-sm-6" id="bill_div" <?php if(empty($model_bill)) echo 'style="display:none;"'; ?>>
+            <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id]) ?>
-        <?php }else{ ?>
+            <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
-        <?php } ?>
+            <?php } ?>
         </div>
 
         <div class="col-sm-6">
-        <?php  if(!empty($model_bill)){ ?> 
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'value' => $model_bill->bill_generation_billable_sum_rm]) ?>
-        <?php }else{ ?>
+            <?php  if(!empty($model_bill)){
+                    if(Bill::calculateFinalFee($model_bill->bill_uid) >= 0){
+        ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => Bill::calculateFinalFee($model_bill->bill_uid)]) ?>
+            <?php }else{ ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => Bill::getUnclaimed($model_bill->bill_uid)]) ?>
+
+            <?php }
+            }else{ ?>
             <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
-        <?php } ?>
+            <?php } ?>
         </div>
 
         <div class="col-sm-6">
@@ -118,10 +137,11 @@ use app\controllers\receiptController;
 
         <div class="col-sm-6" id="cheque_div" style="display:none;">
             <?= $form->field($model, 'cheque_number')->textInput(['maxlength' => true]) ?>
-        </div>     
+        </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_serial_number')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_serial_number', 
+                ['labelOptions' => [ 'id' => 'receipt_label' ]])->textInput(['maxlength' => true]) ?>
         </div>
     </div>
 
@@ -136,15 +156,13 @@ use app\controllers\receiptController;
 
 <script>
 function myfunctionforValuecheck(val) {
-    if (val == "cash" || val == ""){
+    if (val == "cash" || val == "") {
         document.getElementById("cheque_div").style.display = "none";
         document.getElementById('card_div').style.display = "none";
-    }
-    else if (val == "card"){
+    } else if (val == "card") {
         document.getElementById("cheque_div").style.display = "none";
         document.getElementById('card_div').style.display = "block";
-    }
-    else if (val == "cheque"){
+    } else if (val == "cheque") {
         document.getElementById("cheque_div").style.display = "block";
         document.getElementById('card_div').style.display = "none";
     }
@@ -154,9 +172,10 @@ function myfunctionforType(val) {
     if (val == "bill")
         document.getElementById("bill_div").style.display = "block";
     else
-        document.getElementById("bill_div").style.display = "none";s
+        document.getElementById("bill_div").style.display = "none";
+
+    if (val == "refund")
+        document.getElementById("receipt_label").innerHTML = 'Document Number';
+    else document.getElementById("receipt_label").innerHTML = 'Receipt Serial Number';
 }
-
-
-
 </script>
