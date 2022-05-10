@@ -22,10 +22,12 @@ use GpsLab\Component\Base64UID\Base64UID;
     $nokuid = Base64UID::generate(32);
     $relationship = array(
         'father'=>'Father',
-        'monther'=>'Monther',
-        'couple' => 'Couple',
+        'mother'=>'Mother',
+        'husband/spouse' => 'Husband / Spouse',
         'brother' => 'Brother',
         'sister' => 'Sister',
+        'son' => 'Son',
+        'daughter' => 'Daughter',
         'other' => 'Other'
     );
     ?>

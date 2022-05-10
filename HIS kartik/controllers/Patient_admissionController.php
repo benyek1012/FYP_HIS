@@ -109,6 +109,8 @@ class Patient_admissionController extends Controller
     {
         $model = $this->findModel($rn);
 
+        Yii::$app->session->set('close_rn', true);
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
                 'rn' => $model->rn));      

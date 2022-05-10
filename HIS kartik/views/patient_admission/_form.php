@@ -75,7 +75,7 @@ use kartik\datetime\DateTimePicker;
             <?= $form->field($model, 'medigal_legal_code')->textInput() ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reminder_given')->textInput() ?>
+            <?= $form->field($model, 'reminder_given')->textInput(['disabled' => true, ]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true]) ?>

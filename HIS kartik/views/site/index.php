@@ -72,51 +72,54 @@ else
         </div>
         <!-- /.card -->
 
-        <div class="card">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Patient Information');?></h3>
-                <div class="card-tools">
-                    <!-- Collapse Button -->
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i></button>
+        <a name="patient">
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    <h3 class="card-title"><?php echo Yii::t('app','Patient Information');?></h3>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                    <!-- /.card-tools -->
                 </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
+                <!-- /.card-header -->
+                <div class="card-body">
 
 
-                <!-- This is the form that shows patient information which can directly updating-->
-                <?php
+                    <!-- This is the form that shows patient information which can directly updating-->
+                    <?php
         if(!empty($model))
         {
     ?>
-                <a name="pa"> </a>
-                <?= $this->render('/patient_information/update', [
+
+                    <?= $this->render('/patient_information/update', [
                     'model' => $model]) ?>
 
-                <?php   } else{
+                    <?php   } else{
              echo Yii::t('app','Patient is not selected');
         }  ?>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-
-        <div class="card">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Waris');?></h3>
-                <div class="card-tools">
-                    <!-- Collapse Button -->
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i></button>
                 </div>
-                <!-- /.card-tools -->
+                <!-- /.card-body -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
+            <!-- /.card -->
+        </a>
+        
+        <a name='nok'>
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    <h3 class="card-title"><?php echo Yii::t('app','Waris');?></h3>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                    <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
 
-                <?php   
+                    <?php   
             if(!empty($model))
             {
                 $dataProvider2 = new ActiveDataProvider([
@@ -127,23 +130,24 @@ else
             } 
             ?>
 
-                <div class="form-group">
-                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                        onclick="showDiv();"><?php echo Yii::t('app','Add Waris');?></button>
-                    <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                        onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
-                </div>
-                <a name='nok'></a>
-                <?php
+                    <div class="form-group">
+                        <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                            onclick="showDiv();"><?php echo Yii::t('app','Add Waris');?></button>
+                        <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
+                            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
+                    </div>
+
+                    <?php
             if(!empty($model)){
                 $model_nok = new Patient_next_of_kin();
                 echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
             }
             ?>
+                </div>
+                <!-- /.card-body -->
             </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
+            <!-- /.card -->
+        </a>
 
     </div>
 
