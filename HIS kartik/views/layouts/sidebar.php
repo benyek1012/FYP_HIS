@@ -57,7 +57,7 @@ function items()
     ->select(['rn'])
     ->from('patient_admission')
     ->where(['patient_uid' => $info->patient_uid])
-    ->orderBy(['entry_datetime' => SORT_DESC])
+    ->orderBy(['entry_datetime' => SORT_DESC, 'rn' => SORT_DESC])
     ->all();
 
     $items = [];
