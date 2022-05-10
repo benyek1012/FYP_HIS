@@ -205,6 +205,7 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($modelBill) && $modelBill->is_free == 1)
             $billable = 0;
 
+        $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
     }
 
@@ -234,6 +235,7 @@ class Bill extends \yii\db\ActiveRecord
             $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($modelBill->rn)
              - Bill::getPayedAmt($bill_uid) - Bill::getRefund($modelBill->rn);
         }
+        $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
     }
 
