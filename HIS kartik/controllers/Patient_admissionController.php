@@ -913,7 +913,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
          //$printer -> text("\n\n\x20\n\x20\n"); // \n = 0.4cm
          $printer -> text($model->entry_datetime);
          $printer -> close();
-         /*
+         
          $printer -> text($caseblankfront); // space= 0.3cm， receipt column 1
          //$blankback = str_repeat("\x20", 59 - 22 - strlen($patientname)); get patient name from database
          $printer -> text($patientname); // name
@@ -976,7 +976,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
          
     
          $printer -> close();
-                  */
+                  
                    // $printer -> close(); 
                     
             }
@@ -1104,7 +1104,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
                  //for($j=1; $j<=3; $j++)
                  //{
                  //}
-                 for($k=1; $k<=1; $k++)
+                 for($k=1; $k<=6; $k++)
                  {
                     $printer -> text(mb_strimwidth($patientname,0,14) . str_repeat("\x20", 35-11 - strlen($patientname))  ."31"."yrs"."10"."mth"."25"."day".$stickerblankafterage.mb_strimwidth($patientname,0,14) . str_repeat("\x20", 35-11 - strlen($patientname)) ."31"."yrs"."10"."mth"."25"."day".$stickerblankafterage1. mb_strimwidth($patientname,0,14) . str_repeat("\x20", 35 -11- strlen($patientname)) ."31"."yrs"."10"."mth"."25"."day");
                     $printer -> text("\n"."KP:".$printic . str_repeat("\x20", 17 - strlen($printic)) ."NP:".$printrn.$stickerblankafterRN."KP:".$printic . str_repeat("\x20", 18 - strlen($printic)) ."NP:".$printrn.$stickerblankafterRN2."KP:".$printic. str_repeat("\x20", 17 - strlen($printic)) ."NP:".$printrn."   ");

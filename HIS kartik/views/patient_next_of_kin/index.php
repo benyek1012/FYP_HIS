@@ -21,12 +21,14 @@ use kartik\editable\Editable;
 
     <?php     
         $relationship = array(
-        'father'=>'Father',
-        'monther'=>'Monther',
-        'couple' => 'Couple',
-        'brother' => 'Brother',
-        'sister' => 'Sister',
-        'other' => 'Other'
+            'father'=>'Father',
+            'mother'=>'Mother',
+            'husband/spouse' => 'husband/Spouse',
+            'brother' => 'Brother',
+            'sister' => 'Sister',
+            'son' => 'Son',
+            'daughter' => 'Daughter',
+            'other' => 'Other'
     );// echo $this->render('_search', ['model' => $searchModel]); 
     ?>
 
@@ -55,10 +57,12 @@ use kartik\editable\Editable;
                     'asPopover' => false,
                     'data' => [
                         'father'=>'Father',
-                        'monther'=>'Monther',
-                        'couple' => 'Couple',
+                        'mother'=>'Mother',
+                        'husband/spouse' => 'husband/Spouse',
                         'brother' => 'Brother',
                         'sister' => 'Sister',
+                        'son' => 'Son',
+                        'daughter' => 'Daughter',
                         'other' => 'Other'
                     ],
                     'formOptions' => ['action' => ['/site/nok']],
