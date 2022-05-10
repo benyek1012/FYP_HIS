@@ -143,7 +143,7 @@ class ReceiptController extends Controller
                 $printer -> text($fixbackblank2);
                 $printer -> text($printrn."\n"); // rn
                 $printer -> text($blankfront);
-                $printer -> text(date("H:i:s", strtotime($printpaydatetime))."\n");
+                $printer -> text(date("H:i:s", strtotime($printpaydatetime)));
                 $printer -> text($fixbackblank);
                 $printer -> text($printbil."\n"); //no.Bil
                 $printer -> text($blankfront);
@@ -155,14 +155,14 @@ class ReceiptController extends Controller
                 $printer -> text($blankfront);
                 $printer -> text($nocagaran); // No.Cagaran
                 $printer -> text(str_repeat("\x20", 56 - 15 - strlen($nocagaran)));// fixbackblank
-                $printer -> text(mb_strimwidth($printpayername,0, 30)."\n\n"); // guarrantor name
+                $printer -> text(mb_strimwidth(strtoupper($printpayername),0, 30)."\n\n"); // guarrantor name
                 $printer -> text($blankfront);
                 $blankback = str_repeat("\x20", 55 - 14 - strlen($printpatientname));
-                $printer -> text($printpatientname); // patient name
+                $printer -> text(strtoupper($printpatientname)); // patient name
                 $printer -> text($blankback);
-                $printer -> text($printpaymentmethod."\n\n"); //Cara Bayaran
+                $printer -> text(strtoupper($printpaymentmethod)."\n\n"); //Cara Bayaran
                 $printer -> text(str_repeat("\x20" , 7)."Penjelasan :");
-                $printer ->text($printreceiptcontent);
+                $printer ->text(strtoupper($printreceiptcontent));
                 
                 
                 $printer -> close(); 

@@ -386,7 +386,7 @@ if(empty($print_readonly)) $print_readonly = false;
                 <div class="d-flex justify-content-end">
                     <?php
                 if(!empty($model))
-                    echo "<div>".Bill::getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    echo "<div>".Yii::t('app','Total')." : ".Bill::getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                 ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->

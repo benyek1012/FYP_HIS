@@ -40,6 +40,7 @@ class Patient_informationController extends Controller
     public function actionCreate($ic)
     {
         $model = new Patient_information();
+        
         if($ic  == 'undefined') $model->nric = ' ';
         else $model->nric = $ic;
         $model->patient_uid = Base64UID::generate(32);

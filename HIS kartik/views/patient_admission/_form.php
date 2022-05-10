@@ -93,6 +93,10 @@ use kartik\datetime\DateTimePicker;
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+<<<<<<< Updated upstream
+=======
+        
+>>>>>>> Stashed changes
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

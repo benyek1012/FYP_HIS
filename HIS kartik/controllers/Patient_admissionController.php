@@ -209,48 +209,48 @@ $caseblankfront2 = str_repeat("\x20", 16);
                        
                         $printer -> text("\n\x20\n\x20\n\x20\n\x20"); // \n = 0.4cm
                         $printer -> text($blankfront); // space= 0.3cm， receipt column 1
-                        $blankback = str_repeat("\x20", 55 - 11 - strlen($patientname)); 
+                        $blankback = str_repeat("\x20", 55 - 11 - strlen(strtoupper($patientname))); 
                        // $printer -> text("aaabbbccc"); // patientname
     $printer -> text($fixbackblank); // space for r/n value
     $printer -> text($printrn."\n\n\n"); // R/n
     $printer -> text($blankfront);
-    $printer -> text($patientaddress1); // alamat line 1
+    $printer -> text(strtoupper($patientaddress1)); // alamat line 1
     $printer -> text($fixbackblank1);
     $printer -> text($printic."\n"); //no.kp
     $printer -> text($blankfront);
-    $printer -> text($patientaddress2 ."\n"); // alamat line 2
+    $printer -> text(strtoupper($patientaddress2) ."\n"); // alamat line 2
     $printer -> text($blankfront);
-    $printer -> text($patientaddress3);
+    $printer -> text(strtoupper($patientaddress3));
     $printer -> text($fixbackblank1);
     $printer -> text($printphone."\n\n"); //no.telephone
     $printer -> text($fixbackblank2);
     $printer -> text(" "."\n\n"); //kes polis
     $printer -> text($blank1over2);
-    $printer -> text($printgender); // jantina
+    $printer -> text(strtoupper($printgender)); // jantina
     $printer -> text($blank2over2);
     $printer -> text("          "); // tarikh lahir
     $printer -> text($blank2over2);
     $printer -> text("      "); //umur
     $printer -> text($blank2over3);
-    $printer -> text($printrace); // race
+    $printer -> text(strtoupper($printrace)); // race
     $printer -> text($blank2over2);
-    $printer -> text($printnationality."\n\n"); // warganegara
+    $printer -> text(strtoupper($printnationality)."\n\n"); // warganegara
     $printer -> text($blank1over2);
     $printer -> text("     "); // agama
     if ($noknull == 0)
                 {
-                    $printer -> text((str_repeat("\x20" , 38).$printnokname."\n\x20\n")); // nama penuh waris
+                    $printer -> text((str_repeat("\x20" , 38).strtoupper($printnokname)."\n\x20\n")); // nama penuh waris
                     //$printer -> text($blankfront);
                     //$printer -> text("taraf perkahwinan"); // taraf perkahwinan
-                    $printer -> text((str_repeat("\x20" , 52).$printnokadd1."\n")); // alamat terkini waris
-                    $printer -> text((str_repeat("\x20" , 52).$printnokadd2."\n"));
-                    $printer -> text((str_repeat("\x20" , 52).$printnokadd3."\n"));
+                    $printer -> text((str_repeat("\x20" , 52).strtoupper($printnokadd1)."\n")); // alamat terkini waris
+                    $printer -> text((str_repeat("\x20" , 52).strtoupper($printnokadd2)."\n"));
+                    $printer -> text((str_repeat("\x20" , 52).strtoupper($printnokadd3)."\n"));
                    //print nok here
                 }
     
     $printer -> text("\x20\n\n\n"); 
     $printer -> text($blankfront);
-    $printer -> text($printjob); //perkejaan
+    $printer -> text(strtoupper($printjob)); //perkejaan
     $printer -> text($fixbackblank1 . "   ");
     $printer -> text("       " . "\n\n"); // kategori pesakit atm
     $printer -> text($blankfront);
@@ -261,9 +261,9 @@ $caseblankfront2 = str_repeat("\x20", 16);
     $printer -> text($blank1over2);
     $printer -> text(date("d/m/Y" , strtotime($printentry)) . "\n\n\n");
     $printer -> text($blank1over2);
-    $printer -> text($printwardcode."\n\n");
+    $printer -> text(strtoupper($printwardcode)."\n\n");
     $printer -> text($blank1over2);
-    $printer -> text($printwardclass."\n\n");
+    $printer -> text(strtoupper($printwardclass)."\n\n");
     $printer -> text($blank1over2);
     $printer -> text("   "."\n");
             $printer -> close(); 
@@ -574,49 +574,49 @@ $caseblankfront2 = str_repeat("\x20", 16);
                    
                     $printer -> text("\n\x20\n\x20\n\x20\n\x20\n"); // \n = 0.4cm
                     $printer -> text($blankfront); // space= 0.3cm， receipt column 1
-                    $printer -> text($patientname);
+                    $printer -> text(strtoupper($patientname));
                     //$blankback = ); 
                    // $printer -> text("aaabbbccc"); // patientname
 $printer -> text(str_repeat("\x20", 63 - 11 - strlen($patientname))); // space for r/n value
 $printer -> text($printrn."\n\n\n"); // R/n
 $printer -> text($blankfront);
-$printer -> text($patientaddress1); // alamat line 1
+$printer -> text(strtoupper($patientaddress1)); // alamat line 1
 $printer -> text($fixbackblank1);
 $printer -> text($printic."\n"); //no.kp
 $printer -> text($blankfront);
-$printer -> text($patientaddress2 ."\n"); // alamat line 2
+$printer -> text(strtoupper($patientaddress2) ."\n"); // alamat line 2
 $printer -> text($blankfront);
-$printer -> text($patientaddress3);
+$printer -> text(strtoupper($patientaddress3));
 $printer -> text(str_repeat("\x20", 57 - 11 - strlen($patientaddress3)));
 $printer -> text($printphone."\n\n"); //no.telephone
 $printer -> text($fixbackblank2);
 $printer -> text(" "."\n\n"); //kes polis
 $printer -> text($blank1over2);
-$printer -> text($printgender); // jantina
+$printer -> text(strtoupper($printgender)); // jantina
 $printer -> text($blank2over2);
 $printer -> text("          "); // tarikh lahir
 $printer -> text($blank2over2);
 $printer -> text("        "); //umur
 $printer -> text($blank2over3);
-$printer -> text($printrace); // race
+$printer -> text(strtoupper($printrace)); // race
 $printer -> text(str_repeat("\x20", 28 - 8 - strlen($printrace)));
-$printer -> text($printnationality."\n\n"); // warganegara
+$printer -> text(strtoupper($printnationality)."\n\n"); // warganegara
 $printer -> text($blank1over2);
 $printer -> text("     "); // agama
 if ($noknull == 0)
             {
-                $printer -> text((str_repeat("\x20" , 38).$printnokname."\n\x20\n")); // nama penuh waris
+                $printer -> text((str_repeat("\x20" , 38).strtoupper($printnokname)."\n\x20\n")); // nama penuh waris
                 //$printer -> text($blankfront);
                 //$printer -> text("taraf perkahwinan"); // taraf perkahwinan
-                $printer -> text((str_repeat("\x20" , 52).$printnokadd1."\n")); // alamat terkini waris
-                $printer -> text((str_repeat("\x20" , 52).$printnokadd2."\n"));
-                $printer -> text((str_repeat("\x20" , 52).$printnokadd3."\n"));
+                $printer -> text((str_repeat("\x20" , 52).strtoupper($printnokadd1)."\n")); // alamat terkini waris
+                $printer -> text((str_repeat("\x20" , 52).strtoupper($printnokadd2)."\n"));
+                $printer -> text((str_repeat("\x20" , 52).strtoupper($printnokadd3)."\n"));
                //print nok here
             }
 
 $printer -> text("\x20\n\n"); 
 $printer -> text($blankfront);
-$printer -> text($printjob); //perkejaan
+$printer -> text(strtoupper($printjob)); //perkejaan
 $printer -> text($fixbackblank1 . "   ");
 $printer -> text("       " . "\n\n"); // kategori pesakit atm
 $printer -> text($blankfront);
@@ -627,9 +627,9 @@ $printer -> text(str_repeat("\n" , 3));
 $printer -> text($blanktwkd);
 $printer -> text(date("d/m/Y" , strtotime($printentry)) . "\n\x20\n");
 $printer -> text($blanktwkd);
-$printer -> text($printwardcode."\n\x20\n");
+$printer -> text(strtoupper($printwardcode)."\n\x20\n");
 $printer -> text($blanktwkd);
-$printer -> text($printwardclass."\n\x20\n");
+$printer -> text(strtoupper($printwardclass)."\n\x20\n");
 $printer -> text($blanktwkd);
 $printer -> text("   "."\n");
 //have yet add in spaces for 2nd page
