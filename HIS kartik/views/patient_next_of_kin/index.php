@@ -19,18 +19,6 @@ use kartik\editable\Editable;
         <?= Html::a('Create Patient Next Of Kin', ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
 
-    <?php     
-        $relationship = array(
-        'father'=>'Father',
-        'monther'=>'Monther',
-        'couple' => 'Couple',
-        'brother' => 'Brother',
-        'sister' => 'Sister',
-        'other' => 'Other'
-    );// echo $this->render('_search', ['model' => $searchModel]); 
-    ?>
-
-
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         // 'filterModel' => $searchModel,
@@ -55,10 +43,12 @@ use kartik\editable\Editable;
                     'asPopover' => false,
                     'data' => [
                         'father'=>'Father',
-                        'monther'=>'Monther',
-                        'couple' => 'Couple',
+                        'mother'=>'Mother',
+                        'husband/spouse' => 'Husband / Spouse',
                         'brother' => 'Brother',
                         'sister' => 'Sister',
+                        'son' => 'Son',
+                        'daughter' => 'Daughter',
                         'other' => 'Other'
                     ],
                     'formOptions' => ['action' => ['/site/nok']],

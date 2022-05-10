@@ -58,7 +58,7 @@ class Bill extends \yii\db\ActiveRecord
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
-            [['bill_print_id'], 'integer'],
+           // [['bill_print_id'], 'integer'],
          //   [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['bill_print_id'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
@@ -205,6 +205,7 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($modelBill) && $modelBill->is_free == 1)
             $billable = 0;
 
+        $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
     }
 
@@ -234,6 +235,7 @@ class Bill extends \yii\db\ActiveRecord
             $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($modelBill->rn)
              - Bill::getPayedAmt($bill_uid) - Bill::getRefund($modelBill->rn);
         }
+        $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
     }
 

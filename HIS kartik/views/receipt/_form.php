@@ -98,7 +98,7 @@ use app\models\Patient_admission;
 
         <div class="col-sm-6" id="bill_div" <?php if(empty($model_bill)) echo 'style="display:none;"'; ?>>
             <?php  if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id]) ?>
+            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
             <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
             <?php } ?>

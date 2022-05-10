@@ -39,7 +39,7 @@ else{
 }
 
 $row_bill = (new \yii\db\Query())
-->select(['bill_generation_datetime', 'is_free'])
+->select(['bill_generation_datetime', 'is_free', 'bill_print_id'])
 ->from('bill')
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
 ->one();
@@ -712,8 +712,11 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::checkExistPrint(Yii::$app->request->get('rn'))]) ?>
                 </div>
             </div>
-            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){
+                if(empty( $row_bill['bill_print_id'])){
+            ?>
             <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
+            <?php }else echo "<span class='badge badge-primary'>Bill has been printed.</span> <br/><br/>" ?>
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn'), '#' => 'p'], ['class'=>'btn btn-success']) ?>
             <?php } ?>
