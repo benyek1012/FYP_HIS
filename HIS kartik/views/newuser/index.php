@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\NewuserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Newusers';
+$this->title = Yii::t('app','User Management');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="newuser-index">
