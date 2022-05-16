@@ -13,18 +13,39 @@ use GpsLab\Component\Base64UID\Base64UID;
 <div class="patient-information-create">
 
 <?php 
-     $countries = array(
-        'malaysia'=>'Malaysia',
-        'indonesia'=>'Indonesia',
-        'singapore' => 'Singapore',
-        'thailand' => 'Thailand',
-        'china' => 'China'
-    );
 
-    $sex = array(
-        'male'=>Yii::t('app','Male'),
-        'female'=>Yii::t('app','Female'),
-    );
+$rows_nationality = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Nationality'])
+->all();
+
+$countries = array();
+foreach($rows_nationality as $row_nationality){
+    $countries[$row_nationality['name']] = $row_nationality['name'];
+} 
+
+$rows_sex = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Sex'])
+->all();
+
+$sex = array();
+foreach($rows_sex as $row_sex){
+    $sex[$row_sex['name']] = $row_sex['name'];
+} 
+
+$rows_race = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Race'])
+->all();
+
+$race = array();
+foreach($rows_race as $row_race){
+    $race[$row_race['name']] = $row_race['name'];
+} 
 
     $form = ActiveForm::begin([
         'action' => ['patient_information/create'],

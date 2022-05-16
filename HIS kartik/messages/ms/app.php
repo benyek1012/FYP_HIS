@@ -20,7 +20,7 @@ return[
     'New Labor R/N' => 'R/N Labor Baru',
     'Reminder Letters' => 'Surat Peringatan',
     'Batch Entry' => 'Memasukkan Pesakit Baru(Batch)',
-    'Admission' => ' Masuk',
+    'Admission' => 'Kemasukan',
     'Reports' => 'Laporan',
     'Maintenance' => 'Penyelenggaraan',
     'Users' => 'Users',
@@ -157,7 +157,12 @@ return[
     'Address 3' => 'Alamat 3',
     'Lookup Departments' => 'Jabatan Carian',
     'Ward Number of Days' => 'Bilangan Hari Wad',
-    'Item Total Unit Cost (RM)' => 'Item Jumlah Kos Unit (RM)'
+    'Item Total Unit Cost (RM)' => 'Item Jumlah Kos Unit (RM)',
+    'User Management' => 'Pengurusan pengguna',
+    'Username' => 'Nama pengguna',
+    'User Password' => 'Kata Laluan Pengguna',
+    'Retire' => 'Bersara',
+    'Role' => 'Peranan'
  
 ];
 ?>

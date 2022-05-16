@@ -24,7 +24,7 @@ use yii\helpers\Url;
                     <?php
                     echo Breadcrumbs::widget([
                         'homeLink' => [
-                            'label' => 'Admission',
+                            'label' => Yii::t('app','Admission'),
                             'url' => Url::home(),
                         ],
                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

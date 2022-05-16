@@ -12,27 +12,38 @@ use yii\bootstrap4\Html;
 ?>
 <div class="patient-information-update">
     <?php 
-     $countries = array(
-        'malaysia'=>'Malaysia',
-        'indonesia'=>'Indonesia',
-        'singapore' => 'Singapore',
-        'thailand' => 'Thailand',
-        'china' => 'China'
-    );
+        $rows_nationality = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Nationality'])
+        ->all();
+        
+        $countries = array();
+        foreach($rows_nationality as $row_nationality){
+            $countries[$row_nationality['name']] = $row_nationality['name'];
+        } 
 
-    $sex = array(
-        'male'=>Yii::t('app','Male'),
-        'female'=>Yii::t('app','Female'),
-    );
+        $rows_sex = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Sex'])
+        ->all();
+        
+        $sex = array();
+        foreach($rows_sex as $row_sex){
+            $sex[$row_sex['name']] = $row_sex['name'];
+        } 
 
-    $race = array(
-        'malay'=> Yii::t('app','Malay'),
-        'chinese'=> Yii::t('app','Chinese'),
-        'indian'=> Yii::t('app','Indian'),
-        'kadazandusun' => 'Kadazandusun',
-        'iban' => 'Iban',
-        'others'=> 'Others',
-    );
+        $rows_race = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Race'])
+        ->all();
+        
+        $race = array();
+        foreach($rows_race as $row_race){
+            $race[$row_race['name']] = $row_race['name'];
+        } 
 
     $form = kartik\form\ActiveForm::begin([
         'action' => ['patient_information/update', 'id' =>  $model->patient_uid],

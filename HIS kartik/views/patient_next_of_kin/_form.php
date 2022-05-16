@@ -20,16 +20,18 @@ use GpsLab\Component\Base64UID\Base64UID;
         
     ]); 
     $nokuid = Base64UID::generate(32);
-    $relationship = array(
-        'father'=>'Father',
-        'mother'=>'Mother',
-        'husband/spouse' => 'Husband / Spouse',
-        'brother' => 'Brother',
-        'sister' => 'Sister',
-        'son' => 'Son',
-        'daughter' => 'Daughter',
-        'other' => 'Other'
-    );
+    $rows_relationship = (new \yii\db\Query())
+    ->select('*')
+    ->from('lookup_general')
+    ->where(['category'=> 'Relationship'])
+    ->all();
+    
+    $relationship = array();
+    foreach($rows_relationship as $row_relationship){
+        $relationship[$row_relationship['name']] = $row_relationship['name'];
+    } 
+
+   
     ?>
 
     <div class="row">

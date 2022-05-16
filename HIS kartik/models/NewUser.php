@@ -83,12 +83,12 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'user_uid' => 'User Uid',
-            'username' => 'Username',
-            'user_password' => 'User Password',
-            'role' => 'Role',
-            'retire' => 'Retire',
-            'authKey' => 'Auth Key',
+            'user_uid' => Yii::t('app','User Uid'),
+            'username' => Yii::t('app','Username'),
+            'user_password' => Yii::t('app','User Password'),
+            'role' => Yii::t('app','Role'),
+            'retire' => Yii::t('app','Retire'),
+            'authKey' => Yii::t('app','Auth Key'),
         ];
     }
 }
