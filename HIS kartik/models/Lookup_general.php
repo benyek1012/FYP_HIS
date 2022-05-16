@@ -31,7 +31,7 @@ class Lookup_general extends \yii\db\ActiveRecord
     {
         return [
             [['lookup_general_uid', 'code', 'category', 'name', 'long_description'], 'required'],
-            [['recommend'], 'boolean', 'strict' => true],
+            [['recommend'], 'boolean'],
             [['lookup_general_uid'], 'string', 'max' => 64],
             [['code', 'category'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 50],
@@ -48,11 +48,12 @@ class Lookup_general extends \yii\db\ActiveRecord
     {
         return [
             'lookup_general_uid' => Yii::t('app','Lookup General Uid'),
-            'code' =>  Yii::t('app','Code'),
-            'category' =>  Yii::t('app','Category'),
-            'name' =>  Yii::t('app','Name'),
-            'long_description' =>  Yii::t('app','Long Description'),
+            'code' => Yii::t('app','Code'),
+            'category' => Yii::t('app','Category'),
+            'name' => Yii::t('app','Name'),
+            'long_description' => Yii::t('app','Long Description'),
             'recommend' => Yii::t('app','Recommend'),
         ];
     }
 }
+
