@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.1.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2022 at 03:57 PM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 7.3.7
+-- Generation Time: May 16, 2022 at 06:18 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -117,6 +116,31 @@ CREATE TABLE IF NOT EXISTS `lookup_general` (
   PRIMARY KEY (`lookup_general_uid`),
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `lookup_general`
+--
+
+INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES
+('2EJH7eoy70VtSW28HdWmqPR8GuBJ-0AN', 'Father', 'Relationship', 'Father', 'Father', 1),
+('4uqnt80lzCEfbqVtw15DJB44UI6QL8iF', 'Mother', 'Relationship', 'Mother', 'Mother', 1),
+('aaFXZAE9L9368Ha8kUCr4WtSXNPjsQGw', 'Indonesia', 'Nationality', 'Indonesia', 'Indonesia', 1),
+('aRYQoZ0PUgME-uCF_cdxjF6dYp8eSMfk', 'Son', 'Relationship', 'Son', 'Son', 1),
+('DCMaNq6WPc6L5tP-kYnPUFhZPJ_l-EKC', 'China', 'Nationality', 'China', 'China', 1),
+('Dh9GP_xVMCs1IS_6CKineglPl56QYVUv', 'Kadazandusun', 'Race', 'Kadazandusun', 'Kadazandusun', 1),
+('dysj6KiH3X4jsDxS3N3b3GlkNV9yJOPx', 'Chinese', 'Race', 'Chinese', 'Chinese', 1),
+('DyUydTXK7F2zYXrFjfANS06IlGhRnbQ3', 'Indian', 'Race', 'Indian', 'Indian', 1),
+('EnThnPoarmFJQ6LyKfBr0vTT5ChY4Vvi', 'Singapore', 'Nationality', 'Singapore', 'Singapore', 1),
+('jmUi7zek4A-0EKslcAAUhJUVcplGa8wz', 'Husband/Spouse', 'Relationship', 'Husband/Spouse', 'Husband/Spouse', 1),
+('Jor2cgaU0etz67yALq3odFYCl2n5Uc_E', 'Female', 'Sex', 'Female', 'Female', 1),
+('NH2m9rCS3gW1kml1GFtJQBd6W7KsDjMr', 'Iban', 'Race', 'Iban', 'Iban', 1),
+('q18lvwYjLv8qE-FT9yYgQikmaekPGyoZ', 'Male', 'Sex', 'Male', 'Male', 1),
+('SHxs6f-CqlgvJOACnEJ6jWpE6wl9aFJY', 'Thailand', 'Nationality', 'Thailand', 'Thailand', 1),
+('smIfbSJJI1b970rWS0it1kCqDaRMsSSg', 'Malaysia', 'Nationality', 'Malaysia', 'Malaysia', 1),
+('tpMLuKI7rr4jn0FVyCWA2c62DyOKsrYe', 'Brother', 'Relationship', 'Brother', 'Brother', 1),
+('u5lcXSAV0bYqVclKtQZao9xRRTykmA_O', 'Sister', 'Relationship', 'Sister', 'Sister', 1),
+('UAaI0eNAqAEk6VwJaMqXGeYHF9rsqFWY', 'Malay', 'Race', 'Malay', 'Malay', 1),
+('WQSPmw1lcpysbN3sR_IpQsvvEQ8WFzBf', 'Daughter', 'Relationship', 'Daughter', 'Daughter', 1);
 
 -- --------------------------------------------------------
 
@@ -345,9 +369,9 @@ CREATE TABLE IF NOT EXISTS `new_user` (
 --
 
 INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role`, `retire`, `authKey`) VALUES
-('1', 'Cashier', '12345', 'Cashier', 1, '12345a'),
-('2', 'Administrator', '12345', 'Administrator', 1, '12345b'),
-('3', 'Clerk', '12345', 'Clerk', 1, '12345c');
+('1', 'cashier1', '12345', 'Cashier', 1, '12345a'),
+('2', 'administrator1', '12345', 'Administrator', 1, '12345b'),
+('3', 'clerk1', '12345', 'Clerk', 1, '12345c');
 
 -- --------------------------------------------------------
 
