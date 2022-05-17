@@ -130,10 +130,11 @@ class ReceiptController extends Controller
                 $fixbackblank = str_repeat("\x20", 33);
                 $fixbackblank2 = str_repeat("\x20", 31);
                 $fixbackblank3 = str_repeat("\x20", 32);
-
-                $connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
+/*
+                //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
+                $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
                 $printer = new Printer($connector);
-                $printer -> text("\n\n\x20\n\n\x20\n\n");
+                $printer -> text("\n\n\x20\n\n\x20\n\n\n");
                 $printer -> text($blankfront); // space= 0.3cm， receipt column 1
                 $printer -> text($printresit); // receipt number
                 $printer -> text($fixbackblank); //receipt column 2
@@ -166,6 +167,7 @@ class ReceiptController extends Controller
                 
                 
                 $printer -> close(); 
+                */
               
                 return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                 'rn' => $model->rn));   

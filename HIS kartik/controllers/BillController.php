@@ -500,48 +500,60 @@ class BillController extends Controller
         $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
         $cagaranitem ='';
         $treatmentitem = '';
-        $ncounter = 0;
-        $rcounter = 0;
+        $ncounter = 1;
+        $rcounter = 1;
         $billkumpulan = str_repeat("\x20", 6);
         $fixfront = str_repeat("\x20", 8);
+        $ct = 1;
+        $abc = '';
+              
+            
+        foreach ($modelreceipt as $index => $modelreceiptfind)
+        {
+            if($modelreceiptfind->receipt_type = 'deposit')
+            {
+           $ct ++;
+            }
+            if($ct>3)
+            {
+                $abc = "...";
+                break;
+            }
+        }
+       
         foreach ($modelTreatment as $index => $modeltreatmentfind) 
         {
             if($index == 0)
             {
-            // $gettreatmentcode = ArrayHelper::toArray($modeltreatmentfind->treatment_code) ;
-            // $gettreatmentname = ArrayHelper::toArray($modeltreatmentfind->treatment_name);
-             //$gettreamentunit = ArrayHelper::toArray($modeltreatmentfind->item_count);
-            // $gettreatmentunitcost = ArrayHelper::toArray($modeltreatmentfind->item_per_unit_cost_rm);
-             //$gettreatmenttotalcost = ArrayHelper::toArray($modeltreatmentfind->item_total_unit_cost_rm);
-             $treatmentitem =$billkumpulan.$modeltreatmentfind->treatment_code.str_repeat("\x20", 12 -6- strlen($modeltreatmentfind->treatment_code)).mb_strimwidth($modeltreatmentfind->treatment_name,0,30).str_repeat("\x20" ,41 -9- strlen($modeltreatmentfind->treatment_name)).'x  '.$modeltreatmentfind->item_count.str_repeat("\x20", 20 - 6 - strlen($modeltreatmentfind->item_count)).$modeltreatmentfind->item_per_unit_cost_rm.'    '.$modeltreatmentfind->item_total_unit_cost_rm.("\n");            
+            
+             $treatmentitem =$billkumpulan.$modeltreatmentfind->treatment_code.str_repeat("\x20", 6- strlen($modeltreatmentfind->treatment_code)).mb_strimwidth($modeltreatmentfind->treatment_name,0,30).str_repeat("\x20" ,31- strlen($modeltreatmentfind->treatment_name)).'  x  '.$modeltreatmentfind->item_count.str_repeat("\x20", 18 - 6 - strlen($modeltreatmentfind->item_count)).$modeltreatmentfind->item_per_unit_cost_rm.str_repeat("\x20", 10- strlen($modeltreatmentfind->item_per_unit_cost_rm)).$modeltreatmentfind->item_total_unit_cost_rm.nl2br("\n");            
              $ncounter = 1; 
             }
             else
             {
-             //$gettreatmentcode = ArrayHelper::toArray($modeltreatmentfind->treatment_code) ;
-             //$gettreatmentname = ArrayHelper::toArray($modeltreatmentfind->treatment_name);
-            // $gettreamentunit = ArrayHelper::toArray($modeltreatmentfind->item_count);
-            // $gettreatmentunitcost = ArrayHelper::toArray($modeltreatmentfind->item_per_unit_cost_rm);
-             //$gettreatmenttotalcost = ArrayHelper::toArray($modeltreatmentfind->item_total_unit_cost_rm);
-             if($ncounter<5)
-             { 
+            
+             if($ncounter<(8-$ct))// previously is <4 
+             {  
                  //$treatmentitem =  $treatmentitem.$billkumpulan.implode($gettreatmentcode).str_repeat("\x20", 12 - strlen(implode($gettreatmentcode))). mb_strimwidth(implode($gettreatmentname),0,30).'         '.'x  '.implode($gettreamentunit).str_repeat("\x20", 6 - strlen(implode($gettreamentunit))).implode($gettreatmentunitcost).'    '.implode($gettreatmenttotalcost).("\n"); 
-                 $treatmentitem =$treatmentitem.$billkumpulan.$modeltreatmentfind->treatment_code.str_repeat("\x20", 12 -6 - strlen($modeltreatmentfind->treatment_code)).mb_strimwidth($modeltreatmentfind->treatment_name,0,30).str_repeat("\x20" ,41 -9- strlen($modeltreatmentfind->treatment_name)).'x  '.$modeltreatmentfind->item_count.str_repeat("\x20", 20 -6 - strlen($modeltreatmentfind->item_count)).$modeltreatmentfind->item_per_unit_cost_rm.'    '.$modeltreatmentfind->item_total_unit_cost_rm.("\n");                       
-                 $ncounter = $ncounter +1;  }
+                 //$ncounter = $ncounter +1; 
+                 $treatmentitem =$treatmentitem.$billkumpulan.$modeltreatmentfind->treatment_code.str_repeat("\x20", 6- strlen($modeltreatmentfind->treatment_code)).mb_strimwidth($modeltreatmentfind->treatment_name,0,30).str_repeat("\x20" ,31- strlen($modeltreatmentfind->treatment_name)).'  x  '.$modeltreatmentfind->item_count.str_repeat("\x20", 18 - 6 - strlen($modeltreatmentfind->item_count)).$modeltreatmentfind->item_per_unit_cost_rm.str_repeat("\x20", 10- strlen($modeltreatmentfind->item_per_unit_cost_rm)).$modeltreatmentfind->item_total_unit_cost_rm.nl2br("\n");                      
+                $ncounter = $ncounter +1;  }
             
             } 
+            
+            
            foreach ($modelreceipt as $index => $modelreceiptfind)
            {
                if($index == 0 && $modelreceiptfind->receipt_type = 'deposit')
                {
-                $cagaranitem = $fixfront."Tolak Cagaran ".$modelreceiptfind->receipt_serial_number.str_repeat("\x20" , 40).$modelreceiptfind->receipt_content_sum."\n";
+                $cagaranitem = $fixfront."Tolak Cagaran ".$modelreceiptfind->receipt_serial_number.str_repeat("\x20" , 46-strlen($modelreceiptfind->receipt_serial_number)).$modelreceiptfind->receipt_content_sum.nl2br("\n");
                 $rcounter = 1;
                }
                else
                {
-                   if($rcounter<4)
+                   if($rcounter<3)
                    {
-                       $cagaranitem = $cagaranitem .$fixfront."Tolak Cagaran ".$modelreceiptfind->receipt_serial_number.str_repeat("\x20" , 40).$modelreceiptfind->receipt_content_sum."\n";
+                       $cagaranitem = $cagaranitem .$fixfront."Tolak Cagaran ".$modelreceiptfind->receipt_serial_number.str_repeat("\x20" , 46-strlen($modelreceiptfind->receipt_serial_number)).$modelreceiptfind->receipt_content_sum.nl2br("\n");
                        $rcounter = $rcounter +1;
                    }
                }
@@ -551,7 +563,51 @@ class BillController extends Controller
 
            
         } 
-        
+        /*
+        if($rcounter>=3)
+  {
+      print_r($fixfront."...."."\n");
+      print_r(str_repeat("\n", 8-1 -$rcounter));
+      print_r("doesthiswork?");
+  }
+ // if ($rcounter<=3)
+if ($rcounter<=3)
+  {
+      print_r($cagaranitem);
+    print_r(str_repeat(nl2br("\n"), 8-$rcounter));
+    print_r("do you work?");
+    print_r($rcounter);
+  } */
+//print_r($treatmentitem);
+//print_r($index);
+  //print_r($ncounter);
+  /*
+  if ($rcounter<=3)
+  { 
+      print_r($treatmentitem);
+    }
+   
+  
+  //print_r($treatmentitem);
+  
+  if($ncounter>=4)
+  {
+   //$ncounter -1;
+   print_r($treatmentitem);
+   print_r(str_repeat("\x20", 6). "...."."\n");
+   print_r(str_repeat("\n", 5 -  $ncounter));
+   print_r($ncounter);
+   
+  } */
+  print_r($treatmentitem);
+print_r($ncounter);
+if ($ncounter>4)
+{
+print_r("...");
+}
+print_r($cagaranitem);
+  exit();
+  
        // print_r($treatmentitem);
        // print_r($ncounter);
         //exit();
@@ -565,13 +621,13 @@ class BillController extends Controller
             }
         }
 
-        $getprintdate =  ArrayHelper::toArray($model->bill_generation_datetime);
-        $getrn = ArrayHelper::toArray($model->rn);
-        $getname = ArrayHelper::toArray($modelpatient->name);
-        $getaddress1 = ArrayHelper::toArray($modelpatient->address1);
-        $getaddress2 = ArrayHelper::toArray($modelpatient->address2);
-        $getaddress3 = ArrayHelper::toArray($modelpatient->address3);
-        $getwardcode = ArrayHelper::toArray($modelwardfind->ward_code);
+      //  $getprintdate =  ArrayHelper::toArray($model->bill_generation_datetime);
+      //  $getrn = ArrayHelper::toArray($model->rn);
+       // $getname = ArrayHelper::toArray($modelpatient->name);
+       // $getaddress1 = ArrayHelper::toArray($modelpatient->address1);
+       // $getaddress2 = ArrayHelper::toArray($modelpatient->address2);
+        //$getaddress3 = ArrayHelper::toArray($modelpatient->address3);
+        //$getwardcode = ArrayHelper::toArray($modelwardfind->ward_code);
         $gettotalwarddays =ArrayHelper::toArray($modelwardfind->ward_number_of_days);
         //$getwardtotalcost =ArrayHelper::toArray($model->);
         $getdailywardcost = ArrayHelper::toArray($model->daily_ward_cost);
@@ -582,13 +638,13 @@ class BillController extends Controller
         //$try1 =ArrayHelper::toArray($modelpatient->nric);
         //$nric = implode($try1);
         //$startdate = implode($modelward);
-        $prn1 = implode($getrn);
-        $pname = implode($getname);
-        $printbilldate = implode($getprintdate);
-        $padd1 = implode($getaddress1);
-        $padd2 = implode($getaddress2);
-        $padd3 = implode($getaddress3);
-        $printclass = implode($getwardcode);
+        //$prn1 = implode($getrn);
+        //$pname = implode($getname);
+       // $printbilldate = implode($getprintdate);
+       // $padd1 = implode($getaddress1);
+       // $padd2 = implode($getaddress2);
+       // $padd3 = implode($getaddress3);
+       // $printclass = implode($getwardcode);
         $printdailywardcost = implode($getdailywardcost);
         $printdailytotalwardday = implode($gettotalwarddays);
         $printbillablesum = implode($getbillablesum);
@@ -621,32 +677,33 @@ class BillController extends Controller
                 
 
                
-                $connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
+                //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
+                $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
                 $printer = new Printer($connector);
                 
                 $printer -> text("\n\n\x20\n\x20\n\x20\n\x20\n\n\n"); // \n = 0.4cm
                 $printer -> text($billdate);
-                $printer -> text(date("d/m/Y" , strtotime($printbilldate)) . "\n");
+                $printer -> text(date("d/m/Y" , strtotime($model->bill_generation_datetime)) . "\n");
                 //$printer -> text(date("d/m/Y" , strtotime($printbilldate)) . "\n");
                 $printer -> text($billname);
-                $printer -> text($prn1."\n"); // receipt number
+                $printer -> text($model->rn."\n"); // receipt number
                 $printer -> text($billname);
-                $printer -> text(strtoupper($pname). "\n"); // patientname
+                $printer -> text(strtoupper($modelpatient->name). "\n"); // patientname
   $printer -> text($billadd1);
-  $printer -> text(strtoupper($padd1)."\n"); // date
+  $printer -> text(strtoupper($modelpatient->address1)."\n"); // date
   $printer -> text($billadd2);
-  $printer -> text(strtoupper($padd2)."\n"); //r/n
+  $printer -> text(strtoupper($modelpatient->address2)."\n"); //r/n
   $printer -> text($billadd3);
-  $printer -> text(strtoupper($padd3)); // time
+  $printer -> text(strtoupper($modelpatient->address3)); // time
   $printer -> text($blankmiddle);
   $printer -> text($billmasuk);
   $printer -> text("Caj Duduk Wad  (Tarikh Masuk  : ".date("d/m/Y" , strtotime($printstartdate))." )"."\n"); //tarikh masuk
   $printer -> text($billkeluar);
   $printer -> text("(Tarikh Keluar : ".date("d/m/Y" , strtotime($printlastenddate))." )"."\n\n\n"); // tarikh keluar
   $printer -> text($billmasuk);
-  $printer -> text("Kelas  ".$printclass." :"."  ".$printdailytotalwardday." Hari"); // class and day 
+  $printer -> text("Kelas  ".$modelwardfind->ward_code." :"."  ".$modelwardfind->ward_number_of_days." Hari"); // class and day 
   $printer -> text($billkelas);
-  $printer -> text($printdailywardcost. "     ". Bill::getTotalWardCost(Yii::$app->request->get('bill_uid')) ."\n\n"); // kelas price x total days in ward, hvnt add in total day ward cose
+  $printer -> text($model->daily_ward_cost.str_repeat("\x20", 9- strlen($model->daily_ward_cost)). Bill::getTotalWardCost(Yii::$app->request->get('bill_uid')) ."\n\n"); // kelas price x total days in ward, hvnt add in total day ward cose
   
   $printer -> text($fixfront);
   $printer -> text("Caj Pemeriksaan/Ujian Makmal"."\n"); // 
@@ -664,7 +721,15 @@ class BillController extends Controller
   //$printer -> text("1G"."    ".mb_strimwidth($description,0, 30) ."      x"."  "."days".""); // need restrict length, might need loop
 
   $printer -> text($treatmentitem);
-  $printer->text(str_repeat("\n", 6 -1- $ncounter));
+  if($ncounter>=4)
+  {
+$printer -> text(str_repeat("\x20", 6). "...."."\n");
+$printer->text(str_repeat("\n", 5 -1- $ncounter));
+  }
+  else{
+    $printer->text(str_repeat("\n", 5 - $ncounter));
+  }
+  
   //$printer -> text("\n\n"); // if fix breaktop cant get value from ncounter, change to 2. thn remove \n\n at the back
   $printer -> text($fixfront);
   $printer -> text("Caj Rawatan Harian"."\n");
@@ -672,16 +737,27 @@ class BillController extends Controller
   $printer -> text("------------------");
   $printer -> text(str_repeat("\x20" , 46)."  "."\n");
   $printer -> text(str_repeat("\x20" , 67)."----------\n");
-  $printer -> text(str_repeat("\x20" , 70).$printbillablesum."\n");
+  $printer -> text(str_repeat("\x20" , 69).$model->bill_generation_billable_sum_rm."\n");
   $printer -> text($cagaranitem);
-  $printer->text("\n");
+  if($rcounter>3)
+  {
+      $printer ->text($fixfront."...."."\n");
+      $printer -> text(str_repeat("\n", 8-1 - $rcounter));
+  }
+ // if ($rcounter<=3)
+ else 
+  {
+    $printer -> text(str_repeat("\n", 8 - $rcounter));
+  }
+  //$printer->text("\n");
   //$printer->text(str_repeat("\n", 5 - $rcounter));
   //$printer -> text(str_repeat("\x20" , 41).$cagaranno."\n".str_repeat("\n", 5 -1- strlen($rcounter)));// no cagaran price yet
-  $printer -> text(str_repeat("\n", 7 -1- strlen($rcounter)));
+  
+ 
   //$blankback = str_repeat("\x20", 41 - 16 - strlen($addl3));
   //$printer -> text($fixbreakbottom);
   $printer -> text(str_repeat("\x20" , 28)."JUMLAH YANG PERLU DIBAYAR ==>");
-  $printer -> text(str_repeat("\x20" , 13).$printbillablefinal);
+  $printer -> text(str_repeat("\x20" , 11).$printbillablefinal);
   $printer -> text("\n\n\n\n\n");
 
   $printer ->close();

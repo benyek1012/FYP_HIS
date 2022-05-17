@@ -110,7 +110,7 @@ class Patient_informationController extends Controller
      * @return Patient_information the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function findModel($patient_uid)
+    public static function findModel($patient_uid)
     {
         if (($model = Patient_information::findOne(['patient_uid' => $patient_uid])) !== null) {
             return $model;
@@ -119,7 +119,7 @@ class Patient_informationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function findModel_nric($patient_nric)
+    public static function findModel_nric($patient_nric)
     {
         // $rowIC = (new \yii\db\Query())
         // ->select(['nric'])

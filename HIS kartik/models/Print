@@ -1,0 +1,16 @@
+<?php 
+
+namespace app\models;
+
+use Yii;
+
+public static funtion printRegistrationform($rn)
+{
+
+}
+
+
+
+
+
+?>
