@@ -96,6 +96,16 @@ class BillController extends Controller
         echo Json::encode($modelTreatment);
     }
 
+    // Check Date Clashing
+    public function actionDate($bill_uid){
+        $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
+         
+        if($modelWard != null){
+            $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
+        }
+        echo Json::encode($modelDate);
+    }   
+
     /**
      * Displays a single Bill model.
      * @param string $bill_uid Bill Uid
@@ -269,8 +279,10 @@ class BillController extends Controller
                     $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_3_cost_per_unit;
                 }
 
+                $modelTreatment->item_total_unit_cost_rm = $modelTreatment->item_per_unit_cost_rm * $modelTreatment->item_count;
+
                 $modelTreatment->save();
-            }            
+            }      
             
             return Yii::$app->getResponse()->redirect(array('/bill/generate', 
                 'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
@@ -363,12 +375,30 @@ class BillController extends Controller
                         }
                         else if($countTreatment == $countdb){
                             $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => $bill_uid]); 
+                            $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
                 
                             if( Model::loadMultiple($modelTreatmentUpdate, Yii::$app->request->post())) {
                                 $valid = Model::validateMultiple($modelTreatmentUpdate);
                                 
                                 if($valid) {                    
                                     foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
+                                        $modelLookupTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatmentUpdate->treatment_code]);
+                                        
+                                        if($modelBill->class == '1a' || $modelBill->class == '1b' || $modelBill->class == '1c'){
+                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_1_cost_per_unit;
+                                        }
+                                        if($modelBill->class == '2'){
+                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_2_cost_per_unit;
+                                        }
+                                        if($modelBill->class == '3'){
+                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_3_cost_per_unit;
+                                        }
+                            
+                                        $itemPerUnit = $modelTreatmentUpdate->item_per_unit_cost_rm;
+                                        $itemCount = $modelTreatmentUpdate->item_count;
+                            
+                                        $modelTreatmentUpdate->item_total_unit_cost_rm = $itemPerUnit * $itemCount;
+
                                         $modelTreatmentUpdate->save();
                                     }
                                 }
@@ -457,7 +487,7 @@ class BillController extends Controller
             ]);
         }
 
-        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);   
+        $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all();   
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
         return $this->render('generate', [

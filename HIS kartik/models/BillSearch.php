@@ -17,7 +17,7 @@ class BillSearch extends Bill
     public function rules()
     {
         return [
-            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'department_code', 'department_name', 'collection_center_code', 'nurse_responsilbe', 'bill_generation_datetime', 'generation_responsible_uid', 'description', 'bill_print_responsible_uid', 'bill_print_datetime', 'bill_print_id'], 'safe'],
+            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'department_code', 'department_name', 'collection_center_code', 'nurse_responsible', 'bill_generation_datetime', 'generation_responsible_uid', 'description', 'bill_print_responsible_uid', 'bill_print_datetime', 'bill_print_id'], 'safe'],
             [['daily_ward_cost', 'bill_generation_billable_sum_rm', 'bill_generation_final_fee_rm'], 'number'],
             [['is_free'], 'integer'],
         ];
@@ -75,7 +75,7 @@ class BillSearch extends Bill
             ->andFilterWhere(['like', 'department_code', $this->department_code])
             ->andFilterWhere(['like', 'department_name', $this->department_name])
             ->andFilterWhere(['like', 'collection_center_code', $this->collection_center_code])
-            ->andFilterWhere(['like', 'nurse_responsilbe', $this->nurse_responsilbe])
+            ->andFilterWhere(['like', 'nurse_responsible', $this->nurse_responsible])
             ->andFilterWhere(['like', 'generation_responsible_uid', $this->generation_responsible_uid])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'bill_print_responsible_uid', $this->bill_print_responsible_uid])
