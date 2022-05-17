@@ -367,10 +367,9 @@ class SiteController extends Controller
             "CREATE TABLE IF NOT EXISTS `bill_content_receipt` (
                 `bill_content_receipt_uid` VARCHAR(64) NOT NULL,
                 `bill_uid` VARCHAR(64) NOT NULL,
-                `receipt_uid` VARCHAR(64) NOT NULL,
-                PRIMARY KEY (`bill_content_receipt_uid`),
-                FOREIGN KEY (bill_uid) REFERENCES bill(bill_uid),
-                FOREIGN KEY (receipt_uid) REFERENCES receipt(receipt_uid)
+                `rn` VARCHAR(11) NOT NULL,
+                `bill_generation_billable_sum_rm` DECIMAL(10,2),
+                PRIMARY KEY (`bill_content_receipt_uid`)
             );"
             ,
             "CREATE TABLE IF NOT EXISTS `lookup_department` (

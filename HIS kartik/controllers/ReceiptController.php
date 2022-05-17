@@ -2,14 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\Bill_content_receipt;
+use app\models\Bill;
 use Yii;
 use app\models\Receipt;
 use app\models\ReceiptSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\models\Patient_admission;
-use yii\data\ActiveDataProvider;
+use GpsLab\Component\Base64UID\Base64UID;
 
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
@@ -77,6 +78,7 @@ class ReceiptController extends Controller
     public function actionCreate()
     {
         $model = new Receipt();
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(empty($model->receipt_content_datetime_paid))
@@ -86,10 +88,26 @@ class ReceiptController extends Controller
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
             }
 
+            // $model_receipt = Receipt::findOne(['rn' => Yii::$app->request->get('rn'), 'receipt_type' => 'bill']);
+
             if($model->validate() && $model->save()){
+                if(!empty($model_bill))
+                {
+                    $model_found_duplicate = Bill_content_receipt::findOne(['bill_uid' => $model_bill->bill_uid]);
+                    if(empty($model_found_duplicate) && $model->receipt_type == 'bill')
+                    {
+                        $model_bill_receipt = new Bill_content_receipt();
+                        $model_bill_receipt->bill_content_receipt_uid = Base64UID::generate(32);
+                        $model_bill_receipt->bill_uid = $model_bill->bill_uid;
+                        $model_bill_receipt->rn = $model_bill->rn;
+                        $model_bill_receipt->bill_generation_billable_sum_rm = $model_bill->bill_generation_billable_sum_rm;
+                        $model_bill_receipt->save();
+                    }
+                }
                 return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                 'rn' => $model->rn));   
             }
+            
         } else {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
             $cookies = Yii::$app->request->cookies;

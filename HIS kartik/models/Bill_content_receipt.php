@@ -9,7 +9,8 @@ use Yii;
  *
  * @property string $bill_content_receipt_uid
  * @property string $bill_uid
- * @property string $receipt_uid
+ * @property string $bill_generation_billable_sum_rm
+ * @property string $rn
  *
  * @property Bill $billU
  * @property Receipt $receiptU
@@ -30,11 +31,10 @@ class Bill_content_receipt extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bill_content_receipt_uid', 'bill_uid', 'receipt_uid'], 'required'],
-            [['bill_content_receipt_uid', 'bill_uid', 'receipt_uid'], 'string', 'max' => 64],
+            [['bill_content_receipt_uid', 'bill_uid', 'bill_generation_billable_sum_rm', 'rn'], 'required'],
+            [['bill_content_receipt_uid', 'bill_uid'], 'string', 'max' => 64],
             [['bill_content_receipt_uid'], 'unique'],
             [['bill_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_uid' => 'bill_uid']],
-            [['receipt_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_uid' => 'receipt_uid']],
         ];
     }
 
@@ -46,7 +46,8 @@ class Bill_content_receipt extends \yii\db\ActiveRecord
         return [
             'bill_content_receipt_uid' => 'Bill Content Receipt Uid',
             'bill_uid' => 'Bill Uid',
-            'receipt_uid' => 'Receipt Uid',
+            'bill_generation_billable_sum_rm' => 'Billable Total',
+            'rn' => 'RN'
         ];
     }
 
