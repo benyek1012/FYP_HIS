@@ -26,9 +26,6 @@ use GpsLab\Component\Base64UID\Base64UID;
 
     <div class ="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'user_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $user_uid]) ?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
@@ -41,7 +38,10 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'retire')->textInput(['value' => '1']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'authKey')->textInput(['maxlength' => true, 'readonly' => true, 'value' => $authKey]) ?>
+            <?= $form->field($model, 'user_uid')->hiddenInput(['maxlength' => true, 'readonly' => true,'value' => $user_uid])->label(false)?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'authKey')->hiddenInput(['maxlength' => true, 'readonly' => true, 'value' => $authKey])->label(false) ?>
         </div>
     </div>
 
