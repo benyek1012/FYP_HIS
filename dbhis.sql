@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2022 at 06:18 PM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- Generation Time: May 17, 2022 at 08:13 AM
+-- Server version: 10.4.19-MariaDB
+-- PHP Version: 7.3.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -29,7 +30,7 @@ USE `dbhis`;
 -- Table structure for table `bill`
 --
 
-CREATE TABLE IF NOT EXISTS `bill` (
+CREATE TABLE `bill` (
   `bill_uid` varchar(64) NOT NULL,
   `rn` varchar(11) NOT NULL,
   `status_code` varchar(20) NOT NULL,
@@ -48,9 +49,7 @@ CREATE TABLE IF NOT EXISTS `bill` (
   `description` varchar(200) DEFAULT NULL,
   `bill_print_responsible_uid` varchar(64) DEFAULT NULL,
   `bill_print_datetime` datetime DEFAULT NULL,
-  `bill_print_id` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`bill_uid`),
-  KEY `rn` (`rn`)
+  `bill_print_id` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -59,13 +58,11 @@ CREATE TABLE IF NOT EXISTS `bill` (
 -- Table structure for table `bill_content_receipt`
 --
 
-CREATE TABLE IF NOT EXISTS `bill_content_receipt` (
+CREATE TABLE `bill_content_receipt` (
   `bill_content_receipt_uid` varchar(64) NOT NULL,
   `bill_uid` varchar(64) NOT NULL,
-  `receipt_uid` varchar(64) NOT NULL,
-  PRIMARY KEY (`bill_content_receipt_uid`),
-  KEY `bill_uid` (`bill_uid`),
-  KEY `receipt_uid` (`receipt_uid`)
+  `rn` varchar(11) NOT NULL,
+  `bill_generation_billable_sum_rm` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -74,16 +71,14 @@ CREATE TABLE IF NOT EXISTS `bill_content_receipt` (
 -- Table structure for table `lookup_department`
 --
 
-CREATE TABLE IF NOT EXISTS `lookup_department` (
+CREATE TABLE `lookup_department` (
   `department_uid` varchar(64) NOT NULL,
   `department_code` varchar(20) NOT NULL,
   `department_name` varchar(50) NOT NULL,
   `phone_number` varchar(100) DEFAULT NULL,
   `address1` varchar(100) DEFAULT NULL,
   `address2` varchar(100) DEFAULT NULL,
-  `address3` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`department_uid`),
-  UNIQUE KEY `department_code` (`department_code`)
+  `address3` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -106,15 +101,13 @@ INSERT INTO `lookup_department` (`department_uid`, `department_code`, `departmen
 -- Table structure for table `lookup_general`
 --
 
-CREATE TABLE IF NOT EXISTS `lookup_general` (
+CREATE TABLE `lookup_general` (
   `lookup_general_uid` varchar(64) NOT NULL,
   `code` varchar(20) NOT NULL,
   `category` varchar(20) NOT NULL,
   `name` varchar(50) NOT NULL,
   `long_description` varchar(100) NOT NULL,
-  `recommend` tinyint(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`lookup_general_uid`),
-  UNIQUE KEY `code` (`code`)
+  `recommend` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -148,7 +141,7 @@ INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, 
 -- Table structure for table `lookup_status`
 --
 
-CREATE TABLE IF NOT EXISTS `lookup_status` (
+CREATE TABLE `lookup_status` (
   `status_uid` varchar(64) NOT NULL,
   `status_code` varchar(20) NOT NULL,
   `status_description` varchar(100) NOT NULL,
@@ -156,9 +149,7 @@ CREATE TABLE IF NOT EXISTS `lookup_status` (
   `class_1b_ward_cost` decimal(10,2) NOT NULL,
   `class_1c_ward_cost` decimal(10,2) NOT NULL,
   `class_2_ward_cost` decimal(10,2) NOT NULL,
-  `class_3_ward_cost` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`status_uid`),
-  UNIQUE KEY `status_code` (`status_code`)
+  `class_3_ward_cost` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -218,15 +209,13 @@ INSERT INTO `lookup_status` (`status_uid`, `status_code`, `status_description`, 
 -- Table structure for table `lookup_treatment`
 --
 
-CREATE TABLE IF NOT EXISTS `lookup_treatment` (
+CREATE TABLE `lookup_treatment` (
   `treatment_uid` varchar(64) NOT NULL,
   `treatment_code` varchar(20) NOT NULL,
   `treatment_name` varchar(50) NOT NULL,
   `class_1_cost_per_unit` decimal(10,2) NOT NULL,
   `class_2_cost_per_unit` decimal(10,2) NOT NULL,
-  `class_3_cost_per_unit` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`treatment_uid`),
-  UNIQUE KEY `treatment_code` (`treatment_code`)
+  `class_3_cost_per_unit` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -286,15 +275,13 @@ INSERT INTO `lookup_treatment` (`treatment_uid`, `treatment_code`, `treatment_na
 -- Table structure for table `lookup_ward`
 --
 
-CREATE TABLE IF NOT EXISTS `lookup_ward` (
+CREATE TABLE `lookup_ward` (
   `ward_uid` varchar(64) NOT NULL,
   `ward_code` varchar(20) NOT NULL,
   `ward_name` varchar(50) NOT NULL,
   `sex` varchar(20) DEFAULT NULL,
   `min_age` int(11) DEFAULT NULL,
-  `max_age` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ward_uid`),
-  UNIQUE KEY `ward_code` (`ward_code`)
+  `max_age` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -354,14 +341,13 @@ INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age
 -- Table structure for table `new_user`
 --
 
-CREATE TABLE IF NOT EXISTS `new_user` (
+CREATE TABLE `new_user` (
   `user_uid` varchar(64) NOT NULL,
   `username` varchar(100) NOT NULL,
   `user_password` varchar(20) NOT NULL,
   `role` varchar(20) NOT NULL,
   `retire` tinyint(1) DEFAULT 0,
-  `authKey` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`user_uid`)
+  `authKey` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -379,7 +365,7 @@ INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role`, `retire
 -- Table structure for table `patient_admission`
 --
 
-CREATE TABLE IF NOT EXISTS `patient_admission` (
+CREATE TABLE `patient_admission` (
   `rn` varchar(11) NOT NULL,
   `entry_datetime` datetime NOT NULL,
   `patient_uid` varchar(64) NOT NULL,
@@ -392,9 +378,7 @@ CREATE TABLE IF NOT EXISTS `patient_admission` (
   `guarantor_nric` varchar(20) DEFAULT NULL,
   `guarantor_phone_number` varchar(100) DEFAULT NULL,
   `guarantor_email` varchar(100) DEFAULT NULL,
-  `type` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`rn`),
-  KEY `patient_uid` (`patient_uid`)
+  `type` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -403,7 +387,7 @@ CREATE TABLE IF NOT EXISTS `patient_admission` (
 -- Table structure for table `patient_information`
 --
 
-CREATE TABLE IF NOT EXISTS `patient_information` (
+CREATE TABLE `patient_information` (
   `patient_uid` varchar(64) NOT NULL,
   `first_reg_date` date NOT NULL,
   `nric` varchar(20) DEFAULT NULL,
@@ -416,8 +400,7 @@ CREATE TABLE IF NOT EXISTS `patient_information` (
   `address1` varchar(100) DEFAULT NULL,
   `address2` varchar(100) DEFAULT NULL,
   `address3` varchar(100) DEFAULT NULL,
-  `job` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`patient_uid`)
+  `job` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -426,7 +409,7 @@ CREATE TABLE IF NOT EXISTS `patient_information` (
 -- Table structure for table `patient_next_of_kin`
 --
 
-CREATE TABLE IF NOT EXISTS `patient_next_of_kin` (
+CREATE TABLE `patient_next_of_kin` (
   `nok_uid` varchar(64) NOT NULL,
   `patient_uid` varchar(64) NOT NULL,
   `nok_name` varchar(200) DEFAULT NULL,
@@ -436,9 +419,7 @@ CREATE TABLE IF NOT EXISTS `patient_next_of_kin` (
   `nok_address1` varchar(100) DEFAULT NULL,
   `nok_address2` varchar(100) DEFAULT NULL,
   `nok_address3` varchar(100) DEFAULT NULL,
-  `nok_datetime_updated` datetime NOT NULL,
-  PRIMARY KEY (`nok_uid`),
-  KEY `patient_uid` (`patient_uid`)
+  `nok_datetime_updated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -447,7 +428,7 @@ CREATE TABLE IF NOT EXISTS `patient_next_of_kin` (
 -- Table structure for table `receipt`
 --
 
-CREATE TABLE IF NOT EXISTS `receipt` (
+CREATE TABLE `receipt` (
   `receipt_uid` varchar(64) NOT NULL,
   `rn` varchar(64) NOT NULL,
   `receipt_type` varchar(20) NOT NULL,
@@ -460,9 +441,7 @@ CREATE TABLE IF NOT EXISTS `receipt` (
   `card_no` varchar(20) DEFAULT NULL,
   `cheque_number` varchar(20) DEFAULT NULL,
   `receipt_responsible` varchar(64) NOT NULL,
-  `receipt_serial_number` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`receipt_uid`),
-  KEY `rn` (`rn`)
+  `receipt_serial_number` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -471,16 +450,14 @@ CREATE TABLE IF NOT EXISTS `receipt` (
 -- Table structure for table `treatment_details`
 --
 
-CREATE TABLE IF NOT EXISTS `treatment_details` (
+CREATE TABLE `treatment_details` (
   `treatment_details_uid` varchar(64) NOT NULL,
   `bill_uid` varchar(64) NOT NULL,
   `treatment_code` varchar(20) NOT NULL,
   `treatment_name` varchar(50) NOT NULL,
   `item_per_unit_cost_rm` decimal(10,2) NOT NULL,
   `item_count` int(11) NOT NULL,
-  `item_total_unit_cost_rm` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`treatment_details_uid`),
-  KEY `bill_uid` (`bill_uid`)
+  `item_total_unit_cost_rm` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -489,17 +466,114 @@ CREATE TABLE IF NOT EXISTS `treatment_details` (
 -- Table structure for table `ward`
 --
 
-CREATE TABLE IF NOT EXISTS `ward` (
+CREATE TABLE `ward` (
   `ward_uid` varchar(64) NOT NULL,
   `bill_uid` varchar(64) NOT NULL,
   `ward_code` varchar(20) NOT NULL,
   `ward_name` varchar(50) NOT NULL,
   `ward_start_datetime` datetime NOT NULL,
   `ward_end_datetime` datetime NOT NULL,
-  `ward_number_of_days` int(11) NOT NULL,
-  PRIMARY KEY (`ward_uid`),
-  KEY `bill_uid` (`bill_uid`)
+  `ward_number_of_days` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bill`
+--
+ALTER TABLE `bill`
+  ADD PRIMARY KEY (`bill_uid`),
+  ADD KEY `rn` (`rn`);
+
+--
+-- Indexes for table `bill_content_receipt`
+--
+ALTER TABLE `bill_content_receipt`
+  ADD PRIMARY KEY (`bill_content_receipt_uid`);
+
+--
+-- Indexes for table `lookup_department`
+--
+ALTER TABLE `lookup_department`
+  ADD PRIMARY KEY (`department_uid`),
+  ADD UNIQUE KEY `department_code` (`department_code`);
+
+--
+-- Indexes for table `lookup_general`
+--
+ALTER TABLE `lookup_general`
+  ADD PRIMARY KEY (`lookup_general_uid`),
+  ADD UNIQUE KEY `code` (`code`);
+
+--
+-- Indexes for table `lookup_status`
+--
+ALTER TABLE `lookup_status`
+  ADD PRIMARY KEY (`status_uid`),
+  ADD UNIQUE KEY `status_code` (`status_code`);
+
+--
+-- Indexes for table `lookup_treatment`
+--
+ALTER TABLE `lookup_treatment`
+  ADD PRIMARY KEY (`treatment_uid`),
+  ADD UNIQUE KEY `treatment_code` (`treatment_code`);
+
+--
+-- Indexes for table `lookup_ward`
+--
+ALTER TABLE `lookup_ward`
+  ADD PRIMARY KEY (`ward_uid`),
+  ADD UNIQUE KEY `ward_code` (`ward_code`);
+
+--
+-- Indexes for table `new_user`
+--
+ALTER TABLE `new_user`
+  ADD PRIMARY KEY (`user_uid`);
+
+--
+-- Indexes for table `patient_admission`
+--
+ALTER TABLE `patient_admission`
+  ADD PRIMARY KEY (`rn`),
+  ADD KEY `patient_uid` (`patient_uid`);
+
+--
+-- Indexes for table `patient_information`
+--
+ALTER TABLE `patient_information`
+  ADD PRIMARY KEY (`patient_uid`);
+
+--
+-- Indexes for table `patient_next_of_kin`
+--
+ALTER TABLE `patient_next_of_kin`
+  ADD PRIMARY KEY (`nok_uid`),
+  ADD KEY `patient_uid` (`patient_uid`);
+
+--
+-- Indexes for table `receipt`
+--
+ALTER TABLE `receipt`
+  ADD PRIMARY KEY (`receipt_uid`),
+  ADD KEY `rn` (`rn`);
+
+--
+-- Indexes for table `treatment_details`
+--
+ALTER TABLE `treatment_details`
+  ADD PRIMARY KEY (`treatment_details_uid`),
+  ADD KEY `bill_uid` (`bill_uid`);
+
+--
+-- Indexes for table `ward`
+--
+ALTER TABLE `ward`
+  ADD PRIMARY KEY (`ward_uid`),
+  ADD KEY `bill_uid` (`bill_uid`);
 
 --
 -- Constraints for dumped tables
@@ -510,13 +584,6 @@ CREATE TABLE IF NOT EXISTS `ward` (
 --
 ALTER TABLE `bill`
   ADD CONSTRAINT `bill_ibfk_1` FOREIGN KEY (`rn`) REFERENCES `patient_admission` (`rn`);
-
---
--- Constraints for table `bill_content_receipt`
---
-ALTER TABLE `bill_content_receipt`
-  ADD CONSTRAINT `bill_content_receipt_ibfk_1` FOREIGN KEY (`bill_uid`) REFERENCES `bill` (`bill_uid`),
-  ADD CONSTRAINT `bill_content_receipt_ibfk_2` FOREIGN KEY (`receipt_uid`) REFERENCES `receipt` (`receipt_uid`);
 
 --
 -- Constraints for table `patient_admission`
