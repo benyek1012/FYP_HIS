@@ -1,25 +1,23 @@
 <?php
 
-use app\controllers\BillController;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use GpsLab\Component\Base64UID\Base64UID;
-use wbraganca\dynamicform\DynamicFormWidget;
 use app\models\Patient_admission;
 use app\models\Bill;
-use app\models\Treatment_details;
 use app\models\Ward;
-use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
 /* @var $form yii\widgets\ActiveForm */
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+$modelWardDate = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
+         
+if($modelWardDate != null){
+    $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
+
+}
 
 if(empty( Yii::$app->request->get('bill_uid')))
 { 
@@ -195,7 +193,7 @@ $this->registerJs(
                     if(billClass == '3'){
                         $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
                     }
-                    // calculateItemCost();
+                    calculateItemCost();
                 });
             });
         });        
@@ -271,9 +269,29 @@ $this->registerJs(
     });"
 );
 
+$this->registerJs(
+    "$('.wardCode', document).each(function(index, item){
+        var billUid = $('#ward-bill-uid').val();
+        $.get('/bill/date', {bill_uid : billUid}, function(data){
+            var data = $.parseJSON(data);
+            for(var i = 0; i < data.length; i++){
+                $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
+                $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
+            }
+        });
+    });
+    "
+);
+
 if(empty($print_readonly)) $print_readonly = false;
 
 ?>
+
+<style>
+.textColor{
+    color: red;
+}
+</style>
 
 <div class="bill-form">
 
@@ -301,7 +319,7 @@ if(empty($print_readonly)) $print_readonly = false;
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="row">
-                    <?= $form->field($model, 'bill_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billuid])->label(false) ?>
+                    <?= $form->field($model, 'bill_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $billuid])->label(false) ?>
 
                     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
 
@@ -404,6 +422,7 @@ if(empty($print_readonly)) $print_readonly = false;
                 <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
                 <?php } ?>
                 <input type="hidden" id="countWard" name="countWard" value="<?php echo count($modelWard); ?>">
+                <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
                 <table id="ward-table">
                     <tr>
                         <td><?php echo Yii::t('app','Ward Code');?></td>
@@ -428,7 +447,7 @@ if(empty($print_readonly)) $print_readonly = false;
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
-                                            'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
+                            'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
@@ -456,10 +475,12 @@ if(empty($print_readonly)) $print_readonly = false;
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
-                            <?php }else{ ?>
-                            <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                                 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
-                            <?php } ?>
+                            <?php }else{ 
+                                if(!empty($modelWard->ward_uid)){ ?>
+                                    <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
+                                        'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
+                            <?php }
+                            } ?>
                         </td>
                     </tr>
                     <?php } ?>
@@ -594,10 +615,13 @@ if(empty($print_readonly)) $print_readonly = false;
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
                             <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
-                            <?php }else{ ?>
-                            <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $modelTreatment->treatment_details_uid,
-                                 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
-                            <?php } ?>
+                            <?php }else{ 
+                                if(!empty($modelTreatment->treatment_details_uid)){
+                                ?>
+                                    <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $modelTreatment->treatment_details_uid,
+                                        'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
+                            <?php }
+                            } ?>
                         </td>
                     </tr>
                     <?php } ?>
@@ -605,9 +629,9 @@ if(empty($print_readonly)) $print_readonly = false;
 
                 <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
+                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
+                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
                 <?php } ?>
 
             </div>
@@ -837,6 +861,8 @@ function getDailyWardCost() {
         else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
         else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
         else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+
+        calculateItemCost();
     });   
 }
 
@@ -849,5 +875,4 @@ function confirmAction() {
         window.location.href = history.back();
     }
 }
-
 </script>
