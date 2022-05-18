@@ -344,7 +344,7 @@ INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age
 CREATE TABLE `new_user` (
   `user_uid` varchar(64) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `user_password` varchar(20) NOT NULL,
+  `password` varchar(20) NOT NULL,
   `role` varchar(20) NOT NULL,
   `retire` tinyint(1) DEFAULT 0,
   `authKey` varchar(45) DEFAULT NULL
@@ -532,7 +532,8 @@ ALTER TABLE `lookup_ward`
 -- Indexes for table `new_user`
 --
 ALTER TABLE `new_user`
-  ADD PRIMARY KEY (`user_uid`);
+  ADD PRIMARY KEY (`username`),
+  ADD UNIQUE KEY `user_uid` (`user_uid`);
 
 --
 -- Indexes for table `patient_admission`

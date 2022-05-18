@@ -35,7 +35,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
             [['retire'], 'boolean', 'strict'=> false],
             [['user_uid'], 'string', 'max' => 64],
             [['username'], 'string', 'max' => 100],
-            [['user_password', 'role'], 'string', 'max' => 20],
+            [['password', 'role'], 'string', 'max' => 20],
             [['authKey'], 'string', 'max' => 45],
             [['user_uid'], 'unique'],
         ];
@@ -72,7 +72,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public function validatePassword($password){
-        return $this->user_password === $password;
+        return $this->password === $password;
     }
 
    
@@ -85,7 +85,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
         return [
             'user_uid' => Yii::t('app','User Uid'),
             'username' => Yii::t('app','Username'),
-            'user_password' => Yii::t('app','User Password'),
+            'password' => Yii::t('app','User Password'),
             'role' => Yii::t('app','Role'),
             'retire' => Yii::t('app','Retire'),
             'authKey' => Yii::t('app','Auth Key'),
