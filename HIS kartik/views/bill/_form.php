@@ -42,6 +42,17 @@ $row_bill = (new \yii\db\Query())
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
 ->one();
 
+$isGenerated = false;
+$isFree = false;
+$isPrinted = false;
+
+if(!empty($row_bill))
+{
+   $isGenerated = !empty($row_bill['bill_generation_datetime']) ? $row_bill['bill_generation_datetime'] : false;
+   $isFree = !empty($row_bill['is_free']) ? $row_bill['is_free'] : false;
+   $isPrinted = !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
+}
+
 
 $rows = (new \yii\db\Query())
 ->select('*')
@@ -388,7 +399,7 @@ if(empty($print_readonly)) $print_readonly = false;
                         <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
                 </div>
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getDailyWardCost();']) ?>
                 <?php }else{ ?>
@@ -430,7 +441,7 @@ if(empty($print_readonly)) $print_readonly = false;
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else{ ?>
                 <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-xs']) ?>
                 <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
@@ -502,7 +513,7 @@ if(empty($print_readonly)) $print_readonly = false;
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
-                            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                             <?php }else{ 
                                 if(!empty($modelWard->ward_uid)){ ?>
                                     <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
@@ -514,7 +525,7 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?php } ?>
                 </table>
 
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton('Save Ward', ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
                 <?php }else{ ?>
@@ -557,7 +568,7 @@ if(empty($print_readonly)) $print_readonly = false;
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else{ ?>
                 <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-info btn-xs']) ?>
                 <?= Html::submitButton('-', ['id' => 'removeTreatmentRow', 'name' => 'removeTreatmentRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
@@ -642,7 +653,7 @@ if(empty($print_readonly)) $print_readonly = false;
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
-                            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                             <?php }else{ 
                                 if(!empty($modelTreatment->treatment_details_uid)){
                                 ?>
@@ -655,7 +666,7 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?php } ?>
                 </table>
 
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
                 <?php }else{ ?>
@@ -720,13 +731,13 @@ if(empty($print_readonly)) $print_readonly = false;
                 </div>
 
             </div>
-            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
             <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
             <!-- <?= Html::a('Generate', ['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), 'generate' => 'true'], 
                         ['class'=>'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
             <?php }?> 
-            <?php if($row_bill['is_free'] == 1){ ?> 
+            <?php if( $isFree == 1){ ?> 
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>
@@ -764,7 +775,7 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::checkExistPrint(Yii::$app->request->get('rn'))]) ?>
                 </div>
             </div>
-            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){
+            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){
                 if(empty( $row_bill['bill_print_id'])){
             ?>
             <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
@@ -781,7 +792,7 @@ if(empty($print_readonly)) $print_readonly = false;
 
 <!-- <div class="form-group">
 
-    <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+    <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
     <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
@@ -802,8 +813,7 @@ document.getElementById("bill_div").style.display = "block";
 document.getElementById("ward_div").style.display = "block";
 document.getElementById("treatment_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
-<?php } if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid')) 
-            && $row_bill['is_free'] != 1){ ?>
+<?php } if( $isGenerated && Yii::$app->request->get('bill_uid') &&  $isFree != 1){ ?>
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
