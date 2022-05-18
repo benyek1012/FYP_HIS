@@ -274,14 +274,28 @@ $this->registerJs(
         var billUid = $('#ward-bill-uid').val();
         $.get('/bill/date', {bill_uid : billUid}, function(data){
             var data = $.parseJSON(data);
-            for(var i = 0; i < data.length; i++){
-                $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
-                $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
+            if(data.length > 1){
+                for(var i = 0; i < data.length; i++){
+                    $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
+                    $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
+                }
             }
         });
     });
     "
 );
+if(!empty($admission_model->initial_ward_code) && empty($modelWard->ward_code)){
+    $this->registerJs(
+        "$('.wardCode', document).each(function(index, item){
+            var wardCode = this.value;
+            $.get('/bill/ward', {ward : wardCode}, function(data){
+                var data = $.parseJSON(data);
+                $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
+            });
+        });
+        ",
+    );
+}
 
 if(empty($print_readonly)) $print_readonly = false;
 
@@ -441,9 +455,23 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
                         <td>
-                            <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code,
-                              'disabled' => $print_readonly])->label(false) ?>
+                            <?php 
+
+                            if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
+                            ?>
+                                <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                                'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $admission_model->initial_ward_code,
+                                'disabled' => $print_readonly])->label(false) ?>
+                            <?php 
+                            }
+                            else{
+                            ?>
+                                <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                                'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code,
+                                'disabled' => $print_readonly])->label(false) ?>
+                            <?php
+                            }
+                            ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
@@ -742,7 +770,7 @@ if(empty($print_readonly)) $print_readonly = false;
             <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
             <?php }else echo "<span class='badge badge-primary'>Bill has been printed.</span> <br/><br/>" ?>
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                     'rn' => Yii::$app->request->get('rn'), '#' => 'p'], ['class'=>'btn btn-success']) ?>
+                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>
         <!-- /.card-body -->
