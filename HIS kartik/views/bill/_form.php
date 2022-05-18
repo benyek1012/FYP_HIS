@@ -668,9 +668,9 @@ if(empty($print_readonly)) $print_readonly = false;
 
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
                 <?php } ?>
 
             </div>
