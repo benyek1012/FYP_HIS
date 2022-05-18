@@ -30,7 +30,7 @@ class Lookup_general extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lookup_general_uid', 'code', 'category', 'name'], 'required'],
+            [['lookup_general_uid', 'code', 'category', 'name', 'long_description'], 'required'],
             [['recommend'], 'boolean'],
             [['lookup_general_uid'], 'string', 'max' => 64],
             [['code', 'category'], 'string', 'max' => 20],
