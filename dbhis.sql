@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 17, 2022 at 08:13 AM
+-- Generation Time: May 19, 2022 at 04:18 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.3.7
 
@@ -504,8 +504,7 @@ ALTER TABLE `lookup_department`
 -- Indexes for table `lookup_general`
 --
 ALTER TABLE `lookup_general`
-  ADD PRIMARY KEY (`lookup_general_uid`),
-  ADD UNIQUE KEY `code` (`code`);
+  ADD PRIMARY KEY (`lookup_general_uid`);
 
 --
 -- Indexes for table `lookup_status`
