@@ -1,25 +1,23 @@
 <?php
 
-use app\controllers\BillController;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 use kartik\datetime\DateTimePicker;
 use GpsLab\Component\Base64UID\Base64UID;
-use wbraganca\dynamicform\DynamicFormWidget;
 use app\models\Patient_admission;
 use app\models\Bill;
-use app\models\Treatment_details;
 use app\models\Ward;
-use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
-
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
 /* @var $form yii\widgets\ActiveForm */
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+$modelWardDate = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
+         
+if($modelWardDate != null){
+    $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
+
+}
 
 if(empty( Yii::$app->request->get('bill_uid')))
 { 
@@ -43,6 +41,17 @@ $row_bill = (new \yii\db\Query())
 ->from('bill')
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
 ->one();
+
+$isGenerated = false;
+$isFree = false;
+$isPrinted = false;
+
+if(!empty($row_bill))
+{
+   $isGenerated = !empty($row_bill['bill_generation_datetime']) ? $row_bill['bill_generation_datetime'] : false;
+   $isFree = !empty($row_bill['is_free']) ? $row_bill['is_free'] : false;
+   $isPrinted = !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
+}
 
 
 $rows = (new \yii\db\Query())
@@ -195,7 +204,7 @@ $this->registerJs(
                     if(billClass == '3'){
                         $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
                     }
-                    // calculateItemCost();
+                    calculateItemCost();
                 });
             });
         });        
@@ -271,9 +280,43 @@ $this->registerJs(
     });"
 );
 
+$this->registerJs(
+    "$('.wardCode', document).each(function(index, item){
+        var billUid = $('#ward-bill-uid').val();
+        $.get('/bill/date', {bill_uid : billUid}, function(data){
+            var data = $.parseJSON(data);
+            if(data.length > 1){
+                for(var i = 0; i < data.length; i++){
+                    $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
+                    $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
+                }
+            }
+        });
+    });
+    "
+);
+if(!empty($admission_model->initial_ward_code) && empty($modelWard->ward_code)){
+    $this->registerJs(
+        "$('.wardCode', document).each(function(index, item){
+            var wardCode = this.value;
+            $.get('/bill/ward', {ward : wardCode}, function(data){
+                var data = $.parseJSON(data);
+                $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
+            });
+        });
+        ",
+    );
+}
+
 if(empty($print_readonly)) $print_readonly = false;
 
 ?>
+
+<style>
+.textColor{
+    color: red;
+}
+</style>
 
 <div class="bill-form">
 
@@ -301,7 +344,7 @@ if(empty($print_readonly)) $print_readonly = false;
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="row">
-                    <?= $form->field($model, 'bill_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => $billuid])->label(false) ?>
+                    <?= $form->field($model, 'bill_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $billuid])->label(false) ?>
 
                     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
 
@@ -356,7 +399,7 @@ if(empty($print_readonly)) $print_readonly = false;
                         <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
                 </div>
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getDailyWardCost();']) ?>
                 <?php }else{ ?>
@@ -398,12 +441,13 @@ if(empty($print_readonly)) $print_readonly = false;
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else{ ?>
                 <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-xs']) ?>
                 <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
                 <?php } ?>
                 <input type="hidden" id="countWard" name="countWard" value="<?php echo count($modelWard); ?>">
+                <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
                 <table id="ward-table">
                     <tr>
                         <td><?php echo Yii::t('app','Ward Code');?></td>
@@ -422,13 +466,27 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?php foreach ($modelWard as $index => $modelWard) { ?>
                     <tr>
                         <td>
-                            <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                             'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code,
-                              'disabled' => $print_readonly])->label(false) ?>
+                            <?php 
+
+                            if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
+                            ?>
+                                <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                                'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $admission_model->initial_ward_code,
+                                'disabled' => $print_readonly])->label(false) ?>
+                            <?php 
+                            }
+                            else{
+                            ?>
+                                <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                                'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code,
+                                'disabled' => $print_readonly])->label(false) ?>
+                            <?php
+                            }
+                            ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
-                                            'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
+                            'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
@@ -455,17 +513,19 @@ if(empty($print_readonly)) $print_readonly = false;
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
-                            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
-                            <?php }else{ ?>
-                            <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                                 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
-                            <?php } ?>
+                            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+                            <?php }else{ 
+                                if(!empty($modelWard->ward_uid)){ ?>
+                                    <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
+                                        'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
+                            <?php }
+                            } ?>
                         </td>
                     </tr>
                     <?php } ?>
                 </table>
 
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton('Save Ward', ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
                 <?php }else{ ?>
@@ -508,7 +568,7 @@ if(empty($print_readonly)) $print_readonly = false;
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else{ ?>
                 <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-info btn-xs']) ?>
                 <?= Html::submitButton('-', ['id' => 'removeTreatmentRow', 'name' => 'removeTreatmentRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
@@ -593,17 +653,20 @@ if(empty($print_readonly)) $print_readonly = false;
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td>
-                            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
-                            <?php }else{ ?>
-                            <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $modelTreatment->treatment_details_uid,
-                                 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
-                            <?php } ?>
+                            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+                            <?php }else{ 
+                                if(!empty($modelTreatment->treatment_details_uid)){
+                                ?>
+                                    <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $modelTreatment->treatment_details_uid,
+                                        'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
+                            <?php }
+                            } ?>
                         </td>
                     </tr>
                     <?php } ?>
                 </table>
 
-                <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
                 <?php }else{ ?>
@@ -668,13 +731,13 @@ if(empty($print_readonly)) $print_readonly = false;
                 </div>
 
             </div>
-            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
             <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
             <!-- <?= Html::a('Generate', ['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), 'generate' => 'true'], 
                         ['class'=>'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
             <?php }?> 
-            <?php if($row_bill['is_free'] == 1){ ?> 
+            <?php if( $isFree == 1){ ?> 
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>
@@ -712,13 +775,13 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::checkExistPrint(Yii::$app->request->get('rn'))]) ?>
                 </div>
             </div>
-            <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){
+            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){
                 if(empty( $row_bill['bill_print_id'])){
             ?>
             <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
             <?php }else echo "<span class='badge badge-primary'>Bill has been printed.</span> <br/><br/>" ?>
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                     'rn' => Yii::$app->request->get('rn'), '#' => 'p'], ['class'=>'btn btn-success']) ?>
+                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>
         <!-- /.card-body -->
@@ -729,7 +792,7 @@ if(empty($print_readonly)) $print_readonly = false;
 
 <!-- <div class="form-group">
 
-    <?php if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid'))){ ?>
+    <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
     <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
     <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
     <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
@@ -750,8 +813,7 @@ document.getElementById("bill_div").style.display = "block";
 document.getElementById("ward_div").style.display = "block";
 document.getElementById("treatment_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
-<?php } if(!empty( $row_bill['bill_generation_datetime'] && Yii::$app->request->get('bill_uid')) 
-            && $row_bill['is_free'] != 1){ ?>
+<?php } if( $isGenerated && Yii::$app->request->get('bill_uid') &&  $isFree != 1){ ?>
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
@@ -837,6 +899,8 @@ function getDailyWardCost() {
         else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
         else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
         else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+
+        calculateItemCost();
     });   
 }
 
@@ -849,5 +913,4 @@ function confirmAction() {
         window.location.href = history.back();
     }
 }
-
 </script>
