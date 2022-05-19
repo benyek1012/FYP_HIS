@@ -22,6 +22,7 @@ if (Yii::$app->user->isGuest){  ?>
 // Load the patient info and particular RN info
 function getInfo()
 {
+    $info = null;
     if(!empty(Yii::$app->request->get('id'))){
         $info = Patient_information::findOne(['patient_uid' => Yii::$app->request->get('id')]);
     }
@@ -76,8 +77,8 @@ function items_new_rn()
     $items = [];
 
     array_push($items,
-        ['label' => Yii::t('app','New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
-        ['label' =>  Yii::t('app','New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
+        ['label' => Yii::t('app','Add New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
+        ['label' =>  Yii::t('app','Add New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
     // array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
     return $items;
@@ -157,9 +158,9 @@ if(!empty(Yii::$app->request->queryParams))
                     echo \hail812\adminlte\widgets\Menu::widget([
                         'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/index', 'id' => $info->patient_uid]]]]);
             ?>
-            <div class="mt-1 ml-3 d-flex">
+            <div class="mt-1 ml-1 d-flex">
                 <div class="info">
-                    <p class="text-white"><?php echo Yii::t('app','NRIC')." : ".$info->nric;?></p>
+                    <p class="text-white"><?php echo Yii::t('app','Patient IC')." : ".$info->nric;?></p>
                     <p class="text-light">
                         <?php echo Patient_information::getBalance($info->patient_uid).
                                 "<br/>".Patient_information::getUnclaimedBalance($info->patient_uid);?>
@@ -168,11 +169,12 @@ if(!empty(Yii::$app->request->queryParams))
             </div>
             <?php  }else{   ?>
             <!-- Sidebar Menu which no patient is loaded -->
-            <div class="mt-1 ml-3 d-flex">
+            <div class="mt-1 d-flex">
                 <div class="info">
-                    <p class="text-white"><?php echo Yii::t('app','Patient Name')?></p>
-                    <p class="text-white"><?php echo Yii::t('app','Patient IC')?></p>
-                    <p class="text-light"><?php echo Yii::t('app','Amount Due / Unclaimed')?></p>
+                    <p class="text-white"><?php echo Yii::t('app','Patient Name')." : "?></p>
+                    <p class="text-white"><?php echo Yii::t('app','Patient IC')." : "?></p>
+                    <!-- <p class="text-light"><?php echo Yii::t('app','Amount Due')?></p>
+                    <p class="text-light"><?php echo Yii::t('app','Unclaimed Balance')?></p> -->
                 </div>
             </div>
             <?php  } ?>

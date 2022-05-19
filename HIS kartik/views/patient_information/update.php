@@ -57,39 +57,34 @@ use yii\bootstrap4\Html;
 
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
-        ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
-        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
-        ])?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
+            <?= $form->field($model, 'nationality')->dropDownList($countries, 
+                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'sex')->dropDownList($sex, ['prompt'=>'Please select sex','maxlength' => true]) ?>
+            <?= $form->field($model, 'sex')->dropDownList($sex, 
+                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'race')->dropDownList($race, ['prompt'=>'Please select race','maxlength' => true]) ?>
+            <?= $form->field($model, 'race')->dropDownList($race, 
+                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'address2')->textInput(['maxlength' => true])->label(false)?>
             <?= $form->field($model, 'address3')->textInput(['maxlength' => true])->label(false)?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
         </div>
 
     </div>

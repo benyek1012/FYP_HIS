@@ -13,7 +13,7 @@ if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 else 
     $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/index', 'id' => $temp2->patient_uid]];
-$this->params['breadcrumbs'][] = ['label' => 'Payments', 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app','Payments'), 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
 $this->params['breadcrumbs'][] = $this->title;
 
 

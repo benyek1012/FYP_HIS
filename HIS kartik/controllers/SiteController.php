@@ -417,7 +417,7 @@ class SiteController extends Controller
             ,
             "CREATE TABLE IF NOT EXISTS `lookup_general` (
                  `lookup_general_uid` VARCHAR(64) NOT NULL,
-                 `code` VARCHAR(20) UNIQUE NOT NULL,
+                 `code` VARCHAR(20) NOT NULL,
                  `category` VARCHAR(20) NOT NULL,
                  `name` VARCHAR(50) NOT NULL,
                  `long_description` VARCHAR(100) NOT NULL,

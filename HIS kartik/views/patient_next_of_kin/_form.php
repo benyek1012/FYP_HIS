@@ -45,12 +45,11 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, ['prompt'=>'Please select relationship','maxlength' => true]) ?>
+            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, 
+                    ['prompt'=> Yii::t('app','Please select relationship'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
@@ -62,7 +61,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-outline-primary align-self-start']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

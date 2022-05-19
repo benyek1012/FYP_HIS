@@ -36,7 +36,7 @@ class Lookup_general extends \yii\db\ActiveRecord
             [['code', 'category'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 50],
             [['long_description'], 'string', 'max' => 100],
-            [['code'], 'unique'],
+         //   [['code'], 'unique'],
             [['lookup_general_uid'], 'unique'],
         ];
     }

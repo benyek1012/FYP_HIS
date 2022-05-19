@@ -7,7 +7,7 @@ return [
 
 
      'languages' => [
-     'en' => 'english',
-     'ms' => 'malay'
+     'en' => 'English',
+     'ms' => 'Malay'
      ],
 ];

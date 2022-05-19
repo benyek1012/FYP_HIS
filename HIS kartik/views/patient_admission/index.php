@@ -1,27 +1,24 @@
 <?php
 
 use app\models\Patient_admission;
-use app\models\Bill;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_admissionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$taxInfo = Bill::find()->indexBy('tax_type')->all();
 ?>
 <div class="patient-admission-index">
     
-    <!-- This is the gridview that shows patient admission summary-->
+    <!-- This is the gridview that shows patient admission summary-->   
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
-        'emptyText' => 'No Admission Record Founded!',
+        'emptyText' => Yii::t('app','Patient admission record is not founded'),
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
                 [
                     'attribute' => 'rn',
-                    'label' => 'Registeration Number ',
                     'format' => 'raw',
                     'value'=>function ($data) {
                         return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
@@ -53,14 +50,14 @@ $taxInfo = Bill::find()->indexBy('tax_type')->all();
                 //'guarantor_email:email',
                 [
                     'attribute' => 'billable_sum',
-                    'label' => 'Billable Summary (RM)',
+                    'label' => Yii::t('app','Billable Total').' (RM)',
                     'value' => function($data){
                         return  Patient_admission::get_billable_sum($data->rn);
                     },
                 ],
                 [
                     'attribute' => 'final_fee',
-                    'label' => 'Amount Due / Unclaimed (RM)',
+                    'label' => Yii::t('app','Amount Due').' / '.Yii::t('app','Unclaimed Balance').' (RM)',
                     'value' => function($data){
                         return Patient_admission::get_bill($data->rn);
                     },

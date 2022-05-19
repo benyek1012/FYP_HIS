@@ -13,6 +13,19 @@ use yii\data\ActiveDataProvider;
 
 $this->title = Yii::t('app','Lookup Generals');
 $this->params['breadcrumbs'][] = $this->title;
+
+$rows_relationship = (new \yii\db\Query())
+->select('category')
+->from('lookup_general')
+->all();
+
+$relationship = array();
+foreach($rows_relationship as $row_relationship){
+    $relationship[$row_relationship['category']] = $row_relationship['category'];
+} 
+
+// removes duplicate values from an array
+$relationship = array_unique($relationship);
 ?>
 <div class="lookup-general-index">
 
@@ -40,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -71,6 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'category',
+                'filter'=> $relationship,
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],

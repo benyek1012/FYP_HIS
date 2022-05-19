@@ -61,7 +61,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return [
             'patient_uid' => Yii::t('app','Patient Uid'),
             'first_reg_date' => Yii::t('app','First Reg Date'),
-            'nric' => 'Nric',
+            'nric' => 'NRIC',
             'nationality' => Yii::t('app','Nationality'),
             'name' => Yii::t('app','Name'),
             'sex' => Yii::t('app','Sex'),

@@ -16,16 +16,16 @@ use app\models\Patient_admission;
     // var_dump($userId);
     // exit();
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
-        if(!empty($model_bill))
+        if(!empty($model_bill)  && Bill::isGenerated($model_bill->rn))
             // Once bill is generated, can't pay deposit. Only allow bill or refund
             $receipt = array(
-                'bill'=>'Bill',
-                'refund'=>'Refund',
+                'bill'=> Yii::t('app','Bill'),
+                'refund'=> Yii::t('app','Refund'),
             );
         else
             $receipt = array(
-                'deposit'=>'Deposit',
-                'refund'=>'Refund',
+                'deposit'=> Yii::t('app','Deposit'),
+                'refund'=>  Yii::t('app','Refund'),
             );
 
         $payment_method = array(
@@ -51,6 +51,7 @@ use app\models\Patient_admission;
             $names[$row['name']] = $row['name'];
             $names[$row['guarantor_name']] = $row['guarantor_name'];
         }
+        // removes duplicate values from an array
         $names = array_unique($names);
         $names = array_filter($names);
     
@@ -63,21 +64,22 @@ use app\models\Patient_admission;
     ]);      ?>
 
     <div class="row">
-    <div class="col-lg-12">
-        <?php 
+        <div class="col-lg-12">
+            <?php 
             if(!empty(Yii::$app->request->get('rn'))){
         ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
-               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
-               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
-               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
-               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+               'body' => '<b>'.Yii::t('app','Sum of Deposit').'</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+               '<br/><b>'.Yii::t('app','Billable Total').'</b>: '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
-        <?php } ?>
+            <?php } ?>
         </div>
     </div>
+
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
@@ -88,10 +90,10 @@ use app\models\Patient_admission;
     <div class="row">
         <div class="col-sm-6">
             <?php  if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
             'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
             <?php }else{ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=>'Please select receipt',
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
             'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
             <?php } ?>
         </div>
@@ -124,11 +126,12 @@ use app\models\Patient_admission;
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($payment_method, ['class'=>'payment',
-             'prompt'=>'Please select receipt','maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?>
+             'prompt'=> Yii::t('app','Please select payment method'),'maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, ['prompt'=>'Please select payer name','maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, 
+                        ['prompt'=> Yii::t('app','Please select payer name'),'maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6" id="card_div" style="display:none;">
@@ -175,7 +178,7 @@ function myfunctionforType(val) {
         document.getElementById("bill_div").style.display = "none";
 
     if (val == "refund")
-        document.getElementById("receipt_label").innerHTML = 'Document Number';
-    else document.getElementById("receipt_label").innerHTML = 'Receipt Serial Number';
+        document.getElementById("receipt_label").innerHTML =  '<?php echo Yii::t('app','Document Number');?>'; 
+    else document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
 }
 </script>

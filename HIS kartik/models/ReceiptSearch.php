@@ -55,7 +55,8 @@ class ReceiptSearch extends Receipt
 
         // $query = Receipt::find()->where(['rn' => $rn_array])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
 
-        $query = Receipt::find()->where(['rn' => Yii::$app->request->get('rn')])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
+        $query = Receipt::find()->where(['rn' => Yii::$app->request->get('rn')])
+                                ->orderBy(['receipt_content_datetime_paid' => SORT_DESC, 'rn' => SORT_DESC]);
 
         // add conditions that should always apply here
 

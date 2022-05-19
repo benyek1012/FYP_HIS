@@ -37,7 +37,6 @@ else{
 }
 
 $row_bill = (new \yii\db\Query())
-->select(['bill_generation_datetime', 'is_free', 'bill_print_id'])
 ->from('bill')
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
 ->one();
@@ -48,9 +47,9 @@ $isPrinted = false;
 
 if(!empty($row_bill))
 {
-   $isGenerated = !empty($row_bill['bill_generation_datetime']) ? $row_bill['bill_generation_datetime'] : false;
-   $isFree = !empty($row_bill['is_free']) ? $row_bill['is_free'] : false;
-   $isPrinted = !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
+   $isGenerated = Bill::isGenerated($row_bill['rn']);
+   $isFree =  Bill::isFree($row_bill['rn']);
+   $isPrinted =  Bill::isPrinted($row_bill['rn']);
 }
 
 
@@ -350,7 +349,7 @@ if(empty($print_readonly)) $print_readonly = false;
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'status_code')->dropDownList($status_code, ['id'=>'statusCode',
-                    'prompt'=>'Please select status code','maxlength' => true, 'disabled' => $print_readonly]) ?>
+                    'prompt'=> Yii::t('app','Please select status code'),'maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -360,10 +359,10 @@ if(empty($print_readonly)) $print_readonly = false;
                     <div class="col-sm-6">
                         <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
                         <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=>'Please select ward class', 'value' => $initial_ward_class]) ?>
+                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'value' => $initial_ward_class]) ?>
                         <?php }else{ ?>
                         <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=>'Please select ward class', 'disabled' => $print_readonly]) ?>
+                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'disabled' => $print_readonly]) ?>
                         <?php } ?>
 
                     </div>
@@ -375,7 +374,7 @@ if(empty($print_readonly)) $print_readonly = false;
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
-                    'prompt'=>'Please select department code','maxlength' => true, 'disabled' => $print_readonly]) ?>
+                    'prompt'=> Yii::t('app','Please select department code'),'maxlength' => true, 'disabled' => $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -471,14 +470,14 @@ if(empty($print_readonly)) $print_readonly = false;
                             if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
                             ?>
                                 <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                                'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $admission_model->initial_ward_code,
+                                'prompt'=> Yii::t('app','Select ward code'), 'maxlength' => true, 'value' => $admission_model->initial_ward_code,
                                 'disabled' => $print_readonly])->label(false) ?>
                             <?php 
                             }
                             else{
                             ?>
                                 <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                                'prompt'=>'Select ward code', 'maxlength' => true, 'value' => $modelWard->ward_code,
+                                'prompt'=> Yii::t('app','Select ward code'), 'maxlength' => true, 'value' => $modelWard->ward_code,
                                 'disabled' => $print_readonly])->label(false) ?>
                             <?php
                             }
@@ -527,9 +526,9 @@ if(empty($print_readonly)) $print_readonly = false;
 
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton('Save Ward', ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
+                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton('Save Ward', ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
+                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
                 <?php } ?>
 
             </div>
@@ -592,7 +591,7 @@ if(empty($print_readonly)) $print_readonly = false;
                     <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
                     <tr>
                         <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
-                                'prompt'=>'Select treatment code','maxlength' => true, 'disabled' => $print_readonly])->label(false) ?>
+                                'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
@@ -668,9 +667,9 @@ if(empty($print_readonly)) $print_readonly = false;
 
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
+                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton('Save Treatment', ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
+                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
                 <?php } ?>
 
             </div>
@@ -734,10 +733,6 @@ if(empty($print_readonly)) $print_readonly = false;
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
             <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
-            <!-- <?= Html::a('Generate', ['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), 'generate' => 'true'], 
-                        ['class'=>'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
-            <?php }?> 
-            <?php if( $isFree == 1){ ?> 
             <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>
@@ -772,15 +767,15 @@ if(empty($print_readonly)) $print_readonly = false;
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::checkExistPrint(Yii::$app->request->get('rn'))]) ?>
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::isPrinted(Yii::$app->request->get('rn'))]) ?>
                 </div>
             </div>
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){
                 if(empty( $row_bill['bill_print_id'])){
             ?>
-            <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
-            <?php }else echo "<span class='badge badge-primary'>Bill has been printed.</span> <br/><br/>" ?>
-            <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
+            <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
+            <?php }else echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
+            <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>

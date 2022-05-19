@@ -65,7 +65,7 @@ class Receipt extends \yii\db\ActiveRecord
     {
         return [
             'receipt_uid' => Yii::t('app','Receipt Uid'),
-            'rn' => 'Rn',
+            'rn' =>  Yii::t('app','Registeration Number'),
             'receipt_type' => Yii::t('app','Receipt Type'),
             'receipt_content_sum' => Yii::t('app','Receipt Summary (RM)'),
             'receipt_content_bill_id' => Yii::t('app','Receipt Bill ID'),

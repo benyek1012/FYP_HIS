@@ -8,16 +8,22 @@ use yii\bootstrap4\Dropdown;
 
 if (Yii::$app->user->isGuest){ 
 ?>
-<style type="text/css">#dropdownSubMenu1{
-display:none;
-}</style>
-<style type="text/css">#dropdownSubMenu2{
-display:none;
-}</style>
-<style type="text/css">#report{
-display:none;
-}</style>
-        
+<style type="text/css">
+#dropdownSubMenu1 {
+    display: none;
+}
+</style>
+<style type="text/css">
+#dropdownSubMenu2 {
+    display: none;
+}
+</style>
+<style type="text/css">
+#report {
+    display: none;
+}
+</style>
+
 <?php
 }
     
@@ -37,12 +43,15 @@ display:none;
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="/lookup_general" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a></li>
+                <li><a href="/lookup_general" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
+                </li>
                 <li><a href="/newuser" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
                 <li><a href="/lookup_ward" class="dropdown-item"><?php echo Yii::t('app','Ward codes'); ?></a></li>
                 <li><a href="/lookup_status" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
-                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Treatment codes'); ?></a></li>
-                <li><a href="/lookup_department" class="dropdown-item"><?php echo Yii::t('app','Department codes'); ?></a></li>
+                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Treatment codes'); ?></a>
+                </li>
+                <li><a href="/lookup_department"
+                        class="dropdown-item"><?php echo Yii::t('app','Department codes'); ?></a></li>
             </ul>
         </li>
 
@@ -61,10 +70,10 @@ display:none;
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        <!-- Navbar Search -->
+    
         <li class="nav-item">
         <li class="nav-item d-none d-sm-inline-block">
-        <?php
+            <?php
         NavBar::begin();
         echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
@@ -75,7 +84,7 @@ display:none;
             '<li>'
             . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                Yii::t('app','Logout'). ' (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
@@ -90,7 +99,7 @@ display:none;
 
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                class="nav-link dropdown-toggle"><?php echo "Languages"; ?></a>
+                class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <?php
                     foreach(Yii::$app->params['languages'] as $key => $language){
@@ -101,14 +110,9 @@ display:none;
             </ul>
         </li>
     </ul>
-
-
-
 </nav>
 
-
 <?php
-
 $this->registerJs(
     "$(document).on('click', '.language', function() {
         var lang = $(this).attr('id');

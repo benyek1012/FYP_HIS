@@ -63,7 +63,7 @@ class Patient_admission extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'rn' => 'Rn',
+            'rn' =>  Yii::t('app','Registeration Number'),
             'entry_datetime' => Yii::t('app','Entry Datetime'),
             'patient_uid' => Yii::t('app','Patient Uid'),
             'initial_ward_code' => Yii::t('app','Initial Ward Code'),
@@ -72,7 +72,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             'medigal_legal_code' => Yii::t('app','Medical Legal Code'),
             'reminder_given' => Yii::t('app','Reminder Given'),
             'guarantor_name' => Yii::t('app','Guarantor Name'),
-            'guarantor_nric' => Yii::t('app','Guarantor Nric'),
+            'guarantor_nric' => Yii::t('app','Guarantor NRIC'),
             'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
             'guarantor_email' => Yii::t('app','Guarantor Email'),
             'type' => Yii::t('app','Type')
@@ -91,12 +91,13 @@ class Patient_admission extends \yii\db\ActiveRecord
     public static function get_billable_sum($rn){
         $billable = 0;
         $model_bill = Bill::findOne(['rn' => $rn]);
-        if(!empty($model_bill))
+        if(!empty($model_bill) && Bill::isGenerated($rn))
         {
             $billable = $model_bill->bill_generation_billable_sum_rm;
             // If billable sum in database in not set, assign to 0
             if(empty($billable)) $billable = 0;
         }
+     
         return Yii::$app->formatter->asCurrency($billable);
     }
 

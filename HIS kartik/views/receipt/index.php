@@ -32,24 +32,17 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
-               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
-               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
-               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
-               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+               'body' => '<b>'.Yii::t('app','Sum of Deposit').'</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
+               '<br/><b>'.Yii::t('app','Billable Total').'</b>: '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
         <?php } ?>
         </div>
     </div>
 
     <p>
-        <?php 
-        // $info = Bill::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        // if(!empty($info)){
-        ?>
         <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
-        <?php
-       // }
-        ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -57,23 +50,22 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
-        'emptyText' => 'No Payment Founded!',
+        'emptyText' => Yii::t('app','Payment record is not founded'),
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
                 'attribute' => 'rn',
-                'label' => 'Registeration Number ',
                 'format' => 'raw',
                 'value'=>function ($data) {
                     return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                 },
             ],
+            
             'receipt_type',
+
             [
                 'attribute' => 'receipt_content_sum',
-                'label' => 'Receipt Sum (RM)',
-              //  'format' => 'raw',
                 'value'=>function ($data) {
                     if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
                         return '+'.$data['receipt_content_sum'];

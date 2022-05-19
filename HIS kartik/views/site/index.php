@@ -23,7 +23,6 @@ else
 ?>
 
 <body>
-
     <div id="card1" class="container-fluid">
         <div class="card">
             <div class="card-header text-white bg-primary">
@@ -44,17 +43,17 @@ else
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <?php 
-        if(!empty($model))
-        {
-            $dataProvider1 = new ActiveDataProvider([
-                'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
-                ->orderBy(['entry_datetime' => SORT_DESC, 'rn' => SORT_DESC]),
-                'pagination'=>['pageSize'=>10],
-            ]);
-            
-            echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
-            ?>
+        <?php 
+            if(!empty($model))
+            {
+                $dataProvider1 = new ActiveDataProvider([
+                    'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
+                    ->orderBy(['entry_datetime' => SORT_DESC, 'rn' => SORT_DESC]),
+                    'pagination'=>['pageSize'=>10],
+                ]);
+                
+                echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+        ?>
                 <div class="form-group">
                     <br />
                     <?= Html::a(Yii::t('app','Add New Admission'),['site/index', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
@@ -62,11 +61,10 @@ else
                     <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/index', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
 
                 </div>
-                <?php
-        } 
-        else echo Yii::t('app','RN is not selected');
-            ?>
-
+        <?php
+            } 
+            else echo Yii::t('app','Patient admission record is not founded');
+        ?>
             </div>
             <!-- /.card-body -->
         </div>
@@ -85,30 +83,26 @@ else
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-
-
-                    <!-- This is the form that shows patient information which can directly updating-->
-                    <?php
-        if(!empty($model))
-        {
-    ?>
-
-                    <?= $this->render('/patient_information/update', [
-                    'model' => $model]) ?>
-
-                    <?php   } else{
-             echo Yii::t('app','Patient is not selected');
-        }  ?>
+             <!-- This is the form that shows patient information which can directly updating-->
+            <?php
+                    if(!empty($model))
+                    {
+            ?>
+                        <?= $this->render('/patient_information/update', [
+                        'model' => $model]) ?>
+            <?php   } 
+                    else echo Yii::t('app','Patient record is not founded');
+            ?>
                 </div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
         </a>
-        
+
         <a name='nok'>
             <div class="card">
                 <div class="card-header text-white bg-primary">
-                    <h3 class="card-title"><?php echo Yii::t('app','Waris');?></h3>
+                    <h3 class="card-title"><?php echo Yii::t('app','Next of kin Information');?></h3>
                     <div class="card-tools">
                         <!-- Collapse Button -->
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -119,39 +113,35 @@ else
                 <!-- /.card-header -->
                 <div class="card-body">
 
-                    <?php   
-            if(!empty($model))
-            {
-                $dataProvider2 = new ActiveDataProvider([
-                    'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
-                    'pagination'=>['pageSize'=>3],
-                    ]);
-                echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider2]);
-            } 
+            <?php   
+                if(!empty($model))
+                {
+                    $dataProvider2 = new ActiveDataProvider([
+                        'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
+                        'pagination'=>['pageSize'=>3],
+                        ]);
+                    echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider2]);
             ?>
-
                     <div class="form-group">
                         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                            onclick="showDiv();"><?php echo Yii::t('app','Add Waris');?></button>
+                            onclick="showDiv();"><?php echo Yii::t('app','Add Next of kin');?></button>
                         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
                             onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
                     </div>
-
-                    <?php
-            if(!empty($model)){
-                $model_nok = new Patient_next_of_kin();
-                echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
-            }
+            <?php
+                    $model_nok = new Patient_next_of_kin();
+                    echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
+                }
+                else echo Yii::t('app','Next Of Kin record is not founded');
             ?>
                 </div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
         </a>
-
     </div>
 
-    <script>
+<script>
     function hiddenForm() {
         document.getElementById("NOk_Div").style.display = "none";
     }
@@ -159,4 +149,4 @@ else
     function showDiv() {
         document.getElementById('NOk_Div').style.display = "block";
     }
-    </script>
+</script>
