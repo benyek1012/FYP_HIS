@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_statusSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Lookup Statuses');
+$this->title = Yii::t('app','Status Lookup');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-status-index">

@@ -242,7 +242,7 @@ class SiteController extends Controller
                 `role` VARCHAR(20) NOT NULL,
                 `retire` BOOLEAN DEFAULT false,
                 `authKey` VARCHAR(45) NOT NULL,
-                PRIMARY KEY (`user_uid`)
+                PRIMARY KEY (`username`)
             );"
             ,
             "CREATE TABLE IF NOT EXISTS `patient_information` (

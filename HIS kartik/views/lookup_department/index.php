@@ -12,7 +12,7 @@ use yii\data\ActiveDataProvider;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$this->title = Yii::t('app','Lookup Departments');
+$this->title = Yii::t('app','Department Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-department-index">

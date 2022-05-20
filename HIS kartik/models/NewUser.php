@@ -38,6 +38,8 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
             [['user_password', 'role'], 'string', 'max' => 20],
             [['authKey'], 'string', 'max' => 45],
             [['user_uid'], 'unique'],
+            [['username'], 'unique'],
+            
         ];
     }
 

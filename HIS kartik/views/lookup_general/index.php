@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_generalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Lookup Generals');
+$this->title = Yii::t('app','General Lookup');
 $this->params['breadcrumbs'][] = $this->title;
 
 $rows_relationship = (new \yii\db\Query())

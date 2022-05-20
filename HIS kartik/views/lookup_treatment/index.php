@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_treatmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Lookup Treatments');
+$this->title = Yii::t('app','Treatment Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-treatment-index">

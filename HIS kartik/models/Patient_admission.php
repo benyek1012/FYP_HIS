@@ -63,7 +63,7 @@ class Patient_admission extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'rn' =>  Yii::t('app','Registeration Number'),
+            'rn' =>  Yii::t('app','Registration Number (R/N)'),
             'entry_datetime' => Yii::t('app','Entry Datetime'),
             'patient_uid' => Yii::t('app','Patient Uid'),
             'initial_ward_code' => Yii::t('app','Initial Ward Code'),

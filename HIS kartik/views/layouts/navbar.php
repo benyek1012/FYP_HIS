@@ -46,12 +46,12 @@ if (Yii::$app->user->isGuest){
                 <li><a href="/lookup_general" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                 </li>
                 <li><a href="/newuser" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
-                <li><a href="/lookup_ward" class="dropdown-item"><?php echo Yii::t('app','Ward codes'); ?></a></li>
+                <li><a href="/lookup_ward" class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
                 <li><a href="/lookup_status" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
-                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Treatment codes'); ?></a>
+                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Treatment Codes'); ?></a>
                 </li>
                 <li><a href="/lookup_department"
-                        class="dropdown-item"><?php echo Yii::t('app','Department codes'); ?></a></li>
+                        class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
             </ul>
         </li>
 

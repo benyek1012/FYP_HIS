@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\Lookup_wardSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Lookup Wards');
+$this->title = Yii::t('app','Ward Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-ward-index">

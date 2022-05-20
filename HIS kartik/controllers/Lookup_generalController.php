@@ -85,14 +85,6 @@ class Lookup_generalController extends Controller
         ]);
     }
 
-    // public function actionLOK($modelLOK){
-    //    if ($modelLOK->save()) {
-    //         $model_founded = Lookup_generalController::findModel($modelLOK->lookup_general_uid);
-    //         if(!empty($model_founded))
-    //             return Yii::$app->getResponse()->redirect(array('/lookup_general/index', 
-    //                 'lok' => $model_founded->lookup_general_uid));
-    //     }
-    // }
 
     /**
      * Displays a single Lookup_general model.
