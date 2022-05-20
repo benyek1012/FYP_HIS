@@ -720,7 +720,7 @@ $printer -> text("   "."\n");
                 [  
                     [8,"\x20"],  
                     [35, $modelpatient->address3,true],
-                    [8,"\x20"], 
+                    [10,"\x20"], 
                     [15, $modelpatient->phone_number],  
                 ]
             );
@@ -744,6 +744,7 @@ $printer -> text("   "."\n");
                     [8,$age],
                     [4, "\x20"],
                     [10,$modelpatient->race,true],
+                    [4, "\x20"],
                     [9,$modelpatient->nationality,true],
                 ]
             );
@@ -767,27 +768,28 @@ $printer -> text("   "."\n");
                         [  
                               //[6, "\x20"],
                             //[ntsure, $agama],
-                            [49,$modelnok->nok_name,true],
+                            [49, "\x20"],
+                            [30,$modelnok->nok_name,true],
                         ]
                     );
                     $form->printNewLine(2);
                     $form->printElementArray( 
                         [  
-                            [39, "\x20"],  //52-13
+                            [40, "\x20"],  //52-13
                             [35,$modelnok->nok_address1,true],
                         ]
                     );
                     $form->printNewLine(1);
                     $form->printElementArray( 
                         [  
-                            [39, "\x20"],
+                            [40, "\x20"],
                             [35,$modelnok->nok_address2,true],
                         ]
                     );
                     $form->printNewLine(1);
                     $form->printElementArray( 
                         [  
-                            [39, "\x20"],
+                            [40, "\x20"],
                             [35,$modelnok->nok_address3,true],
                         ]
                     );
@@ -799,7 +801,7 @@ $printer -> text("   "."\n");
                 }
            
            
-           
+                $form->printNewLine(2);
             $form->printElementArray( 
                 [  
                     [11,"\x20"],
@@ -813,11 +815,11 @@ $printer -> text("   "."\n");
                 [  
                     [11,"\x20"],    
                     [15,$entrydatein],
-                    [26,"\x20"],
-                    [43, $model->reference,true ],
+                    [23,"\x20"],
+                    [30, $model->reference,true ],
                 ]
             );
-            $form->printNewLine(3);
+            $form->printNewLine(4);
             $form->printElementArray( 
                 [  
                     [18,"\x20"],
@@ -839,12 +841,6 @@ $printer -> text("   "."\n");
                 ]
             );
             $form->printNewLine(2);
-            $form->printElementArray( 
-                [  
-                     [18,"\x20"],
-                    [10,$model->initial_ward_class,true],
-                ]
-            );
             $form->printElementArray( 
                 [  
                     [18,"\x20"],
@@ -1432,7 +1428,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
                 [20, "\x20"], // from 22->20
                 [36, $modelpatient->address2,true],
                 [10,"\x20"],
-                [14, $model->rn],
+                [14, $modelpatient->nric],
             ]
         );
         $form->printNewLine(1);
@@ -1449,11 +1445,11 @@ $caseblankfront2 = str_repeat("\x20", 16);
                 //case history note line 5,age,gender,race,religion
                 [19, "\x20"], // from 22->20
                 [8, $age],
-                [4, "\x20"],
+                [2, "\x20"],
                 [1, $modelpatient->sex,true],
                 [12, "\x20"],
                 [2, $modelpatient->race,true],
-                [20, "\x20"],
+                [18, "\x20"],
                // [notsure, $religion],
             ]
         );
@@ -1470,7 +1466,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
             [
                 //case history note line 7, employername
                 [20, "\x20"], // from 22->20
-                [13, $model->guarantor_name,true],
+                [13, $model->guarantor_name,true],// phase2 change to be selective
             ]
         );
         $form->printNewLine(2);
@@ -1479,7 +1475,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
             $form->printElementArray(
                 [
                     //case history note line 8, nok name
-                    [19, "\x20"], // from 22->20
+                    [20, "\x20"], // from 22->20
                     [13, $modelnok->nok_name,true],
                 ]
             );
@@ -1487,7 +1483,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
             $form->printElementArray(
                 [
                     //case history note line 9, nok add 1
-                    [16, "\x20"], // from 22->20
+                    [17, "\x20"], // from 22->20
                     [17, $modelnok->nok_address1,true],
                 ]
             );
@@ -1495,7 +1491,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
             $form->printElementArray(
                 [
                     //case history note line 10, nok add2
-                    [16, "\x20"], // from 22->20
+                    [17, "\x20"], // from 22->20
                     [17, $modelnok->nok_address2,true],
                 ]
             );
@@ -1503,9 +1499,9 @@ $caseblankfront2 = str_repeat("\x20", 16);
             $form->printElementArray(
                 [
                     //case history note line 11, nok add3 , entry datetime
-                    [16, "\x20"], // from 22->20
+                    [17, "\x20"], // from 22->20
                     [17, $modelnok->nok_address3,true],
-                    [12, "\x20"],
+                    [11, "\x20"],
                     [17, $entrydatetime],
                 ]
             );
@@ -1524,7 +1520,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
                 ]
             );
         }
-        $form->printNewLine(2);
+        $form->printNewLine(1);
         if ($noknull == 0)
          {
             $form->printElementArray(
@@ -1740,24 +1736,24 @@ $caseblankfront2 = str_repeat("\x20", 16);
 
             $form = new PrintForm(PrintForm::BorangSticker);
             $n=6;
-            for($i=1; $i<=1; $i++)  //$i<=6 
+            for($i=1; $i<=1; $i++)  
             {
                 
-                for($k=1; $k<=6; $k++)
+                for($k=1; $k<=1; $k++)  //$k<=6 
                 {
                     $form->printElementArray(
                         [
                             //sticker line 1 , name, age
                             [14, $modelpatient->name,true],
-                            [6,"\x20"],
+                            [14,"\x20"],
                             [15, $agesticker],
-                            [12,"\x20"],
+                            [17,"\x20"],
                             [14, $modelpatient->name,true],
-                            [7,"\x20"],
+                            [14,"\x20"],
                             [15, $agesticker],
-                            [10,"\x20"],
+                            [27,"\x20"],
                             [14, $modelpatient->name,true],
-                            [7,"\x20"],
+                            [14,"\x20"],
                             [15, $agesticker],
                         ]
                     );
@@ -1767,21 +1763,21 @@ $caseblankfront2 = str_repeat("\x20", 16);
                             //sticker line 2 , ic rn
                             [4, "KP: "],
                             [14,$modelpatient->nric],
-                            [3, "\x20"],
+                            [10, "\x20"],
                             [3,"NP:"],
-                            [11, $modelpatient->rn],
-                            [12,"\x20"],
+                            [11, $model->rn],
+                            [17,"\x20"],
                             [4, "KP: "],
                             [14,$modelpatient->nric],
-                            [4, "\x20"],
+                            [11, "\x20"],
                             [3,"NP:"],
-                            [11, $modelpatient->rn],
-                            [12, "\x20"],
+                            [11, $model->rn],
+                            [16, "\x20"],
                             [4, "KP: "],
                             [14,$modelpatient->nric],
-                            [4, "\x20"],
+                            [11, "\x20"],
                             [3,"NP:"],
-                            [11, $modelpatient->rn],
+                            [11, $model->rn],
                         ]
                     );
                     $form->printNewLine(1);
@@ -1791,27 +1787,27 @@ $caseblankfront2 = str_repeat("\x20", 16);
                             [6, $model->initial_ward_code,true],
                             [1, "\x20"],
                             [7,"Katil: "],
-                            [5,"\x20"],
+                            [12,"\x20"],
                             [4, "BAN:"],
                             [2,$modelpatient->race,true],
                             [2, "\x20"],
                             [4, "Jan:"],
                             [1,$modelpatient->sex,true],
-                            [14, "\x20"],
+                            [17, "\x20"],
                             [6, $model->initial_ward_code,true],
                             [1, "\x20"],
                             [7,"Katil: "],
-                            [7,"\x20"],
+                            [14,"\x20"],
                             [4, "BAN:"],
                             [2,$modelpatient->race,true],
                             [2, "\x20"],
                             [4, "Jan:"],
                             [1,$modelpatient->sex,true],
-                            [14, "\x20"],
+                            [15, "\x20"],
                             [6, $model->initial_ward_code,true],
                             [1, "\x20"],
                             [7,"Katil: "],
-                            [7,"\x20"],
+                            [14,"\x20"],
                             [4, "BAN:"],
                             [2,$modelpatient->race,true],
                             [2, "\x20"],
@@ -1821,19 +1817,19 @@ $caseblankfront2 = str_repeat("\x20", 16);
                         ]
                     );
                     $form->printNewLine(1);
-                    // $form->printElementArray(
-                    //     [
-                    //         //sticker line 4 , hospital address
-                    //         [39, "Sarawak General Hospital,93586, Kuching"],
-                    //         [7, "\x20"],
-                    //         [39, "Sarawak General Hospital,93586, Kuching"],
-                    //         [7, "\x20"],
-                    //         [39, "Sarawak General Hospital,93586, Kuching"],
-                    //         [3, "\x20"],
-                    //     ]
-                    // );
-                    // $form->printNewLine(1);
-                    $form->printNewLine(2);
+                    $form->printElementArray(
+                        [
+                            //sticker line 4 , hospital address
+                            [39, "Sarawak General Hospital,93586, Kuching"],
+                            [7, "\x20"],
+                            [39, "Sarawak General Hospital,93586, Kuching"],
+                            [7, "\x20"],
+                            [39, "Sarawak General Hospital,93586, Kuching"],
+                            [3, "\x20"],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    // $form->printNewLine(2);
                     
                         // $printer -> text(strtoupper(mb_strimwidth($modelpatient->name,0,14)) . str_repeat("\x20", 30-10 - strlen($modelpatient->name))  .$agesticker.str_repeat("\x20", 28 - strlen($agesticker)).strtoupper(mb_strimwidth($modelpatient->name,0,14)) . str_repeat("\x20", 31-10 - strlen($modelpatient->name)) .$agesticker.str_repeat("\x20", 25 - strlen($agesticker)).strtoupper(mb_strimwidth($modelpatient->name,0,14)) . str_repeat("\x20", 30 -10- strlen($modelpatient->name)) .$agesticker);
                         // $printer -> text("\n"."KP:".$modelpatient->nric . str_repeat("\x20", 17 - strlen($modelpatient->nric)) ."NP:".$printrn.$stickerblankafterRN." KP:".$modelpatient->nric . str_repeat("\x20", 18 - strlen($modelpatient->nric)) ."NP:".$printrn.$stickerblankafterRN2."KP:".$modelpatient->nric. str_repeat("\x20", 17 - strlen($modelpatient->nric)) ."NP:".$printrn."   ");
