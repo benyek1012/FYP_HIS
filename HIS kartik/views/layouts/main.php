@@ -24,10 +24,16 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
     <?php $this->head() ?>
 </head>
 
+<?php if(YII::$app->user->isGuest){ ?>
+<?= $this->render('main-login', ['content' => $content, 'assetDir' => $assetDir]) ?>
+<?php }else{
+?>
+
 <body class="d-flex flex-column">
     <?php $this->beginBody() ?>
 
     <div class="wrapper">
+
         <!-- Navbar -->
         <?= $this->render('navbar', ['assetDir' => $assetDir]) ?>
         <!-- /.navbar -->
@@ -38,6 +44,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
         <div class="card">
             <div class="card-body">
                 <!-- Content Wrapper. Contains page content -->
+
                 <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
                 <!-- /.content-wrapper -->
             </div>
@@ -47,6 +54,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 
     <?php $this->endBody() ?>
 </body>
+<?php } ?>
 
 </html>
 <?php $this->endPage() ?>

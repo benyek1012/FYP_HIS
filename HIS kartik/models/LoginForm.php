@@ -15,7 +15,7 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
-    public $rememberMe = true;
+    public $rememberMe = false;
 
     private $_user = false;
 
@@ -57,18 +57,21 @@ class LoginForm extends Model
      * Logs in a user using the provided username and password.
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login($model)
     {
         if ($this->validate()) {
 
-            // Cookie for login
-            $newCookie= new \yii\web\Cookie();
-            $newCookie->name='cookie_login';
-            $newCookie->value = $this->getUserId();
-            $newCookie->expire = time() + 60 * 60 * 24 * 180;
-            Yii::$app->getResponse()->getCookies()->add($newCookie); 
+            if(isset($model->rememberMe) && $model->rememberMe =="1")
+            {
+                // Cookie for login
+                $newCookie= new \yii\web\Cookie();
+                $newCookie->name='cookie_login';
+                $newCookie->value = $this->getUserId();
+                $newCookie->expire = time() + 60 * 60 * 24 * 180;
+                Yii::$app->getResponse()->getCookies()->add($newCookie); 
+            }
             
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            return Yii::$app->user->login($this->getUser(), isset($newCookie) ? time() + 60 * 60 * 24 * 180 : 0);
         }
         return false;
     }

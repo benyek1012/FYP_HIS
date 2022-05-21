@@ -11,6 +11,7 @@ $this->registerCssFile('https://code.ionicframework.com/ionicons/2.0.1/css/ionic
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,19 +21,31 @@ $this->registerCssFile('https://code.ionicframework.com/ionicons/2.0.1/css/ionic
     <?php $this->registerCsrfMetaTags() ?>
     <?php $this->head() ?>
 </head>
-<body class="hold-transition login-page">
-<?php  $this->beginBody() ?>
-<div class="login-box">
-    <div class="login-logo">
-        <a href="<?=Yii::$app->homeUrl?>"><b>Admin</b>LTE</a>
+
+<body class="d-flex flex-column">
+    <?php  $this->beginBody() ?>
+
+    <div class="login-logo mt-5">
+        <a href="<?=Yii::$app->homeUrl?>"><b>Hospital Information System</b></a>
     </div>
     <!-- /.login-logo -->
 
-    <?= $content ?>
-</div>
-<!-- /.login-box -->
+    <div class="row align-items-center v-100 mt-3">
+        <div class="col-6 mx-auto">
+            <div class="card shadow border">
+                <div class="card-body">
+                    <h1>Login</h1>
+                    <?= $content ?>
+                    <!-- /.content-wrapper -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-<?php $this->endBody() ?>
+    <!-- /.login-box -->
+
+    <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>

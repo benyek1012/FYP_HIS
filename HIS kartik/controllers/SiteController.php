@@ -8,12 +8,9 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
 use app\models\Patient_information;
 use app\controllers\Patient_informationController;
-use app\models\Patient_admission;
 use app\models\Patient_next_of_kin;
-use yii\helpers\Json;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 
@@ -121,6 +118,7 @@ class SiteController extends Controller
             return $this->redirect('/site/login');
         else return $this->render('index');
     }
+    
     /**
      * Login action.
      *
@@ -133,7 +131,7 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login($model)) {
             return $this->goBack();
         }
 
