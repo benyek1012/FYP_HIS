@@ -279,21 +279,22 @@ $this->registerJs(
     });"
 );
 
-$this->registerJs(
-    "$('.wardCode', document).each(function(index, item){
-        var billUid = $('#ward-bill-uid').val();
-        $.get('/bill/date', {bill_uid : billUid}, function(data){
-            var data = $.parseJSON(data);
-            if(data.length > 1){
-                for(var i = 0; i < data.length; i++){
-                    $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
-                    $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
-                }
-            }
-        });
-    });
-    "
-);
+// $this->registerJs(
+//     "$('.wardCode', document).each(function(index, item){
+//         var billUid = $('#ward-bill-uid').val();
+//         $.get('/bill/date', {bill_uid : billUid}, function(data){
+//             var data = $.parseJSON(data);
+//             if(data.length > 1){
+//                 for(var i = 0; i < data.length; i++){
+//                     $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
+//                     $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
+//                 }
+//             }
+//         });
+//     });
+//     "
+// );
+
 if(!empty($admission_model->initial_ward_code) && empty($modelWard->ward_code)){
     $this->registerJs(
         "$('.wardCode', document).each(function(index, item){
@@ -466,7 +467,6 @@ if(empty($print_readonly)) $print_readonly = false;
                     <tr>
                         <td>
                             <?php 
-
                             if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
                             ?>
                                 <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
@@ -733,7 +733,7 @@ if(empty($print_readonly)) $print_readonly = false;
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
             <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
-            <?= Html::a('Delete', ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'b'], ['class'=>'btn btn-success']) ?>
+            <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
             <?php } ?>
         </div>
         <!-- /.card-body -->

@@ -297,11 +297,15 @@ class BillController extends Controller
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
                     $valid = Model::validateMultiple($modelWard);
                     
-                    if($valid) {                    
+                    
+                    if($valid ) {                    
                         foreach ($modelWard as $modelWard) {
                             $modelWard->ward_uid = Base64UID::generate(32);
                             $modelWard->bill_uid = $bill_uid;
-                            $modelWard->save();
+
+                            if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
+                                $modelWard->save();
+                            }
                         }
                     }
                 }
@@ -312,13 +316,17 @@ class BillController extends Controller
 
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
                     $valid = Model::validateMultiple($modelWard);
+
                     
                     if($valid) {         
                         if($countWard > $countdb){
                             for($i = $countWard; $i > $countdb; $i--) {
                                 $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
                                 $modelWard[$i - 1]->bill_uid = $bill_uid;
-                                $modelWard[$i - 1]->save();
+
+                                if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
+                                    $modelWard[$i - 1]->save();
+                                }
                             }
                         }   
                         else if($countWard == $countdb){   
@@ -353,7 +361,10 @@ class BillController extends Controller
                         foreach ($modelTreatment as $modelTreatment) {
                             $modelTreatment->treatment_details_uid = Base64UID::generate(32);
                             $modelTreatment->bill_uid = $bill_uid;
-                            $modelTreatment->save();
+
+                            if(!empty($modelTreatment->treatment_code) && !empty($modelTreatment->treatment_name) && !empty($modelTreatment->item_per_unit_cost_rm) && !empty($modelTreatment->item_count) && !empty($modelTreatment->item_total_unit_cost_rm)){
+                                $modelTreatment->save();
+                            }
                         }
                     }
                 }
@@ -370,7 +381,10 @@ class BillController extends Controller
                             for($i = $countTreatment; $i > $countdb; $i--) {
                                 $modelTreatment[$i - 1]->treatment_details_uid = Base64UID::generate(32);
                                 $modelTreatment[$i - 1]->bill_uid = $bill_uid;
-                                $modelTreatment[$i - 1]->save();
+
+                                if(!empty($modelTreatment[$i - 1]->treatment_code) && !empty($modelTreatment[$i - 1]->treatment_name) && !empty($modelTreatment[$i - 1]->item_per_unit_cost_rm) && !empty($modelTreatment[$i - 1]->item_count) && !empty($modelTreatment[$i - 1]->item_total_unit_cost_rm)){
+                                    $modelTreatment[$i - 1]->save();
+                                }
                             }
                         }
                         else if($countTreatment == $countdb){

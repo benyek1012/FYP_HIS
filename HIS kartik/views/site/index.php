@@ -132,7 +132,7 @@ else
                     $model_nok = new Patient_next_of_kin();
                     echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
                 }
-                else echo Yii::t('app','Next Of Kin record is not founded');
+                else echo Yii::t('app','Next of Kin record is not founded');
             ?>
                 </div>
                 <!-- /.card-body -->

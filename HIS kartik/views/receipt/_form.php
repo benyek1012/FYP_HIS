@@ -148,7 +148,7 @@ use app\models\Patient_admission;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
