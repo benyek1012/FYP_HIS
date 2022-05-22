@@ -775,21 +775,21 @@ $printer -> text("   "."\n");
                     $form->printNewLine(2);
                     $form->printElementArray( 
                         [  
-                            [40, "\x20"],  //52-13
+                            [41, "\x20"],  //52-13
                             [35,$modelnok->nok_address1,true],
                         ]
                     );
                     $form->printNewLine(1);
                     $form->printElementArray( 
                         [  
-                            [40, "\x20"],
+                            [41, "\x20"],
                             [35,$modelnok->nok_address2,true],
                         ]
                     );
                     $form->printNewLine(1);
                     $form->printElementArray( 
                         [  
-                            [40, "\x20"],
+                            [41, "\x20"],
                             [35,$modelnok->nok_address3,true],
                         ]
                     );
@@ -1136,8 +1136,8 @@ $printer -> text("   "."\n");
                  $form->printElementArray(
                     [
                         //line 2, name and nric
-                        [10, "\x20"],
-                        [25, $first,true],
+                        [5, "\x20"],
+                        [30, $first,true],
                         [14,"\x20"],
                         [10, $modelpatient->nric],
                     ]
@@ -1146,9 +1146,9 @@ $printer -> text("   "."\n");
                 $form->printElementArray(
                     [
                         //line 2, name and nric
-                        [10, "\x20"],
-                        [25, $second,true],
-                        [4,"\x20"],
+                        [5, "\x20"],
+                        [30, $second,true],
+                        [14,"\x20"],
                         [25, $modelpatient->nationality,true],
                     ]
                     );
@@ -1159,8 +1159,8 @@ $printer -> text("   "."\n");
                 $form->printElementArray(
                     [
                         //line 2, name and nric
-                        [10, "\x20"],
-                        [25, $modelpatient->name,true],
+                        [5, "\x20"],
+                        [30, $modelpatient->name,true],
                         [14,"\x20"],
                         [10, $modelpatient->nric],
                     ]
@@ -1179,9 +1179,9 @@ $printer -> text("   "."\n");
          $form->printElementArray(
                     [
                         //line for gender, age
-                        [10, "\x20"],
+                        [6, "\x20"],
                         [9, $modelpatient->sex,true],
-                        [26, "\x20"],
+                        [30, "\x20"],
                         [8, $age],
                         [13, "\x20"],
                        // [13, "\x20"], for status in the future
@@ -1191,7 +1191,7 @@ $printer -> text("   "."\n");
 
                 $form->printElementArray(
                     [
-                        [18, "\x20"],
+                        [13, "\x20"],
                         [50, $modelpatient->address1,true],
                     ]
                 );
@@ -1199,14 +1199,14 @@ $printer -> text("   "."\n");
 
                 $form->printElementArray(
                     [
-                        [18, "\x20"],
+                        [13, "\x20"],
                         [50, $modelpatient->address2,true],
                     ]
                 );
                 $form->printNewLine(1);
                 $form->printElementArray(
                     [
-                        [18, "\x20"],
+                        [13, "\x20"],
                         [50, $modelpatient->address3,true],
                     ]
                 );
@@ -1360,6 +1360,7 @@ $printer -> text("   "."\n");
          
             if($modelpatient->nric == ""){
                 $nric = $modelpatient->nric;
+                $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5].$nric[6]."-".$nric[7].$nric[8]."-".$nric[9].$nric[10].$nric[11].$nric[12].
                 $dob = mb_strimwidth($nric,0,6);
                 $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
                 $patientdob = date("d/m/Y" , strtotime($dateofbirth));
@@ -1445,7 +1446,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
                 //case history note line 5,age,gender,race,religion
                 [19, "\x20"], // from 22->20
                 [8, $age],
-                [2, "\x20"],
+                [5 , "\x20"],
                 [1, $modelpatient->sex,true],
                 [12, "\x20"],
                 [2, $modelpatient->race,true],
@@ -1739,21 +1740,21 @@ $caseblankfront2 = str_repeat("\x20", 16);
             for($i=1; $i<=1; $i++)  
             {
                 
-                for($k=1; $k<=1; $k++)  //$k<=6 
+                for($k=1; $k<=6; $k++)  //$k<=6 
                 {
                     $form->printElementArray(
                         [
                             //sticker line 1 , name, age
-                            [14, $modelpatient->name,true],
-                            [14,"\x20"],
+                            [22, $modelpatient->name,true],
+                            [6,"\x20"],
                             [15, $agesticker],
                             [17,"\x20"],
-                            [14, $modelpatient->name,true],
-                            [14,"\x20"],
+                            [22, $modelpatient->name,true],
+                            [6,"\x20"],
                             [15, $agesticker],
                             [27,"\x20"],
-                            [14, $modelpatient->name,true],
-                            [14,"\x20"],
+                            [22, $modelpatient->name,true],
+                            [6,"\x20"],
                             [15, $agesticker],
                         ]
                     );
