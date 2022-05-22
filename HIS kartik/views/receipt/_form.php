@@ -70,7 +70,6 @@ use app\models\Patient_admission;
         ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
-               // 'head' => 'I am a danger callout!',
                'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
                '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
                '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))

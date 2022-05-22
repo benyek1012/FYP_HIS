@@ -542,8 +542,14 @@ class BillController extends Controller
             }
             else
             {
-                $message = 'Bill Print ID should not be empty.';
+                $message =  Yii::t('app','Bill Print ID should not be empty!');
                 $model->addError('bill_print_id', $message);
+                return $this->render('print', [
+                    'model' => $model,
+                    'modelWard' => $modelWard,
+                    'modelTreatment' => $modelTreatment,
+                    'print_empty' => true,
+                ]);
             }
         }
 

@@ -7,6 +7,7 @@ use app\models\Bill;
 use Yii;
 use app\models\Receipt;
 use app\models\ReceiptSearch;
+use app\models\Patient_admission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -56,6 +57,49 @@ class ReceiptController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    
+    /**
+     * Lists all Receipt models.
+     *
+     * @return string
+     */
+    public function actionRecord()
+    {
+        $searchModel = new ReceiptSearch();
+        // $dataProvider1 = new ActiveDataProvider([
+        //     'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
+        //     ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
+        //     'pagination'=>['pageSize'=>5],
+        // ]);
+        $dataProvider = $searchModel->transactionRecords($this->request->queryParams);
+
+        // Print all record from customer
+        if ($this->request->isPost)
+        {
+             // This is showing all RN from payment 
+            $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+            $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
+        
+            $rn_array = array();
+            foreach($model_rn as $model)
+            {
+                $rn_array[] = $model->rn;
+            
+            }
+
+            $query = Receipt::find()->where(['rn' => $rn_array]);
+            echo "<pre>";
+            var_dump($query);
+            exit();
+            echo "</pre>";
+        }
+        return $this->render('record', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    
 
     /**
      * Displays a single Receipt model.
@@ -111,10 +155,9 @@ class ReceiptController extends Controller
         } else {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
             $cookies = Yii::$app->request->cookies;
-            $model->receipt_responsible = $cookies->getValue('cookie_login');
+            $model->receipt_responsible = Yii::$app->user->identity->getId();
             $model->loadDefaultValues();
         }
-
 
         return $this->render('create', [
             'model' => $model,

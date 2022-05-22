@@ -16,7 +16,7 @@ use app\models\Patient_information;
 $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-$this->title = Yii::t('app','Payments');
+$this->title = Yii::t('app','Transaction Records');
 if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
 else 
@@ -24,27 +24,6 @@ else
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">
-    <div class="row">
-        <div class="col-lg-12">
-        <?php 
-            if(!empty(Yii::$app->request->get('rn'))){
-        ?>
-            <?= \hail812\adminlte\widgets\Callout::widget([
-                'type' => 'info',
-               // 'head' => 'I am a danger callout!',
-               'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
-               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
-               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
-            ]) ?>
-        <?php } ?>
-        </div>
-    </div>
-
-    <p>
-        <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -110,15 +89,11 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php 
-    //  $dataProvider2 = new ActiveDataProvider([
-    //     'query'=> Bill::find()->where(['rn'=>Yii::$app->request->get('rn')]),
-    //     'pagination'=>['pageSize'=>3],
-    //     ]);
-    // echo $this->render('/bill/index', ['dataProvider'=>$dataProvider2]);
-    
-    ?>
-
+    <?php $form = kartik\form\ActiveForm::begin([
+            'id' => 'print-record-form',
+        ]); ?>
+    <?= Html::submitButton(Yii::t('app','Print'), ['class' => 'btn btn-success']) ?>
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
 

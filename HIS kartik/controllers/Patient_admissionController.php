@@ -153,8 +153,9 @@ class Patient_admissionController extends Controller
 }
 
 ?>
-
 <script>
+
+<?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation dialog
 function confirmAction() {
     var answer = confirm("Are you sure to create patient admission?");
@@ -164,5 +165,14 @@ function confirmAction() {
         window.location.href = history.back();
     }
 }
-
+<?php }else{?>
+function confirmAction() {
+    var answer = confirm("Adakah anda pasti untuk membuat pendaftaran pesakit?");
+    if (answer) {
+        window.location.href = window.location + '&confirm=t';
+    } else {
+        window.location.href = history.back();
+    }
+}
+<?php } ?>
 </script>

@@ -153,6 +153,8 @@ class Patient_informationController extends Controller
 
 
 <script>
+
+<?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation dialog
 function confirmAction(ic) {
     var answer = confirm("Are you sure to create patient information?");
@@ -162,6 +164,17 @@ function confirmAction(ic) {
         window.location.href = '/site/index';
     }
 }
+<?php }else{?>
+// The function below will start the confirmation dialog
+function confirmAction(ic) {
+    var answer = confirm("Adakah anda pasti untuk membuat butiran pesakit?");
+    if (answer) {
+        window.location.href = '/patient_information/create?ic=' + ic;
+    } else {
+        window.location.href = '/site/index';
+    }
+}
+<?php } ?>
 
 // The function below will start the confirmation dialog
 function duplicateIC(ic) {

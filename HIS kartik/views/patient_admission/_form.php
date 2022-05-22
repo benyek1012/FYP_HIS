@@ -58,13 +58,13 @@ use kartik\datetime\DateTimePicker;
 
         <div class="col-sm-6">
             <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
-             ['prompt'=>'Please select ward code']
+             ['prompt'=> Yii::t('app','Please select ward code')]
             ) ?>
         </div>
 
         <div class="col-sm-6">
             <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
-             ['prompt'=>'Please select ward class']
+             ['prompt'=> Yii::t('app','Please select ward class')]
             ) ?>
         </div>
 

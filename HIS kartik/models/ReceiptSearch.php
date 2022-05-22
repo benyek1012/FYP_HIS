@@ -41,20 +41,6 @@ class ReceiptSearch extends Receipt
      */
     public function search($params)
     {
-
-        // This is showing all RN from payment 
-        // $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        // $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
-      
-        // $rn_array = array();
-        // foreach($model_rn as $model)
-        // {
-        //     $rn_array[] = $model->rn;
-        
-        // }
-
-        // $query = Receipt::find()->where(['rn' => $rn_array])->orderBy(['receipt_content_datetime_paid' => SORT_DESC]);
-
         $query = Receipt::find()->where(['rn' => Yii::$app->request->get('rn')])
                                 ->orderBy(['receipt_content_datetime_paid' => SORT_DESC, 'rn' => SORT_DESC]);
 
@@ -62,6 +48,66 @@ class ReceiptSearch extends Receipt
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>['pageSize'=>5],
+        ]);
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'receipt_content_sum' => $this->receipt_content_sum,
+            'receipt_content_datetime_paid' => $this->receipt_content_datetime_paid,
+        ]);
+
+        $query->andFilterWhere(['like', 'receipt_uid', $this->receipt_uid])
+            ->andFilterWhere(['like', 'rn', $this->rn])
+            ->andFilterWhere(['like', 'receipt_type', $this->receipt_type])
+            ->andFilterWhere(['like', 'receipt_content_bill_id', $this->receipt_content_bill_id])
+            ->andFilterWhere(['like', 'receipt_content_description', $this->receipt_content_description])
+            ->andFilterWhere(['like', 'receipt_content_payer_name', $this->receipt_content_payer_name])
+            ->andFilterWhere(['like', 'receipt_content_payment_method', $this->receipt_content_payment_method])
+            ->andFilterWhere(['like', 'card_no', $this->card_no])
+            ->andFilterWhere(['like', 'cheque_number', $this->cheque_number])
+            ->andFilterWhere(['like', 'receipt_responsible', $this->receipt_responsible])
+            ->andFilterWhere(['like', 'receipt_serial_number', $this->receipt_serial_number]);
+
+        return $dataProvider;
+    }
+
+        /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function transactionRecords($params)
+    {
+        // This is showing all RN from payment 
+        $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+        $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
+      
+        $rn_array = array();
+        foreach($model_rn as $model)
+        {
+            $rn_array[] = $model->rn;
+        
+        }
+
+        $query = Receipt::find()->where(['rn' => $rn_array])
+                    ->orderBy(['receipt_content_datetime_paid' => SORT_DESC, 'rn' => SORT_DESC]);
+
+         // add conditions that should always apply here
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination'=>['pageSize'=>10],
         ]);
 
         $this->load($params);

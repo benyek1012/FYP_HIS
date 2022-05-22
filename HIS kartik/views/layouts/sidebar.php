@@ -80,7 +80,8 @@ function items_new_rn()
         ['label' => Yii::t('app','Add New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
         ['label' =>  Yii::t('app','Add New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
-    // array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
+    array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+         'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn')]]);
     return $items;
 }
 
@@ -173,8 +174,6 @@ if(!empty(Yii::$app->request->queryParams))
                 <div class="info">
                     <p class="text-white"><?php echo Yii::t('app','Patient Name')." : "?></p>
                     <p class="text-white"><?php echo Yii::t('app','Patient IC')." : "?></p>
-                    <!-- <p class="text-light"><?php echo Yii::t('app','Amount Due')?></p>
-                    <p class="text-light"><?php echo Yii::t('app','Unclaimed Balance')?></p> -->
                 </div>
             </div>
             <?php  } ?>

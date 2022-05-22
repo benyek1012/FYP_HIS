@@ -310,6 +310,16 @@ if(!empty($admission_model->initial_ward_code) && empty($modelWard->ward_code)){
 
 if(empty($print_readonly)) $print_readonly = false;
 
+if($print_readonly)
+{
+    $this->registerJs(
+        "$('#bill_details').CardWidget('collapse');
+        $('#ward_div').CardWidget('collapse');
+        $('#treatment_div').CardWidget('collapse');",
+        
+    );
+}
+
 ?>
 
 <style>
@@ -331,7 +341,7 @@ if(empty($print_readonly)) $print_readonly = false;
     ?>
 
     <a name="bill">
-        <div class="card">
+        <div class="card" id="bill_details">
             <div class="card-header text-white bg-primary">
                 <h3 class="card-title"><?php echo Yii::t('app','Billing Details');?></h3>
                 <div class="card-tools">
@@ -899,7 +909,8 @@ function getDailyWardCost() {
     });   
 }
 
-// The function below will start the confirmation dialog
+<?php if( Yii::$app->language == "en"){ ?>
+// The function below will start the confirmation  dialog
 function confirmAction() {
     var answer = confirm("Are you sure to generate bill?");
     if (answer) {
@@ -908,4 +919,15 @@ function confirmAction() {
         window.location.href = history.back();
     }
 }
+<?php }else{?>
+// The function below will start the confirmation  dialog
+function confirmAction() {
+    var answer = confirm("Adakah anda pasti menjana bil?");
+    if (answer) {
+        window.location.href = window.location + '&confirm=true';
+    } else {
+        window.location.href = history.back();
+    }
+}
+<?php } ?>
 </script>

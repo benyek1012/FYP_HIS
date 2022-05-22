@@ -51,6 +51,10 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->user_uid;
     }
 
+    public function getName() {
+        return $this->username;
+    }
+
     public function generateAuthKey()
     {
         $this->authKey = Yii::$app->security->generateRandomString();
