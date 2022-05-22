@@ -514,6 +514,7 @@ class BillController extends Controller
         $totalCostReceipt = 0;
         $countTreatment = count($modelTreatment);
         $countReceipt = count($modelreceipt);
+        $lineleft = $totalLine - ($countTreatment + $countReceipt);
 
         // if total treatment and total receipt > total line(10)
         if($countTreatment + $countReceipt > $totalLine){
