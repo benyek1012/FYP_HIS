@@ -42,7 +42,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'ward_name')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-    <?= $form->field($model, 'sex')->dropDownList($sex, ['prompt'=>'Please select sex','maxlength' => true]) ?> 
+    <?= $form->field($model, 'sex')->textInput($sex, ['maxlength' => true]) ?> 
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'min_age')->textInput() ?>

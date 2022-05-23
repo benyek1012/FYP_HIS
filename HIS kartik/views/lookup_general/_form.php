@@ -25,9 +25,6 @@ use GpsLab\Component\Base64UID\Base64UID;
     
     <div class ="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'lookup_general_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $lookup_general_uid])?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
@@ -41,6 +38,9 @@ use GpsLab\Component\Base64UID\Base64UID;
         </div> 
         <div class="col-sm-6">
             <?= $form->field($model, 'recommend')->textInput(['value' => '1']) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'lookup_general_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $lookup_general_uid])->label(false)?>
         </div>
     </div>
     
