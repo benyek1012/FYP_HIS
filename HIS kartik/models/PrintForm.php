@@ -11,21 +11,21 @@ use Yii;
 class PrintForm
 {
     const BorangDaftarMasuk = 0;
-    const printerStringForBorangDaftarMasuk = "smb://JOSH2-LAPTOP/Epson";//"smb://DESKTOP-7044BNO/Epson"
+   //const printerStringForBorangDaftarMasuk = "smb://DESKTOP-7044BNO/Epson"; //"smb://DESKTOP-7044BNO/Epson" Yii::$app->params['borangdafter']
 
     const BorangCajSheet= 0;
-    const printerStringForBorangCajSheet = "smb://JOSH2-LAPTOP/Epson";
+    const printerStringForBorangCajSheet = "smb://DESKTOP-7044BNO/Epson"; //smb://JOSH2-LAPTOP/Epson
 
     const BorangCaseNote= 0;
-    const printerStringForBorangCaseNote = "smb://JOSH2-LAPTOP/Epson";
+    const printerStringForBorangCaseNote = "smb://DESKTOP-7044BNO/Epson";
 
     const BorangSticker= 0;
-    const printerSticker = "smb://JOSH2-LAPTOP/Epson";
+    const printerSticker = "smb://DESKTOP-7044BNO/Epson";
     const Receipt= 0;
-    const printerStringForReceipt= "smb://JOSH2-LAPTOP/Epson";
+    const printerStringForReceipt= "smb://DESKTOP-7044BNO/Epson";
 
     const Bill= 0;
-    const printerStringForBill= "smb://JOSH2-LAPTOP/Epson";
+    const printerStringForBill= "smb://DESKTOP-7044BNO/Epson";
 
     public $formtype = null;
 
@@ -34,11 +34,13 @@ class PrintForm
 
     public function __construct($formtype)
     {
+        $printerStringForBorangDaftarMasuk = Yii::$app->params['borangdafter'];
+
         $this->connector = null;
         $this->formtype = $formtype;
 
         if($formtype == PrintForm::BorangDaftarMasuk){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBorangDaftarMasuk);
+            $this->connector = new WindowsPrintConnector($printerStringForBorangDaftarMasuk);
             
         }
         $this->printer = new Printer($this->connector);
@@ -218,7 +220,7 @@ class PrintForm
                 [8, "\x20"],
                 [18, "------------------"],
                 [45, "\x20"],
-                [9, "  "], // need ask what price is this for
+                [9, "0.00"], // need ask what price is this for
             ]
         );
         $this->printNewLine(1);
@@ -236,6 +238,26 @@ class PrintForm
             ]
         );
         $this->printNewLine(1);
+    }
+
+    public function printCajRawatenHarian(){
+        $this->printNewLine(1);
+        $this->printElementArray(
+            [
+                [8, "\x20"],
+                [18, "Caj Rawatan Harian"],
+            ]
+        );
+        $this->printNewLine(1);
+        $this->printElementArray(
+            [
+                [8, "\x20"],
+                [18, "------------------"],
+                [45, "\x20"],
+                [9, "0.00"], // need ask what price is this for
+            ]
+        );
+        $this->printNewLine(3);
     }
 
     public function printBillRefund($rn, $receipt_serial_number, $receipt_content_sum){

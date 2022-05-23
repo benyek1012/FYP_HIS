@@ -6,8 +6,13 @@ return [
     'senderEmail' => 'noreply@example.com',
 
 
-     'languages' => [
-     'en' => 'english',
-     'ms' => 'malay'
-     ],
+    'languages' => [
+    'en' => 'english',
+    'ms' => 'malay'
+    ],
+
+    'borangdafter' => 'smb://DESKTOP-7044BNO/Epson',
+
+    'printerstatus' => 'true',
+
 ];

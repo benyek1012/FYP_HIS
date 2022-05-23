@@ -603,19 +603,26 @@ $printer -> text("   "."\n");
             
             
             
-            if($modelpatient->nric == ""){
+            
+            if($modelpatient->nric != ""){
                 $nric = $modelpatient->nric;
-                $dob = mb_strimwidth($nric,0,6);
-                $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
-                $patientdob = date("d/m/Y" , strtotime($dateofbirth));
-                $today = date("y-m-d");
-                $diff = date_diff(date_create($dateofbirth),date_create($today));
-                $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                if(strlen($nric) == 12){
+                    $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5]."-".$nric[6].$nric[7]."-".$nric[8].$nric[9].$nric[10].$nric[11];
+                    $dob = mb_strimwidth($nric,0,6);
+                    $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
+                    $patientdob = date("d/m/Y" , strtotime($dateofbirth));
+                    $today = date("y-m-d");
+                    $diff = date_diff(date_create($dateofbirth),date_create($today));
+                    $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                }
+                
             }
             else{
                 $age = "";
                 $patientdob = "";
+                $printic = $modelpatient->nric;
             }
+            
         //    print_r($age);
 
         //    exit();
@@ -701,7 +708,7 @@ $printer -> text("   "."\n");
                     [8, "\x20"],
                     [35, $modelpatient->address1,true],
                     [6,"\x20"],
-                    [14, $modelpatient->nric],
+                    [14, $printic],
                 ]
             );
             $form->printNewLine(1);
@@ -1360,13 +1367,16 @@ $printer -> text("   "."\n");
          
             if($modelpatient->nric == ""){
                 $nric = $modelpatient->nric;
-                $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5].$nric[6]."-".$nric[7].$nric[8]."-".$nric[9].$nric[10].$nric[11].$nric[12].
-                $dob = mb_strimwidth($nric,0,6);
-                $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
-                $patientdob = date("d/m/Y" , strtotime($dateofbirth));
-                $today = date("y-m-d");
-                $diff = date_diff(date_create($dateofbirth),date_create($today));
-                $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                if(strlen($nric) == 12){
+                    $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5].$nric[6]."-".$nric[7].$nric[8]."-".$nric[9].$nric[10].$nric[11].$nric[12];
+                    $dob = mb_strimwidth($nric,0,6);
+                    $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
+                    $patientdob = date("d/m/Y" , strtotime($dateofbirth));
+                    $today = date("y-m-d");
+                    $diff = date_diff(date_create($dateofbirth),date_create($today));
+                    $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                }
+                
             }
             else{
                 $age = "";
