@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2022 at 06:07 AM
+-- Generation Time: May 23, 2022 at 09:16 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.3.7
 
@@ -345,7 +345,7 @@ INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age
 CREATE TABLE `new_user` (
   `user_uid` varchar(64) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `user_password` varchar(20) NOT NULL,
+  `user_password` varchar(64) NOT NULL,
   `role` varchar(20) NOT NULL,
   `retire` tinyint(1) DEFAULT 0,
   `authKey` varchar(45) DEFAULT NULL
@@ -356,9 +356,9 @@ CREATE TABLE `new_user` (
 --
 
 INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role`, `retire`, `authKey`) VALUES
-('1', 'cashier1', '12345', 'Cashier', 1, '12345a'),
-('2', 'administrator1', '12345', 'Administrator', 1, '12345b'),
-('3', 'clerk1', '12345', 'Clerk', 1, '12345c');
+('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Administrator', 1, '12345b'),
+('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Cashier', 1, '12345a'),
+('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Clerk', 1, '12345c');
 
 -- --------------------------------------------------------
 
@@ -533,8 +533,8 @@ ALTER TABLE `lookup_ward`
 --
 ALTER TABLE `new_user`
   ADD PRIMARY KEY (`user_uid`),
-  ADD UNIQUE KEY `user_uid` (`user_uid`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `user_uid` (`user_uid`);
 
 --
 -- Indexes for table `patient_admission`
