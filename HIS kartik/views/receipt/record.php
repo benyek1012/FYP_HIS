@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
 use app\models\NewUser;
-use app\models\Bill;
+use app\models\Receipt;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 
@@ -14,7 +14,10 @@ use app\models\Patient_information;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-$temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
+
+if(!empty($temp))
+    $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
+else $temp2 = Patient_information::findOne(['patient_uid'=> Yii::$app->request->get('id')]);
 
 $this->title = Yii::t('app','Transaction Records');
 if($temp2->name != "")
@@ -28,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
-        'emptyText' => Yii::t('app','Payment record is not founded'),
+        'emptyText' => Yii::t('app','Payment record is not found'),
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -89,11 +92,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php $form = kartik\form\ActiveForm::begin([
-            'id' => 'print-record-form',
-        ]); ?>
-    <?= Html::submitButton(Yii::t('app','Print'), ['class' => 'btn btn-success']) ?>
-    <?php kartik\form\ActiveForm::end(); ?>
+    <?php 
+        if(!empty(Receipt::findOne(['rn' => Yii::$app->request->get('rn')])))
+        {
+            $form = kartik\form\ActiveForm::begin([
+                'id' => 'print-record-form',
+            ]); ?>
+            <?= Html::submitButton(Yii::t('app','Print'), ['class' => 'btn btn-success']) ?>
+    <?php kartik\form\ActiveForm::end(); 
+        } ?>
 
 </div>
 

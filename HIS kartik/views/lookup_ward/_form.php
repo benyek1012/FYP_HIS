@@ -22,10 +22,6 @@ use GpsLab\Component\Base64UID\Base64UID;
         
     ]); 
     $ward_uid = Base64UID::generate(32);
-    $sex = array(
-        'male'=>Yii::t('app','Male'),
-        'female'=>Yii::t('app','Female'),
-    );
     ?>
 
 <div class ="row">
@@ -42,7 +38,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'ward_name')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-    <?= $form->field($model, 'sex')->textInput($sex, ['maxlength' => true]) ?> 
+    <?= $form->field($model, 'sex')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'min_age')->textInput() ?>

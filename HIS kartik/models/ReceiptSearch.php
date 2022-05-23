@@ -91,7 +91,10 @@ class ReceiptSearch extends Receipt
     {
         // This is showing all RN from payment 
         $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
+
+        if(!empty($model_adm))
+            $model_rn = Patient_admission::findAll(['patient_uid' => $model_adm->patient_uid]);
+        else $model_rn = Patient_admission::findAll(['patient_uid' => Yii::$app->request->get('id')]);
       
         $rn_array = array();
         foreach($model_rn as $model)

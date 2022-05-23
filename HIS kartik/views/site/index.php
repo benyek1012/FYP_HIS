@@ -63,7 +63,7 @@ else
                 </div>
         <?php
             } 
-            else echo Yii::t('app','Patient admission record is not founded');
+            else echo Yii::t('app','Patient admission record is not found');
         ?>
             </div>
             <!-- /.card-body -->
@@ -91,7 +91,7 @@ else
                         <?= $this->render('/patient_information/update', [
                         'model' => $model]) ?>
             <?php   } 
-                    else echo Yii::t('app','Patient record is not founded');
+                    else echo Yii::t('app','Patient record is not found');
             ?>
                 </div>
                 <!-- /.card-body -->
@@ -102,7 +102,7 @@ else
         <a name='nok'>
             <div class="card">
                 <div class="card-header text-white bg-primary">
-                    <h3 class="card-title"><?php echo Yii::t('app','Next of kin Information');?></h3>
+                    <h3 class="card-title"><?php echo Yii::t('app','Next of Kin Information');?></h3>
                     <div class="card-tools">
                         <!-- Collapse Button -->
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -124,7 +124,7 @@ else
             ?>
                     <div class="form-group">
                         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-                            onclick="showDiv();"><?php echo Yii::t('app','Add Next of kin');?></button>
+                            onclick="showDiv();"><?php echo Yii::t('app','Add Next of Kin');?></button>
                         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
                             onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
                     </div>
@@ -132,7 +132,7 @@ else
                     $model_nok = new Patient_next_of_kin();
                     echo $this->render('/patient_next_of_kin/_form', ['model' => $model_nok, 'value' => $model->patient_uid]);
                 }
-                else echo Yii::t('app','Next of Kin record is not founded');
+                else echo Yii::t('app','Next of Kin record is not found');
             ?>
                 </div>
                 <!-- /.card-body -->
