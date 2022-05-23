@@ -80,8 +80,6 @@ function items_new_rn()
         ['label' => Yii::t('app','Add New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
         ['label' =>  Yii::t('app','Add New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
-    array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
-         'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn')]]);
     return $items;
 }
 
@@ -120,7 +118,7 @@ if(!empty(Yii::$app->request->queryParams))
     <a href="<?= Yii::$app->homeUrl; ?>" class="brand-link">
         <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="HIS Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-        <span class="brand-text font-weight-light">HIS</span>
+        <span class="brand-text font-weight-light">SGH HIS</span>
     </a>
 
     <!-- Sidebar -->
@@ -193,6 +191,12 @@ if(!empty(Yii::$app->request->queryParams))
                         Yii::$app->session->remove('close_rn');
                     }
                     else  echo \hail812\adminlte\widgets\Menu::widget(['items' => items_new_rn()]);
+                    echo \hail812\adminlte\widgets\Menu::widget(['items' => 
+                        [   
+                            ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+                            'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+                        ]
+                    ]);
                 }
             ?>
 
