@@ -212,8 +212,13 @@ class Bill extends \yii\db\ActiveRecord
     public static function getUnclaimed($rn) {
         $model_bill = Bill::findOne(['rn' => $rn]);
         if(!empty($model_bill))
+        {
             return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
-        else return (Bill::getDeposit($rn) + Bill::getRefund($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn)) ;
+        }
+        else
+        {
+            return (Bill::getDeposit($rn) + Bill::getRefund($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn)) ;
+        }
     }
 
     // Get Amt Due
