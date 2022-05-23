@@ -907,8 +907,9 @@ print_r($cagaranitem);
                                     $wardentrydate =date("d/m/Y" , strtotime($printstartdate));
                                     $wardleavedate =date("d/m/Y" , strtotime($printlastenddate));
                                     //$entrydatetime =date("d/m/Y H:i" , strtotime($model->entry_datetime));
-                                    
-                                                $form = new PrintForm(PrintForm::Bill);
+
+                                     if (Yii::$app->params['printerstatus'] == "false"){
+                                        $form = new PrintForm(PrintForm::Bill);
                                                 $form->printNewLine(9); // mayb 9
                                                 $form->printElementArray(
                                                     [
@@ -1225,6 +1226,12 @@ print_r($cagaranitem);
                                 //     ]
                                 // );
             $form->close();
+                                    }
+                                    else{
+                                        return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));  
+                                    }
+                                                
                                             
                                                                  
                                                                 

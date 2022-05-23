@@ -660,260 +660,271 @@ $printer -> text("   "."\n");
             //         [rn],
             //     ]
             // );
-
-            $form = new PrintForm(PrintForm::BorangDaftarMasuk);
-            $form->printNewLine(5);
-            // $array = [{($blankfront, "\x20"), (52, "james", true)}];
-
-            // (name and rn)
-            if(strlen($modelpatient->name) > 32){
-                $first = substr($modelpatient->name, 0, 32);
-                $second = substr($modelpatient->name, 33, 65);
-
-                $form->printElementArray(
-                    [
-                        [9, "\x20"],
-                        [32, $first, true],
-                        [20,"\x20"],
-                        [11, $model->rn]
-                    ]
-                );
-                $form->printNewLine(1);
-
-                $form->printElementArray(
-                    [
-                        [9, "\x20"],
-                        [32, $second, true],
-                    ]
-                );
-                $form->printNewLine(2);
-            }
-            else{
-                $form->printElementArray(
-                    [
-                    //[5, "\n"],
-                        [9, "\x20"],
-                        [32, $modelpatient->name, true],
-                        [20,"\x20"],
-                        [11, $model->rn]
-                    ]
-                );
-                $form->printNewLine(3);
-            }
-            
-
-            // (address and ic)
-            $form->printElementArray(
-                [
-                    [8, "\x20"],
-                    [35, $modelpatient->address1,true],
-                    [6,"\x20"],
-                    [14, $printic],
-                ]
-            );
-            $form->printNewLine(1);
-
-            // (address 2)
-            $form->printElementArray(
-                [
-                    [8,"\x20"],
-                    [35, $modelpatient->address2,true],
-                ]
-            );
-            $form->printNewLine(1);
-
-            // (address 3 and phone number)
-            $form->printElementArray( 
-                [  
-                    [8,"\x20"],  
-                    [35, $modelpatient->address3,true],
-                    [10,"\x20"], 
-                    [15, $modelpatient->phone_number],  
-                ]
-            );
-            $form->printNewLine(2);
-
-            $form->printElementArray( 
-                [  
-                   //[60, "\x20"],
-                    //[notsurelength,casepolis]
-                ]
-            );
-            $form->printNewLine(2);
-
-           $form->printElementArray( 
-                [  
-                    [6,"\x20"],
-                    [9,$modelpatient->sex,true],
-                    [6,"\x20"],
-                    [10,$patientdob],
-                    [4,"\x20"],
-                    [8,$age],
-                    [4, "\x20"],
-                    [10,$modelpatient->race,true],
-                    [4, "\x20"],
-                    [9,$modelpatient->nationality,true],
-                ]
-            );
-            $form->printNewLine(2);
-            // if ($noknull == 0)
-//             {
-//                 $printer -> text((str_repeat("\x20" , 38).strtoupper($modelnok->nok_name)."\n\x20\n")); // nama penuh waris "\x20" , 43 - strlen($agama)
-//                 //$printer -> text($blankfront);
-//                 //$printer -> text("taraf perkahwinan"); // taraf perkahwinan
-//                 $printer -> text((str_repeat("\x20" , 52).strtoupper($modelnok->nok_address1)."\n")); // alamat terkini waris str_repeat("\x20" , 43 - strlen($tarafperkahwinan)
-//                 $printer -> text((str_repeat("\x20" , 52).strtoupper($modelnok->nok_address2)."\n"));
-//                 $printer -> text((str_repeat("\x20" , 52).strtoupper($modelnok->nok_address3)."\n"));
-//                //print nok here
-//             }
-//             else{
-//                 $printer -> text("\n\x20\n\n\n\n");
-//             }
-                if ($noknull == 0)
+            if($model->validate()) {
+                if (Yii::$app->params['printerstatus'] == "true")
                 {
+                    $form = new PrintForm(PrintForm::BorangDaftarMasuk);
+                    $form->printNewLine(5);
+                    // $array = [{($blankfront, "\x20"), (52, "james", true)}];
+        
+                    // (name and rn)
+                    if(strlen($modelpatient->name) > 32){
+                        $first = substr($modelpatient->name, 0, 32);
+                        $second = substr($modelpatient->name, 33, 65);
+        
+                        $form->printElementArray(
+                            [
+                                [9, "\x20"],
+                                [32, $first, true],
+                                [20,"\x20"],
+                                [11, $model->rn]
+                            ]
+                        );
+                        $form->printNewLine(1);
+        
+                        $form->printElementArray(
+                            [
+                                [9, "\x20"],
+                                [32, $second, true],
+                            ]
+                        );
+                        $form->printNewLine(2);
+                    }
+                    else{
+                        $form->printElementArray(
+                            [
+                            //[5, "\n"],
+                                [9, "\x20"],
+                                [32, $modelpatient->name, true],
+                                [20,"\x20"],
+                                [11, $model->rn]
+                            ]
+                        );
+                        $form->printNewLine(3);
+                    }
+                    
+        
+                    // (address and ic)
+                    $form->printElementArray(
+                        [
+                            [5, "\x20"],
+                            [38, $modelpatient->address1,true],
+                            [6,"\x20"],
+                            [14, $printic],
+                        ]
+                    );
+                    $form->printNewLine(1);
+        
+                    // (address 2)
+                    $form->printElementArray(
+                        [
+                            [5,"\x20"],
+                            [38, $modelpatient->address2,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+        
+                    // (address 3 and phone number)
                     $form->printElementArray( 
                         [  
-                              //[6, "\x20"],
-                            //[ntsure, $agama],
-                            [49, "\x20"],
-                            [30,$modelnok->nok_name,true],
+                            [5,"\x20"],  
+                            [38, $modelpatient->address3,true],
+                            [10,"\x20"], 
+                            [15, $modelpatient->phone_number],  
+                        ]
+                    );
+                    $form->printNewLine(2);
+        
+                    $form->printElementArray( 
+                        [  
+                           //[60, "\x20"],
+                            //[notsurelength,casepolis]
+                        ]
+                    );
+                    $form->printNewLine(2);
+        
+                   $form->printElementArray( 
+                        [  
+                            [6,"\x20"],
+                            [9,$modelpatient->sex,true],
+                            [6,"\x20"],
+                            [10,$patientdob],
+                            [4,"\x20"],
+                            [8,$age],
+                            [4, "\x20"],
+                            [10,$modelpatient->race,true],
+                            [4, "\x20"],
+                            [9,$modelpatient->nationality,true],
+                        ]
+                    );
+                    $form->printNewLine(2);
+                    // if ($noknull == 0)
+        //             {
+        //                 $printer -> text((str_repeat("\x20" , 38).strtoupper($modelnok->nok_name)."\n\x20\n")); // nama penuh waris "\x20" , 43 - strlen($agama)
+        //                 //$printer -> text($blankfront);
+        //                 //$printer -> text("taraf perkahwinan"); // taraf perkahwinan
+        //                 $printer -> text((str_repeat("\x20" , 52).strtoupper($modelnok->nok_address1)."\n")); // alamat terkini waris str_repeat("\x20" , 43 - strlen($tarafperkahwinan)
+        //                 $printer -> text((str_repeat("\x20" , 52).strtoupper($modelnok->nok_address2)."\n"));
+        //                 $printer -> text((str_repeat("\x20" , 52).strtoupper($modelnok->nok_address3)."\n"));
+        //                //print nok here
+        //             }
+        //             else{
+        //                 $printer -> text("\n\x20\n\n\n\n");
+        //             }
+                        if ($noknull == 0)
+                        {
+                            $form->printElementArray( 
+                                [  
+                                      //[6, "\x20"],
+                                    //[ntsure, $agama],
+                                    [49, "\x20"],
+                                    [30,$modelnok->nok_name,true],
+                                ]
+                            );
+                            $form->printNewLine(2);
+                            $form->printElementArray( 
+                                [  
+                                    [41, "\x20"],  //52-13
+                                    [35,$modelnok->nok_address1,true],
+                                ]
+                            );
+                            $form->printNewLine(1);
+                            $form->printElementArray( 
+                                [  
+                                    [41, "\x20"],
+                                    [35,$modelnok->nok_address2,true],
+                                ]
+                            );
+                            $form->printNewLine(1);
+                            $form->printElementArray( 
+                                [  
+                                    [41, "\x20"],
+                                    [35,$modelnok->nok_address3,true],
+                                ]
+                            );
+                            $form->printNewLine(1);
+                        }
+                        else
+                        {
+                            $form->printNewLine(5);
+                        }
+                   
+                   
+                        $form->printNewLine(2);
+                    $form->printElementArray( 
+                        [  
+                            [11,"\x20"],
+                            [20,$modelpatient->job,true],
+                            [22,"\x20"],
+                           // [20,"to be fill"],
                         ]
                     );
                     $form->printNewLine(2);
                     $form->printElementArray( 
                         [  
-                            [41, "\x20"],  //52-13
-                            [35,$modelnok->nok_address1,true],
+                            [11,"\x20"],    
+                            [15,$entrydatein],
+                            [23,"\x20"],
+                            [30, $model->reference,true ],
                         ]
                     );
-                    $form->printNewLine(1);
+                    $form->printNewLine(4);
                     $form->printElementArray( 
                         [  
-                            [41, "\x20"],
-                            [35,$modelnok->nok_address2,true],
+                            [18,"\x20"],
+                            [11,$entrydate],
                         ]
                     );
-                    $form->printNewLine(1);
+                    $form->printNewLine(2);
                     $form->printElementArray( 
                         [  
-                            [41, "\x20"],
-                            [35,$modelnok->nok_address3,true],
+                            [18,"\x20"],
+                            [10,$model->initial_ward_code,true],
                         ]
                     );
-                    $form->printNewLine(1);
+                    $form->printNewLine(2);
+                    $form->printElementArray( 
+                        [  
+                             [18,"\x20"],
+                            [10,$model->initial_ward_class,true],
+                        ]
+                    );
+                    $form->printNewLine(2);
+                    $form->printElementArray( 
+                        [  
+                            [18,"\x20"],
+                            // [10,"Disiplin",true],
+                        ]
+                    );
+                    $form->printElementArray(
+                        [
+                           // [5, "\n"],
+                           // [11, "\x20"],
+                           // [32, $modelpatient->name, true],
+                          //  [20,"\x20"],
+                           // [11, $model->rn],
+                           // [3, "\n"],
+                            //[1, "\n"],
+                            
+                          // [1, "\n"],
+                            
+                            //[2,"\n"],
+                            
+                           // [2,"\n"],
+                           
+                           // [2,"\n"],
+                            //[6, "\x20"],
+                            //[ntsure, $agama],
+                          //  [49,$modelnok->nok_name,true],
+                          // [2,"\n"],
+                            //[11, "\x20"],
+                            //[idk,tarafperkahwinan],
+                           // [52, "\x20"],
+                            //[43,$modelnok->nok_address1,true],
+                           // [1,"\n"],
+                           // [52, "\x20"],
+                            //[43,$modelnok->nok_address2,true],
+                           // [1,"\n"],
+                           // [52, "\x20"],
+                           // [43,$modelnok->nok_address3,true],
+                           // [2,"\n"],
+                           // [11,"\x20"],
+                           // [20,$modelpatient->job,true],
+                           // [22,"\x20"],
+                           // [20,"to be fill"],
+                           // [2,"\n"],
+                            //[11,"\x20"],    
+                           // [15,$entrydatein],
+                           // [26,"\x20"],
+                           // [43, $model->reference,true ],
+                            //[3,"\n"],
+                            // [18,"\x20"],
+                            // [11,$entrydate],
+                            // [2, "\n"],
+                            // [18,"\x20"],
+                            // [10,$model->initial_ward_code,true],
+                        //     [2, "\n"],
+                        //     [18,"\x20"],
+                        //     [10,$model->initial_ward_class,true],
+                        //     [2, "\n"],
+                        //     [18,"\x20"],
+                        //     [10,"Disiplin",true],
+        
+        
+        
+        
+                        ]
+                    );
+                    $form->close();
                 }
-                else
-                {
-                    $form->printNewLine(5);
-                }
-           
-           
-                $form->printNewLine(2);
-            $form->printElementArray( 
-                [  
-                    [11,"\x20"],
-                    [20,$modelpatient->job,true],
-                    [22,"\x20"],
-                   // [20,"to be fill"],
-                ]
-            );
-            $form->printNewLine(2);
-            $form->printElementArray( 
-                [  
-                    [11,"\x20"],    
-                    [15,$entrydatein],
-                    [23,"\x20"],
-                    [30, $model->reference,true ],
-                ]
-            );
-            $form->printNewLine(4);
-            $form->printElementArray( 
-                [  
-                    [18,"\x20"],
-                    [11,$entrydate],
-                ]
-            );
-            $form->printNewLine(2);
-            $form->printElementArray( 
-                [  
-                    [18,"\x20"],
-                    [10,$model->initial_ward_code,true],
-                ]
-            );
-            $form->printNewLine(2);
-            $form->printElementArray( 
-                [  
-                     [18,"\x20"],
-                    [10,$model->initial_ward_class,true],
-                ]
-            );
-            $form->printNewLine(2);
-            $form->printElementArray( 
-                [  
-                    [18,"\x20"],
-                    // [10,"Disiplin",true],
-                ]
-            );
-            $form->printElementArray(
-                [
-                   // [5, "\n"],
-                   // [11, "\x20"],
-                   // [32, $modelpatient->name, true],
-                  //  [20,"\x20"],
-                   // [11, $model->rn],
-                   // [3, "\n"],
-                    //[1, "\n"],
-                    
-                  // [1, "\n"],
-                    
-                    //[2,"\n"],
-                    
-                   // [2,"\n"],
-                   
-                   // [2,"\n"],
-                    //[6, "\x20"],
-                    //[ntsure, $agama],
-                  //  [49,$modelnok->nok_name,true],
-                  // [2,"\n"],
-                    //[11, "\x20"],
-                    //[idk,tarafperkahwinan],
-                   // [52, "\x20"],
-                    //[43,$modelnok->nok_address1,true],
-                   // [1,"\n"],
-                   // [52, "\x20"],
-                    //[43,$modelnok->nok_address2,true],
-                   // [1,"\n"],
-                   // [52, "\x20"],
-                   // [43,$modelnok->nok_address3,true],
-                   // [2,"\n"],
-                   // [11,"\x20"],
-                   // [20,$modelpatient->job,true],
-                   // [22,"\x20"],
-                   // [20,"to be fill"],
-                   // [2,"\n"],
-                    //[11,"\x20"],    
-                   // [15,$entrydatein],
-                   // [26,"\x20"],
-                   // [43, $model->reference,true ],
-                    //[3,"\n"],
-                    // [18,"\x20"],
-                    // [11,$entrydate],
-                    // [2, "\n"],
-                    // [18,"\x20"],
-                    // [10,$model->initial_ward_code,true],
-                //     [2, "\n"],
-                //     [18,"\x20"],
-                //     [10,$model->initial_ward_class,true],
-                //     [2, "\n"],
-                //     [18,"\x20"],
-                //     [10,"Disiplin",true],
+    else{
+        return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+        'rn' => $model->rn));  
+    }
+            }
+ 
 
-
-
-
-                ]
-            );
-            $form->close();
+            
 
              // $form->printElement(5, "\n");
             // $form->printElement(11, "\x20");
@@ -997,8 +1008,7 @@ $printer -> text("   "."\n");
                     
             // }
             
-            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-            'rn' => $model->rn));   
+             
    }
     return $this->render('update', [
         'model' => $model,
@@ -1076,21 +1086,27 @@ $printer -> text("   "."\n");
             $printentry = implode($getentrydate);
             
             
-            
-            
-            if($modelpatient->nric == ""){
+             
+            if($modelpatient->nric != ""){
                 $nric = $modelpatient->nric;
-                $dob = mb_strimwidth($nric,0,6);
-                $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
-                $patientdob = date("d/m/Y" , strtotime($dateofbirth));
-                $today = date("y-m-d");
-                $diff = date_diff(date_create($dateofbirth),date_create($today));
-                $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                if(strlen($nric) == 12){
+                    $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5]."-".$nric[6].$nric[7]."-".$nric[8].$nric[9].$nric[10].$nric[11];
+                    $dob = mb_strimwidth($nric,0,6);
+                    $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
+                    $patientdob = date("d/m/Y" , strtotime($dateofbirth));
+                    $today = date("y-m-d");
+                    $diff = date_diff(date_create($dateofbirth),date_create($today));
+                    $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                }
+                
             }
             else{
                 $age = "";
                 $patientdob = "";
+                $printic = $modelpatient->nric;
             }
+            
+           
             $entrydate = date("d/m/Y" , strtotime($model->entry_datetime));
             $entrytime =date("H:i" , strtotime($model->entry_datetime));
             // $nric = $modelpatient->nric;
@@ -1121,114 +1137,125 @@ $printer -> text("   "."\n");
 
     //if($this->request->isPost && $model->load($this->request->post()))
     //{
-        $form = new PrintForm(PrintForm::BorangCajSheet);
-
-        $form->printNewLine(7);
-        $form->printElementArray(
-                    [
-                        //caj line 1, rn, entrydate, entrytime
-                        [10, "\x20"],
-                        [11, $model->rn],
-                        [23,"\x20"],
-                        [10, $entrydate],
-                        [15,"\x20"],
-                        [5, $entrytime],
-                    ]
-                );
-                $form->printNewLine(2);
-                if(strlen($modelpatient->name) > 25){
-                $first = substr($modelpatient->name, 0, 25);
-                 $second = substr($modelpatient->name, 26, 51);
-
-                 $form->printElementArray(
-                    [
-                        //line 2, name and nric
-                        [5, "\x20"],
-                        [30, $first,true],
-                        [14,"\x20"],
-                        [10, $modelpatient->nric],
-                    ]
-                );
-                $form->printNewLine(1);
+        if($model->validate()) 
+        {
+            if (Yii::$app->params['printerstatus'] == "true"){
+                $form = new PrintForm(PrintForm::BorangCajSheet);
+    
+                $form->printNewLine(7);
                 $form->printElementArray(
-                    [
-                        //line 2, name and nric
-                        [5, "\x20"],
-                        [30, $second,true],
-                        [14,"\x20"],
-                        [25, $modelpatient->nationality,true],
-                    ]
-                    );
-                    $form->printNewLine(2);
-                }
-            else
-            {
-                $form->printElementArray(
-                    [
-                        //line 2, name and nric
-                        [5, "\x20"],
-                        [30, $modelpatient->name,true],
-                        [14,"\x20"],
-                        [10, $modelpatient->nric],
-                    ]
-                );
-                $form->printNewLine(1);
-                $form->printElementArray(
-                    [
-                        //line for nationality 
-                        [49, "\x20"],
-                        [25, $modelpatient->nationality,true],
-                    ]
-                );
-                $form->printNewLine(2);
-
-            }
-         $form->printElementArray(
-                    [
-                        //line for gender, age
-                        [6, "\x20"],
-                        [9, $modelpatient->sex,true],
-                        [30, "\x20"],
-                        [8, $age],
-                        [13, "\x20"],
-                       // [13, "\x20"], for status in the future
-                    ]
-                );
-                $form->printNewLine(2);
-
-                $form->printElementArray(
-                    [
-                        [13, "\x20"],
-                        [50, $modelpatient->address1,true],
-                    ]
-                );
-                $form->printNewLine(1);
-
-                $form->printElementArray(
-                    [
-                        [13, "\x20"],
-                        [50, $modelpatient->address2,true],
-                    ]
-                );
-                $form->printNewLine(1);
-                $form->printElementArray(
-                    [
-                        [13, "\x20"],
-                        [50, $modelpatient->address3,true],
-                    ]
-                );
-                $form->printNewLine(2);
-                $form->printElementArray(
-                    [
-                        [10, "\x20"],
-                        [5, $model->initial_ward_code,true],
-                        [42, "\x20"],
-                        [3, $model->initial_ward_class,true],
-                    ]
-                );
-
-        $form->close();
+                            [
+                                //caj line 1, rn, entrydate, entrytime
+                                [8, "\x20"],
+                                [11, $model->rn],
+                                [24,"\x20"],
+                                [10, $entrydate],
+                                [15,"\x20"],
+                                [5, $entrytime],
+                            ]
+                        );
+                        $form->printNewLine(2);
+                        if(strlen($modelpatient->name) > 25){
+                        $first = substr($modelpatient->name, 0, 25);
+                         $second = substr($modelpatient->name, 26, 51);
         
+                         $form->printElementArray(
+                            [
+                                //line 2, name and nric
+                                [5, "\x20"],
+                                [30, $first,true],
+                                [15,"\x20"],
+                                [10, $printic],
+                            ]
+                        );
+                        $form->printNewLine(1);
+                        $form->printElementArray(
+                            [
+                                //line 2, name and nric
+                                [5, "\x20"],
+                                [30, $second,true],
+                                [15,"\x20"],
+                                [25, $modelpatient->nationality,true],
+                            ]
+                            );
+                            $form->printNewLine(2);
+                        }
+                    else
+                    {
+                        $form->printElementArray(
+                            [
+                                //line 2, name and nric
+                                [5, "\x20"],
+                                [30, $modelpatient->name,true],
+                                [15,"\x20"],
+                                [10, $modelpatient->nric],
+                            ]
+                        );
+                        $form->printNewLine(1);
+                        $form->printElementArray(
+                            [
+                                //line for nationality 
+                                [50, "\x20"],
+                                [25, $modelpatient->nationality,true],
+                            ]
+                        );
+                        $form->printNewLine(2);
+        
+                    }
+                 $form->printElementArray(
+                            [
+                                //line for gender, age
+                                [6, "\x20"],
+                                [9, $modelpatient->sex,true],
+                                [27, "\x20"],
+                                [8, $age],
+                                [13, "\x20"],
+                               // [13, "\x20"], for status in the future
+                            ]
+                        );
+                        $form->printNewLine(2);
+        
+                        $form->printElementArray(
+                            [
+                                [12, "\x20"],
+                                [50, $modelpatient->address1,true],
+                            ]
+                        );
+                        $form->printNewLine(1);
+        
+                        $form->printElementArray(
+                            [
+                                [12, "\x20"],
+                                [50, $modelpatient->address2,true],
+                            ]
+                        );
+                        $form->printNewLine(1);
+                        $form->printElementArray(
+                            [
+                                [12, "\x20"],
+                                [50, $modelpatient->address3,true],
+                            ]
+                        );
+                        $form->printNewLine(2);
+                        $form->printElementArray(
+                            [
+                                [10, "\x20"],
+                                [5, $model->initial_ward_code,true],
+                                [42, "\x20"],
+                                [3, $model->initial_ward_class,true],
+                            ]
+                        );
+        
+                $form->close();
+                
+        }
+        else{
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+            'rn' => $model->rn));
+        }
+        }
+        
+       
         
             //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/epson");
 
@@ -1272,8 +1299,7 @@ $printer -> text("   "."\n");
                     
             }
             
-            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-            'rn' => $model->rn));   
+               
    // }
     return $this->render('update', [
         'model' => $model,
@@ -1365,10 +1391,10 @@ $printer -> text("   "."\n");
             // //print_r($age);
 
          
-            if($modelpatient->nric == ""){
+            if($modelpatient->nric != ""){
                 $nric = $modelpatient->nric;
                 if(strlen($nric) == 12){
-                    $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5].$nric[6]."-".$nric[7].$nric[8]."-".$nric[9].$nric[10].$nric[11].$nric[12];
+                    $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5]."-".$nric[6].$nric[7]."-".$nric[8].$nric[9].$nric[10].$nric[11];
                     $dob = mb_strimwidth($nric,0,6);
                     $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
                     $patientdob = date("d/m/Y" , strtotime($dateofbirth));
@@ -1381,6 +1407,7 @@ $printer -> text("   "."\n");
             else{
                 $age = "";
                 $patientdob = "";
+                $printic = $modelpatient->nric;
             }
             $entrydate = date("d/m/Y" , strtotime($model->entry_datetime));
             $entrytime =date("H:i" , strtotime($model->entry_datetime));
@@ -1411,149 +1438,161 @@ $caseblankfront2 = str_repeat("\x20", 16);
 
     //if($this->request->isPost && $model->load($this->request->post()))
     //{
-        $form = new PrintForm(PrintForm::BorangCaseNote);
 
-        $form->printNewLine(4);
-        $form->printElementArray(
-            [
-                //case history note line 1, name and rn
-                [20, "\x20"], // from 22->20
-                [36, $modelpatient->name,true],
-                [10,"\x20"],
-                [11, $model->rn],
-            ]
-        );
-        $form->printNewLine(1);
-
-        $form->printElementArray(
-            [
-                //case history note line 2,address1
-                [20, "\x20"], // from 22->20
-                [36, $modelpatient->address1,true],
-            ]
-        );
-        $form->printNewLine(1);
-        $form->printElementArray(
-            [
-                //case history note line 3,address2 , ic
-                [20, "\x20"], // from 22->20
-                [36, $modelpatient->address2,true],
-                [10,"\x20"],
-                [14, $modelpatient->nric],
-            ]
-        );
-        $form->printNewLine(1);
-        $form->printElementArray(
-            [
-                //case history note line 4,address3
-                [20, "\x20"], // from 22->20
-                [36, $modelpatient->address3,true],
-            ]
-        );
-        $form->printNewLine(2);
-        $form->printElementArray(
-            [
-                //case history note line 5,age,gender,race,religion
-                [19, "\x20"], // from 22->20
-                [8, $age],
-                [5 , "\x20"],
-                [1, $modelpatient->sex,true],
-                [12, "\x20"],
-                [2, $modelpatient->race,true],
-                [18, "\x20"],
-               // [notsure, $religion],
-            ]
-        );
-        $form->printNewLine(2);
-        $form->printElementArray(
-            [
-                //case history note line 6 occupation/job
-                [20, "\x20"], // from 22->20
-                [36, $modelpatient->job,true],
-            ]
-        );
-        $form->printNewLine(2);
-        $form->printElementArray(
-            [
-                //case history note line 7, employername
-                [20, "\x20"], // from 22->20
-                [13, $model->guarantor_name,true],// phase2 change to be selective
-            ]
-        );
-        $form->printNewLine(2);
-        if ($noknull == 0)
-         {
-            $form->printElementArray(
-                [
-                    //case history note line 8, nok name
-                    [20, "\x20"], // from 22->20
-                    [13, $modelnok->nok_name,true],
-                ]
-            );
-            $form->printNewLine(1);
-            $form->printElementArray(
-                [
-                    //case history note line 9, nok add 1
-                    [17, "\x20"], // from 22->20
-                    [17, $modelnok->nok_address1,true],
-                ]
-            );
-            $form->printNewLine(1);
-            $form->printElementArray(
-                [
-                    //case history note line 10, nok add2
-                    [17, "\x20"], // from 22->20
-                    [17, $modelnok->nok_address2,true],
-                ]
-            );
-            $form->printNewLine(1);
-            $form->printElementArray(
-                [
-                    //case history note line 11, nok add3 , entry datetime
-                    [17, "\x20"], // from 22->20
-                    [17, $modelnok->nok_address3,true],
-                    [11, "\x20"],
-                    [17, $entrydatetime],
-                ]
-            );
-            $form->printNewLine(1);
-         }
-         else
-         {
-             $form->printNewLine(4);
-             $form->printElementArray(
-                [
-                    //case history note line 11, entrydate and time
-                    [45, "\x20"], // from 22->20
-                    [10, $entrydate],
-                    [1, "\x20"],
-                    [5, $entrytime],
-                ]
-            );
-        }
-        $form->printNewLine(1);
-        if ($noknull == 0)
-         {
-            $form->printElementArray(
-                [
-                    //case history note line 12, nok phone
-                    [16, "\x20"], 
-                    [13, $modelnok->nok_phone_number],
-                ]
-            );
-        }
+        if($model->validate())
+        {
+            if (Yii::$app->params['printerstatus'] == "true"){
+                $form = new PrintForm(PrintForm::BorangCaseNote);
+    
+                $form->printNewLine(4);
+                $form->printElementArray(
+                    [
+                        //case history note line 1, name and rn
+                        [20, "\x20"], // from 22->20
+                        [36, $modelpatient->name,true],
+                        [10,"\x20"],
+                        [11, $model->rn],
+                    ]
+                );
+                $form->printNewLine(1);
+        
+                $form->printElementArray(
+                    [
+                        //case history note line 2,address1
+                        [20, "\x20"], // from 22->20
+                        [36, $modelpatient->address1,true],
+                    ]
+                );
+                $form->printNewLine(1);
+                $form->printElementArray(
+                    [
+                        //case history note line 3,address2 , ic
+                        [20, "\x20"], // from 22->20
+                        [36, $modelpatient->address2,true],
+                        [10,"\x20"],
+                        [14, $printic],
+                    ]
+                );
+                $form->printNewLine(1);
+                $form->printElementArray(
+                    [
+                        //case history note line 4,address3
+                        [20, "\x20"], // from 22->20
+                        [36, $modelpatient->address3,true],
+                    ]
+                );
+                $form->printNewLine(2);
+                $form->printElementArray(
+                    [
+                        //case history note line 5,age,gender,race,religion
+                        [18, "\x20"], // from 22->20
+                        [8, $age],
+                        [8 , "\x20"],
+                        [1, $modelpatient->sex,true],
+                        [12, "\x20"],
+                        [2, $modelpatient->race,true],
+                        [18, "\x20"],
+                       // [notsure, $religion],
+                    ]
+                );
+                $form->printNewLine(2);
+                $form->printElementArray(
+                    [
+                        //case history note line 6 occupation/job
+                        [20, "\x20"], // from 22->20
+                        [36, $modelpatient->job,true],
+                    ]
+                );
+                $form->printNewLine(2);
+                $form->printElementArray(
+                    [
+                        //case history note line 7, employername
+                        [20, "\x20"], // from 22->20
+                        [13, $model->guarantor_name,true],// phase2 change to be selective
+                    ]
+                );
+                $form->printNewLine(2);
+                if ($noknull == 0)
+                 {
+                    $form->printElementArray(
+                        [
+                            //case history note line 8, nok name
+                            [20, "\x20"], // from 22->20
+                            [13, $modelnok->nok_name,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            //case history note line 9, nok add 1
+                            [17, "\x20"], // from 22->20
+                            [17, $modelnok->nok_address1,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            //case history note line 10, nok add2
+                            [17, "\x20"], // from 22->20
+                            [17, $modelnok->nok_address2,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            //case history note line 11, nok add3 , entry datetime
+                            [17, "\x20"], // from 22->20
+                            [17, $modelnok->nok_address3,true],
+                            [11, "\x20"],
+                            [17, $entrydatetime],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                 }
+                 else
+                 {
+                     $form->printNewLine(4);
+                     $form->printElementArray(
+                        [
+                            //case history note line 11, entrydate and time
+                            [45, "\x20"], // from 22->20
+                            [10, $entrydate],
+                            [1, "\x20"],
+                            [5, $entrytime],
+                        ]
+                    );
+                }
+                $form->printNewLine(1);
+                if ($noknull == 0)
+                 {
+                    $form->printElementArray(
+                        [
+                            //case history note line 12, nok phone
+                            [16, "\x20"], 
+                            [13, $modelnok->nok_phone_number],
+                        ]
+                    );
+                }
+                else{
+        
+                    $form->printElementArray(
+                        [
+                            //case history note line 12, nok phone
+                            [16, "\x20"], 
+                            [13, " "],
+                        ]
+                    );
+                }
+        
+                $form->close();
+            }
         else{
-
-            $form->printElementArray(
-                [
-                    //case history note line 12, nok phone
-                    [16, "\x20"], 
-                    [13, " "],
-                ]
-            );
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                'rn' => $model->rn)); 
         }
-
-        $form->close();
+        }
+      
+       
         //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/epson");
 
     //     $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
@@ -1626,8 +1665,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
                     
             }
             
-            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-            'rn' => $model->rn));   
+             
    // }
     return $this->render('update', [
         'model' => $model,
@@ -1711,26 +1749,29 @@ $caseblankfront2 = str_repeat("\x20", 16);
             // $agesticker = $diff->format('%Y')."yrs".$diff->format('%m')."mth".$diff->format('%d')."day"; // 15 character +
        
           
-            
-            
-            if($modelpatient->nric == ""){
+            if($modelpatient->nric != ""){
                 $nric = $modelpatient->nric;
-                $dob = mb_strimwidth($nric,0,6);
-                $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
-                $patientdob = date("d/m/Y" , strtotime($dateofbirth));
-                $today = date("y-m-d");
-                $diff = date_diff(date_create($dateofbirth),date_create($today));
-                $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
-                $agesticker = $diff->format('%Y')."yrs".$diff->format('%m')."mth".$diff->format('%d')."day";// 15 character +
+                if(strlen($nric) == 12){
+                    $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5]."-".$nric[6].$nric[7]."-".$nric[8].$nric[9].$nric[10].$nric[11];
+                    $dob = mb_strimwidth($nric,0,6);
+                    $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
+                    $patientdob = date("d/m/Y" , strtotime($dateofbirth));
+                    $today = date("y-m-d");
+                    $diff = date_diff(date_create($dateofbirth),date_create($today));
+                    $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                    $agesticker = $diff->format('%Y')."yrs".$diff->format('%m')."mth".$diff->format('%d')."day";// 15 character +
+                }
+                
             }
             else{
                 $age = "";
                 $patientdob = "";
+                $printic = $modelpatient->nric;
                 $agesticker = "  yrs  mth  day";
             }
-         
             
-            
+        
+             
 
     
            
@@ -1745,26 +1786,30 @@ $caseblankfront2 = str_repeat("\x20", 16);
             $stickerblankaftergender = str_repeat("\x20", 14 );
             $stickerblankaftergender1 = str_repeat("\x20", 14 );
 
+     
+    if($model->validate())
+    {
+        if (Yii::$app->params['printerstatus'] == "true"){
             $form = new PrintForm(PrintForm::BorangSticker);
             $n=6;
             for($i=1; $i<=1; $i++)  
             {
                 
-                for($k=1; $k<=6; $k++)  //$k<=6 
+                for($k=1; $k<=1; $k++)  //$k<=6 
                 {
                     $form->printElementArray(
                         [
                             //sticker line 1 , name, age
-                            [22, $modelpatient->name,true],
-                            [6,"\x20"],
+                            [15, $modelpatient->name,true],
+                            [3,"\x20"],
                             [15, $agesticker],
-                            [17,"\x20"],
-                            [22, $modelpatient->name,true],
-                            [6,"\x20"],
+                            [11,"\x20"],//17
+                            [15, $modelpatient->name,true],
+                            [3,"\x20"],
                             [15, $agesticker],
-                            [27,"\x20"],
-                            [22, $modelpatient->name,true],
-                            [6,"\x20"],
+                            [11,"\x20"],
+                            [15, $modelpatient->name,true],
+                            [3,"\x20"],
                             [15, $agesticker],
                         ]
                     );
@@ -1774,19 +1819,19 @@ $caseblankfront2 = str_repeat("\x20", 16);
                             //sticker line 2 , ic rn
                             [4, "KP: "],
                             [14,$modelpatient->nric],
-                            [10, "\x20"],
+                            [3, "\x20"],
                             [3,"NP:"],
                             [11, $model->rn],
-                            [17,"\x20"],
+                            [13,"\x20"], // 47
                             [4, "KP: "],
                             [14,$modelpatient->nric],
-                            [11, "\x20"],
+                            [3, "\x20"],
                             [3,"NP:"],
                             [11, $model->rn],
-                            [16, "\x20"],
+                            [12, "\x20"],
                             [4, "KP: "],
                             [14,$modelpatient->nric],
-                            [11, "\x20"],
+                            [3, "\x20"],
                             [3,"NP:"],
                             [11, $model->rn],
                         ]
@@ -1798,27 +1843,27 @@ $caseblankfront2 = str_repeat("\x20", 16);
                             [6, $model->initial_ward_code,true],
                             [1, "\x20"],
                             [7,"Katil: "],
-                            [12,"\x20"],
+                            [17,"\x20"],
+                            [4, "BAN:"],
+                            [2,$modelpatient->race,true],
+                            [2, "\x20"],
+                            [4, "Jan:"], 
+                            [1,$modelpatient->sex,true], //44
+                            [13, "\x20"],
+                            [6, $model->initial_ward_code,true],
+                            [1, "\x20"],
+                            [7,"Katil: "],
+                            [17,"\x20"],
                             [4, "BAN:"],
                             [2,$modelpatient->race,true],
                             [2, "\x20"],
                             [4, "Jan:"],
                             [1,$modelpatient->sex,true],
-                            [17, "\x20"],
+                            [12, "\x20"],
                             [6, $model->initial_ward_code,true],
                             [1, "\x20"],
                             [7,"Katil: "],
-                            [14,"\x20"],
-                            [4, "BAN:"],
-                            [2,$modelpatient->race,true],
-                            [2, "\x20"],
-                            [4, "Jan:"],
-                            [1,$modelpatient->sex,true],
-                            [15, "\x20"],
-                            [6, $model->initial_ward_code,true],
-                            [1, "\x20"],
-                            [7,"Katil: "],
-                            [14,"\x20"],
+                            [17,"\x20"],
                             [4, "BAN:"],
                             [2,$modelpatient->race,true],
                             [2, "\x20"],
@@ -1851,6 +1896,18 @@ $caseblankfront2 = str_repeat("\x20", 16);
                 //$printer ->text ("\n\n\n");
             }
             $form->close();
+        }
+        else{
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+            'rn' => $model->rn));   
+        }
+    }
+    return $this->render('update', [
+        'model' => $model,
+     ]);
+
+
+           
 
 
 
@@ -1892,12 +1949,9 @@ $caseblankfront2 = str_repeat("\x20", 16);
                         // $printer -> close();                 
             // }
             
-                    return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                    'rn' => $model->rn));   
+                    
         // }
-            // return $this->render('update', [
-            //     'model' => $model,
-            // ]);
+             
         /*
                 else 
                     echo '<script type="text/javascript">',

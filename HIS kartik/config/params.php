@@ -12,6 +12,12 @@ return [
     ],
 
     'borangdafter' => 'smb://DESKTOP-7044BNO/Epson',
+    'chargesheet' => 'smb://DESKTOP-7044BNO/Epson',
+    'casehistory' => 'smb://DESKTOP-7044BNO/Epson',
+    'sticker' => 'smb://DESKTOP-7044BNO/Epson',
+    'receipt' => 'smb://DESKTOP-7044BNO/Epson',
+    'bill' => 'smb://DESKTOP-7044BNO/Epson',
+
 
     'printerstatus' => 'true',
 

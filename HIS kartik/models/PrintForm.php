@@ -14,18 +14,18 @@ class PrintForm
    //const printerStringForBorangDaftarMasuk = "smb://DESKTOP-7044BNO/Epson"; //"smb://DESKTOP-7044BNO/Epson" Yii::$app->params['borangdafter']
 
     const BorangCajSheet= 0;
-    const printerStringForBorangCajSheet = "smb://DESKTOP-7044BNO/Epson"; //smb://JOSH2-LAPTOP/Epson
+   // const printerStringForBorangCajSheet = "smb://DESKTOP-7044BNO/Epson"; //smb://JOSH2-LAPTOP/Epson
 
     const BorangCaseNote= 0;
-    const printerStringForBorangCaseNote = "smb://DESKTOP-7044BNO/Epson";
+    //const printerStringForBorangCaseNote = "smb://DESKTOP-7044BNO/Epson";
 
     const BorangSticker= 0;
-    const printerSticker = "smb://DESKTOP-7044BNO/Epson";
+    //const printerSticker = "smb://DESKTOP-7044BNO/Epson";
     const Receipt= 0;
-    const printerStringForReceipt= "smb://DESKTOP-7044BNO/Epson";
+    //const printerStringForReceipt= "smb://DESKTOP-7044BNO/Epson";
 
     const Bill= 0;
-    const printerStringForBill= "smb://DESKTOP-7044BNO/Epson";
+   // const printerStringForBill= "smb://DESKTOP-7044BNO/Epson";
 
     public $formtype = null;
 
@@ -35,6 +35,11 @@ class PrintForm
     public function __construct($formtype)
     {
         $printerStringForBorangDaftarMasuk = Yii::$app->params['borangdafter'];
+        $printerStringForBorangCajSheet = Yii::$app->params['chargesheet'];
+        $printerStringForBorangCaseNote = Yii::$app->params['casehistory'];
+        $printerSticker = Yii::$app->params['sticker'];
+        $printerStringForReceipt = Yii::$app->params['receipt'];
+        $printerStringForBill = Yii::$app->params['bill'];
 
         $this->connector = null;
         $this->formtype = $formtype;
@@ -47,29 +52,29 @@ class PrintForm
 
 
         if($formtype == PrintForm::BorangCajSheet){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBorangCajSheet);
+            $this->connector = new WindowsPrintConnector($printerStringForBorangCajSheet);
         }
         $this->printer = new Printer($this->connector);
 
 
         if($formtype == PrintForm::BorangCaseNote){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBorangCaseNote);
+            $this->connector = new WindowsPrintConnector($printerStringForBorangCaseNote);
            
         }
         $this->printer = new Printer($this->connector);
 
         if($formtype == PrintForm::BorangSticker){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerSticker);
+            $this->connector = new WindowsPrintConnector($printerSticker);
           
         }
         $this->printer = new Printer($this->connector);
         if($formtype == PrintForm::Receipt){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForReceipt);
+            $this->connector = new WindowsPrintConnector($printerStringForReceipt);
             // $this->printer = new Printer($this->connector);
         }
         $this->printer = new Printer($this->connector);
         if($formtype == PrintForm::Bill){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBill);
+            $this->connector = new WindowsPrintConnector($printerStringForBill);
             // $this->printer = new Printer($this->connector);
         }
         $this->printer = new Printer($this->connector);
