@@ -46,7 +46,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
+        
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
@@ -102,5 +102,10 @@ class LoginForm extends Model
         }
 
         return $this->_user->user_uid;
+    }
+
+    public static function hashPassword($password) {// Function to create password hash
+        $salt = "stev37f";
+        return md5($password.$salt);
     }
 }

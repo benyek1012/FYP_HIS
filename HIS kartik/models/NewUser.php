@@ -78,7 +78,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public function validatePassword($password){
-        return $this->user_password === $password;
+        return $this->user_password ===  LoginForm::hashPassword($password);
     }
 
    

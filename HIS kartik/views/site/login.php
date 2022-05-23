@@ -1,4 +1,5 @@
 <?php
+// password : 12345
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap4\ActiveForm $form */
@@ -6,9 +7,11 @@
 
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
+use app\models\LoginForm;
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
+//echo LoginForm::hashPassword("12345");
 ?>
 <div class="site-login ">
 
