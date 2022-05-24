@@ -11,18 +11,21 @@ use Yii;
 class PrintForm
 {
     const BorangDaftarMasuk = 0;
-    const printerStringForBorangDaftarMasuk = "smb://DESKTOP-7044BNO/Epson";
+   //const printerStringForBorangDaftarMasuk = "smb://DESKTOP-7044BNO/Epson"; //"smb://DESKTOP-7044BNO/Epson" Yii::$app->params['borangdafter']
 
     const BorangCajSheet= 0;
-    const printerStringForBorangCajSheet = "smb://DESKTOP-7044BNO/Epson";
+   // const printerStringForBorangCajSheet = "smb://DESKTOP-7044BNO/Epson"; //smb://JOSH2-LAPTOP/Epson
 
     const BorangCaseNote= 0;
-    const printerStringForBorangCaseNote = "smb://DESKTOP-7044BNO/Epson";
+    //const printerStringForBorangCaseNote = "smb://DESKTOP-7044BNO/Epson";
 
     const BorangSticker= 0;
-    const printerSticker = "smb://DESKTOP-7044BNO/Epson";
+    //const printerSticker = "smb://DESKTOP-7044BNO/Epson";
     const Receipt= 0;
-    const printerStringForReceipt= "smb://DESKTOP-7044BNO/Epson";
+    //const printerStringForReceipt= "smb://DESKTOP-7044BNO/Epson";
+
+    const Bill= 0;
+   // const printerStringForBill= "smb://DESKTOP-7044BNO/Epson";
 
     public $formtype = null;
 
@@ -31,35 +34,47 @@ class PrintForm
 
     public function __construct($formtype)
     {
+        $printerStringForBorangDaftarMasuk = Yii::$app->params['borangdafter'];
+        $printerStringForBorangCajSheet = Yii::$app->params['chargesheet'];
+        $printerStringForBorangCaseNote = Yii::$app->params['casehistory'];
+        $printerSticker = Yii::$app->params['sticker'];
+        $printerStringForReceipt = Yii::$app->params['receipt'];
+        $printerStringForBill = Yii::$app->params['bill'];
+
         $this->connector = null;
         $this->formtype = $formtype;
 
         if($formtype == PrintForm::BorangDaftarMasuk){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBorangDaftarMasuk);
+            $this->connector = new WindowsPrintConnector($printerStringForBorangDaftarMasuk);
             
         }
         $this->printer = new Printer($this->connector);
 
 
         if($formtype == PrintForm::BorangCajSheet){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBorangCajSheet);
+            $this->connector = new WindowsPrintConnector($printerStringForBorangCajSheet);
         }
         $this->printer = new Printer($this->connector);
 
 
         if($formtype == PrintForm::BorangCaseNote){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForBorangCaseNote);
+            $this->connector = new WindowsPrintConnector($printerStringForBorangCaseNote);
            
         }
         $this->printer = new Printer($this->connector);
 
         if($formtype == PrintForm::BorangSticker){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerSticker);
+            $this->connector = new WindowsPrintConnector($printerSticker);
           
         }
         $this->printer = new Printer($this->connector);
         if($formtype == PrintForm::Receipt){
-            $this->connector = new WindowsPrintConnector(PrintForm::printerStringForReceipt);
+            $this->connector = new WindowsPrintConnector($printerStringForReceipt);
+            // $this->printer = new Printer($this->connector);
+        }
+        $this->printer = new Printer($this->connector);
+        if($formtype == PrintForm::Bill){
+            $this->connector = new WindowsPrintConnector($printerStringForBill);
             // $this->printer = new Printer($this->connector);
         }
         $this->printer = new Printer($this->connector);
@@ -75,6 +90,7 @@ class PrintForm
         if($value == "\n"){
             $this->printNewLine($len);
         }
+       
         
         $this->printer -> text(mb_strimwidth($value,0,$len));
 
@@ -115,28 +131,40 @@ class PrintForm
         $this->printer->close();
     }
 
-    public function printTotalTreamentUnitCost($totalCostTreatment, $totalUnitCost){
-        $totalCostTreatment += $totalUnitCost;
+    // public function printTotalTreamentUnitCost($totalCostTreatment, $totalUnitCost){
+    //     $totalCostTreatment += $totalUnitCost;
         
-        return $totalCostTreatment;
-    }
+    //     return $totalCostTreatment;
+    // }
 
-    public function printTotalDeposit($totalCostReceipt, $receipt_content_sum){
-        $totalCostReceipt += $receipt_content_sum;
+    // public function printTotalDeposit($totalCostReceipt, $receipt_content_sum){
+    //     $totalCostReceipt += $receipt_content_sum;
 
-        return $totalCostReceipt;
-    }
+    //     return $totalCostReceipt;
+    // }
 
-    public function printMoreTreatment($totalCostTreatment){
+    public function printMore($totalCost){
         $this->printElementArray(
             [
                 [6, "\x20"],
                 [4, "...."],
-                [6, "\x20"],
-                [9, number_format((float)$totalCostTreatment, 2, '.', '')],
+                [57, "\x20"],
+                [9, number_format((float)$totalCost, 2, '.', '')],
             ]
+     
         );
     }
+
+    // public function printMoreForDepositRefund($totalCost){
+    //     $this->printElementArray(
+    //         [
+    //             [6, "\x20"],
+    //             [4, "...."],
+    //             [6, "\x20"],
+    //             [9, number_format((float)"-".$totalCost, 2, '.', '')],
+    //         ]
+    //     );
+    // }
 
     public function printBillTreatment($bill_uid, $treatment_code, $treatment_name, $item_count, $item_per_unit_cost, $item_total_unit_cost){
         $this->printElementArray(
@@ -158,17 +186,17 @@ class PrintForm
         $this->printNewLine(1);
     }
 
-    public function printMoreDeposit($totalCostReceipt){
-        $this->printElementArray(
-            [
-                [6, "\x20"],
-                [4, "...."],
-                [6, "\x20"],
-                [9, number_format((float)$totalCostReceipt, 2, '.', '')],
-            ]
-        );
-        $this->printNewLine(1);
-    }
+    // public function printMoreDeposit($totalCostReceipt){
+    //     $this->printElementArray(
+    //         [
+    //             [6, "\x20"],
+    //             [4, "...."],
+    //             [6, "\x20"],
+    //             [9, number_format((float)$totalCostReceipt, 2, '.', '')],
+    //         ]
+    //     );
+    //     $this->printNewLine(1);
+    // }
 
     public function printBillDeposit($rn, $receipt_serial_number, $receipt_content_sum){
         $this->printElementArray(
@@ -198,7 +226,7 @@ class PrintForm
                 [8, "\x20"],
                 [18, "------------------"],
                 [45, "\x20"],
-                [9, "  "], // need ask what price is this for
+                [9, "0.00"], // need ask what price is this for
             ]
         );
         $this->printNewLine(1);
@@ -216,6 +244,40 @@ class PrintForm
             ]
         );
         $this->printNewLine(1);
+    }
+
+    public function printCajRawatenHarian(){
+        $this->printNewLine(1);
+        $this->printElementArray(
+            [
+                [8, "\x20"],
+                [18, "Caj Rawatan Harian"],
+            ]
+        );
+        $this->printNewLine(1);
+        $this->printElementArray(
+            [
+                [8, "\x20"],
+                [18, "------------------"],
+                [45, "\x20"],
+                [9, "0.00"], // need ask what price is this for
+            ]
+        );
+        $this->printNewLine(3);
+    }
+
+    public function printBillRefund($rn, $receipt_serial_number, $receipt_content_sum){
+        $this->printElementArray(
+            [
+                [8, "\x20"],
+                [14, "Refund "],
+                [8,$receipt_serial_number],
+                [37,"\x20"],
+                [9, "-".$receipt_content_sum],
+            
+            ]
+        );
+        $this->printNewLine(1);  
     }
 
     public function print($formtype)

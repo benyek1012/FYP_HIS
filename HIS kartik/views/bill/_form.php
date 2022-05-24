@@ -11,6 +11,16 @@ use app\models\Ward;
 /* @var $model app\models\Bill */
 /* @var $form yii\widgets\ActiveForm */
 
+
+    // if (Yii::$app->params['printerstatus'] == "false"){
+    //     var_dump('false');
+    //     exit();
+    // }
+    // else{
+    //     var_dump('treu');
+    //     exit();
+    // }
+
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $modelWardDate = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
          

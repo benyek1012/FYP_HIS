@@ -205,9 +205,20 @@ class Bill extends \yii\db\ActiveRecord
     // Get Unclaimed balance 
     public static function getUnclaimed($rn) {
         $model_bill = Bill::findOne(['rn' => $rn]);
-        if(!empty($model_bill)  && Bill::isGenerated($rn))
-            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
-        else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) ;
+// <<<<<<< HEAD
+//         if(!empty($model_bill)  && Bill::isGenerated($rn))
+//             return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
+//         else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) ;
+// =======
+        if(!empty($model_bill))
+        {
+            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
+        }
+        else
+        {
+            return (Bill::getDeposit($rn) + Bill::getRefund($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn)) ;
+        }
+
     }
 
     // Get Amt Due

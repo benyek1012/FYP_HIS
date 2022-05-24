@@ -170,41 +170,15 @@ class ReceiptController extends Controller
                     $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
                     $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
     
-                    $getresitno = ArrayHelper::toArray($model->receipt_serial_number);
-                    $getic = ArrayHelper::toArray($modelpatient->nric);
-                    $getpaymentdate = arrayHelper::toArray($model->receipt_content_datetime_paid);
-                    $getrn = arrayHelper::toArray($model->rn);
-                    $getbillno = arrayHelper::toArray($model->receipt_content_bill_id);
-                    $gettotal = arrayHelper::toArray($model->receipt_content_sum);
-                    $getpayername = arrayHelper::toArray($model->receipt_content_payer_name);
-                    $getname = ArrayHelper::toArray($modelpatient->name);
-                    $getpaymentmethod = arrayHelper::toArray($model->receipt_content_payment_method);
-                    $getreceiptcontent = arrayHelper::toArray($model->receipt_content_description);
-                    
-                    if($model->receipt_type !='refund')
-                  {
-                    $printresit = implode($getresitno);
-                    $printic = implode($getic);
-                    $printpaydatetime = implode($getpaymentdate);
-                    $printrn = implode($getrn);
-                    $printbil = implode($getbillno);
-                    $printtotal = implode($gettotal);
-                    $printpayername = implode($getpayername);
-                    $printpatientname = implode($getname);
-                    $printpaymentmethod = implode($getpaymentmethod);
-                    $printreceiptcontent = implode($getreceiptcontent);
-                    $nocagaran = " ";
-                
-                   
-        
-                   $blankfront = str_repeat("\x20", 15); // adds 14 spaces
-                    $fixbackblank = str_repeat("\x20", 33);
-                    $fixbackblank2 = str_repeat("\x20", 31);
-                    $fixbackblank3 = str_repeat("\x20", 32);
-                    $entrydate = date("d/m/Y" , strtotime($model->receipt_content_datetime_paid));
-                    $entrytime =date("H:i" , strtotime($model->receipt_content_datetime_paid));
-    
-                    $form = new PrintForm(PrintForm::BorangDaftarMasuk);
+               $blankfront = str_repeat("\x20", 15); // adds 14 spaces
+                $fixbackblank = str_repeat("\x20", 33);
+                $fixbackblank2 = str_repeat("\x20", 31);
+                $fixbackblank3 = str_repeat("\x20", 32);
+                $entrydate = date("d/m/Y" , strtotime($model->receipt_content_datetime_paid));
+                $entrytime =date("H:i" , strtotime($model->receipt_content_datetime_paid));
+
+                 if (Yii::$app->params['printerstatus'] == "true"){
+                    $form = new PrintForm(PrintForm::Receipt);
                     $form->printNewLine(6);
                     $form->printElementArray(
                                 [
@@ -298,62 +272,72 @@ class ReceiptController extends Controller
                             $form->printElementArray(
                                 [
                                     //line 8, penjelasan, descripton
-                                    [17, "\x20"],
+                                    [7, "\x20"],
                                     [13, "Penjelasan : "],
                                     [50, $model->receipt_content_description,true],
                                     
                                 ]
                             );
                     $form -> close();
-    
-                    //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
-                    // $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
-                    // $printer = new Printer($connector);
-                    // $printer -> text("\n\n\x20\n\n\x20\n\n\n");
-                    // $printer -> text($blankfront); // space= 0.3cm， receipt column 1
-                    // $printer -> text($printresit); // receipt number
-                    // $printer -> text($fixbackblank); //receipt column 2
-                    // $printer -> text($printic."\n"); // no.K/P
-                    // $printer -> text($blankfront);
-    
-                    // $printer -> text(date("d/m/Y", strtotime($printpaydatetime))."  ");
-                    // $printer -> text($fixbackblank2);
-                    // $printer -> text($printrn."\n"); // rn
-    
-                    // $printer -> text($blankfront);
-                    // $printer -> text(date("H:i:s", strtotime($printpaydatetime)));
-                    // $printer -> text($fixbackblank);
-                    // $printer -> text($printbil."\n"); //no.Bil
-    
-                    // $printer -> text($blankfront);
-                    // $printer -> text(" "); // Akaun
-                    // $printer -> text($fixbackblank3 ."        "); fixblank3 + 8
-                    // $printer -> text($printtotal."\n"); //total price
-    
-                    // $printer -> text($blankfront);
-                    // $printer -> text("  \n"); // Op (example required)
-    
-                    // $printer -> text($blankfront);
-                    // $printer -> text($nocagaran); // No.Cagaran
-                    // $printer -> text(str_repeat("\x20", 56 - 15 - strlen($nocagaran)));// fixbackblank
-                    // $printer -> text(mb_strimwidth(strtoupper($printpayername),0, 30)."\n\n"); // guarrantor name
-    
-                    // $printer -> text($blankfront);
-                    // $blankback = str_repeat("\x20", 55 - 14 - strlen($printpatientname));
-                    // $printer -> text(strtoupper($printpatientname)); // patient name
-    
-                    // $printer -> text($blankback);
-                    // $printer -> text(strtoupper($printpaymentmethod)."\n\n"); //Cara Bayaran
-                    // $printer -> text(str_repeat("\x20" , 7)."Penjelasan :");
-                    // $printer ->text(strtoupper($printreceiptcontent));
-                    
-                    
-                    // $printer -> close(); 
 
+                    return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                    'rn' => $model->rn));
+                   
+    }
+    else{
+        return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+        'rn' => $model->rn));  
+    }
+               
+   
+                //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
+                // $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
+                // $printer = new Printer($connector);
+                // $printer -> text("\n\n\x20\n\n\x20\n\n\n");
+                // $printer -> text($blankfront); // space= 0.3cm， receipt column 1
+                // $printer -> text($printresit); // receipt number
+                // $printer -> text($fixbackblank); //receipt column 2
+                // $printer -> text($printic."\n"); // no.K/P
+                // $printer -> text($blankfront);
 
-                }
-                return Yii::$app->getResponse()->redirect(array('/receipt/index', 
-                'rn' => $model->rn));   
+                // $printer -> text(date("d/m/Y", strtotime($printpaydatetime))."  ");
+                // $printer -> text($fixbackblank2);
+                // $printer -> text($printrn."\n"); // rn
+
+                // $printer -> text($blankfront);
+                // $printer -> text(date("H:i:s", strtotime($printpaydatetime)));
+                // $printer -> text($fixbackblank);
+                // $printer -> text($printbil."\n"); //no.Bil
+
+                // $printer -> text($blankfront);
+                // $printer -> text(" "); // Akaun
+                // $printer -> text($fixbackblank3 ."        "); fixblank3 + 8
+                // $printer -> text($printtotal."\n"); //total price
+
+                // $printer -> text($blankfront);
+                // $printer -> text("  \n"); // Op (example required)
+
+                // $printer -> text($blankfront);
+                // $printer -> text($nocagaran); // No.Cagaran
+                // $printer -> text(str_repeat("\x20", 56 - 15 - strlen($nocagaran)));// fixbackblank
+                // $printer -> text(mb_strimwidth(strtoupper($printpayername),0, 30)."\n\n"); // guarrantor name
+
+                // $printer -> text($blankfront);
+                // $blankback = str_repeat("\x20", 55 - 14 - strlen($printpatientname));
+                // $printer -> text(strtoupper($printpatientname)); // patient name
+
+                // $printer -> text($blankback);
+                // $printer -> text(strtoupper($printpaymentmethod)."\n\n"); //Cara Bayaran
+                // $printer -> text(str_repeat("\x20" , 7)."Penjelasan :");
+                // $printer ->text(strtoupper($printreceiptcontent));
+                
+                
+                // $printer -> close(); 
+                
+                // return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                // 'rn' => $model->rn));   
+                 
+              }
             }
             
         } else {
