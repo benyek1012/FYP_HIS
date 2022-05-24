@@ -7,12 +7,12 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
-$this->title = 'Landing Page';
+$this->title = 'Welcome to HIS';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div>
 
-    <p>Landing page</p>
+    <p>This is HIS</p>
 
   
     
