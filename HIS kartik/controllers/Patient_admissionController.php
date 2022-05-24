@@ -69,7 +69,7 @@ class Patient_admissionController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public static function actionCreate()
     {
         if(Yii::$app->request->get('confirm') == 't')
         {
