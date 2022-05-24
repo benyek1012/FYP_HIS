@@ -148,7 +148,7 @@ class PrintForm
             [
                 [6, "\x20"],
                 [4, "...."],
-                [49, "\x20"],
+                [57, "\x20"],
                 [9, number_format((float)$totalCost, 2, '.', '')],
             ]
      

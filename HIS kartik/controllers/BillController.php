@@ -974,7 +974,7 @@ print_r($cagaranitem);
 
                                     ]
                                 );
-                                $form->printNewLine(3);
+                                $form->printNewLine(2);
                                 $form->printElementArray(
                                     [
                                         [7, "\x20"],
@@ -1207,6 +1207,7 @@ print_r($cagaranitem);
         }
 
         $form -> printNewLine($lineleft);
+        $form -> printNewLine(1);
         $form->printElementArray(
             [
                 [28, "\x20"],

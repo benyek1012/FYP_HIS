@@ -19,6 +19,6 @@ return [
     'bill' => 'smb://JOSH2-LAPTOP/EPSON',
 
 
-    'printerstatus' => 'true',  // anything beside true will not print
+    'printerstatus' => 'false',  // anything beside true will not print
 
 ];
