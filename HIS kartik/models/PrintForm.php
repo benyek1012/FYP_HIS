@@ -90,6 +90,7 @@ class PrintForm
         if($value == "\n"){
             $this->printNewLine($len);
         }
+       
         
         $this->printer -> text(mb_strimwidth($value,0,$len));
 
@@ -147,7 +148,7 @@ class PrintForm
             [
                 [6, "\x20"],
                 [4, "...."],
-                [6, "\x20"],
+                [49, "\x20"],
                 [9, number_format((float)$totalCost, 2, '.', '')],
             ]
      
@@ -271,7 +272,7 @@ class PrintForm
                 [8, "\x20"],
                 [14, "Refund "],
                 [8,$receipt_serial_number],
-                [38,"\x20"],
+                [37,"\x20"],
                 [9, "-".$receipt_content_sum],
             
             ]

@@ -236,13 +236,17 @@ class ReceiptController extends Controller
                                 ]
                             );
                     $form -> close();
+
+                    return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                    'rn' => $model->rn));
+                   
     }
     else{
         return Yii::$app->getResponse()->redirect(array('/receipt/index', 
         'rn' => $model->rn));  
     }
                
-
+   
                 //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
                 // $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
                 // $printer = new Printer($connector);
