@@ -245,9 +245,9 @@ else{
         If (\Yii::$app->request->isPost) {
             //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/epson");
                // $printer = new Printer($connector);
-//             switch(\yii::$app->request->post('actionPrint'))
-//             {
-//                 case 'submit1':
+             switch(\yii::$app->request->post('actionPrint'))
+             {
+                 case 'submit1':
                 
                    // put in borang daftar
                    $form = new PrintForm(PrintForm::BorangDaftarMasuk);
@@ -438,7 +438,7 @@ else{
                  
                      
                     
-//                      $printer -> close();  
+
                  
     
                 case 'submit2':
@@ -802,11 +802,8 @@ else{
                  $form->close();
 
                 case 'submit5':    
-                   // put daftar again 
-                 
-                    
-//             }
-           
+                  
+                }
           }
 
 
@@ -1968,7 +1965,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
      * @return Patient_admission the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function findModel($rn)
+    public  static function findModel($rn)
     {
         if (($model = Patient_admission::findOne(['rn' => $rn])) !== null) {
             return $model;
