@@ -119,7 +119,7 @@ class Patient_informationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function findModel_nric($patient_nric)
+    public static function findModel_nric($patient_nric)
     {
         // true flag means prompt out alert to show create patient info
         $flag = false;

@@ -6,8 +6,19 @@ return [
     'senderEmail' => 'noreply@example.com',
 
 
-     'languages' => [
-     'en' => 'English',
-     'ms' => 'Malay'
-     ],
+    'languages' => [
+    'en' => 'english',
+    'ms' => 'malay'
+    ],
+
+    'borangdafter' => 'smb://JOSH2-LAPTOP/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson 
+    'chargesheet' => 'smb://JOSH2-LAPTOP/EPSON',
+    'casehistory' => 'smb://JOSH2-LAPTOP/EPSON',
+    'sticker' => 'smb://JOSH2-LAPTOP/EPSON',
+    'receipt' => 'smb://JOSH2-LAPTOP/EPSON',
+    'bill' => 'smb://JOSH2-LAPTOP/EPSON',
+
+
+    'printerstatus' => 'false',  // anything beside true will not print
+
 ];
