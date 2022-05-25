@@ -84,7 +84,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = NewUser::findByUsername($this->username);
+            $this->_user = (new NewUser()) -> findByUsername($this->username);
         }
 
         return $this->_user;
@@ -98,13 +98,13 @@ class LoginForm extends Model
     public function getUserId()
     {
         if ($this->_user === false) {
-            $this->_user = NewUser::findByUsername($this->username);
+            $this->_user = (new NewUser()) -> findByUsername($this->username);
         }
 
         return $this->_user->user_uid;
     }
 
-    public static function hashPassword($password) {// Function to create password hash
+    public function hashPassword($password) {// Function to create password hash
         $salt = "stev37f";
         return md5($password.$salt);
     }

@@ -134,7 +134,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get Ward Total Days Cost
-    public static function getTotalWardCost($bill_uid) {
+    public function getTotalWardCost($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
         $totalWardCost = 0.0;
@@ -156,7 +156,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get Treatment Total Item Cost
-    public static function getTotalTreatmentCost($bill_uid) {
+    public function getTotalTreatmentCost($bill_uid) {
         $totalItemCost = 0.0;
 
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
@@ -170,7 +170,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Calculate Billable
-    public static function calculateBillable($bill_uid) {
+    public function calculateBillable($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
         $totalTreatmentCost = 0.0;
@@ -202,7 +202,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get Unclaimed balance 
-    public static function getUnclaimed($rn) {
+    public function getUnclaimed($rn) {
         $model_bill = Bill::findOne(['rn' => $rn]);
         if(!empty($model_bill)  && Bill::isGenerated($rn))
             return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
@@ -210,7 +210,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get Amt Due
-    public static function getAmtDued($rn) {
+    public function getAmtDued($rn) {
         $model_bill = Bill::findOne(['rn' => $rn]);
         if(!empty($model_bill) && Bill::isGenerated($rn))
             return Bill::calculateFinalFee($model_bill->bill_uid) < 0 ? 0 : Bill::calculateFinalFee($model_bill->bill_uid);
@@ -218,7 +218,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Return Negative values
-    public static function calculateFinalFee($bill_uid) {
+    public function calculateFinalFee($bill_uid) {
         $billable = 0.0;
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         if(!empty($modelBill))
@@ -232,7 +232,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // All Deposit
-    public static function getDeposit($rn){
+    public function getDeposit($rn){
         $sum_deposit = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -244,7 +244,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Deposit - Refund
-    public static function getSumDeposit($rn)
+    public function getSumDeposit($rn)
     {
         $sum_deposit = 0.0;
       //  $sum_deposit = Bill::getDeposit($rn) + Bill::getRefund($rn);
@@ -253,7 +253,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get all Payed Amount
-    public static function getPayedAmt($rn){
+    public function getPayedAmt($rn){
         $payed_amt = 0.0;
 
         $info_receipt = Receipt::findAll(['rn' => $rn, 'receipt_type' => 'bill']);
@@ -268,7 +268,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get all Refund Amount (Negative) 
-    public static function getRefund($rn){
+    public function getRefund($rn){
         $sum_refund = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -283,21 +283,21 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Check whether bill is generated
-    public static function isGenerated($rn){
+    public function isGenerated($rn){
         $row_bill = Bill::findOne(['rn' => $rn]);
         if(!empty($row_bill))
             return !empty($row_bill['bill_generation_datetime']) ? $row_bill['bill_generation_datetime'] : false;
     }
 
     // Check whether bill is free
-    public static function isFree($rn){
+    public function isFree($rn){
         $row_bill = Bill::findOne(['rn' => $rn]);
         if(!empty($row_bill))
             return !empty($row_bill['is_free']) ? $row_bill['is_free'] : false;
     }
 
     // Check whether bill is printed
-    public static function isPrinted($rn){
+    public function isPrinted($rn){
         $row_bill = Bill::findOne(['rn' => $rn]);
         if(!empty($row_bill))
             return !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;

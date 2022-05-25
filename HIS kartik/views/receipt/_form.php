@@ -16,7 +16,7 @@ use app\models\Patient_admission;
     // var_dump($userId);
     // exit();
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
-        if(!empty($model_bill)  && Bill::isGenerated($model_bill->rn))
+        if(!empty($model_bill)  && (new Bill()) -> isGenerated($model_bill->rn))
             // Once bill is generated, can't pay deposit. Only allow bill or refund
             $receipt = array(
                 'bill'=> Yii::t('app','Bill'),
@@ -70,9 +70,9 @@ use app\models\Patient_admission;
         ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
-               'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
-               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
-               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+               'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.(new Patient_admission())  -> get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
             <?php } ?>
         </div>
@@ -106,11 +106,11 @@ use app\models\Patient_admission;
 
         <div class="col-sm-6">
             <?php  if(!empty($model_bill)){
-                    if(Bill::calculateFinalFee($model_bill->bill_uid) >= 0){
+                    if((new Bill()) -> calculateFinalFee($model_bill->bill_uid) >= 0){
         ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => Bill::calculateFinalFee($model_bill->bill_uid)]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> calculateFinalFee($model_bill->bill_uid)]) ?>
             <?php }else{ ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => Bill::getUnclaimed($model_bill->bill_uid)]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> getUnclaimed($model_bill->bill_uid)]) ?>
 
             <?php }
             }else{ ?>
