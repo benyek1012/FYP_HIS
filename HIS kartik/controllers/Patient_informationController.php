@@ -68,13 +68,14 @@ class Patient_informationController extends Controller
         ->one();
 
         if ($this->request->isPost && $model->load($this->request->post())) {
+            $model->nric = trim($model->nric);
             $rows = (new \yii\db\Query())
             ->select(['nric'])
             ->from('patient_information')
             ->all();
             foreach ($rows as $row) {
                 // Check IC is existed in database, and allow empty IC input and allow unchanged IC could did update
-                if($model->nric == $row['nric'] && $model->nric != "" && $model->nric != $rowIC['nric']){
+                if($model->nric == trim($row['nric']) && $model->nric != "" && $model->nric != trim($rowIC['nric'])){
                     $flag = false;
                     break;
                 }
@@ -164,6 +165,12 @@ function confirmAction(ic) {
         window.location.href = '/site/index';
     }
 }
+
+// The function below will start the confirmation dialog
+function duplicateIC(ic) {
+   alert('NRIC ' + ic + ' is existed in system!');
+}
+
 <?php }else{?>
 // The function below will start the confirmation dialog
 function confirmAction(ic) {
@@ -174,10 +181,12 @@ function confirmAction(ic) {
         window.location.href = '/site/index';
     }
 }
-<?php } ?>
 
 // The function below will start the confirmation dialog
 function duplicateIC(ic) {
-   alert('IC ' + ic + ' is existed in database!');
+   alert('NRIC ' + ic + ' wujud dalam sistem!');
 }
+
+<?php } ?>
+
 </script>

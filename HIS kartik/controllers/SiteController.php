@@ -92,7 +92,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $this->InitSQL();
+     //   $this->InitSQL();
 
         $model_Patient = new Patient_information();
         $model_NOK = new Patient_next_of_kin();
