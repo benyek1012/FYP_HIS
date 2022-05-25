@@ -18,9 +18,9 @@ $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
 $this->title = Yii::t('app','Payments');
 if($temp2->name != "")
-    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 else 
-    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">

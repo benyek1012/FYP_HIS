@@ -22,12 +22,9 @@ use yii\helpers\Url;
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <?php
-                    if(empty(Yii::$app->request->queryParams)) $label = Yii::t('app', 'Home');
-                    else $label = Yii::t('app', 'Admission');
-
                     echo Breadcrumbs::widget([
                         'homeLink' => [
-                            'label' => $label,
+                            'label' => Yii::t('app', 'Home'),
                             'url' => Url::home(),
                         ],
                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

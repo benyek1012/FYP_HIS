@@ -27,9 +27,25 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 <?php if(YII::$app->user->isGuest){ ?>
 <?= $this->render('main-login', ['content' => $content, 'assetDir' => $assetDir]) ?>
 <?php }else{
+
+$flag = false;
+$actions_sidebar = array("patient_admission", "bill", "receipt");
+foreach ($actions_sidebar as $action) {
+    if(Yii::$app->controller->id == "site" && Yii::$app->controller->action->id == "admission")
+    {
+        $flag = true;
+        break;
+    }
+    if(Yii::$app->controller->id == $action)
+    {
+        $flag = true;
+        break;
+    }
+}
+
 ?>
 
-<body class="d-flex flex-column">
+<body class="d-flex flex-column  <?php if($flag == false){ echo "sidebar-collapse"; }?>">
     <?php $this->beginBody() ?>
 
     <div class="wrapper">

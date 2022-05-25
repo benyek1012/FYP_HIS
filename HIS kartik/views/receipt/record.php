@@ -14,18 +14,18 @@ use app\models\Patient_information;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-
 if(!empty($temp))
     $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 else $temp2 = Patient_information::findOne(['patient_uid'=> Yii::$app->request->get('id')]);
 
 $this->title = Yii::t('app','Transaction Records');
 if($temp2->name != "")
-    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 else 
-    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="receipt-index">
 
     <?= GridView::widget([
@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
             $form = kartik\form\ActiveForm::begin([
                 'id' => 'print-record-form',
             ]); ?>
-            <?= Html::submitButton(Yii::t('app','Print'), ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton(Yii::t('app','Print'), ['class' => 'btn btn-success']) ?>
     <?php kartik\form\ActiveForm::end(); 
         } ?>
 

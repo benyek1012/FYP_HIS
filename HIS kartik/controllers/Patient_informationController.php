@@ -46,7 +46,7 @@ class Patient_informationController extends Controller
         $model->first_reg_date = date("Y-m-d");     
         $model->save();
 
-        return Yii::$app->getResponse()->redirect(array('/site/index', 
+        return Yii::$app->getResponse()->redirect(array('/site/admission', 
             'id' => $model->patient_uid));
     }
 
@@ -84,7 +84,7 @@ class Patient_informationController extends Controller
             if($flag == true){
                 if($model->save())
                 {
-                    return Yii::$app->getResponse()->redirect(array('/site/index', 
+                    return Yii::$app->getResponse()->redirect(array('/site/admission', 
                     'id' => $model->patient_uid, '#' => 'patient'));                 
                 } 
             }
@@ -97,7 +97,7 @@ class Patient_informationController extends Controller
             }
         }
 
-        return $this->render('/site/index', [
+        return $this->render('/site/admission', [
             'model' => $model,
         ]);
     }
@@ -121,21 +121,12 @@ class Patient_informationController extends Controller
 
     public function findModel_nric($patient_nric)
     {
-        // $rowIC = (new \yii\db\Query())
-        // ->select(['nric'])
-        // ->from('patient_information')
-        // ->where(['nric' => $patient_nric])
-        // ->one();
-
-        // echo '<pre>';
-        // var_dump($rowIC['nric']);
-        // exit();
-        // echo '</pre>';
-
+        // true flag means prompt out alert to show create patient info
         $flag = false;
         if($patient_nric == '') $flag = true;
         else
         {
+            // IC is existed in Database
             if ((($model = Patient_information::findOne(['nric' => $patient_nric])) !== null) ) 
                 return $model;
             else $flag = true;

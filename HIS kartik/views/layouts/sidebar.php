@@ -77,8 +77,8 @@ function items_new_rn()
     $items = [];
 
     array_push($items,
-        ['label' => Yii::t('app','Add New R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid,'type' => 'Normal']],
-        ['label' =>  Yii::t('app','Add New Labor R/N'), 'iconClass' => '', 'url' => ['site/index', 'id' => $info->patient_uid, 'type' => 'Labor']]
+        ['label' => Yii::t('app','Add New R/N'), 'iconClass' => '', 'url' => ['site/admission', 'id' => $info->patient_uid,'type' => 'Normal']],
+        ['label' =>  Yii::t('app','Add New Labor R/N'), 'iconClass' => '', 'url' => ['site/admission', 'id' => $info->patient_uid, 'type' => 'Labor']]
     );
     return $items;
 }
@@ -130,7 +130,7 @@ if(!empty(Yii::$app->request->queryParams))
                 <?php 
                     $model = new Patient_information();
                     $form = ActiveForm::begin([
-                    'action' => ['site/index'],
+                    'action' => ['site/admission'],
                     'enableClientValidation'=> false,
                     'options' => [
                         'class' => 'input-group'
@@ -155,7 +155,7 @@ if(!empty(Yii::$app->request->queryParams))
                     if($info->name == "") $temp_name = "Unknown";
                     else $temp_name = $info->name;
                     echo \hail812\adminlte\widgets\Menu::widget([
-                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/index', 'id' => $info->patient_uid]]]]);
+                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
             ?>
             <div class="mt-1 ml-1 d-flex">
                 <div class="info">

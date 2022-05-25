@@ -37,7 +37,7 @@ if (Yii::$app->user->isGuest){
         </li>
 
         <li class="nav-item dropdown">
-            <a id="admission" href="/site/index" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
+            <a id="admission" href="/site/admission" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
         </li>
 
         <li class="nav-item dropdown">
@@ -71,34 +71,12 @@ if (Yii::$app->user->isGuest){
 
     </ul>
 
-
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-    
-        <li class="nav-item">
-        <li class="nav-item d-none d-sm-inline-block">
-            <?php
-        NavBar::begin();
-        echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-            '<li>'
-            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-            . Html::submitButton(
-                Yii::t('app','Logout'). ' (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>'
-                )      
-            ],
-        ]);
-        NavBar::end();
 
-    ?>
+        <li class="nav-item dropdown">
+            <a id="admission" href="/site/logout" class="nav-link"><?php echo  Yii::t('app','Logout'). 
+                ' (' . Yii::$app->user->identity->username . ')'; ?></a>
         </li>
 
         <li class="nav-item dropdown">
@@ -129,14 +107,3 @@ $this->registerJs(
 );
 
 ?>
-
-<!-- /.navbar -->
-<!-- <script>
-    $(function(){
-        $(document).on('click','.language',function(){
-            var lang = $(this).alter('id');
-
-            
-        })
-    })
-</script> -->

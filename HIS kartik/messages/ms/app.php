@@ -183,7 +183,7 @@ return[
     'Select treatment code' => 'Pilih kod rawatan',
     'Logout' => 'Log Keluar',
     'Languages' => 'Bahasa',
-    'Update Patient Admission : ' => 'Kemas kini Pendaftaran Pesakit : ',
+    'Update Patient Admission' => 'Kemas kini Pendaftaran Pesakit',
     'Total' => 'Jumlah',
     'Print' => 'Cetak',
     'Delete' => 'Hapus',
