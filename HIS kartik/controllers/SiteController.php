@@ -112,7 +112,7 @@ class SiteController extends Controller
             else $model_NOK->loadDefaultValues();
         }
 
-        if(!empty(Yii::$app->request->get('type'))) Patient_admissionController::actionCreate();
+        if(!empty(Yii::$app->request->get('type'))) (new Patient_admissionController(null, null)) -> actionCreate();
         
         if (Yii::$app->user->isGuest)
             return $this->redirect('/site/login');
@@ -162,7 +162,7 @@ class SiteController extends Controller
     public function actionSidebar($model)
     {
         $globalSearch = $model->nric;
-        $model_admission_founded = Patient_admissionController::findModel($globalSearch);
+        $model_admission_founded = (new Patient_admissionController(null, null)) -> findModel($globalSearch);
         if(!empty( $model_admission_founded)){
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
                 'rn' => $model_admission_founded->rn));
@@ -171,7 +171,7 @@ class SiteController extends Controller
         }
         else 
         {
-            $model_founded = Patient_informationController::findModel_nric($globalSearch);
+            $model_founded = (new Patient_informationController(null, null)) -> findModel_nric($globalSearch);
             if(!empty($model_founded))
                 return Yii::$app->getResponse()->redirect(array('/site/index', 
                     'id' => $model_founded->patient_uid));
@@ -224,7 +224,7 @@ class SiteController extends Controller
 
          //Fucntions of add NOK in sidebar
         if ($modelNOK->save()) {
-            $model_founded = Patient_informationController::findModel($modelNOK->patient_uid);
+            $model_founded = (new Patient_informationController(null, null)) -> findModel($modelNOK->patient_uid);
             if(!empty($model_founded))
                 return Yii::$app->getResponse()->redirect(array('/site/index', 
                     'id' => $model_founded->patient_uid, '#' => 'nok'));        

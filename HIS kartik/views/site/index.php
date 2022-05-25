@@ -30,8 +30,8 @@ else
                 <div class="d-flex justify-content-end">
                     <?php
                     if(!empty($model))
-                        echo "<div>".Patient_information::getBalance($model->patient_uid)."&nbsp&nbsp&nbsp&nbsp&nbsp".
-                        Patient_information::getUnclaimedBalance($model->patient_uid)."&nbsp&nbsp&nbsp</div>";
+                        echo "<div>".(new Patient_information())  -> getBalance($model->patient_uid)."&nbsp&nbsp&nbsp&nbsp&nbsp".
+                        (new Patient_information())  -> getUnclaimedBalance($model->patient_uid)."&nbsp&nbsp&nbsp</div>";
                     ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->

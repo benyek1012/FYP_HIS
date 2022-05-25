@@ -52,14 +52,14 @@ use yii\helpers\Html;
                     'attribute' => 'billable_sum',
                     'label' => Yii::t('app','Billable Total').' (RM)',
                     'value' => function($data){
-                        return  Patient_admission::get_billable_sum($data->rn);
+                        return  (new Patient_admission()) -> get_billable_sum($data->rn);
                     },
                 ],
                 [
                     'attribute' => 'final_fee',
                     'label' => Yii::t('app','Amount Due').' / '.Yii::t('app','Unclaimed Balance').' (RM)',
                     'value' => function($data){
-                        return Patient_admission::get_bill($data->rn);
+                        return (new Patient_admission()) ->get_bill($data->rn);
                     },
                 ],
             ],

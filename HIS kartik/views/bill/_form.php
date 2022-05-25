@@ -57,9 +57,9 @@ $isPrinted = false;
 
 if(!empty($row_bill))
 {
-   $isGenerated = Bill::isGenerated($row_bill['rn']);
-   $isFree =  Bill::isFree($row_bill['rn']);
-   $isPrinted =  Bill::isPrinted($row_bill['rn']);
+   $isGenerated = (new Bill()) -> isGenerated($row_bill['rn']);
+   $isFree =  (new Bill()) -> isFree($row_bill['rn']);
+   $isPrinted =  (new Bill()) -> isPrinted($row_bill['rn']);
 }
 
 
@@ -449,7 +449,7 @@ if($print_readonly)
                 <div class="d-flex justify-content-end">
                     <?php
                 if(!empty($model))
-                    echo "<div>".Bill::getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    echo "<div>".(new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                 ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -575,7 +575,7 @@ if($print_readonly)
                 <div class="d-flex justify-content-end">
                     <?php
                 if(!empty($model))
-                    echo "<div>".Bill::getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    echo "<div>".(new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                 ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -734,7 +734,7 @@ if($print_readonly)
                             'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'billalbe', 
-                            'value' => Bill::calculateBillable(Yii::$app->request->get('bill_uid'))
+                            'value' => (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid'))
                         ]) ?>
                 </div>
 
@@ -745,7 +745,7 @@ if($print_readonly)
                             'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'finalFee', 
-                            'value' => Bill::calculateFinalFee(Yii::$app->request->get('bill_uid'))
+                            'value' => (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid'))
                         ]) ?>
                 </div>
 
@@ -787,7 +787,7 @@ if($print_readonly)
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => Bill::isPrinted(Yii::$app->request->get('rn'))]) ?>
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?>
                 </div>
             </div>
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){
@@ -899,8 +899,8 @@ function calculateItemCost() {
 }
 
 function getBillableAndFinalFee(){
-    $('#bill-bill_generation_billable_sum_rm').val(<?php echo Bill::calculateBillable(Yii::$app->request->get('bill_uid')); ?>);
-    $('#bill-bill_generation_final_fee_rm').val(<?php echo Bill::calculateFinalFee(Yii::$app->request->get('bill_uid')); ?>);
+    $('#bill-bill_generation_billable_sum_rm').val(<?php echo (new Bill())  -> calculateBillable(Yii::$app->request->get('bill_uid')); ?>);
+    $('#bill-bill_generation_final_fee_rm').val(<?php echo (new Bill())  -> calculateFinalFee(Yii::$app->request->get('bill_uid')); ?>);
 }
 
 function getDailyWardCost() {

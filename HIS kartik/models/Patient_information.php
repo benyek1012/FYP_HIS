@@ -97,7 +97,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return $this->hasMany(Patient_Next_Of_Kin::class, ['patient_uid' => 'patient_uid']);
     }
 
-    public static function getBalance($patient_uid)
+    public function getBalance($patient_uid)
     { 
         $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
 
@@ -110,7 +110,7 @@ class Patient_information extends \yii\db\ActiveRecord
         $billable_sum = 0.0;
         foreach($adm as $rn)
         {
-            $billable_sum += Bill::getAmtDued($rn);
+            $billable_sum += (new Bill())  -> getAmtDued($rn);
         }
 
         if($billable_sum < 0)
@@ -121,7 +121,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return Yii::t('app','Amount Due')." : ". Yii::$app->formatter->asCurrency($billable_sum);                
     }
 
-    public static function getUnclaimedBalance($patient_uid)
+    public function getUnclaimedBalance($patient_uid)
     { 
         $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
      
@@ -134,7 +134,7 @@ class Patient_information extends \yii\db\ActiveRecord
         $unclaimed_sum = 0.0;
         foreach($adm as $rn)
         {
-            $unclaimed_sum += Bill::getUnclaimed($rn);
+            $unclaimed_sum += (new Bill())  -> getUnclaimed($rn);
         }
 
         return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                

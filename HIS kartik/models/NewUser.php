@@ -73,12 +73,12 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
         throw new \yii\base\NotSupportedException();
     }
 
-    public static function findByUsername($username){
+    public function findByUsername($username){
         return self::findOne(['username'=>$username]);
     }
 
     public function validatePassword($password){
-        return $this->user_password ===  static::hashPassword($password);//LoginForm::hashPassword($password);
+        return $this->user_password ===  (new LoginForm())  -> hashPassword($password);
     }
 
     public static function hashPassword($password) {// Function to create password hash
