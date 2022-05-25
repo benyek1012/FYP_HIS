@@ -654,7 +654,7 @@ if($print_readonly)
 
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                                    'disabled' => $print_readonly, 'onchange' => 'calculateItemCost();'])->label(false) ?>
+                                    'disabled' => $print_readonly, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
@@ -885,6 +885,20 @@ function calculateItemCost() {
                 $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
             }
         });
+    });
+}
+
+function calculateItemTotalCost() {
+    $('.treatmentCode', document).each(function(index, item){
+        var treatmentCode = this.value;
+
+        var itemPerUnit = $('#treatment_details-' + index + '-item_per_unit_cost_rm').val();
+        var itemCount = $('#treatment_details-' + index + '-item_count').val();
+
+        if (itemCount != '' && itemPerUnit != "") {
+            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+            $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
+        }
     });
 }
 
