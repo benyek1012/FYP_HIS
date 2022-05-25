@@ -37,6 +37,10 @@ if (Yii::$app->user->isGuest){
         </li>
 
         <li class="nav-item dropdown">
+            <a id="admission" href="/site/index" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
+        </li>
+
+        <li class="nav-item dropdown">
             <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
         </li>
         <li class="nav-item dropdown">
