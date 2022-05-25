@@ -119,7 +119,7 @@ class Patient_informationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public static function findModel_nric($patient_nric)
+    public function findModel_nric($patient_nric)
     {
         // $rowIC = (new \yii\db\Query())
         // ->select(['nric'])

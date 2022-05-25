@@ -35,7 +35,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
             [['retire'], 'boolean', 'strict'=> false],
             [['user_uid'], 'string', 'max' => 64],
             [['username'], 'string', 'max' => 100],
-            [['user_password', 'role'], 'string', 'max' => 40],
+            [['user_password', 'role'], 'string', 'max' => 20],
             [['authKey'], 'string', 'max' => 45],
             [['user_uid'], 'unique'],
             [['username'], 'unique'],
@@ -65,7 +65,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public static function findIdentity($user_uid) {
-        return static::findOne(['user_uid' => $user_uid]);
+        return self::findOne($user_uid);
     }
 
     public static function findIdentityByAccessToken($token, $type = null)
@@ -81,10 +81,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->user_password ===  (new LoginForm())  -> hashPassword($password);
     }
 
-    public static function hashPassword($password) {// Function to create password hash
-        $salt = "stev37f";
-        return md5($password.$salt);
-    }
+   
 
     /**
      * {@inheritdoc}

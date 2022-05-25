@@ -25,6 +25,9 @@ use GpsLab\Component\Base64UID\Base64UID;
     ?>
 <div class ="row">
     <div class="col-sm-6">
+        <?= $form->field($model, 'treatment_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $treatment_uid]) ?>
+    </div>
+    <div class="col-sm-6">
         <?= $form->field($model, 'treatment_code')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
@@ -38,9 +41,6 @@ use GpsLab\Component\Base64UID\Base64UID;
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'class_3_cost_per_unit')->textInput(['maxlength' => true]) ?>
-    </div>
-    <div class="col-sm-6">
-        <?= $form->field($model, 'treatment_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $treatment_uid])->label(false)?>
     </div>
 </div>
     <div class="form-group">

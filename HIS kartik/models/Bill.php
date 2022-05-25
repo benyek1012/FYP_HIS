@@ -153,7 +153,6 @@ class Bill extends \yii\db\ActiveRecord
         $totalWardCost = $dailyWardCost * $totalWardDays;
 
         return Yii::t('app','Total')." : RM". $totalWardCost;                
-        return number_format((float)$totalWardCost, 2, '.', '');                
     }
 
     // Get Treatment Total Item Cost
@@ -167,7 +166,7 @@ class Bill extends \yii\db\ActiveRecord
             $totalItemCost += $modelTreatment->item_total_unit_cost_rm;
         }
 
-        return Yii::t('app','Total')." : ". Yii::$app->formatter->asCurrency($totalItemCost);                
+        return Yii::t('app','Total')." : RM". $totalItemCost;                
     }
 
     // Calculate Billable
@@ -205,20 +204,9 @@ class Bill extends \yii\db\ActiveRecord
     // Get Unclaimed balance 
     public function getUnclaimed($rn) {
         $model_bill = Bill::findOne(['rn' => $rn]);
-// <<<<<<< HEAD
-//         if(!empty($model_bill)  && Bill::isGenerated($rn))
-//             return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
-//         else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) ;
-// =======
-        if(!empty($model_bill))
-        {
-            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
-        }
-        else
-        {
-            return (Bill::getDeposit($rn) + Bill::getRefund($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn)) ;
-        }
-
+        if(!empty($model_bill)  && Bill::isGenerated($rn))
+            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
+        else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) ;
     }
 
     // Get Amt Due

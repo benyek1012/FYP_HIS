@@ -122,29 +122,8 @@ class NewuserController extends Controller
     public function actionCreate()
     {
         $model = new Newuser();
-        if ($this->request->isPost && $model->load($this->request->post())){
 
-            $checkDuplicatedUser = NewUser::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
-            if(empty($checkDuplicatedUser))
-            {
-                $model->user_password = NewUser::hashPassword($model->user_password); // Hash the password before you save it.
-                $model->save();
-                return $this->redirect(['index', 'user_id' => $model->user_uid]);
-            }
-            else
-            {
-                $message = 'User should not be duplicated.';
-                $model->addError('username',$message);
-            }
-        }else {
-            $model->loadDefaultValues();
-        }
-        
-        return $this->render('create', [
-           'model' => $model,
-        ]);
-
-        /*if ($this->request->isPost) {
+        if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['index', 'user_uid' => $model->user_uid]);
             }
@@ -154,7 +133,7 @@ class NewuserController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-        ]);*/
+        ]);
     }
 
     /**
