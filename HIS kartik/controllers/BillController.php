@@ -564,7 +564,7 @@ class BillController extends Controller
             $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
         }
         else{
-            $lineleft = ($countTreatment + $countReceipt + $countRefund) - $totalLine;
+            $lineleft = 11 - $totalLine;
         }
 
         // // if total treatment and total receipt > total line(10)
@@ -903,7 +903,10 @@ print_r($cagaranitem);
                 $fixbreakbottom = str_repeat("\n", 5);
                 $fixbreakmiddle= str_repeat("\n", 3);
                 $fixbreaktop= str_repeat("\n", $ncounter);
+                // var_dump($countTreatment);
 
+                // var_dump(strlen($modeltreatmentfind->item_total_unit_cost_rm));
+                // exit();
                                     
                 //$cagaranno = " ";
                             // $totalCost = 0;
@@ -1029,7 +1032,7 @@ print_r($cagaranitem);
                                         [28, "\x20"],
                                         [9, $model->daily_ward_cost],
                                         [2, "\x20"],
-                                        [9, Bill::getTotalWardCost(Yii::$app->request->get('bill_uid'))],
+                                        [9, (new Bill())->getTotalWardCost(Yii::$app->request->get('bill_uid'))],
                                     ]
                                 );
                                 $form->printNewLine(2);
@@ -1118,7 +1121,7 @@ print_r($cagaranitem);
                 }
 
                 if($count > 1 || ($countRefund + $countReceipt) > 1){
-                    $unclaimedBalance = Bill::getDeposit($model->rn) + Bill::getRefund($model->rn);
+                    $unclaimedBalance = (new Bill())->getDeposit($model->rn) + (new Bill())->getRefund($model->rn);
                     $form -> printMore($unclaimedBalance);
                 }
             }
@@ -1255,7 +1258,7 @@ print_r($cagaranitem);
                 [28, "\x20"],
                 [29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
                 [11,"\x20"],
-                [9,$model->bill_generation_final_fee_rm],
+                [9,$model->bill_generation_final_fee_rm,false,true],
             ]
         );
 
@@ -1269,6 +1272,8 @@ print_r($cagaranitem);
                                 //     ]
                                 // );
             $form->close();
+
+            
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
                     'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));  
                                     }

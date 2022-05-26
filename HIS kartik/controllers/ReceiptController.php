@@ -5,13 +5,6 @@ require 'vendor/autoload.php';
 
 use app\models\Bill_content_receipt;
 use app\models\Bill;
-use Yii;
-use app\models\Receipt;
-use app\models\ReceiptSearch;
-use app\models\Patient_admission;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use GpsLab\Component\Base64UID\Base64UID;
 
 
@@ -154,22 +147,27 @@ class ReceiptController extends Controller
             // $model_receipt = Receipt::findOne(['rn' => Yii::$app->request->get('rn'), 'receipt_type' => 'bill']);
 
             if($model->validate() && $model->save()){
-                if(!empty($model_bill))
-                {
-                    $model_found_duplicate = Bill_content_receipt::findOne(['bill_uid' => $model_bill->bill_uid]);
-                    if(empty($model_found_duplicate) && $model->receipt_type == 'bill')
-                    {
-                        $model_bill_receipt = new Bill_content_receipt();
-                        $model_bill_receipt->bill_content_receipt_uid = Base64UID::generate(32);
-                        $model_bill_receipt->bill_uid = $model_bill->bill_uid;
-                        $model_bill_receipt->rn = $model_bill->rn;
-                        $model_bill_receipt->bill_generation_billable_sum_rm = $model_bill->bill_generation_billable_sum_rm;
-                        $model_bill_receipt->save();
-                    }
+                // if(!empty($model_bill))
+                // {
+                    // $model_found_duplicate = Bill_content_receipt::findOne(['bill_uid' => $model_bill->bill_uid]);
+                    // if(empty($model_found_duplicate) && $model->receipt_type == 'bill')
+                    // {
+                    //     $model_bill_receipt = new Bill_content_receipt();
+                    //     $model_bill_receipt->bill_content_receipt_uid = Base64UID::generate(32);
+                    //     $model_bill_receipt->bill_uid = $model_bill->bill_uid;
+                    //     $model_bill_receipt->rn = $model_bill->rn;
+                    //     $model_bill_receipt->bill_generation_billable_sum_rm = $model_bill->bill_generation_billable_sum_rm;
+                    //     $model_bill_receipt->save();
+                    // }
 
                     $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
                     $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
     
+                    if($model->receipt_type !='refund')
+                    {
+                   
+                      $nocagaran = " ";
+
                $blankfront = str_repeat("\x20", 15); // adds 14 spaces
                 $fixbackblank = str_repeat("\x20", 33);
                 $fixbackblank2 = str_repeat("\x20", 31);
@@ -179,6 +177,7 @@ class ReceiptController extends Controller
 
                  if (Yii::$app->params['printerstatus'] == "true"){
                     $form = new PrintForm(PrintForm::Receipt);
+                   //$form = new PrintForm(PrintForm::BorangDaftarMasuk);
                     $form->printNewLine(6);
                     $form->printElementArray(
                                 [
@@ -202,7 +201,7 @@ class ReceiptController extends Controller
                                 ]
                             );
                             $form->printNewLine(1);
-            
+
                             $form->printElementArray(
                                 [
                                     //line 3, pay time, bil number
@@ -214,7 +213,6 @@ class ReceiptController extends Controller
                                 ]
                             );
                             $form->printNewLine(1);
-            
                             $form->printElementArray(
                                 [
                                     //line 4 akaun, total 
@@ -233,20 +231,6 @@ class ReceiptController extends Controller
                                 ]
                             );
                             $form->printNewLine(1);
-                            if($model->receipt_type =='bill')
-                            {
-                                $form->printElementArray(
-                                    [
-                                        //line 6, cagaran and nama pembayar
-                                        [15, "\x20"],
-                                        [8, $model->receipt_serial_number,true],
-                                        [33, "\x20"],
-                                        [25, $model->receipt_content_payer_name,true],
-                                    ]
-                                );
-                            }
-                            else
-                            {
                                 $form->printElementArray(
                                     [
                                         //line 6, cagaran and nama pembayar
@@ -256,8 +240,6 @@ class ReceiptController extends Controller
                                         [20, $model->receipt_content_payer_name,true],
                                     ]
                                 );
-                            }
-                           
                             $form->printNewLine(2);
                             $form->printElementArray(
                                 [
@@ -283,69 +265,25 @@ class ReceiptController extends Controller
                     return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                     'rn' => $model->rn));
                    
-    }
-    else{
-        return Yii::$app->getResponse()->redirect(array('/receipt/index', 
-        'rn' => $model->rn));  
-    }
-               
+                        }
+                        else{
+                            return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                            'rn' => $model->rn));  
+                        }
+}       
    
-                //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
-                // $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
-                // $printer = new Printer($connector);
-                // $printer -> text("\n\n\x20\n\n\x20\n\n\n");
-                // $printer -> text($blankfront); // space= 0.3cm， receipt column 1
-                // $printer -> text($printresit); // receipt number
-                // $printer -> text($fixbackblank); //receipt column 2
-                // $printer -> text($printic."\n"); // no.K/P
-                // $printer -> text($blankfront);
-
-                // $printer -> text(date("d/m/Y", strtotime($printpaydatetime))."  ");
-                // $printer -> text($fixbackblank2);
-                // $printer -> text($printrn."\n"); // rn
-
-                // $printer -> text($blankfront);
-                // $printer -> text(date("H:i:s", strtotime($printpaydatetime)));
-                // $printer -> text($fixbackblank);
-                // $printer -> text($printbil."\n"); //no.Bil
-
-                // $printer -> text($blankfront);
-                // $printer -> text(" "); // Akaun
-                // $printer -> text($fixbackblank3 ."        "); fixblank3 + 8
-                // $printer -> text($printtotal."\n"); //total price
-
-                // $printer -> text($blankfront);
-                // $printer -> text("  \n"); // Op (example required)
-
-                // $printer -> text($blankfront);
-                // $printer -> text($nocagaran); // No.Cagaran
-                // $printer -> text(str_repeat("\x20", 56 - 15 - strlen($nocagaran)));// fixbackblank
-                // $printer -> text(mb_strimwidth(strtoupper($printpayername),0, 30)."\n\n"); // guarrantor name
-
-                // $printer -> text($blankfront);
-                // $blankback = str_repeat("\x20", 55 - 14 - strlen($printpatientname));
-                // $printer -> text(strtoupper($printpatientname)); // patient name
-
-                // $printer -> text($blankback);
-                // $printer -> text(strtoupper($printpaymentmethod)."\n\n"); //Cara Bayaran
-                // $printer -> text(str_repeat("\x20" , 7)."Penjelasan :");
-                // $printer ->text(strtoupper($printreceiptcontent));
-                
-                
-                // $printer -> close(); 
-                
-                // return Yii::$app->getResponse()->redirect(array('/receipt/index', 
-                // 'rn' => $model->rn));   
+              
                  
               }
             }
-            
-        } else {
+        // } 
+        // else
+        //  {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i");
             $cookies = Yii::$app->request->cookies;
             $model->receipt_responsible = Yii::$app->user->identity->getId();
             $model->loadDefaultValues();
-        }
+        // }
 
         return $this->render('create', [
             'model' => $model,

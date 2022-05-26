@@ -242,6 +242,9 @@ else{
     $printic = $modelpatient->nric;
     $agesticker = "  yrs  mth  day";
 }
+$entrydatein = date("d/m/Y H:i" , strtotime($model->entry_datetime));
+$entrytime = date("H:i" , strtotime($model->entry_datetime));
+$entrydate = date("d/m/Y" , strtotime($model->entry_datetime));
         If (\Yii::$app->request->isPost) {
             //$connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/epson");
                // $printer = new Printer($connector);
@@ -655,7 +658,7 @@ else{
                             [17, "\x20"], // from 22->20
                             [17, $modelnok->nok_address3,true],
                             [11, "\x20"],
-                            [17, $entrydatetime],
+                            [17, $entrydatein],
                         ]
                     );
                     $form->printNewLine(1);

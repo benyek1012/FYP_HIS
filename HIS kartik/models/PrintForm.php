@@ -82,7 +82,7 @@ class PrintForm
 
     }
 
-    public function printElement($len, $value, $uppercase=false)
+    public function printElement($len, $value, $uppercase=false, $rightalign=false, $totalright=false)
     {
         if($uppercase)
             $value = strtoupper($value);
@@ -90,7 +90,41 @@ class PrintForm
         if($value == "\n"){
             $this->printNewLine($len);
         }
-       
+        
+       if($rightalign)
+       {
+        if(strlen($value == 4))
+        {
+            $fixvalue = 7 - strlen($value);
+        }
+        if(strlen($value == 5))
+        {
+            $fixvalue = 6 - strlen($value);
+        }
+        if(strlen($value == 6))
+        {
+            $fixvalue = 6 - strlen($value);
+        }
+            $fixvalue = 9 - strlen($value);
+            if($fixvalue < 0){
+                $fixvalue = 0;
+            }
+           
+           
+             $this->printer -> text(str_repeat("\x20", $fixvalue));
+            //$value =    strlen($value) - $fixvalue ;
+
+            // $fixvalue = 9; 
+            // $space =  $fixvalue -strlen($value) ;
+            // $this->printer->text(str_repeat("\x20", $space));
+       }
+    //    if($totalright)
+    //    {
+    //     $fixvalue = 9; 
+    //     $space =  $fixvalue -strlen($value) ;
+    //     $this->printer->text(str_repeat("\x20", $space));
+    //    }
+
         
         $this->printer -> text(mb_strimwidth($value,0,$len));
 
@@ -99,7 +133,7 @@ class PrintForm
         if($blanklen < 0)
             $blanklen = 0;
 
-        $this->printer -> text(str_repeat("\x20", $blanklen)); // space for r/n value
+        $this->printer -> text(str_repeat("\x20", $blanklen)); 
     }
 
     public function printElementArray($array)
@@ -107,9 +141,16 @@ class PrintForm
         for($i = 0; $i < count($array); $i++){
             if(count($array[$i]) < 3)
                 $this->printElement($array[$i][0], $array[$i][1]);
-            else
+            else if(count($array[$i]) == 3)
                 $this->printElement($array[$i][0], $array[$i][1], $array[$i][2]);
+            else if(count($array[$i]) == 4){
+                $this->printElement($array[$i][0], $array[$i][1], $array[$i][2], $array[$i][3]);
+            }
+            else{
+                $this->printElement($array[$i][0], $array[$i][1], $array[$i][2], $array[$i][3],  $array[$i][4]);
+            }
         }
+
         // if(count($array) < 3)
         //     $this->printElement($array[0], $array[0]);
         // else
@@ -124,7 +165,7 @@ class PrintForm
         }
         $this->printer -> text($newLine);
     }
-
+    
     public function close()
     {
         
@@ -146,10 +187,10 @@ class PrintForm
     public function printMore($totalCost){
         $this->printElementArray(
             [
-                [6, "\x20"],
+                [8, "\x20"],
                 [4, "...."],
-                [57, "\x20"],
-                [9, number_format((float)$totalCost, 2, '.', '')],
+                [56, "\x20"],
+                [9, number_format((float)$totalCost, 2, '.', ''),false,true],
             ]
      
         );
@@ -174,12 +215,12 @@ class PrintForm
                 [1,"\x20"],
                 [30, $treatment_name,true],
                 [2,"\x20"],
-                [1,"x"],
+                [1,"X"],
                 [2,"\x20"],
                 [5,$item_count],
-                [7,"\x20"],
-                [8, $item_per_unit_cost],
-                [8, $item_total_unit_cost],
+                [5,"\x20"],
+                [8, $item_per_unit_cost,false,true],
+                [9, $item_total_unit_cost,false,true],
 
             ]
         );
@@ -205,7 +246,7 @@ class PrintForm
                 [14, "Tolak Cagaran "],
                 [8,$receipt_serial_number],
                 [38,"\x20"],
-                [9, $receipt_content_sum],
+                [9, $receipt_content_sum,false,true],
             
             ]
         );
@@ -240,7 +281,7 @@ class PrintForm
         $this->printElementArray(
             [
                 [68, "\x20"],
-                [9, $billAble],
+                [9, $billAble,false,true],
             ]
         );
         $this->printNewLine(1);
@@ -273,7 +314,7 @@ class PrintForm
                 [14, "Refund "],
                 [8,$receipt_serial_number],
                 [37,"\x20"],
-                [9, "-".$receipt_content_sum],
+                [9, "-".$receipt_content_sum,false,true],
             
             ]
         );
