@@ -163,7 +163,7 @@ class PrintForm
             [
                 [8, "\x20"],
                 [4, "...."],
-                [56, "\x20"],
+                [55, "\x20"],
                 [9, number_format((float)$totalCost, 2, '.', ''),false,true],
             ]
      
@@ -220,7 +220,7 @@ class PrintForm
                 [8, "\x20"],
                 [14, "Tolak Cagaran "],
                 [8,$receipt_serial_number],
-                [38,"\x20"],
+                [37,"\x20"],
                 [9, $receipt_content_sum,false,true],
             
             ]
@@ -241,8 +241,8 @@ class PrintForm
             [
                 [8, "\x20"],
                 [18, "------------------"],
-                [45, "\x20"],
-                [9, "0.00"], // need ask what price is this for
+                [46, "\x20"],
+                [4, "0.00"], // need ask what price is this for
             ]
         );
         $this->printNewLine(1);
@@ -255,7 +255,7 @@ class PrintForm
         $this->printNewLine(1);
         $this->printElementArray(
             [
-                [68, "\x20"],
+                [67, "\x20"],
                 [9, $billAble,false,true],
             ]
         );
@@ -275,11 +275,11 @@ class PrintForm
             [
                 [8, "\x20"],
                 [18, "------------------"],
-                [45, "\x20"],
-                [9, "0.00"], // need ask what price is this for
+                [46, "\x20"],
+                [4, "0.00"], // need ask what price is this for
             ]
         );
-        $this->printNewLine(3);
+        $this->printNewLine(1);
     }
 
     public function printBillRefund($rn, $receipt_serial_number, $receipt_content_sum){
@@ -288,8 +288,8 @@ class PrintForm
                 [8, "\x20"],
                 [14, "Refund "],
                 [8,$receipt_serial_number],
-                [37,"\x20"],
-                [9, "-".$receipt_content_sum,false,true],
+                [36,"\x20"],
+                [10, "-".$receipt_content_sum,false,true],
             
             ]
         );

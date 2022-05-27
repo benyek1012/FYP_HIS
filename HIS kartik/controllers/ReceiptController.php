@@ -222,7 +222,7 @@ class ReceiptController extends Controller
                                     //line 6, cagaran and nama pembayar
                                     [15, "\x20"],
                                     [8, $nocagaran,true],
-                                    [34, "\x20"],
+                                    [33, "\x20"],
                                     [20, $model->receipt_content_payer_name,true],
                                 ]
                             );

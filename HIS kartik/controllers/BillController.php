@@ -869,26 +869,30 @@ print_r($cagaranitem);
     // print_r($ct);
        // exit();
 
-       $firstStartDate= "";
-       $lastEndDate = "";
-
+       $firstStartDate[]= "";
+       $lastEndDate[] = "";
+       $getwardcode[] = "";
+        $totalday = 0;
        if(!empty($modelWard))
        {
+           
             foreach($modelWard as $index => $modelwardfind){
                 if($index == 0){
-                    $lastEndDate =$modelwardfind->ward_end_datetime;
+                    $lastEndDate =ArrayHelper::toArray($modelwardfind->ward_end_datetime);
                 }
                 if($index == count($modelWard) - 1){
                     
-                    $firstStartDate = $modelwardfind->ward_start_datetime;
+                    $firstStartDate = ArrayHelper::toArray($modelwardfind->ward_start_datetime);
                 }
+                $totalday += $modelwardfind->ward_number_of_days;
             }
+            $getwardcode =  ArrayHelper::toArray($modelwardfind->ward_code);
        }
       
-       
-
-        $printstartdate = $firstStartDate;
-        $printlastenddate = $lastEndDate;
+       $printwardday = $totalday;
+       $printwardcode = implode($getwardcode);
+        $printstartdate = implode($firstStartDate);
+        $printlastenddate = implode($lastEndDate);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if($model->validate() && $model->bill_print_id != "")
@@ -964,7 +968,7 @@ print_r($cagaranitem);
 
                 if (Yii::$app->params['printerstatus'] == "true"){
                     $form = new PrintForm(PrintForm::Bill);
-                    $form->printNewLine(9); // mayb 9
+                    $form->printNewLine(8); // mayb 9
                     $form->printElementArray(
                         [
                             [62, "\x20"],
@@ -1020,7 +1024,7 @@ print_r($cagaranitem);
                     $form->printElementArray(
                         [
                             [22, "\x20"],
-                            [17, "(Tarikh Keluar  : "],
+                            [17, "(Tarikh Keluar : "],
                             [10, $wardleavedate],
                             [2," )"],
 
@@ -1031,15 +1035,15 @@ print_r($cagaranitem);
                         [
                             [7, "\x20"],
                             [7, "Kelas  "],
-                            [2, $modelwardfind->ward_code],
+                            [2, $printwardcode],
                             [4," :  "],
-                            [5,$modelwardfind->ward_number_of_days],
+                            [5,$printwardday],
                             [1," "],
                             [4, "hari"],
-                            [28, "\x20"],
-                            [9, $model->daily_ward_cost],
+                            [26, "\x20"],
+                            [9, $model->daily_ward_cost,false,true],
                             [2, "\x20"],
-                            [9, (new Bill())->getTotalWardCost(Yii::$app->request->get('bill_uid'))],
+                            [9, (new Bill())->getTotalWardCost(Yii::$app->request->get('bill_uid')),false,true],
                         ]
                     );
                     $form->printNewLine(2);
@@ -1259,12 +1263,12 @@ print_r($cagaranitem);
                         }
 
                         $form -> printNewLine($lineleft);
-                        $form -> printNewLine(1);
+                        $form -> printNewLine(2);
                         $form->printElementArray(
                             [
                                 [28, "\x20"],
                                 [29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
-                                [11,"\x20"],
+                                [10,"\x20"],
                                 [9,$model->bill_generation_final_fee_rm,false,true],
                             ]
                         );
