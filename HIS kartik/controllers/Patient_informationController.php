@@ -153,13 +153,14 @@ function confirmAction(ic) {
     if (answer) {
         window.location.href = '/patient_information/create?ic=' + ic;
     } else {
-        window.location.href = '/site/index';
+        window.location.href = '/site/admission';
     }
 }
 
 // The function below will start the confirmation dialog
 function duplicateIC(ic) {
    alert('NRIC ' + ic + ' is existed in system!');
+  // window.location.href = window.location.href;
 }
 
 <?php }else{?>
@@ -169,13 +170,14 @@ function confirmAction(ic) {
     if (answer) {
         window.location.href = '/patient_information/create?ic=' + ic;
     } else {
-        window.location.href = '/site/index';
+        window.location.href = '/site/admission';
     }
 }
 
 // The function below will start the confirmation dialog
 function duplicateIC(ic) {
    alert('NRIC ' + ic + ' wujud dalam sistem!');
+   window.location.href = '/site/admission?id=' + ic;
 }
 
 <?php } ?>
