@@ -7,8 +7,8 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
-$this->title = 'Landing Page';
+$this->title = 'Welcome to SGHIS';
 ?>
 <div>
-    <p>Landing page</p>
+    <p></p>
 </div>
