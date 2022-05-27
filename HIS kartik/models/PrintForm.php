@@ -82,7 +82,7 @@ class PrintForm
 
     }
 
-    public function printElement($len, $value, $uppercase=false, $rightalign=false, $totalright=false)
+    public function printElement($len, $value, $uppercase=false, $rightalign=false)
     {
         if($uppercase)
             $value = strtoupper($value);
@@ -91,49 +91,26 @@ class PrintForm
             $this->printNewLine($len);
         }
         
-       if($rightalign)
-       {
-        if(strlen($value == 4))
+        if($rightalign)
         {
-            $fixvalue = 7 - strlen($value);
-        }
-        if(strlen($value == 5))
-        {
-            $fixvalue = 6 - strlen($value);
-        }
-        if(strlen($value == 6))
-        {
-            $fixvalue = 6 - strlen($value);
-        }
-            $fixvalue = 9 - strlen($value);
+            $fixvalue = $len - strlen($value);
             if($fixvalue < 0){
                 $fixvalue = 0;
             }
-           
-           
-             $this->printer -> text(str_repeat("\x20", $fixvalue));
-            //$value =    strlen($value) - $fixvalue ;
+            
+            $this->printer -> text(str_repeat("\x20", $fixvalue));
+            $this->printer -> text(mb_strimwidth($value,0,$len));
+        }
+        else{        
+            $this->printer -> text(mb_strimwidth($value,0,$len));
 
-            // $fixvalue = 9; 
-            // $space =  $fixvalue -strlen($value) ;
-            // $this->printer->text(str_repeat("\x20", $space));
-       }
-    //    if($totalright)
-    //    {
-    //     $fixvalue = 9; 
-    //     $space =  $fixvalue -strlen($value) ;
-    //     $this->printer->text(str_repeat("\x20", $space));
-    //    }
+            $blanklen = $len - strlen($value);
 
-        
-        $this->printer -> text(mb_strimwidth($value,0,$len));
+            if($blanklen < 0)
+                $blanklen = 0;
 
-        $blanklen = $len - strlen($value);
-
-        if($blanklen < 0)
-            $blanklen = 0;
-
-        $this->printer -> text(str_repeat("\x20", $blanklen)); 
+            $this->printer -> text(str_repeat("\x20", $blanklen)); 
+        }
     }
 
     public function printElementArray($array)
@@ -143,11 +120,8 @@ class PrintForm
                 $this->printElement($array[$i][0], $array[$i][1]);
             else if(count($array[$i]) == 3)
                 $this->printElement($array[$i][0], $array[$i][1], $array[$i][2]);
-            else if(count($array[$i]) == 4){
-                $this->printElement($array[$i][0], $array[$i][1], $array[$i][2], $array[$i][3]);
-            }
             else{
-                $this->printElement($array[$i][0], $array[$i][1], $array[$i][2], $array[$i][3],  $array[$i][4]);
+                $this->printElement($array[$i][0], $array[$i][1], $array[$i][2], $array[$i][3]);
             }
         }
 
@@ -220,6 +194,7 @@ class PrintForm
                 [5,$item_count],
                 [5,"\x20"],
                 [8, $item_per_unit_cost,false,true],
+                [2,"\x20"],
                 [9, $item_total_unit_cost,false,true],
 
             ]

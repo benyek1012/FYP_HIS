@@ -152,7 +152,7 @@ class Bill extends \yii\db\ActiveRecord
 
         $totalWardCost = $dailyWardCost * $totalWardDays;
 
-        return Yii::t('app','Total')." : RM". $totalWardCost;                
+        // return Yii::$app->formatter->asCurrency($totalWardCost);                  
         return number_format((float)$totalWardCost, 2, '.', '');                
     }
 
@@ -167,7 +167,8 @@ class Bill extends \yii\db\ActiveRecord
             $totalItemCost += $modelTreatment->item_total_unit_cost_rm;
         }
 
-        return Yii::t('app','Total')." : ". Yii::$app->formatter->asCurrency($totalItemCost);                
+        // return Yii::$app->formatter->asCurrency($totalItemCost);     
+        return number_format((float)$totalItemCost, 2, '.', '');            
     }
 
     // Calculate Billable

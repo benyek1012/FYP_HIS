@@ -905,8 +905,8 @@ print_r($cagaranitem);
                 $fixbreaktop= str_repeat("\n", $ncounter);
                 // var_dump($countTreatment);
 
-                // var_dump(strlen($modeltreatmentfind->item_total_unit_cost_rm));
-                // exit();
+                //  var_dump(strlen($modeltreatmentfind->item_total_unit_cost_rm));
+                //  exit();
                                     
                 //$cagaranno = " ";
                             // $totalCost = 0;
@@ -1029,10 +1029,10 @@ print_r($cagaranitem);
                                         [5,$modelwardfind->ward_number_of_days],
                                         [1," "],
                                         [4, "hari"],
-                                        [28, "\x20"],
-                                        [9, $model->daily_ward_cost],
+                                        [26, "\x20"],
+                                        [9, $model->daily_ward_cost, false, true],
                                         [2, "\x20"],
-                                        [9, (new Bill())->getTotalWardCost(Yii::$app->request->get('bill_uid'))],
+                                        [9, (new Bill())->getTotalWardCost(Yii::$app->request->get('bill_uid')), false, true],
                                     ]
                                 );
                                 $form->printNewLine(2);
