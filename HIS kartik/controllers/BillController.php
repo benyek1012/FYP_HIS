@@ -868,18 +868,27 @@ print_r($cagaranitem);
      //print_r($ncounter.("  ct= "));
     // print_r($ct);
        // exit();
-        foreach($modelWard as $index => $modelwardfind){
-            if($index == 0){
-                $lastEndDate =ArrayHelper::toArray($modelwardfind->ward_end_datetime);
-            }
-            if($index == count($modelWard) - 1){
-                
-                $firstStartDate = ArrayHelper::toArray($modelwardfind->ward_start_datetime);
-            }
-        }
 
-        $printstartdate = implode($firstStartDate);
-        $printlastenddate = implode($lastEndDate);
+       $firstStartDate= "";
+       $lastEndDate = "";
+
+       if(!empty($modelWard))
+       {
+            foreach($modelWard as $index => $modelwardfind){
+                if($index == 0){
+                    $lastEndDate =$modelwardfind->ward_end_datetime;
+                }
+                if($index == count($modelWard) - 1){
+                    
+                    $firstStartDate = $modelwardfind->ward_start_datetime;
+                }
+            }
+       }
+      
+       
+
+        $printstartdate = $firstStartDate;
+        $printlastenddate = $lastEndDate;
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if($model->validate() && $model->bill_print_id != "")
@@ -909,44 +918,270 @@ print_r($cagaranitem);
                 //  exit();
                                     
                 //$cagaranno = " ";
-                            // $totalCost = 0;
+                // $totalCost = 0;
 
-                            // // $countTreatment = count($modelTreatment);
+                // // $countTreatment = count($modelTreatment);
 
-                            // foreach ($modelTreatment as $index => $modeltreatmentfind) {
-                            //     if($index > 5){
-                            //         $totalCost += $modeltreatmentfind->item_total_unit_cost_rm;
-                                //     $form->printElementArray(
-                                //         [
-                                //             [6, "\x20"],
-                                //             [4, "...."],
-                                //             [6, "\x20"],
-                                //             [9, $totalCost],
-                                //         ]
-                                //     );
-                                // }
+                // foreach ($modelTreatment as $index => $modeltreatmentfind) {
+                //     if($index > 5){
+                //         $totalCost += $modeltreatmentfind->item_total_unit_cost_rm;
+                    //     $form->printElementArray(
+                    //         [
+                    //             [6, "\x20"],
+                    //             [4, "...."],
+                    //             [6, "\x20"],
+                    //             [9, $totalCost],
+                    //         ]
+                    //     );
+                    // }
+                //     else{
+                //     $form->printElementArray(
+                //             [
+                //                 [6, "\x20"],
+                //                 [5, $modeltreatmentfind->treatment_code, true],
+                //                 [1,"\x20"],
+                //                 [30, $modeltreatmentfind->treatment_name,true],
+                //                 [2,"\x20"],
+                //                 [1,"x"],
+                //                 [2,"\x20"],
+                //                 [5,$modeltreatmentfind->item_count],
+                //                 [7,"\x20"],
+                //                 [8, $modeltreatmentfind->item_per_unit_cost_rm],
+                //                 [1,"x"],
+                //                 [8, $modeltreatmentfind->item_total_unit_cost_rm],
+
+                //             ]
+                //         );
+                //         $form->printNewLine(1);
+                //     }
+                // }
+
+                // $form->close();
+                $entrydate = date("d/m/Y" , strtotime($model->bill_generation_datetime));
+                $wardentrydate =date("d/m/Y" , strtotime($printstartdate));
+                $wardleavedate =date("d/m/Y" , strtotime($printlastenddate));
+                //$entrydatetime =date("d/m/Y H:i" , strtotime($model->entry_datetime));
+
+                if (Yii::$app->params['printerstatus'] == "true"){
+                    $form = new PrintForm(PrintForm::Bill);
+                    $form->printNewLine(9); // mayb 9
+                    $form->printElementArray(
+                        [
+                            [62, "\x20"],
+                            [10, $entrydate],
+                        ]
+                    );           
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [11, $model->rn],
+                        ]
+                    );     
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [35, $modelpatient->name,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [35, $modelpatient->address1,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [35, $modelpatient->address2,true],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [35, $modelpatient->address3,true],
+                        ]
+                    );
+                    $form->printNewLine(11);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [32, "Caj Duduk Wad  (Tarikh Masuk  : "],
+                            [10, $wardentrydate],
+                            [2," )"],
+
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [22, "\x20"],
+                            [17, "(Tarikh Keluar  : "],
+                            [10, $wardleavedate],
+                            [2," )"],
+
+                        ]
+                    );
+                    $form->printNewLine(2);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [7, "Kelas  "],
+                            [2, $modelwardfind->ward_code],
+                            [4," :  "],
+                            [5,$modelwardfind->ward_number_of_days],
+                            [1," "],
+                            [4, "hari"],
+                            [28, "\x20"],
+                            [9, $model->daily_ward_cost],
+                            [2, "\x20"],
+                            [9, (new Bill())->getTotalWardCost(Yii::$app->request->get('bill_uid'))],
+                        ]
+                    );
+                    $form->printNewLine(2);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [28, "Caj Pemeriksaan/Ujian Makmal"],
+                        ]
+                    );
+                    $form->printNewLine(1);
+                    $form->printElementArray(
+                        [
+                            [7, "\x20"],
+                            [28, "-----------------------------"],
+                        ]
+                    );
+                        $form->printNewLine(1);
+                        // if total treatment, total receipt and total refund > total line(10)
+                        if($countTreatment + $countReceipt + $countRefund > $totalLine){
+                            foreach ($modelTreatment as $index => $modeltreatmentfind) {
+                                // if treatment > 8, calculate total unit cost in "...."
+                                $count = $index;
+                                if($index > 7){ //8
+                                    $totalCostTreatment += $modeltreatmentfind->item_total_unit_cost_rm;
+                                }
+                                // if treatment < 9, directly print out
+                                else{
+                                    $form -> printBillTreatment($bill_uid, $modeltreatmentfind->treatment_code, $modeltreatmentfind->treatment_name, $modeltreatmentfind->item_count, $modeltreatmentfind->item_per_unit_cost_rm,  $modeltreatmentfind->item_total_unit_cost_rm);
+                                }
+                            }
+                    
+                            // if treatment > 8, print "...."
+                            if($count > 7){ //8
+                                $form -> printMore($totalCostTreatment);
+                            }
+
+                            if($countReceipt != 0){
+                                // caj rawatan harian
+                                $form -> printBillDailyTreatment($model->bill_generation_billable_sum_rm);
+
+                                foreach ($modelreceipt as $index => $modelreceiptfind)
+                                {
+                                    $count = $index;
+                                    // if total receipt > total treatment
+                                    if($countReceipt > $countTreatment){
+                                        // total receipt + total treatment - total line, get different between total receipt and total treatment with total line
+                                        $count1 = ($countReceipt + $countTreatment) - $totalLine;
+                                        // get deposit print how many line and another print in "...."
+                                        $count2 = $countReceipt - ($count1 + 2);
+                                        // if treatment > count2, calculate total deposit in "...."
+                                        if($index > $count2){
+                                            $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
+                                        }
+                                        // directly print out deposit
+                                        else{
+                                            $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
+                                        }
+                                    }
+                                    // if total receipt + total refund < total treatment
+                                    else{
+                                        if($countReceipt + $countRefund > 1){
+                                            // total receipt + total refund + total treatment - total line, get different between total receipt and total treatment with total line
+                                            $count1 = ($countReceipt + $countRefund + $countTreatment) - $totalLine;
+                                            // get deposit print how many line and another print in "...."
+                                            $count2 = ($countRefund + $countReceipt) - ($count1 + 2);
+                                            if($index > $count2){
+                                                foreach($modelrefund as $index => $modelrefundfind){
+                                                    $totalCostRefund += $modelrefundfind->receipt_content_sum;
+                                                }
+                                                $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
+                                            }
+                                            else{
+                                                $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
+                                            }
+                                        }
+                                        else{
+                                            if($index > 1){
+                                                $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
+                                                // $totalCostReceipt = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
+                                            }
+                                            else{
+                                                $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if($count > 1 || ($countRefund + $countReceipt) > 1){
+                                    $unclaimedBalance = (new Bill())->getDeposit($model->rn) + (new Bill())->getRefund($model->rn);
+                                    $form -> printMore($unclaimedBalance);
+                                }
+                            }
+                            else{
+                                $form->printCajRawatenHarian();
+                            }
+
+                            // print refund
+                            // foreach ($modelrefund as $index => $modelrefundfind)
+                            // {
+                            //     $count = $index;
+                            //     // if total redund > total treatment
+                            //     if($countRefund > $countTreatment){
+                            //         // total refund + total treatment - total line, get different between total refund and total treatment with total line
+                            //         $count1 = ($countRefund + $countTreatment) - $totalLine;
+                            //         // get refund print how many line and another print in "...."
+                            //         $count2 = $countRefund - ($count1 + 2);
+                            //         // if treatment > count2, calculate total refund in "...."
+                            //         if($index > $count2){
+                            //             $totalCostRefund += $modelrefundfind->receipt_content_sum;
+                            //         }
+                            //         // directly print out refund
+                            //         else{
+                            //             $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
+                            //         }
+                            //     }
+                            //     // if total refund < total treatment
                             //     else{
-                            //     $form->printElementArray(
-                            //             [
-                            //                 [6, "\x20"],
-                            //                 [5, $modeltreatmentfind->treatment_code, true],
-                            //                 [1,"\x20"],
-                            //                 [30, $modeltreatmentfind->treatment_name,true],
-                            //                 [2,"\x20"],
-                            //                 [1,"x"],
-                            //                 [2,"\x20"],
-                            //                 [5,$modeltreatmentfind->item_count],
-                            //                 [7,"\x20"],
-                            //                 [8, $modeltreatmentfind->item_per_unit_cost_rm],
-                            //                 [1,"x"],
-                            //                 [8, $modeltreatmentfind->item_total_unit_cost_rm],
-
-                            //             ]
-                            //         );
-                            //         $form->printNewLine(1);
+                            //         if($countReceipt + $countRefund > 2){
+                            //             // total refund + total deposit + total treatment - total line, get different between total refund and total treatment with total line
+                            //             $count1 = ($countRefund + $countReceipt + $countTreatment) - $totalLine;
+                            //             // get refund print how many line and another print in "...."
+                            //             $count2 = ($countRefund + $countReceipt) - ($count1 + 2);
+                            //             if($index > $count2){
+                            //                 $totalCostRefund += $modelrefundfind->receipt_content_sum;
+                            //             }
+                            //             else{
+                            //                 $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
+                            //             }
+                            //         }
+                            //         else{
+                            //             if($index > 1){
+                            //                 $totalCostRefund += $modelrefundfind->receipt_content_sum;
+                            //                 // $totalCostRefund = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
+                            //             }
+                            //             else{
+                            //                 $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
+                            //             }
+                            //         }
                             //     }
                             // }
 
+<<<<<<< Updated upstream
                             // $form->close();
                                     $entrydate = date("d/m/Y" , strtotime($model->bill_generation_datetime));
                                     $wardentrydate =date("d/m/Y" , strtotime($printstartdate));
@@ -1085,224 +1320,127 @@ print_r($cagaranitem);
                         // if treatment > count2, calculate total deposit in "...."
                         if($index > $count2){
                             $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
+=======
+                            // if($count > 1 || ($countRefund + $countReceipt) > 2){                
+                            //     $form -> printMore($totalCostRefund - $totalCostReceipt);
+                            // }
+>>>>>>> Stashed changes
                         }
-                        // directly print out deposit
+                        // if total treatment, total receipt and total refund < total line(10)
                         else{
-                            $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
-                        }
-                    }
-                    // if total receipt + total refund < total treatment
-                    else{
-                        if($countReceipt + $countRefund > 1){
-                            // total receipt + total refund + total treatment - total line, get different between total receipt and total treatment with total line
-                            $count1 = ($countReceipt + $countRefund + $countTreatment) - $totalLine;
-                            // get deposit print how many line and another print in "...."
-                            $count2 = ($countRefund + $countReceipt) - ($count1 + 2);
-                            if($index > $count2){
-                                foreach($modelrefund as $index => $modelrefundfind){
-                                    $totalCostRefund += $modelrefundfind->receipt_content_sum;
+                            foreach ($modelTreatment as $index => $modeltreatmentfind) {
+                                $count = $index;
+                                if($index > 9){ //9
+                                    $totalCostTreatment += $modeltreatmentfind->item_total_unit_cost_rm;
+                                    // $totalCostTreatment = $form -> printTotalTreamentUnitCost($totalCostTreatment, $modeltreatmentfind->item_total_unit_cost_rm);
                                 }
-                                $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
+                                else{
+                                    $form -> printBillTreatment($bill_uid, $modeltreatmentfind->treatment_code, $modeltreatmentfind->treatment_name, $modeltreatmentfind->item_count, $modeltreatmentfind->item_per_unit_cost_rm,  $modeltreatmentfind->item_total_unit_cost_rm);
+                                }
+                            }
+
+                            if($count > 9){// 9
+                                $form -> printMore($totalCostTreatment);
+                            }
+
+                            if($countReceipt != 0 || $countRefund != 0){
+                                // caj rawatan harian
+                                $form -> printBillDailyTreatment($model->bill_generation_billable_sum_rm);
                             }
                             else{
-                                $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
+                                $form->printCajRawatenHarian();
                             }
-                        }
-                        else{
-                            if($index > 1){
-                                $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
-                                // $totalCostReceipt = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
-                            }
-                            else{
-                                $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
-                            }
-                        }
-                    }
-                }
 
-                if($count > 1 || ($countRefund + $countReceipt) > 1){
-                    $unclaimedBalance = (new Bill())->getDeposit($model->rn) + (new Bill())->getRefund($model->rn);
-                    $form -> printMore($unclaimedBalance);
-                }
-            }
-            else{
-                $form->printCajRawatenHarian();
-            }
-
-            // print refund
-            // foreach ($modelrefund as $index => $modelrefundfind)
-            // {
-            //     $count = $index;
-            //     // if total redund > total treatment
-            //     if($countRefund > $countTreatment){
-            //         // total refund + total treatment - total line, get different between total refund and total treatment with total line
-            //         $count1 = ($countRefund + $countTreatment) - $totalLine;
-            //         // get refund print how many line and another print in "...."
-            //         $count2 = $countRefund - ($count1 + 2);
-            //         // if treatment > count2, calculate total refund in "...."
-            //         if($index > $count2){
-            //             $totalCostRefund += $modelrefundfind->receipt_content_sum;
-            //         }
-            //         // directly print out refund
-            //         else{
-            //             $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
-            //         }
-            //     }
-            //     // if total refund < total treatment
-            //     else{
-            //         if($countReceipt + $countRefund > 2){
-            //             // total refund + total deposit + total treatment - total line, get different between total refund and total treatment with total line
-            //             $count1 = ($countRefund + $countReceipt + $countTreatment) - $totalLine;
-            //             // get refund print how many line and another print in "...."
-            //             $count2 = ($countRefund + $countReceipt) - ($count1 + 2);
-            //             if($index > $count2){
-            //                 $totalCostRefund += $modelrefundfind->receipt_content_sum;
-            //             }
-            //             else{
-            //                 $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
-            //             }
-            //         }
-            //         else{
-            //             if($index > 1){
-            //                 $totalCostRefund += $modelrefundfind->receipt_content_sum;
-            //                 // $totalCostRefund = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
-            //             }
-            //             else{
-            //                 $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
-            //             }
-            //         }
-            //     }
-            // }
-
-            // if($count > 1 || ($countRefund + $countReceipt) > 2){                
-            //     $form -> printMore($totalCostRefund - $totalCostReceipt);
-            // }
-        }
-        // if total treatment, total receipt and total refund < total line(10)
-        else{
-            foreach ($modelTreatment as $index => $modeltreatmentfind) {
-                $count = $index;
-                if($index > 9){ //9
-                    $totalCostTreatment += $modeltreatmentfind->item_total_unit_cost_rm;
-                    // $totalCostTreatment = $form -> printTotalTreamentUnitCost($totalCostTreatment, $modeltreatmentfind->item_total_unit_cost_rm);
-                }
-                else{
-                    $form -> printBillTreatment($bill_uid, $modeltreatmentfind->treatment_code, $modeltreatmentfind->treatment_name, $modeltreatmentfind->item_count, $modeltreatmentfind->item_per_unit_cost_rm,  $modeltreatmentfind->item_total_unit_cost_rm);
-                }
-            }
-
-            if($count > 9){// 9
-                $form -> printMore($totalCostTreatment);
-            }
-
-            if($countReceipt != 0 || $countRefund != 0){
-                // caj rawatan harian
-                $form -> printBillDailyTreatment($model->bill_generation_billable_sum_rm);
-            }
-            else{
-                $form->printCajRawatenHarian();
-            }
-
-            if($countReceipt != 0){
-                foreach ($modelreceipt as $index => $modelreceiptfind)
-                {
-                    $count = $index;
-                    if($countTreatment + $countReceipt + $countRefund <= 10){
-                        $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
-                    }
-                    else{
-                        if($index > 0){
-                            $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
-                            // $totalCostReceipt = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
-                        }
-                        else{
-                            $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
-                        }
-                    }
-                }
-
-                if($count > 0 && $countTreatment + $countReceipt + $countRefund > 10){
-                    $form -> printMore($totalCostReceipt);
-                }
-            }
-
-            if($countRefund != 0){
-                foreach ($modelrefund as $index => $modelrefundfind)
-                {
-                    $count = $index;
-                    if($countTreatment + $countReceipt + $countRefund <= 10){
-                        $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
-
-                    }
-                    else{
-                        if($index > 0){
-                            $totalCostRefund += $modelrefundfind->receipt_content_sum;
-                            // $totalCostReceipt = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
-                        }
-                        else{
-                            $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
-                        }
-                    }
-                }
-
-                if($count > 0 && $countTreatment + $countReceipt + $countRefund > 10){
-                    $form -> printMore($totalCostRefund);
-                }
-            }
-        }
-
-        $form -> printNewLine($lineleft);
-        $form -> printNewLine(1);
-        $form->printElementArray(
-            [
-                [28, "\x20"],
-                [29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
-                [11,"\x20"],
-                [9,$model->bill_generation_final_fee_rm,false,true],
-            ]
-        );
-
-                                //print bill/caj rawatan harian and cagaran, refund
-                                // $form->printElementArray(
-                                //     [
-                                //         [28, "\x20"],
-                                //         [29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
-                                //         [11,"\x20"],
-                                //         [9,$model->bill_generation_final_fee_rm],
-                                //     ]
-                                // );
-            $form->close();
-
-            
-            return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));  
+                            if($countReceipt != 0){
+                                foreach ($modelreceipt as $index => $modelreceiptfind)
+                                {
+                                    $count = $index;
+                                    if($countTreatment + $countReceipt + $countRefund <= 10){
+                                        $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
                                     }
                                     else{
-                                        return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));  
-                                    }
-                                                
-                                            
-                                                                 
-                                                                
-                                            $model->bill_print_datetime =  $date->format('Y-m-d H:i');
-                                            $model->bill_uid = Yii::$app->request->get('bill_uid');
-                                            $cookies = Yii::$app->request->cookies;
-                                            $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
-                                            $model->save();
-                                            return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                                            'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         
+                                        if($index > 0){
+                                            $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
+                                            // $totalCostReceipt = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
                                         }
-                                        else
-                                        {
-                                            $message =  Yii::t('app','Bill Print ID should not be empty!');
-                                            $model->addError('bill_print_id', $message);
-                                            return $this->render('print', [
-                                                'model' => $model,
-                                                'modelWard' => $modelWard,
-                                                'modelTreatment' => $modelTreatment,
-                                                'print_empty' => true,
-                                            ]);
+                                        else{
+                                            $form -> printBillDeposit($model->rn, $modelreceiptfind->receipt_serial_number, $modelreceiptfind->receipt_content_sum);
+                                        }
+                                    }
+                                }
+
+                                if($count > 0 && $countTreatment + $countReceipt + $countRefund > 10){
+                                    $form -> printMore($totalCostReceipt);
+                                }
+                            }
+
+                            if($countRefund != 0){
+                                foreach ($modelrefund as $index => $modelrefundfind)
+                                {
+                                    $count = $index;
+                                    if($countTreatment + $countReceipt + $countRefund <= 10){
+                                        $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
+
+                                    }
+                                    else{
+                                        if($index > 0){
+                                            $totalCostRefund += $modelrefundfind->receipt_content_sum;
+                                            // $totalCostReceipt = $form -> printMoreDeposit($totalCostReceipt, $modelreceiptfind->receipt_content_sum);
+                                        }
+                                        else{
+                                            $form -> printBillRefund($model->rn, $modelrefundfind->receipt_serial_number, $modelrefundfind->receipt_content_sum);
+                                        }
+                                    }
+                                }
+
+                                if($count > 0 && $countTreatment + $countReceipt + $countRefund > 10){
+                                    $form -> printMore($totalCostRefund);
+                                }
+                            }
+                        }
+
+                        $form -> printNewLine($lineleft);
+                        $form -> printNewLine(1);
+                        $form->printElementArray(
+                            [
+                                [28, "\x20"],
+                                [29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
+                                [11,"\x20"],
+                                [9,$model->bill_generation_final_fee_rm,false,true],
+                            ]
+                        );
+
+                        //print bill/caj rawatan harian and cagaran, refund
+                        // $form->printElementArray(
+                        //     [
+                        //         [28, "\x20"],
+                        //         [29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
+                        //         [11,"\x20"],
+                        //         [9,$model->bill_generation_final_fee_rm],
+                        //     ]
+                        // );
+                        $form->close();
+
+                }
+                                                
+                $model->bill_print_datetime =  $date->format('Y-m-d H:i');
+                $model->bill_uid = Yii::$app->request->get('bill_uid');
+                $cookies = Yii::$app->request->cookies;
+                $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
+                $model->save();
+                return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         
+            }
+            else
+            {
+                $message =  Yii::t('app','Bill Print ID should not be empty!');
+                $model->addError('bill_print_id', $message);
+                return $this->render('print', [
+                    'model' => $model,
+                    'modelWard' => $modelWard,
+                    'modelTreatment' => $modelTreatment,
+                    'print_empty' => true,
+                ]);
             }
         }
 

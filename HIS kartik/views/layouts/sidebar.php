@@ -191,12 +191,12 @@ if(!empty(Yii::$app->request->queryParams))
                         Yii::$app->session->remove('close_rn');
                     }
                     else  echo \hail812\adminlte\widgets\Menu::widget(['items' => items_new_rn()]);
-                    echo \hail812\adminlte\widgets\Menu::widget(['items' => 
-                        [   
-                            ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
-                            'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
-                        ]
-                    ]);
+                    // echo \hail812\adminlte\widgets\Menu::widget(['items' => 
+                    //     [   
+                    //         ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+                    //         'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+                    //     ]
+                    // ]);
                 }
             ?>
 

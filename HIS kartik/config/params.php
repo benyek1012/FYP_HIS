@@ -19,6 +19,6 @@ return [
     'bill' => 'smb://DESKTOP-7044BNO/Epson',
 
 
-    'printerstatus' => 'true',  // anything beside true will not print
+    'printerstatus' => 'false',  // anything beside true will not print
 
 ];

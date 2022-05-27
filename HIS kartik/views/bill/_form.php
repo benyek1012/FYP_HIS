@@ -933,7 +933,7 @@ function getDailyWardCost() {
     });   
 }
 
-<?php if( Yii::$app->language == "en"){ ?>
+
 // The function below will start the confirmation  dialog
 function confirmAction() {
     var answer = confirm("Are you sure to generate bill?");
@@ -943,15 +943,5 @@ function confirmAction() {
         window.location.href = history.back();
     }
 }
-<?php }else{?>
-// The function below will start the confirmation  dialog
-function confirmAction() {
-    var answer = confirm("Adakah anda pasti menjana bil?");
-    if (answer) {
-        window.location.href = window.location + '&confirm=true';
-    } else {
-        window.location.href = history.back();
-    }
-}
-<?php } ?>
+
 </script>

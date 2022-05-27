@@ -29,7 +29,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 <?php }else{
 
 $flag = false;
-$actions_sidebar = array("patient_admission", "bill", "receipt");
+$actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");
 foreach ($actions_sidebar as $action) {
     if(Yii::$app->controller->id == "site" && Yii::$app->controller->action->id == "admission")
     {
