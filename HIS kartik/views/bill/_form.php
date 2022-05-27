@@ -449,7 +449,7 @@ if($print_readonly)
                 <div class="d-flex justify-content-end">
                     <?php
                 if(!empty($model))
-                echo "<div>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    echo "<div>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                 ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -575,7 +575,7 @@ if($print_readonly)
                 <div class="d-flex justify-content-end">
                     <?php
                 if(!empty($model))
-                echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                 ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -933,15 +933,25 @@ function getDailyWardCost() {
     });   
 }
 
-
+<?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation  dialog
 function confirmAction() {
     var answer = confirm("Are you sure to generate bill?");
     if (answer) {
         window.location.href = window.location + '&confirm=true';
     } else {
-        window.location.href = history.back();
+        window.location.href = history.go(-2);
     }
 }
-
+<?php }else{?>
+// The function below will start the confirmation  dialog
+function confirmAction() {
+    var answer = confirm("Adakah anda pasti menjana bil?");
+    if (answer) {
+        window.location.href = window.location + '&confirm=true';
+    } else {
+        window.location.href = history.go(-2);
+    }
+}
+<?php } ?>
 </script>
