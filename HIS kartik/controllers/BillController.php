@@ -1181,7 +1181,7 @@ print_r($cagaranitem);
                             //     }
                             // }
 
-<<<<<<< Updated upstream
+
                             // $form->close();
                                     $entrydate = date("d/m/Y" , strtotime($model->bill_generation_datetime));
                                     $wardentrydate =date("d/m/Y" , strtotime($printstartdate));
@@ -1320,11 +1320,11 @@ print_r($cagaranitem);
                         // if treatment > count2, calculate total deposit in "...."
                         if($index > $count2){
                             $totalCostReceipt += $modelreceiptfind->receipt_content_sum;
-=======
+
                             // if($count > 1 || ($countRefund + $countReceipt) > 2){                
                             //     $form -> printMore($totalCostRefund - $totalCostReceipt);
                             // }
->>>>>>> Stashed changes
+
                         }
                         // if total treatment, total receipt and total refund < total line(10)
                         else{
