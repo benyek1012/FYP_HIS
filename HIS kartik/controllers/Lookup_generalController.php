@@ -125,7 +125,8 @@ class Lookup_generalController extends Controller
             }
            
         } 
-        else {
+        else 
+        {
             $model->loadDefaultValues();
         }
 

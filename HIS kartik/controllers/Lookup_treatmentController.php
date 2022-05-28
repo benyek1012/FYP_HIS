@@ -54,49 +54,34 @@ class Lookup_treatmentController extends Controller
      */
     public function actionIndex()
     {
-        $modelLOT = new Lookup_treatment();
+        $model = new Lookup_treatment();
         $searchModel = new Lookup_treatmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
-        {
-            if ($modelLOT->load($this->request->post())) $this->actionLOT($modelLOT);
-            else $modelLOT->loadDefaultValues();
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                $model->save();
+                return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
+            }
+            else
+            {
+                $message = 'Code should not be duplicated.';
+                $model->addError('treatment_code', $message);
+            }
+           
+        } 
+        else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    }
-
-    public function actionLOT($modelLOT){
-        if ($modelLOT->save()) {
-             $model_founded = Lookup_treatmentController::findModel($modelLOT->treatment_uid);
-             if(!empty($model_founded))
-                 return Yii::$app->getResponse()->redirect(array('/lookup_treatment/index', 
-                     'treat' => $model_founded->treatment_uid));
-         }
-    }
-
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `lookup_treatment` (
-                `treatment_uid` VARCHAR(64) NOT NULL,
-                `treatment_code` VARCHAR(20) UNIQUE NOT NULL,
-                `treatment_name` VARCHAR(50) NOT NULL,
-                `class_1_cost_per_unit` DECIMAL(10,2) NOT NULL,
-                `class_2_cost_per_unit` DECIMAL(10,2) NOT NULL,
-                `class_3_cost_per_unit` DECIMAL(10,2) NOT NULL,
-                PRIMARY KEY (`treatment_uid`)
-            );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
     }
 
     /**
@@ -121,11 +106,23 @@ class Lookup_treatmentController extends Controller
     {
         $model = new Lookup_treatment();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                $model->save();
                 return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
             }
-        } else {
+            else
+            {
+                $message = 'Code should not be duplicated.';
+                $model->addError('treatment_code', $message);
+            }
+        } 
+        else 
+        {
             $model->loadDefaultValues();
         }
 
