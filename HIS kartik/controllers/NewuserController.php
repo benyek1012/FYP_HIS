@@ -77,29 +77,7 @@ class NewuserController extends Controller
                  return Yii::$app->getResponse()->redirect(array('/newuser/index', 
                      'user' => $model_founded->user_uid));
          }
-    }
-
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `new_user` (
-                `user_uid` VARCHAR(64) NOT NULL,
-                `username` VARCHAR(100) UNIQUE NOT NULL,
-                `user_password` VARCHAR(20) NOT NULL,
-                `role` VARCHAR(20) NOT NULL,
-                `retire` BOOLEAN NOT NULL DEFAULT true,
-                `authKey` VARCHAR(45) DEFAULT NULL,
-                PRIMARY KEY ('user_uid')
-           );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
-    }
-
-    
+    }    
 
     /**
      * Displays a single Newuser model.
