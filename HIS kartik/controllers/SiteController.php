@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\Patient_information;
 use app\controllers\Patient_informationController;
 use app\models\Patient_next_of_kin;
+use Exception;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 
@@ -114,14 +115,19 @@ class SiteController extends Controller
             if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
             else $model_Patient->loadDefaultValues();
             
-            if ($model_NOK->load($this->request->post())) {
-                 $date = new \DateTime();
-                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                $model_NOK->nok_datetime_updated = $date->format('Y-m-d H:i');
-                $model_NOK->save();
-                $this->actionNOK($model_NOK);
+            try{
+                if ($model_NOK->load($this->request->post())) {
+                    $date = new \DateTime();
+                    $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                    $model_NOK->nok_datetime_updated = $date->format('Y-m-d H:i');
+                    $model_NOK->save();
+                    $this->actionNOK($model_NOK);
+                }
+                else $model_NOK->loadDefaultValues();
             }
-            else $model_NOK->loadDefaultValues();
+            catch(Exception $e){
+                $this->errorMessage($e->getMessage());
+            }
         }
 
         if(!empty(Yii::$app->request->get('type'))) (new Patient_admissionController(null, null)) -> actionCreate();
@@ -249,5 +255,9 @@ class SiteController extends Controller
             Yii::$app->language = $_POST['lang'];
             Yii::$app->session->set('language', $_POST['lang']);
         }
+    }
+
+    public function errorMessage($message){
+        echo '<script>alert('.$message.')</script>';
     }
 }

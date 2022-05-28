@@ -1,5 +1,6 @@
 <?php
 
+use app\controllers\SiteController;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
@@ -118,11 +119,16 @@ else
             <?php   
                 if(!empty($model))
                 {
-                    $dataProvider2 = new ActiveDataProvider([
-                        'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
-                        'pagination'=>['pageSize'=>3],
-                        ]);
-                    echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider2]);
+                    try{
+                        $dataProvider2 = new ActiveDataProvider([
+                            'query'=> Patient_next_of_kin::find()->where(['patient_uid'=>$model->patient_uid]),
+                            'pagination'=>['pageSize'=>3],
+                            ]);
+                        echo $this->render('/patient_next_of_kin/index', ['dataProvider'=>$dataProvider2]);
+                    }
+                    catch(Exception $e){
+                        (new SiteController(null, null)) -> errorMessage($e->getMessage(), false);
+                    }
             ?>
                     <div class="form-group">
                         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
