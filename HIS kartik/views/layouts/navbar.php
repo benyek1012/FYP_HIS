@@ -100,10 +100,10 @@ $this->registerJs(
         var lang = $(this).attr('id');
        
         $.post('/site/language', {'lang':lang}, function(data){
-            location.reload();
+            if(window.location.pathname == '/') window.location.href = 'site/index';
+            else location.reload();
         });
     });",
-    
 );
 
 ?>

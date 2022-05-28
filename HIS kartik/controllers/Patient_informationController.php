@@ -160,7 +160,7 @@ function confirmAction(ic) {
 // The function below will start the confirmation dialog
 function duplicateIC(ic) {
    alert('NRIC ' + ic + ' is existed in system!');
-   window.location.href = history.go(-2);
+   window.location.href = history.go(-1);
 }
 
 <?php }else{?>
@@ -177,7 +177,7 @@ function confirmAction(ic) {
 // The function below will start the confirmation dialog
 function duplicateIC(ic) {
    alert('NRIC ' + ic + ' wujud dalam sistem!');
-    window.location.href = history.go(-2);
+    window.location.href = history.go(-1);
 }
 
 <?php } ?>

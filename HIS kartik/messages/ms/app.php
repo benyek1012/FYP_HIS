@@ -192,5 +192,6 @@ return[
     'Document Number' => 'Nombor Dokumen',
     'Bill Print ID should not be empty!' => 'ID Cetak Bil tidak boleh kosong!',
     'Transaction Records' => 'Rekod Transaksi',
+    'Welcome to SGHIS' => 'Selamat datang ke SGHIS',
 ];
 ?>

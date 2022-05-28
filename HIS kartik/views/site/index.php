@@ -7,7 +7,7 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
-$this->title = 'Welcome to SGHIS';
+$this->title = Yii::t('app','Welcome to SGHIS');
 ?>
 <div>
     <p></p>

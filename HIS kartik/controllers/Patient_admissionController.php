@@ -2163,9 +2163,6 @@ $caseblankfront2 = str_repeat("\x20", 16);
     }
 }
 
-
-
-            
 ?>
 <script>
 <?php if( Yii::$app->language == "en"){ ?>
