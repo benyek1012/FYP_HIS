@@ -105,6 +105,8 @@ class Lookup_departmentController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_department();
+        $searchModel = new Lookup_departmentSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             
@@ -121,16 +123,16 @@ class Lookup_departmentController extends Controller
                 $model->addError('department_code', $message);
             }
            
-        } 
-        else 
-        {
-            $model->loadDefaultValues();
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
         }
+        $model->loadDefaultValues();
+
+        return $this->render('index', [
+            'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
+    
 
     /**
      * Updates an existing Lookup_department model.

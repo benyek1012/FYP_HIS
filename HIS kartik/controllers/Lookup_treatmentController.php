@@ -105,6 +105,8 @@ class Lookup_treatmentController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_treatment();
+        $searchModel = new Lookup_treatmentSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             
@@ -119,15 +121,15 @@ class Lookup_treatmentController extends Controller
             {
                 $message = 'Code should not be duplicated.';
                 $model->addError('treatment_code', $message);
-            }
-        } 
-        else 
-        {
-            $model->loadDefaultValues();
+            } 
         }
+        
+        $model->loadDefaultValues();
 
-        return $this->render('create', [
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

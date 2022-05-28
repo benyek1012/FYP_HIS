@@ -107,6 +107,8 @@ class Lookup_wardController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_ward();
+        $searchModel = new Lookup_wardSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
 
@@ -123,13 +125,13 @@ class Lookup_wardController extends Controller
                 $model->addError('ward_code', $message);
             }
         } 
-        else 
-        {
-            $model->loadDefaultValues();
-        }
 
-        return $this->render('create', [
+        $model->loadDefaultValues();
+
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

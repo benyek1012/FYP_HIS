@@ -108,6 +108,8 @@ class Lookup_statusController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_status();
+        $searchModel = new Lookup_statusSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost && $model->load($this->request->post())) 
         {
@@ -126,13 +128,13 @@ class Lookup_statusController extends Controller
             }
            
         } 
-        else 
-        {
-            $model->loadDefaultValues();
-        }
+        
+        $model->loadDefaultValues();
 
-        return $this->render('create', [
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
