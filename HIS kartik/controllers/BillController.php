@@ -550,7 +550,7 @@ class BillController extends Controller
         $fixfront = str_repeat("\x20", 8);
         $ct = 1;
         $abc = '';
-
+        $two =2;
         //$form = new PrintForm(PrintForm::BorangDaftarMasuk);
         $totalLine = 10;
         $totalCostTreatment = 0;
@@ -1263,7 +1263,24 @@ print_r($cagaranitem);
                         }
 
                         $form -> printNewLine($lineleft);
-                        $form -> printNewLine(2);
+                        if(empty($modelreceipt) && empty($modelrefund) && $countTreatment > 10)
+                        {
+                           
+                            $form -> printNewLine(1);
+                        }
+                        if(empty($modelreceipt) && empty($modelrefund) && $countTreatment == 10)
+                        {
+                           
+                            $two - 1;
+                        }
+                        if(empty($modelreceipt) && empty($modelrefund))
+                        {
+                           
+                            $form -> printNewLine(2);
+                        }
+                       
+                       
+                        $form -> printNewLine($two);
                         $form->printElementArray(
                             [
                                 [28, "\x20"],
