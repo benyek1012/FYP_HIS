@@ -563,6 +563,9 @@ class BillController extends Controller
         if($totalLine > ($countTreatment + $countReceipt + $countRefund)){
             $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
         }
+        else if($totalLine == ($countTreatment + $countReceipt + $countRefund)){
+            $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
+        }
         else{
             $lineleft = 11 - $totalLine;
         }
@@ -1184,7 +1187,7 @@ print_r($cagaranitem);
                             //         }
                             //     }
                             // }
-
+                            
                             // if($count > 1 || ($countRefund + $countReceipt) > 2){                
                             //     $form -> printMore($totalCostRefund - $totalCostReceipt);
                             // }
@@ -1524,3 +1527,4 @@ print_r($cagaranitem);
                                                                 //   $printer -> text("\n\n\n\n\n");
 
                                                                 //   $printer ->close();
+                                                               
