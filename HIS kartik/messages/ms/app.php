@@ -161,7 +161,7 @@ return[
     'User Management' => 'Pengurusan pengguna',
     'Username' => 'Nama pengguna',
     'User Password' => 'Kata Laluan Pengguna',
-    'Retire' => 'Bersara',
+    'Active' => 'Aktif',
     'Role' => 'Peranan',
     'Registration Number (R/N)' => 'Nombor Daftar ',
     'Patient admission record is not found' => 'Rekod pendaftaran pesakit tidak diasaskan',

@@ -96,7 +96,7 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
             'username' => Yii::t('app','Username'),
             'user_password' => Yii::t('app','User Password'),
             'role' => Yii::t('app','Role'),
-            'retire' => Yii::t('app','Retire'),
+            'retire' => Yii::t('app','Active'),
             'authKey' => Yii::t('app','Auth Key'),
         ];
     }
