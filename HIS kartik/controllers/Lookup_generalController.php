@@ -63,15 +63,24 @@ class Lookup_generalController extends Controller
             
             $checkDuplicatedCode = Lookup_general::findOne(['code' => $model->code, 'category' => $model->category]);
        
-            if($model->validate() &&  empty( $checkDuplicatedCode))
+            if($model->validate() && empty( $checkDuplicatedCode))
             {
-                $model->save();
+                // try catch of check row is inserted in SQL
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'lookup_general_uid' => $model->lookup_general_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('code', $message);
+                // set the flash message
+                Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> Code '.$model->code.' is duplicated in category '.$model->category.' !</div>'
+                );
             }
            
         } 
