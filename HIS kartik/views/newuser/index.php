@@ -69,6 +69,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'user_password',
+                'editableOptions' =>  [                
+                    'asPopover' => false,
+                    'formOptions' => ['action' => ['/newuser/user']],
+                ]
+            ],
+
+            [
+                'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'role',
                 'editableOptions' =>  [                
                     'asPopover' => false,
