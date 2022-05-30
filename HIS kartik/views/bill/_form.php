@@ -436,6 +436,7 @@ if($print_readonly)
         <?php $form = kartik\form\ActiveForm::begin([
             'id' => 'ward-form',
             'type' => 'vertical',
+            'action' => 'generate?bill_uid='.Yii::$app->request->get('bill_uid').'&rn='.Yii::$app->request->get('rn').'#ward',
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -562,6 +563,7 @@ if($print_readonly)
         <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'treatment-form',
         'type' => 'vertical',
+        'action' => 'generate?bill_uid='.Yii::$app->request->get('bill_uid').'&rn='.Yii::$app->request->get('rn').'#treatment ',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -753,7 +755,7 @@ if($print_readonly)
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
             <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
-            <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+            <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
             <?php } ?>
         </div>
         <!-- /.card-body -->
@@ -796,7 +798,7 @@ if($print_readonly)
             <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
             <?php }else echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
             <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
             <?php } ?>
         </div>
         <!-- /.card-body -->
