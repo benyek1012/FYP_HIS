@@ -230,7 +230,7 @@ class ReceiptController extends Controller
                         $form->printElementArray(
                             [
                                 // line 5, OP mayb phase 2?
-                                [1, "\x20"],
+                                [15, "\x20"],
                                 [1, " "],
                             ]
                         );

@@ -563,9 +563,6 @@ class BillController extends Controller
         if($totalLine > ($countTreatment + $countReceipt + $countRefund)){
             $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
         }
-        else if($totalLine == ($countTreatment + $countReceipt + $countRefund)){
-            $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
-        }
         else{
             $lineleft = 11 - $totalLine;
         }
