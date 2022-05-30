@@ -1352,7 +1352,6 @@ $entrydatetime =date("d/m/Y H:i" , strtotime($model->entry_datetime));
             $getaddress1 = ArrayHelper::toArray($modelpatient->address1);
             $getaddress2 = ArrayHelper::toArray($modelpatient->address2);
             $getaddress3 = ArrayHelper::toArray($modelpatient->address3);
-            $getic = ArrayHelper::toArray($modelpatient->nric);
             $getphone = ArrayHelper::toArray($modelpatient->phone_number);
             $getgender = ArrayHelper::toArray($modelpatient->sex);
             $getjob = arrayHelper::toArray($modelpatient->job);
@@ -1388,7 +1387,6 @@ $entrydatetime =date("d/m/Y H:i" , strtotime($model->entry_datetime));
             $patientaddress1 = implode($getaddress1);
             $patientaddress2 = implode($getaddress2);
             $patientaddress3 = implode($getaddress3);
-            $printic = implode($getic);
             $printphone = implode($getphone);
             $printgender = implode($getgender);
                     //no age and date of birth
@@ -1479,7 +1477,7 @@ $entrydatetime =date("d/m/Y H:i" , strtotime($model->entry_datetime));
                                 [5, "\x20"],
                                 [30, $first,true],
                                 [15,"\x20"],
-                                [10, $printic],
+                                [14, $printic],
                             ]
                         );
                         $form->printNewLine(1);
@@ -1502,7 +1500,7 @@ $entrydatetime =date("d/m/Y H:i" , strtotime($model->entry_datetime));
                                 [5, "\x20"],
                                 [30, $modelpatient->name,true],
                                 [15,"\x20"],
-                                [10, $modelpatient->nric],
+                                [14, $printic],
                             ]
                         );
                         $form->printNewLine(1);

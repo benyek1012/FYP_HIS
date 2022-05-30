@@ -11,14 +11,14 @@ return [
     'ms' => 'malay'
     ],
 
-    'borangdafter' => 'smb://DESKTOP-7044BNO/Epson',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson 
-    'chargesheet' => 'smb://DESKTOP-7044BNO/Epson',
-    'casehistory' => 'smb://DESKTOP-7044BNO/Epson',
-    'sticker' => 'smb://DESKTOP-7044BNO/Epson',
-    'receipt' => 'smb://DESKTOP-7044BNO/Epson',
-    'bill' => 'smb://DESKTOP-7044BNO/Epson',
+    'borangdafter' => 'smb://JOSH-PC/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson JOSH-PC/EPSON
+    'chargesheet' => 'smb://JOSH-PC/EPSON',
+    'casehistory' => 'smb://JOSH-PC/EPSON',
+    'sticker' => 'smb://JOSH-PC/EPSON',
+    'receipt' => 'smb://JOSH-PC/EPSON',
+    'bill' => 'smb://JOSH-PC/EPSON',
 
 
-    'printerstatus' => 'false',  // anything beside true will not print
+    'printerstatus' => 'true',  // anything beside true will not print
 
 ];

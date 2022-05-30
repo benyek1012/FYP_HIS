@@ -160,6 +160,24 @@ class ReceiptController extends Controller
                     $fixbackblank3 = str_repeat("\x20", 32);
                     $entrydate = date("d/m/Y" , strtotime($model->receipt_content_datetime_paid));
                     $entrytime =date("H:i" , strtotime($model->receipt_content_datetime_paid));
+                    if($modelpatient->nric != ""){
+                        $nric = $modelpatient->nric;
+                        if(strlen($nric) == 12){
+                            $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5]."-".$nric[6].$nric[7]."-".$nric[8].$nric[9].$nric[10].$nric[11];
+                            $dob = mb_strimwidth($nric,0,6);
+                            $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
+                            $patientdob = date("d/m/Y" , strtotime($dateofbirth));
+                            $today = date("y-m-d");
+                            $diff = date_diff(date_create($dateofbirth),date_create($today));
+                            $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
+                        }
+                        
+                    }
+                    else{
+                        $age = "";
+                        $patientdob = "";
+                        $printic = $modelpatient->nric;
+                    }
 
                     if (Yii::$app->params['printerstatus'] == "true"){
                         $form = new PrintForm(PrintForm::Receipt);
@@ -171,7 +189,7 @@ class ReceiptController extends Controller
                                     [15, "\x20"],
                                     [8, $model->receipt_serial_number,true],
                                     [33,"\x20"],
-                                    [14, $modelpatient->nric],
+                                    [14, $printic],
                                 ]
                             );
                         $form->printNewLine(1);
