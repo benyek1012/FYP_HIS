@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Bill;
 use app\models\Patient_admission;
+use app\models\Patient_information;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
@@ -35,6 +36,12 @@ use app\models\Patient_admission;
         );
 
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+        $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
+
+        $checked_name = "";
+        if($temp2->name != "")
+            $checked_name = $temp2->name;
+        else $checked_name = "Unknown";
         
         $rows = (new \yii\db\Query())
         ->select(['`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
@@ -128,8 +135,9 @@ use app\models\Patient_admission;
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, 
-                        ['prompt'=> Yii::t('app','Please select payer name'),'maxlength' => true]) ?>
+            <!-- <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, 
+                        ['prompt'=> Yii::t('app','Please select payer name'),'maxlength' => true]) ?> -->
+            <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $checked_name, 'custom' => true, 'inline' => true]); ?>
         </div>
 
         <div class="col-sm-6" id="card_div" style="display:none;">

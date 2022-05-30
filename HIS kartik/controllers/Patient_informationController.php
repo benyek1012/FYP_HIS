@@ -131,18 +131,19 @@ class Patient_informationController extends Controller
                 return $model;
             else $flag = true;
         }
-              
-        if($flag == true)  
-            echo '<script type="text/javascript">',
-            'setTimeout(function(){',
-                'confirmAction('.$patient_nric.');',
-                '},200);',
-            '</script>';
+      
+        if($flag == true) 
+            // var_dump($patient_nric);
+            // exit; 
+            echo "<script type='text/javascript'>
+            setTimeout(function(){
+                confirmAction(\"$patient_nric\");
+                },200);
+            </script>";
     }
 
 }
 ?>
-
 
 <script>
 
