@@ -29,11 +29,12 @@ $relationship = array_unique($relationship);
 ?>
 <div class="lookup-general-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app','Create Lookup General'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('msg')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('msg') ?>
+        </div>
+    <?php endif; ?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
@@ -120,16 +121,21 @@ $relationship = array_unique($relationship);
         ],
     ]); ?>
 
-<script>
-
-function showForm() {
-        document.getElementById("LOK_div").style.display = "block";
-    }
-
-    function hiddenForm() {
-        document.getElementById("LOK_div").style.display = "none";
-    }
-</script>
 
 
 </div>
+
+
+<script>
+function showForm() {
+    document.getElementById("LOK_div").style.display = "block";
+}
+
+function hiddenForm() {
+    document.getElementById("LOK_div").style.display = "none";
+}
+
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
+
+</script>
