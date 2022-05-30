@@ -7,8 +7,8 @@ return [
 
 
     'languages' => [
-    'en' => 'english',
-    'ms' => 'malay'
+    'en' => 'English',
+    'ms' => 'Bahasa Melayu'
     ],
 
     'borangdafter' => 'smb://JOSH-PC/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson JOSH-PC/EPSON
