@@ -66,7 +66,6 @@ function items()
     foreach ($rows as $row) {
         array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
     }
-    // array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
     return $items;
 }
 
@@ -94,7 +93,7 @@ if(!empty(Yii::$app->request->queryParams))
                     $model = new Patient_information();
                     $form = ActiveForm::begin([
                     'action' => ['site/admission'],
-                   // 'enableClientValidation'=> false,
+                    'enableClientValidation'=> false,
                     'options' => [
                         'class' => 'input-group'
                     ]]); 
@@ -140,7 +139,7 @@ if(!empty(Yii::$app->request->queryParams))
             <?php  } ?>
 
             <!-- Sidebar Menu Line Break -->
-            <div class="user-panel "></div>
+         
 
             <!-- Return all RN from particular patient -->
             <?php 
@@ -148,13 +147,13 @@ if(!empty(Yii::$app->request->queryParams))
             ?>
             <div class="mt-2"></div>
             <?php
-                echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
-                    echo \hail812\adminlte\widgets\Menu::widget(['items' => 
-                        [   
-                            ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
-                            'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
-                        ]
-                    ]);
+                    echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+                    // echo \hail812\adminlte\widgets\Menu::widget(['items' => 
+                    //     [   
+                    //         ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+                    //         'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+                    //     ]
+                    // ]);
                 }
             ?>
 

@@ -24,11 +24,9 @@ $this->registerCssFile('https://code.ionicframework.com/ionicons/2.0.1/css/ionic
 
 <body class="d-flex flex-column">
     <?php  $this->beginBody() ?>
+ 
     <div class="login-logo mt-5">
-       SGH
-    </div>
-    <div class="login-logo">
-        <a href="<?=Yii::$app->homeUrl?>"><b>Hospital Information System</b></a>
+        <a href="<?=Yii::$app->homeUrl?>"><b>Sarawak General Hospital Information System</b></a>
     </div>
     <!-- /.login-logo -->
 

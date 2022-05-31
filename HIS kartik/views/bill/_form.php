@@ -6,6 +6,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Patient_admission;
 use app\models\Bill;
 use app\models\Ward;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
@@ -171,25 +172,25 @@ $free = array(
 
 $this->registerJs(
     "$('#statusCode').change(function() {
-    var statusCode = $(this).val();
-    var wardClass = $('#wardClass :selected').text();
-    $.get('/bill/status', {status : statusCode}, function(data){
-    var data = $.parseJSON(data);
-    $('#status_des').attr('value', data.status_description);
-    if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
-    else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
-    else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
-    else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
-    else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
-    });
-    });",
+        var statusCode = $(this).val();
+        var wardClass = $('#wardClass :selected').text();
+        $.get('". Url::to(['/bill/status'])."', {status : statusCode}, function(data){
+            var data = $.parseJSON(data);
+            $('#status_des').attr('value', data.status_description);
+            if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
+            else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
+            else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
+            else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
+            else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+        });
+    });"
 );
 
 $this->registerJs(
     "$('#wardClass').change(function() {
         var wardClass = $(this).val();
         var statusCode = $('#statusCode :selected').text();
-        $.get('/bill/status', {status : statusCode}, function(data){
+        $.get('". Url::to(['/bill/status'])."', {status : statusCode}, function(data){
             var data = $.parseJSON(data);
         
             if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
@@ -217,30 +218,30 @@ $this->registerJs(
                 });
             });
         });        
-    });",
+    });"
 );
 
 $this->registerJs(
     "$('#departmentCode').change(function() {
-    var departmentCode = $(this).val();
-    $.get('/bill/department', {department : departmentCode}, function(data){
-    var data = $.parseJSON(data);
-    $('#departmentName').attr('value', data.department_name);
-    });
-    });",
+        var departmentCode = $(this).val();
+        $.get('". Url::to(['/bill/department'])."', {department : departmentCode}, function(data){
+            var data = $.parseJSON(data);
+            $('#departmentName').attr('value', data.department_name);
+        });
+    });"
 );
 
 $this->registerJs(
     "$('.wardCode', document).each(function(index, item){
         $(item).on('change', function() {
             var wardCode = this.value;
-            $.get('/bill/ward', {ward : wardCode}, function(data){
+            $.get('". Url::to(['/bill/ward'])."', {ward : wardCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
             });
         });
     });
-    ",
+    "
 );
 
 $this->registerJs(
@@ -248,7 +249,7 @@ $this->registerJs(
         var billClass = $('#wardClass').val();
         $(item).on('change', function() {
             var treatmentCode = this.value;
-            $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+            $.get('". Url::to(['/bill/treatment'])."', {treatment : treatmentCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
                 if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
@@ -264,14 +265,14 @@ $this->registerJs(
             });
         });
     });
-    ",
+    "
 );
 
 $this->registerJs(
     "$('#addWardRow').on('click', function() { 
         var countWard = $('#countWard').val();    
-       
-        $.get('/bill/wardRow', {ward : countWard}, function(data){
+      
+        $.get('". Url::to(['/bill/wardRow'])."', {ward : countWard}, function(data){
             var data = $.parseJSON(data);
             $('#countWard').attr('value', data.length);
         });
@@ -282,7 +283,7 @@ $this->registerJs(
     "$('#addTreatmentRow').on('click', function() { 
         var countTreatment = $('#countTreatment').val();    
        
-        $.get('/bill/treatmentRow', {treatment : countTreatment}, function(data){
+        $.get('". Url::to(['/bill/treatmentRow'])."', {treatment : countTreatment}, function(data){
             var data = $.parseJSON(data);
             $('#countTreatment').attr('value', data.length);
         });
@@ -309,12 +310,13 @@ if(!empty($admission_model->initial_ward_code) && empty($modelWard->ward_code)){
     $this->registerJs(
         "$('.wardCode', document).each(function(index, item){
             var wardCode = this.value;
-            $.get('/bill/ward', {ward : wardCode}, function(data){
+
+            $.get('". Url::to(['/bill/ward'])."', {ward : wardCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
             });
         });
-        ",
+        "
     );
 }
 
@@ -325,7 +327,7 @@ if($print_readonly)
     $this->registerJs(
         "$('#bill_details').CardWidget('collapse');
         $('#ward_div').CardWidget('collapse');
-        $('#treatment_div').CardWidget('collapse');",
+        $('#treatment_div').CardWidget('collapse');"
         
     );
 }
