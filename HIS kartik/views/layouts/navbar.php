@@ -93,9 +93,10 @@ if (Yii::$app->user->isGuest){
 $this->registerJs(
     "$(document).on('click', '.language', function() {
         var lang = $(this).attr('id');
-       
+        var str = window.location.pathname;
+        var lastChar = str[str.length - 1];
         $.post('". Url::to(['/site/language'])."', {'lang':lang}, function(data){
-            if(window.location.pathname == '/') window.location.href = 'site/index';
+            if(lastChar == '/') window.location.href = '". Url::to(['/site/index'])."';
             else location.reload();
         });
     });"
