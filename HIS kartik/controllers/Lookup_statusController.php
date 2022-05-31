@@ -65,13 +65,23 @@ class Lookup_statusController extends Controller
        
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
-                $model->save();
+                // try catch of check row is inserted in SQL
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'status_uid' => $model->status_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('status_code', $message);
+                Yii::$app->session->setFlash('error_status', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Status Code '.$model->status_code.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('status_code', $message);
             }
            
         } 
@@ -118,13 +128,20 @@ class Lookup_statusController extends Controller
        
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
-                $model->save();
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'status_uid' => $model->status_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('status_code', $message);
+                Yii::$app->session->setFlash('error_status', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Status Code '.$model->status_code.' is duplicated. !</div>'
+                );
             }
            
         } 

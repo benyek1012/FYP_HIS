@@ -22,6 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Lookup Treatment', ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
 
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('error_treatment')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_treatment') ?>
+        </div>
+    <?php endif;?>
+
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
             onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
@@ -106,6 +113,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+</div>
+
 <script>
 
 function showForm() {
@@ -115,7 +124,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOT_div").style.display = "none";
 }
+
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
 </script>
-
-
-</div>

@@ -21,6 +21,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app','Create Lookup Ward'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>-->
 
+    <?php if(Yii::$app->session->hasFlash('error_ward')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_ward') ?>
+        </div>
+    <?php endif; ?>
+
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
             onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
@@ -104,6 +110,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+</div>
+
 <script>
 
 function showForm() {
@@ -113,6 +121,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOW_div").style.display = "none";
 }
-</script>
 
-</div>
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
+</script>
