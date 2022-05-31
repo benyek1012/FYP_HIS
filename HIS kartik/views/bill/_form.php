@@ -466,8 +466,8 @@ if($print_readonly)
             <div class="card-body">
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else{ ?>
-                <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-xs']) ?>
-                <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
+                <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-sm']) ?>
+                <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-sm']) ?>
                 <?php } ?>
                 <input type="hidden" id="countWard" name="countWard" value="<?php echo count($modelWard); ?>">
                 <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
@@ -593,8 +593,8 @@ if($print_readonly)
             <div class="card-body">
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else{ ?>
-                <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-info btn-xs']) ?>
-                <?= Html::submitButton('-', ['id' => 'removeTreatmentRow', 'name' => 'removeTreatmentRow', 'value' => 'true', 'class' => 'btn btn-danger btn-xs']) ?>
+                <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-info btn-sm']) ?>
+                <?= Html::submitButton('-', ['id' => 'removeTreatmentRow', 'name' => 'removeTreatmentRow', 'value' => 'true', 'class' => 'btn btn-danger btn-sm']) ?>
                 <?php } ?>
                 <input type="hidden" id="countTreatment" name="countTreatment"
                     value="<?php echo count($modelTreatment); ?>">
