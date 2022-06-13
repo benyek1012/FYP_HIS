@@ -42,7 +42,7 @@ use yii\helpers\Html;
                 'initial_ward_code',
                 'initial_ward_class',
                 'reference',
-                'medigal_legal_code',
+                'medical_legal_code',
                 'reminder_given',
                 'guarantor_name',
               //  'guarantor_nric',

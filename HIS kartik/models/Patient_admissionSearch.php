@@ -18,7 +18,7 @@ class Patient_admissionSearch extends Patient_admission
     {
         return [
             [['rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type'], 'safe'],
-            [['medigal_legal_code', 'reminder_given'], 'integer'],
+            [['medical_legal_code', 'reminder_given'], 'integer'],
         ];
     }
 
@@ -59,7 +59,7 @@ class Patient_admissionSearch extends Patient_admission
         // grid filtering conditions
         $query->andFilterWhere([
             'entry_datetime' => $this->entry_datetime,
-            'medigal_legal_code' => $this->medigal_legal_code,
+            'medical_legal_code' => $this->medical_legal_code,
             'reminder_given' => $this->reminder_given,
         ]);
 
