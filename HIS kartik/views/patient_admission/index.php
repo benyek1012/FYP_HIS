@@ -68,15 +68,16 @@ use yii\helpers\Html;
 </div>
 
 <?php
-    $js = <<<SCRIPT
-    /* To initialize BS3 tooltips set this below */
+    $js = <<<EOT
+    <script type="text/javascript">
     $(function () { 
        $('body').tooltip({
         selector: '[data-toggle="tooltip"]',
             html:true
         });
     });
-    SCRIPT;
+    </script>
+    EOT;
     // Register tooltip/popover initialization javascript
     $this->registerJs ( $js );
 ?>
