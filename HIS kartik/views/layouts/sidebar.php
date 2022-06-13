@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_information;
 use app\models\Receipt;
+use yii\helpers\Url;
 
 if (Yii::$app->user->isGuest){  ?>
 
@@ -77,7 +78,7 @@ if(!empty(Yii::$app->request->queryParams))
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?= Yii::$app->homeUrl; ?>" class="brand-link">
+    <a href="<?= Url::to(['/site/index']); ?>" class="brand-link">
         <!-- <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="HIS Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> -->
         <span class="brand-text font-weight-light "><b>SGHIS</b></span>
