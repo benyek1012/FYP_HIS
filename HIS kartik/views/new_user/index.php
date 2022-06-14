@@ -1,6 +1,6 @@
 <?php
 
-use app\models\Newuser;
+use app\models\New_user;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div id="user_form">
         <?php
-            $model = new Newuser();
+            $model = new New_user();
             echo $this->render('_form', ['model' => $model, 'value' => $model->user_uid]);
         ?>
     </div>
@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'username',
                 'editableOptions' =>  [                
                     'asPopover' => false,
-                    'formOptions' => ['action' => ['/newuser/user']],
+                    'formOptions' => ['action' => ['/new_user/user']],
                 ]
             ],
 
@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'hidden' => true,
                 'editableOptions' =>  [                
                     'asPopover' => false,
-                    'formOptions' => ['action' => ['/newuser/user']],
+                    'formOptions' => ['action' => ['/new_user/user']],
                 ]
             ],
 
@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'role',
                 'editableOptions' =>  [                
                     'asPopover' => false,
-                    'formOptions' => ['action' => ['/newuser/user']],
+                    'formOptions' => ['action' => ['/new_user/user']],
                 ]
             ],
 
@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'retire',
                 'editableOptions' =>  [                
                     'asPopover' => false,
-                    'formOptions' => ['action' => ['/newuser/user']],
+                    'formOptions' => ['action' => ['/new_user/user']],
                 ]
             ],
 

@@ -50,7 +50,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\NewUser',
+            'identityClass' => 'app\models\New_user',
             'enableAutoLogin' => true,
             'enableSession' =>true,
         ],

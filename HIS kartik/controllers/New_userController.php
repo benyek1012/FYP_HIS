@@ -3,8 +3,8 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\NewUser;
-use app\models\NewUserSearch;
+use app\models\New_user;
+use app\models\New_userSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -39,7 +39,7 @@ class New_userController extends Controller
         return ArrayHelper::merge(parent::actions(), [
             'user' => [                                                              // identifier for your editable action
                 'class' => EditableColumnAction::className(),                       // action class name
-                'modelClass' => NewUser::className(),                   // the update model class
+                'modelClass' => New_user::className(),                   // the update model class
                 'outputValue' => function ($model, $attribute, $key, $index) {
                     $value = $model->$attribute;  
                 }
@@ -54,8 +54,8 @@ class New_userController extends Controller
      */
     public function actionIndex()
     {
-        $modeluser = new NewUser();
-        $searchModel = new NewUserSearch();
+        $modeluser = new New_user();
+        $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost)
@@ -99,15 +99,15 @@ class New_userController extends Controller
      */
     public function actionCreate()
     {
-        $model = new NewUser();
-        $searchModel = new NewUserSearch();
+        $model = new New_user();
+        $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         if ($this->request->isPost && $model->load($this->request->post())){
 
-            $checkDuplicatedUser = NewUser::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
+            $checkDuplicatedUser = New_user::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
             if($model->validate() && empty($checkDuplicatedUser))
             {
-                $model->user_password = NewUser::hashPassword($model->user_password); // Hash the password before you save it.
+                $model->user_password = New_user::hashPassword($model->user_password); // Hash the password before you save it.
                 try{
                     $model->save();
                 }catch(\yii\db\Exception $e){
@@ -184,12 +184,12 @@ class New_userController extends Controller
      * Finds the Newuser model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $user_uid User Uid
-     * @return NewUser the loaded model
+     * @return New_user the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($user_uid)
     {
-        if (($model = NewUser::findOne(['user_uid' => $user_uid])) !== null) {
+        if (($model = New_user::findOne(['user_uid' => $user_uid])) !== null) {
             return $model;
         }
 
