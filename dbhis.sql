@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2022 at 08:18 PM
+-- Generation Time: Jun 14, 2022 at 09:55 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -370,11 +370,11 @@ CREATE TABLE `patient_admission` (
   `rn` varchar(11) NOT NULL,
   `entry_datetime` datetime NOT NULL,
   `patient_uid` varchar(64) NOT NULL,
-  `initial_ward_code` varchar(20) DEFAULT NULL,
-  `initial_ward_class` varchar(20) DEFAULT NULL,
+  `initial_ward_code` varchar(20) NOT NULL,
+  `initial_ward_class` varchar(20) NOT NULL,
   `reference` varchar(200) DEFAULT NULL,
   `medical_legal_code` tinyint(1) DEFAULT 0,
-  `reminder_given` int(11) DEFAULT 0,
+  `reminder_given` int(11) NOT NULL DEFAULT 0,
   `guarantor_name` varchar(200) DEFAULT NULL,
   `guarantor_nric` varchar(20) DEFAULT NULL,
   `guarantor_phone_number` varchar(100) DEFAULT NULL,
