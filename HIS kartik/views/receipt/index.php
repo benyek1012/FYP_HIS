@@ -143,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
             html:true
         });
     });
-    SCRIPT;
+SCRIPT;
     // Register tooltip/popover initialization javascript
     $this->registerJs ( $js );
 ?>
