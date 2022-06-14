@@ -93,6 +93,7 @@ class Patient_admissionController extends Controller
             $model->patient_uid = Yii::$app->request->get('id');
             $model->entry_datetime = $date->format('Y-m-d H:i');
             $model->type = Yii::$app->request->get('type');
+            $model->loadDefaultValues();
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 

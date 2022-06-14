@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2022 at 09:16 AM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 7.3.7
+-- Generation Time: Jun 14, 2022 at 09:55 AM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -373,8 +373,8 @@ CREATE TABLE `patient_admission` (
   `initial_ward_code` varchar(20) NOT NULL,
   `initial_ward_class` varchar(20) NOT NULL,
   `reference` varchar(200) DEFAULT NULL,
-  `medigal_legal_code` tinyint(1) DEFAULT 0,
-  `reminder_given` int(11) NOT NULL,
+  `medical_legal_code` tinyint(1) DEFAULT 0,
+  `reminder_given` int(11) NOT NULL DEFAULT 0,
   `guarantor_name` varchar(200) DEFAULT NULL,
   `guarantor_nric` varchar(20) DEFAULT NULL,
   `guarantor_phone_number` varchar(100) DEFAULT NULL,
