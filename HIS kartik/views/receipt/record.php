@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
-use app\models\NewUser;
+use app\models\New_user;
 use app\models\Receipt;
 use app\models\Patient_admission;
 use app\models\Patient_information;
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'receipt_responsible',
                 'value'=>function ($data) {
-                    $model_User = NewUser::findOne(['user_uid' => $data['receipt_responsible']]);
+                    $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
                     return $model_User->getName();
                 },
             ],
