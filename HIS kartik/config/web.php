@@ -94,7 +94,7 @@ $config = [
     ],
 
     'on beforeRequest' => function ($event) {
-        Yii::$app->language = Yii::$app->session->get('language', 'en');
+        Yii::$app->language = Yii::$app->session->get('language', 'ms');
     },
     
     'params' => $params,
