@@ -35,7 +35,7 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'role')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'retire')->textInput(['value' => '1']) ?>
+            <?= $form->field($model, 'retire')->textInput(['value' => '0']) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'user_uid')->hiddenInput(['maxlength' => true, 'readonly' => true,'value' => $user_uid])->label(false)?>
