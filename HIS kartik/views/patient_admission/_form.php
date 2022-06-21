@@ -92,6 +92,12 @@ use kartik\datetime\DateTimePicker;
     </div>
 
     <div class="form-group">
+        <?php
+        if($model->initial_ward_class == "UNKNOWN" || $model->initial_ward_code == "UNKNOWN" || 
+            $model->initial_ward_class == null || $model->initial_ward_code == null){
+            echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
+        }
+        ?>
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
         <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>

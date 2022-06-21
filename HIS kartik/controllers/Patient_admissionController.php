@@ -94,6 +94,9 @@ class Patient_admissionController extends Controller
             $model->entry_datetime = $date->format('Y-m-d H:i');
             $model->type = Yii::$app->request->get('type');
             $model->loadDefaultValues();
+            $model->initial_ward_class = "UNKNOWN";
+            $model->initial_ward_code = "UNKNOWN";
+            $model->reminder_given = 0;
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
@@ -986,9 +989,16 @@ class Patient_admissionController extends Controller
         }
 
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                'rn' => $model->rn));      
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if($model->initial_ward_class == "UNKNOWN" || $model->initial_ward_code == "UNKNOWN" || 
+                $model->initial_ward_class == null || $model->initial_ward_code == null){
+
+            }
+            else{
+                $model->save();
+                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                    'rn' => $model->rn));      
+            }
         }
 
         return $this->render('update', [

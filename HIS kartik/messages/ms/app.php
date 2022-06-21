@@ -196,5 +196,6 @@ return[
     'Cash' => 'Tunai',
     'Debit/Credit Card' => 'Kad Debit/Kredit',
     'Cheque Numbers' => 'Nombor Cek',
+    'Initial Ward Code and Initial Ward Class cannot be blank' => 'Kod Wad Permulaan Klas Wad Permulaan tidak boleh dibiarkan kosong.',
 ];
 ?>
