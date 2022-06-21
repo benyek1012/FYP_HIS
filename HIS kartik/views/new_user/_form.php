@@ -12,7 +12,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 <div class="newuser-form" id="user_div" style="display:none;">
 
     <?php $form = kartik\form\ActiveForm::begin([
-        'action' => ['newuser/create', 'user_uid'=>$model['user_uid']],
+        'action' => ['new_user/create', 'user_uid'=>$model['user_uid']],
         'id' => 'newuser-form',
         'type' => 'vertical',
         'fieldConfig' => [

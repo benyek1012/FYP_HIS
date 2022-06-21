@@ -50,7 +50,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\NewUser',
+            'identityClass' => 'app\models\New_user',
             'enableAutoLogin' => true,
             'enableSession' =>true,
         ],
@@ -76,7 +76,7 @@ $config = [
         'db' => $db,
         
         'urlManager' => [
-            'enablePrettyUrl' => true,
+          //  'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
@@ -94,7 +94,7 @@ $config = [
     ],
 
     'on beforeRequest' => function ($event) {
-        Yii::$app->language = Yii::$app->session->get('language', 'en');
+        Yii::$app->language = Yii::$app->session->get('language', 'ms');
     },
     
     'params' => $params,

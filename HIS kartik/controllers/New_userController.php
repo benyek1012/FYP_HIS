@@ -3,8 +3,8 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Newuser;
-use app\models\NewuserSearch;
+use app\models\New_user;
+use app\models\New_userSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -14,7 +14,7 @@ use yii\helpers\ArrayHelper;
 /**
  * NewuserController implements the CRUD actions for Newuser model.
  */
-class NewuserController extends Controller
+class New_userController extends Controller
 {
     /**
      * @inheritDoc
@@ -39,7 +39,7 @@ class NewuserController extends Controller
         return ArrayHelper::merge(parent::actions(), [
             'user' => [                                                              // identifier for your editable action
                 'class' => EditableColumnAction::className(),                       // action class name
-                'modelClass' => Newuser::className(),                   // the update model class
+                'modelClass' => New_user::className(),                   // the update model class
                 'outputValue' => function ($model, $attribute, $key, $index) {
                     $value = $model->$attribute;  
                 }
@@ -54,8 +54,8 @@ class NewuserController extends Controller
      */
     public function actionIndex()
     {
-        $modeluser = new Newuser();
-        $searchModel = new NewuserSearch();
+        $modeluser = new New_user();
+        $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost)
@@ -72,9 +72,9 @@ class NewuserController extends Controller
 
     public function actionuser($modeluser){
         if ($modeluser->save()) {
-             $model_founded = NewuserController::findModel($modeluser->user_uid);
+             $model_founded = New_userController::findModel($modeluser->user_uid);
              if(!empty($model_founded))
-                 return Yii::$app->getResponse()->redirect(array('/newuser/index', 
+                 return Yii::$app->getResponse()->redirect(array('/new_user/index', 
                      'user' => $model_founded->user_uid));
          }
     }    
@@ -99,15 +99,15 @@ class NewuserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Newuser();
-        $searchModel = new NewuserSearch();
+        $model = new New_user();
+        $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         if ($this->request->isPost && $model->load($this->request->post())){
 
-            $checkDuplicatedUser = NewUser::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
+            $checkDuplicatedUser = New_user::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
             if($model->validate() && empty($checkDuplicatedUser))
             {
-                $model->user_password = NewUser::hashPassword($model->user_password); // Hash the password before you save it.
+                $model->user_password = New_user::hashPassword($model->user_password); // Hash the password before you save it.
                 try{
                     $model->save();
                 }catch(\yii\db\Exception $e){
@@ -184,12 +184,12 @@ class NewuserController extends Controller
      * Finds the Newuser model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $user_uid User Uid
-     * @return Newuser the loaded model
+     * @return New_user the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($user_uid)
     {
-        if (($model = Newuser::findOne(['user_uid' => $user_uid])) !== null) {
+        if (($model = New_user::findOne(['user_uid' => $user_uid])) !== null) {
             return $model;
         }
 

@@ -45,7 +45,7 @@ if (Yii::$app->user->isGuest){
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <li><a href="<?php echo Url::to(['/lookup_general']); ?>" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                 </li>
-                <li><a href="<?php echo Url::to(['/newuser']); ?>" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/new_user']); ?>" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/lookup_ward']); ?>" class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/lookup_status']); ?>" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/lookup_treatment']); ?>" class="dropdown-item"><?php echo Yii::t('app','Treatment Codes'); ?></a>

@@ -25,7 +25,7 @@ use yii\helpers\Url;
                     echo Breadcrumbs::widget([
                         'homeLink' => [
                             'label' => Yii::t('app', 'Home'),
-                            'url' => Url::home(),
+                            'url' => Url::to(['/site/index']),
                         ],
                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                         'options' => [

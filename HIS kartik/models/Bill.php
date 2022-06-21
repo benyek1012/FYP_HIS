@@ -100,7 +100,7 @@ class Bill extends \yii\db\ActiveRecord
      */
     public function getBillContentReceipts()
     {
-        return $this->hasMany(Bill_Content_Receipt::className(), ['bill_uid' => 'bill_uid']);
+        return $this->hasMany(Bill_content_receipt::className(), ['bill_uid' => 'bill_uid']);
     }
 
     /**
@@ -110,7 +110,7 @@ class Bill extends \yii\db\ActiveRecord
      */
     public function getRn0()
     {
-        return $this->hasOne(Patient_Admission::className(), ['rn' => 'rn']);
+        return $this->hasOne(Patient_admission::className(), ['rn' => 'rn']);
     }
 
     /**
@@ -120,7 +120,7 @@ class Bill extends \yii\db\ActiveRecord
      */
     public function getTreatmentDetails()
     {
-        return $this->hasMany(Treatment_Details::className(), ['bill_uid' => 'bill_uid']);
+        return $this->hasMany(Treatment_details::className(), ['bill_uid' => 'bill_uid']);
     }
 
     /**

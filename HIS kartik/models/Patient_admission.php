@@ -10,11 +10,11 @@ use Yii;
  * @property string $rn
  * @property string $entry_datetime
  * @property string $patient_uid
- * @property string $initial_ward_code
- * @property string $initial_ward_class
+ * @property string|null $initial_ward_code
+ * @property string|null $initial_ward_class
  * @property string|null $reference
- * @property int|null $medigal_legal_code
- * @property int $reminder_given
+ * @property int|null $medical_legal_code
+ * @property int|null $reminder_given
  * @property string|null $guarantor_name
  * @property string|null $guarantor_nric
  * @property string|null $guarantor_phone_number
@@ -42,7 +42,7 @@ class Patient_admission extends \yii\db\ActiveRecord
         return [
             [['rn', 'entry_datetime', 'patient_uid', 'type'], 'required'],
             [['entry_datetime'], 'safe'],
-            [['medigal_legal_code', 'reminder_given'], 'integer'],
+            [['medical_legal_code', 'reminder_given'], 'integer'],
             [['rn'], 'string', 'max' => 11],
             [['patient_uid'], 'string', 'max' => 64],
             [['initial_ward_code', 'initial_ward_class'], 'string', 'max' => 20],
@@ -69,7 +69,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             'initial_ward_code' => Yii::t('app','Initial Ward Code'),
             'initial_ward_class' => Yii::t('app','Initial Ward Class'),
             'reference' => Yii::t('app','Reference'),
-            'medigal_legal_code' => Yii::t('app','Medical Legal Code'),
+            'medical_legal_code' => Yii::t('app','Medical Legal Code'),
             'reminder_given' => Yii::t('app','Reminder Given'),
             'guarantor_name' => Yii::t('app','Guarantor Name'),
             'guarantor_nric' => Yii::t('app','Guarantor NRIC'),

@@ -438,7 +438,7 @@ if($print_readonly)
         <?php $form = kartik\form\ActiveForm::begin([
             'id' => 'ward-form',
             'type' => 'vertical',
-            'action' => 'generate?bill_uid='.Yii::$app->request->get('bill_uid').'&rn='.Yii::$app->request->get('rn').'#ward',
+            'action' =>  Url::to(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'ward']),
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -565,7 +565,7 @@ if($print_readonly)
         <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'treatment-form',
         'type' => 'vertical',
-        'action' => 'generate?bill_uid='.Yii::$app->request->get('bill_uid').'&rn='.Yii::$app->request->get('rn').'#treatment ',
+        'action' =>  Url::to(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'treatment']),
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -944,7 +944,7 @@ function confirmAction() {
     if (answer) {
         window.location.href = window.location + '&confirm=true';
     } else {
-        window.location.href = history.go(-2);
+        window.location.href = history.go(-1);
     }
 }
 <?php }else{?>
@@ -954,7 +954,7 @@ function confirmAction() {
     if (answer) {
         window.location.href = window.location + '&confirm=true';
     } else {
-        window.location.href = history.go(-2);
+        window.location.href = history.go(-1);
     }
 }
 <?php } ?>

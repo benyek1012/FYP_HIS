@@ -15,7 +15,7 @@ use yii\web\IdentityInterface;
  * @property int|null $retire
  * @property string|null $authKey
  */
-class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
+class New_user extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
