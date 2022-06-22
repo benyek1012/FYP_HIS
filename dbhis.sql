@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 22, 2022 at 05:02 AM
--- Server version: 10.4.24-MariaDB
+-- Generation Time: Jun 22, 2022 at 03:59 PM
+-- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -49,20 +48,8 @@ CREATE TABLE `bill` (
   `description` varchar(200) DEFAULT NULL,
   `bill_print_responsible_uid` varchar(64) DEFAULT NULL,
   `bill_print_datetime` datetime DEFAULT NULL,
-  `bill_print_id` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bill_content_receipt`
---
-
-CREATE TABLE `bill_content_receipt` (
-  `bill_content_receipt_uid` varchar(64) NOT NULL,
-  `bill_uid` varchar(64) NOT NULL,
-  `rn` varchar(11) NOT NULL,
-  `bill_generation_billable_sum_rm` decimal(10,2) DEFAULT NULL
+  `bill_print_id` varchar(20) DEFAULT NULL,
+  `deleted` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -489,12 +476,6 @@ CREATE TABLE `ward` (
 ALTER TABLE `bill`
   ADD PRIMARY KEY (`bill_uid`),
   ADD KEY `rn` (`rn`);
-
---
--- Indexes for table `bill_content_receipt`
---
-ALTER TABLE `bill_content_receipt`
-  ADD PRIMARY KEY (`bill_content_receipt_uid`);
 
 --
 -- Indexes for table `lookup_department`

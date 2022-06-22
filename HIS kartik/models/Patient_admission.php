@@ -90,7 +90,7 @@ class Patient_admission extends \yii\db\ActiveRecord
 
     public function get_billable_sum($rn){
         $billable = 0;
-        $model_bill = Bill::findOne(['rn' => $rn]);
+        $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
         if(!empty($model_bill) && (new Bill())  -> isGenerated($rn))
         {
             $billable = $model_bill->bill_generation_billable_sum_rm;

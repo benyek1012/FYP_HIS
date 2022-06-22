@@ -166,7 +166,7 @@ if(!empty(Yii::$app->request->queryParams))
                 if(!empty($info) && !empty(Yii::$app->request->get('rn')
                     ||Yii::$app->request->get('receipt_uid') ||Yii::$app->request->get('bill_uid')))
                 {
-                    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+                    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
 
                     // Here is loaded when bill is generated
                     if(!empty($model_bill))

@@ -1343,18 +1343,22 @@ print_r($cagaranitem);
      */
     public function actionDelete($bill_uid)
     {
-        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
-        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+        // $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+        // $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
-        foreach ($modelWard as $modelWard) {
-            $modelWard->delete();
-        }
+        // foreach ($modelWard as $modelWard) {
+        //     $modelWard->delete();
+        // }
 
-        foreach ($modelTreatment as $modelTreatment) {
-            $modelTreatment->delete();
-        }
+        // foreach ($modelTreatment as $modelTreatment) {
+        //     $modelTreatment->delete();
+        // }
 
-        $this->findModel($bill_uid)->delete();
+        // $this->findModel($bill_uid)->delete();
+
+        $model = $this->findModel($bill_uid);
+        $model->deleted = 1;
+        $model->save();
 
         return Yii::$app->getResponse()->redirect(array('/bill/create', 
             'rn' => Yii::$app->request->get('rn'))); 
