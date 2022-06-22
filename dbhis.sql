@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2022 at 09:55 AM
+-- Generation Time: Jun 22, 2022 at 05:02 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -346,7 +346,9 @@ CREATE TABLE `new_user` (
   `user_uid` varchar(64) NOT NULL,
   `username` varchar(100) NOT NULL,
   `user_password` varchar(64) NOT NULL,
-  `role` varchar(20) NOT NULL,
+  `role_cashier` tinyint(1) NOT NULL DEFAULT 0,
+  `role_clerk` tinyint(1) NOT NULL DEFAULT 0,
+  `role_admin` tinyint(1) NOT NULL DEFAULT 0,
   `retire` tinyint(1) DEFAULT 0,
   `authKey` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -355,10 +357,10 @@ CREATE TABLE `new_user` (
 -- Dumping data for table `new_user`
 --
 
-INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role`, `retire`, `authKey`) VALUES
-('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Administrator', 0, '12345b'),
-('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Cashier', 0, '12345a'),
-('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Clerk', 0, '12345c');
+INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`, `role_clerk`, `role_admin`, `retire`, `authKey`) VALUES
+('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 1, '12345b'),
+('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 1, '12345a'),
+('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 1, '12345c');
 
 -- --------------------------------------------------------
 
