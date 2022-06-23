@@ -12,7 +12,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 <div class="newuser-form" id="user_div" style="display:none;">
 
     <?php $form = kartik\form\ActiveForm::begin([
-        'action' => ['newuser/create', 'user_uid'=>$model['user_uid']],
+        'action' => ['new_user/create', 'user_uid'=>$model['user_uid']],
         'id' => 'newuser-form',
         'type' => 'vertical',
         'fieldConfig' => [
@@ -32,10 +32,12 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'user_password')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'role')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'role_cashier')->checkbox(['maxlength' => true]) ?>
+            <?= $form->field($model, 'role_clerk')->checkbox(['maxlength' => true]) ?>
+            <?= $form->field($model, 'role_admin')->checkbox(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'retire')->textInput(['value' => '1']) ?>
+            <?= $form->field($model, 'retire')->textInput(['value' => '0']) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'user_uid')->hiddenInput(['maxlength' => true, 'readonly' => true,'value' => $user_uid])->label(false)?>

@@ -1,10 +1,6 @@
 <?php
 
-use yii\helpers\Html;
-use yii\bootstrap4\Nav;
-use yii\bootstrap4\NavBar;
-use kartik\bs4dropdown\ButtonDropdown;
-use yii\bootstrap4\Dropdown;
+use yii\helpers\Url;
 
 if (Yii::$app->user->isGuest){ 
 ?>
@@ -37,7 +33,7 @@ if (Yii::$app->user->isGuest){
         </li>
 
         <li class="nav-item dropdown">
-            <a id="admission" href="/site/admission" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
+            <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
         </li>
 
         <li class="nav-item dropdown">
@@ -47,14 +43,14 @@ if (Yii::$app->user->isGuest){
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="/lookup_general" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
+                <li><a href="<?php echo Url::to(['/lookup_general']); ?>" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                 </li>
-                <li><a href="/newuser" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
-                <li><a href="/lookup_ward" class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
-                <li><a href="/lookup_status" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
-                <li><a href="/lookup_treatment" class="dropdown-item"><?php echo Yii::t('app','Treatment Codes'); ?></a>
+                <li><a href="<?php echo Url::to(['/new_user']); ?>" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/lookup_ward']); ?>" class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/lookup_status']); ?>" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/lookup_treatment']); ?>" class="dropdown-item"><?php echo Yii::t('app','Treatment Codes'); ?></a>
                 </li>
-                <li><a href="/lookup_department"
+                <li><a href="<?php echo Url::to(['/lookup_department']); ?>"
                         class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
             </ul>
         </li>
@@ -75,7 +71,7 @@ if (Yii::$app->user->isGuest){
     <ul class="navbar-nav ml-auto">
 
         <li class="nav-item dropdown">
-            <a id="admission" href="/site/logout" class="nav-link"><?php echo  Yii::t('app','Logout'). 
+            <a id="admission" href="<?php echo Url::to(['/site/logout']); ?>" class="nav-link"><?php echo  Yii::t('app','Logout'). 
                 ' (' . Yii::$app->user->identity->username . ')'; ?></a>
         </li>
 
@@ -85,7 +81,6 @@ if (Yii::$app->user->isGuest){
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <?php
                     foreach(Yii::$app->params['languages'] as $key => $language){
-                      //  echo '<span class = "language" id="'.$key.'">'.$language.' | </span>'; 
                         echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
                     }
                 ?>
@@ -98,12 +93,13 @@ if (Yii::$app->user->isGuest){
 $this->registerJs(
     "$(document).on('click', '.language', function() {
         var lang = $(this).attr('id');
-       
-        $.post('/site/language', {'lang':lang}, function(data){
-            if(window.location.pathname == '/') window.location.href = 'site/index';
+        var str = window.location.pathname;
+        var lastChar = str[str.length - 1];
+        $.post('". Url::to(['/site/language'])."', {'lang':lang}, function(data){
+            if(lastChar == '/') window.location.href = '". Url::to(['/site/index'])."';
             else location.reload();
         });
-    });",
+    });"
 );
 
 ?>

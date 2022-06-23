@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Newuser;
+use app\models\New_user;
 
 /**
  * NewuserSearch represents the model behind the search form of `app\models\Newuser`.
  */
-class NewuserSearch extends Newuser
+class New_UserSearch extends New_user
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class NewuserSearch extends Newuser
     public function rules()
     {
         return [
-            [['user_uid', 'username', 'user_password', 'role', 'authKey'], 'safe'],
+            [['user_uid', 'username', 'user_password', 'role_cashier', 'role_clerk', 'role_admin', 'authKey'], 'safe'],
             [['retire'], 'integer'],
         ];
     }
@@ -40,7 +40,7 @@ class NewuserSearch extends Newuser
      */
     public function search($params)
     {
-        $query = Newuser::find();
+        $query = New_user::find();
 
         // add conditions that should always apply here
 
@@ -64,7 +64,9 @@ class NewuserSearch extends Newuser
         $query->andFilterWhere(['like', 'user_uid', $this->user_uid])
             ->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'user_password', $this->user_password])
-            ->andFilterWhere(['like', 'role', $this->role])
+            ->andFilterWhere(['like', 'role_cashier', $this->role_cashier])
+            ->andFilterWhere(['like', 'role_clerk', $this->role_clerk])
+            ->andFilterWhere(['like', 'role_admin', $this->role_admin])
             ->andFilterWhere(['like', 'authKey', $this->authKey]);
 
         return $dataProvider;

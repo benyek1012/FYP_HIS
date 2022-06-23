@@ -49,9 +49,7 @@ foreach($rows_relationship as $row_relationship){
                     'size' => 'md',
                     'inputType' => Editable::INPUT_DROPDOWN_LIST,
                     'asPopover' => false,
-                    'data' => [                      
-                        $relationship
-                    ],
+                    'data' => $relationship,
                     'formOptions' => ['action' => ['/site/nok']],
                 ],
             ],

@@ -65,13 +65,22 @@ class Lookup_wardController extends Controller
 
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
-                $model->save();
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('ward_code', $message);
+                Yii::$app->session->setFlash('error_ward', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('ward_code', $message);
             }
         }
         else
@@ -116,13 +125,20 @@ class Lookup_wardController extends Controller
 
             if (empty($checkDuplicatedCode))
             {
-                $model->save();
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('ward_code', $message);
+                Yii::$app->session->setFlash('error_ward', '
+                <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
+                );
             }
         } 
 

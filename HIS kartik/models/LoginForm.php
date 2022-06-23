@@ -84,7 +84,7 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = (new NewUser()) -> findByUsername($this->username);
+            $this->_user = (new New_user()) -> findByUsername($this->username);
         }
 
         return $this->_user;
@@ -98,7 +98,7 @@ class LoginForm extends Model
     public function getUserId()
     {
         if ($this->_user === false) {
-            $this->_user = (new NewUser()) -> findByUsername($this->username);
+            $this->_user = (new New_user()) -> findByUsername($this->username);
         }
 
         return $this->_user->user_uid;

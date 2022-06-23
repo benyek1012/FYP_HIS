@@ -30,9 +30,9 @@ use app\models\Patient_information;
             );
 
         $payment_method = array(
-            'cash'=>'Cash',
-            'card'=>'Debit/Credit Card',
-            'cheque'=>'Cheque Number',
+            'cash'=> Yii::t('app','Cash'),
+            'card'=> Yii::t('app','Debit/Credit Card'),
+            'cheque'=> Yii::t('app','Cheque Numbers'),
         );
 
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);

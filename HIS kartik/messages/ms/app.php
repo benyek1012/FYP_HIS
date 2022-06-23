@@ -118,7 +118,7 @@ return[
     'Payment Method' => 'Kaedah Pembayaran',
     'Card Number' => 'Nombor kad',
     'Cheque Number' =>'Nombor Cek',
-    'Receipt Responsible'=> 'Resit Bertanggungjawab',
+    'Receipt Responsible'=> 'Juruwang Bertanggungjawab',
     'Receipt Serial Number'=>'Nombor Siri Resit',
     ' Payment' => 'Bayaran',
     'Create Payment'=> 'Buat Bayaran',
@@ -162,7 +162,9 @@ return[
     'Username' => 'Nama pengguna',
     'User Password' => 'Kata Laluan Pengguna',
     'Active' => 'Aktif',
-    'Role' => 'Peranan',
+    'Cashier Role' => 'Peranan Juruwang',
+    'Clerk Role' => 'Peranan Kerani',
+    'Admin Role' => 'Peranan Tadbir',
     'Registration Number (R/N)' => 'Nombor Daftar ',
     'Patient admission record is not found' => 'Rekod pendaftaran pesakit tidak diasaskan',
     'Next of Kin record is not found' => 'Rekod waris tidak diasaskan',
@@ -193,5 +195,8 @@ return[
     'Bill Print ID should not be empty!' => 'ID Cetak Bil tidak boleh kosong!',
     'Transaction Records' => 'Rekod Transaksi',
     'Welcome to SGHIS' => 'Selamat datang ke SGHIS',
+    'Cash' => 'Tunai',
+    'Debit/Credit Card' => 'Kad Debit/Kredit',
+    'Cheque Numbers' => 'Nombor Cek',
 ];
 ?>

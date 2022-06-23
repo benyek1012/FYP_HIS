@@ -87,7 +87,7 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientAdmissions()
     {
-        return $this->hasMany(Patient_Admission::className(), ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
     }
 
     /**
@@ -97,7 +97,7 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientNextOfKins()
     {
-        return $this->hasMany(Patient_Next_Of_Kin::class, ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_next_of_kin::class, ['patient_uid' => 'patient_uid']);
     }
 
     public function getBalance($patient_uid)

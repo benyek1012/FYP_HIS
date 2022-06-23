@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
-use app\models\NewUser;
+use app\models\New_user;
 use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
@@ -54,26 +54,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
-                'attribute' => 'rn',
-                'format' => 'raw',
-                'value'=>function ($data) {
-                    return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
-                },
-            ],
-            
-            'receipt_type',
-
-            [
-                'attribute' => 'receipt_content_sum',
-                'value'=>function ($data) {
-                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
-                        return '+'.$data['receipt_content_sum'];
-                    else return '-'.$data['receipt_content_sum'];
-                },
-            ],
-          //  'receipt_content_bill_id',
-            //'receipt_content_description',
-            [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
                 'value'=>function ($data) {
@@ -88,18 +68,60 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $tag;
                 },
             ],
+            [
+                'attribute' => 'receipt_serial_number',
+                "format"=>"raw",
+                'value'=>function ($data) {
+                    $tag = Html::tag ( 'span' , $data['receipt_serial_number'] , [
+                        // title
+                        'title' => $data['receipt_content_description'] ,
+                        'data-placement' => 'top' ,
+                        'data-toggle'=>'tooltip',
+                        'style' => 'white-space:pre;'
+                    ] );
+                    return $tag;
+                },
+            ],
+            [
+                'attribute' => 'receipt_content_sum',
+                'value'=>function ($data) {
+                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
+                        return '+'.$data['receipt_content_sum'];
+                    else return '-'.$data['receipt_content_sum'];
+                },
+            ],
+            // [
+            //     'attribute' => 'rn',
+            //     'format' => 'raw',
+            //     'value'=>function ($data) {
+            //         return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+            //     },
+            // ],
+            [
+                'attribute'=>'receipt_type',
+                'filter'=> array(
+                    'deposit'=> Yii::t('app','Deposit'),
+                    'bill'=> Yii::t('app','Bill'),
+                    'refund'=> Yii::t('app','Refund'),
+                ),
+            ],
+            //'receipt_content_description',
+            [
+                'attribute'=>'receipt_content_payment_method',
+                'filter'=> array(
+                    'cash'=> Yii::t('app','Cash'),
+                    'card'=> Yii::t('app','Debit/Credit Card'),
+                    'cheque'=> Yii::t('app','Cheque Numbers'),
+                ),
+            ],
             'receipt_content_payer_name',
-            'receipt_content_payment_method',
-            //'card_no',
-            //'cheque_number',
             [
                 'attribute' => 'receipt_responsible',
                 'value'=>function ($data) {
-                    $model_User = NewUser::findOne(['user_uid' => $data['receipt_responsible']]);
+                    $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
                     return $model_User->getName();
                 },
             ],
-            'receipt_serial_number',
             [
                 'class' => ActionColumn::className(),
                 'template' => '{view}',
@@ -109,16 +131,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-
-    <?php 
-    //  $dataProvider2 = new ActiveDataProvider([
-    //     'query'=> Bill::find()->where(['rn'=>Yii::$app->request->get('rn')]),
-    //     'pagination'=>['pageSize'=>3],
-    //     ]);
-    // echo $this->render('/bill/index', ['dataProvider'=>$dataProvider2]);
-    
-    ?>
-
 
 </div>
 
@@ -131,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
             html:true
         });
     });
-    SCRIPT;
+SCRIPT;
     // Register tooltip/popover initialization javascript
     $this->registerJs ( $js );
 ?>

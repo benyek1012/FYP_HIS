@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use GpsLab\Component\Base64UID\Base64UID;
+use yii\helpers\Url;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -37,9 +38,16 @@ class Patient_informationController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate($ic)
+    public function actionCreate()
     {
         $model = new Patient_information();
+        $session = Yii::$app->session;
+        if ($session->has('patient_ic'))
+        {
+            $ic = $session->get('patient_ic');
+            $session->remove('patient_ic');
+        }
+
         if($ic  == 'undefined') $model->nric = ' ';
         else $model->nric = $ic;
         $model->patient_uid = Base64UID::generate(32);
@@ -133,13 +141,18 @@ class Patient_informationController extends Controller
         }
       
         if($flag == true) 
+        {
+            $session = Yii::$app->session;
+            $session->set('patient_ic', $patient_nric);
             // var_dump($patient_nric);
             // exit; 
             echo "<script type='text/javascript'>
             setTimeout(function(){
-                confirmAction(\"$patient_nric\");
+                confirmAction();
                 },200);
             </script>";
+        }
+          
     }
 
 }
@@ -149,13 +162,13 @@ class Patient_informationController extends Controller
 
 <?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation dialog
-function confirmAction(ic) {
+function confirmAction() {
     var answer = confirm("Are you sure to create patient information?");
     if (answer) {
-        window.location.href = '/patient_information/create?ic=' + ic;
+        window.location.href =  '<?php echo Url::to(['/patient_information/create']) ?>';
     } else {
-        window.location.href = '/site/admission';
-    }
+        window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
+    }   
 }
 
 // The function below will start the confirmation dialog
@@ -166,13 +179,13 @@ function duplicateIC(ic) {
 
 <?php }else{?>
 // The function below will start the confirmation dialog
-function confirmAction(ic) {
+function confirmAction() {
     var answer = confirm("Adakah anda pasti untuk membuat butiran pesakit?");
     if (answer) {
-        window.location.href = '/patient_information/create?ic=' + ic;
+        window.location.href =  '<?php echo Url::to(['/patient_information/create']) ?>';
     } else {
-        window.location.href = '/site/admission';
-    }
+        window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
+    }   
 }
 
 // The function below will start the confirmation dialog

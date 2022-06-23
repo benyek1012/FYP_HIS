@@ -81,22 +81,12 @@ class Receipt extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[BillContentReceipts]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBillContentReceipts()
-    {
-        return $this->hasMany(Bill_Content_Receipt::className(), ['receipt_uid' => 'receipt_uid']);
-    }
-
-    /**
      * Gets query for [[Rn0]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getRn0()
     {
-        return $this->hasOne(Patient_Admission::className(), ['rn' => 'rn']);
+        return $this->hasOne(Patient_admission::className(), ['rn' => 'rn']);
     }
 }

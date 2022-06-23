@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Patient_information;
 use app\models\Receipt;
+use yii\helpers\Url;
 
 if (Yii::$app->user->isGuest){  ?>
 
@@ -66,7 +67,6 @@ function items()
     foreach ($rows as $row) {
         array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
     }
-    // array_push($items,['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '']);
     return $items;
 }
 
@@ -78,7 +78,7 @@ if(!empty(Yii::$app->request->queryParams))
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?= Yii::$app->homeUrl; ?>" class="brand-link">
+    <a href="<?= Url::to(['/site/index']); ?>" class="brand-link">
         <!-- <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="HIS Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> -->
         <span class="brand-text font-weight-light "><b>SGHIS</b></span>
@@ -94,7 +94,7 @@ if(!empty(Yii::$app->request->queryParams))
                     $model = new Patient_information();
                     $form = ActiveForm::begin([
                     'action' => ['site/admission'],
-                   // 'enableClientValidation'=> false,
+                    'enableClientValidation'=> false,
                     'options' => [
                         'class' => 'input-group'
                     ]]); 
@@ -140,7 +140,7 @@ if(!empty(Yii::$app->request->queryParams))
             <?php  } ?>
 
             <!-- Sidebar Menu Line Break -->
-            <div class="user-panel "></div>
+         
 
             <!-- Return all RN from particular patient -->
             <?php 
@@ -148,7 +148,7 @@ if(!empty(Yii::$app->request->queryParams))
             ?>
             <div class="mt-2"></div>
             <?php
-                echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+                    echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
                     echo \hail812\adminlte\widgets\Menu::widget(['items' => 
                         [   
                             ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
@@ -166,7 +166,7 @@ if(!empty(Yii::$app->request->queryParams))
                 if(!empty($info) && !empty(Yii::$app->request->get('rn')
                     ||Yii::$app->request->get('receipt_uid') ||Yii::$app->request->get('bill_uid')))
                 {
-                    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+                    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
 
                     // Here is loaded when bill is generated
                     if(!empty($model_bill))

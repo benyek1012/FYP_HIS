@@ -64,13 +64,22 @@ class Lookup_treatmentController extends Controller
        
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
-                $model->save();
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('treatment_code', $message);
+                Yii::$app->session->setFlash('error_treatment', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('treatment_code', $message);
             }
            
         } 
@@ -114,13 +123,20 @@ class Lookup_treatmentController extends Controller
        
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
-                $model->save();
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
             }
             else
             {
-                $message = 'Code should not be duplicated.';
-                $model->addError('treatment_code', $message);
+                Yii::$app->session->setFlash('error_treatment', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
+                );
             } 
         }
         

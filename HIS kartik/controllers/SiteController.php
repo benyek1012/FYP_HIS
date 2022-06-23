@@ -14,6 +14,7 @@ use app\models\Patient_next_of_kin;
 use Exception;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 class SiteController extends Controller
 {
@@ -94,7 +95,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         if (Yii::$app->user->isGuest)
-            return $this->actionLogin();
+        $this->redirect (Url::to(['/site/login']));
         else return $this->render('index');
     }
 
@@ -148,7 +149,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login($model)) {
-            return $this->render('index');
+            $this->redirect (Url::to(['/site/index']));
         }
 
         $model->password = '';

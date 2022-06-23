@@ -15,7 +15,7 @@ use yii\web\IdentityInterface;
  * @property int|null $retire
  * @property string|null $authKey
  */
-class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
+class New_user extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
@@ -31,11 +31,11 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['user_uid', 'username', 'user_password', 'role'], 'required'],
+            [['user_uid', 'username', 'user_password'], 'required'],
             [['retire'], 'boolean', 'strict'=> false],
             [['user_uid'], 'string', 'max' => 64],
             [['username'], 'string', 'max' => 100],
-            [['user_password', 'role'], 'string', 'max' => 40],
+            [['user_password'], 'string', 'max' => 40],
             [['authKey'], 'string', 'max' => 45],
             [['user_uid'], 'unique'],
             [['username'], 'unique'],
@@ -95,7 +95,9 @@ class Newuser extends \yii\db\ActiveRecord implements IdentityInterface
             'user_uid' => Yii::t('app','User Uid'),
             'username' => Yii::t('app','Username'),
             'user_password' => Yii::t('app','User Password'),
-            'role' => Yii::t('app','Role'),
+            'role_cashier' => Yii::t('app','Cashier Role'),
+            'role_clerk' => Yii::t('app','Clerk Role'),
+            'role_admin' => Yii::t('app','Admin Role'),
             'retire' => Yii::t('app','Active'),
             'authKey' => Yii::t('app','Auth Key'),
         ];
