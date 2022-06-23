@@ -21,7 +21,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'user_password') ?>
 
-    <?= $form->field($model, 'role') ?>
+    <?= $form->field($model, 'role_cashier') ?>
+
+    <?= $form->field($model, 'role_clerk') ?>
+
+    <?= $form->field($model, 'role_admin') ?>
 
     <?= $form->field($model, 'retire') ?>
 

@@ -32,7 +32,9 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'user_password')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'role')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'role_cashier')->checkbox(['maxlength' => true]) ?>
+            <?= $form->field($model, 'role_clerk')->checkbox(['maxlength' => true]) ?>
+            <?= $form->field($model, 'role_admin')->checkbox(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'retire')->textInput(['value' => '0']) ?>
