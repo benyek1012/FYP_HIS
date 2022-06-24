@@ -83,6 +83,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'receipt_serial_number',
             [
+                'attribute' => 'billable_sum',
+                'label' => Yii::t('app','Billable Total').' (RM)',
+                'value' => function($data){
+                    return  (new Patient_admission()) -> get_billable_sum($data->rn);
+                },
+            ],
+            [
                 'class' => ActionColumn::className(),
                 'template' => '{view}',
                 'urlCreator' => function ($action, $model, $key, $index, $column) {

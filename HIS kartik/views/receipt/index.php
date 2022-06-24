@@ -123,6 +123,30 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
+                'attribute' => 'billable_sum',
+                'label' => Yii::t('app','Billable Total').' (RM)',
+                'value' => function($data){
+                    return  (new Patient_admission()) -> get_billable_sum($data->rn);
+                },
+            ],
+            [
+                'attribute' => 'bill_generation_datetime',
+                'label' =>Yii::t('app','Bill Generation Datetime'),
+                "format"=>"raw",
+                'value' => function($data){
+                    $d = (new Bill()) -> getBillGeneratedDate($data->rn);
+                    $date = new DateTime($d);
+                    $tag2 = Html::tag ( 'span' , $date->format('Y-m-d') , [
+                        // title
+                        'title' => $date->format('Y-m-d H:i A') ,
+                        'data-placement' => 'top' ,
+                        'data-toggle'=>'tooltip',
+                        'style' => 'white-space:pre;'
+                    ] );
+                    return $tag2;
+                },
+            ],
+            [
                 'class' => ActionColumn::className(),
                 'template' => '{view}',
                 'urlCreator' => function ($action, $model, $key, $index, $column) {
