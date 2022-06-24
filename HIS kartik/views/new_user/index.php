@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use kartik\editable\Editable;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\NewuserSearch */
@@ -87,7 +88,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'role_cashier',
-                'editableOptions' =>  [                
+                'editableOptions' =>  [
+                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -96,7 +99,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'role_clerk',
-                'editableOptions' =>  [                
+                'editableOptions' =>  [
+                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -105,7 +110,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'role_admin',
-                'editableOptions' =>  [                
+                'editableOptions' =>  [
+                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -114,7 +121,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'retire',
-                'editableOptions' =>  [                
+                'editableOptions' =>  [
+                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
