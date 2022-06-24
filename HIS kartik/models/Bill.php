@@ -295,5 +295,11 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($row_bill))
             return !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
     }
+
+    public function getBillGeneratedDate($rn){
+        $row_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($row_bill))
+            return $row_bill['bill_generation_datetime'];
+    }
     
 }
