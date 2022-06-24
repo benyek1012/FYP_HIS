@@ -135,15 +135,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 "format"=>"raw",
                 'value' => function($data){
                     $d = (new Bill()) -> getBillGeneratedDate($data->rn);
-                    $date = new DateTime($d);
-                    $tag2 = Html::tag ( 'span' , $date->format('Y-m-d') , [
-                        // title
-                        'title' => $date->format('Y-m-d H:i A') ,
-                        'data-placement' => 'top' ,
-                        'data-toggle'=>'tooltip',
-                        'style' => 'white-space:pre;'
-                    ] );
-                    return $tag2;
+                    if(!empty($d))
+                    {
+                        $date = new DateTime($d);
+                        $tag2 = Html::tag ( 'span' , $date->format('Y-m-d') , [
+                            // title
+                            'title' => $date->format('Y-m-d H:i A') ,
+                            'data-placement' => 'top' ,
+                            'data-toggle'=>'tooltip',
+                            'style' => 'white-space:pre;'
+                        ] );
+                        return $tag2;
+                    }
+                    else return '(not set)';
                 },
             ],
             [
