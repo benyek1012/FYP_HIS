@@ -40,6 +40,7 @@ class Patient_information extends \yii\db\ActiveRecord
     {
         return [
             [['first_reg_date'], 'required'],
+            [['nric'], 'unique'],
             [['name'], 'string', 'max' => 200],
             ['name', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Name can only contain word characters'],
             // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
@@ -141,5 +142,9 @@ class Patient_information extends \yii\db\ActiveRecord
         }
 
         return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                
+    }
+    public function getPatient_admission() 
+    {
+        return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
     }
 }

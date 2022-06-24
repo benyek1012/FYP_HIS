@@ -198,5 +198,7 @@ return[
     'Cash' => 'Tunai',
     'Debit/Credit Card' => 'Kad Debit/Kredit',
     'Cheque Numbers' => 'Nombor Cek',
+    'Search Admission' => 'Pendaftaran Cari',
+    'Search Patient Name' => 'Nama Pesakit Cari'
 ];
 ?>
