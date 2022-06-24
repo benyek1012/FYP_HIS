@@ -563,9 +563,6 @@ class BillController extends Controller
         if($totalLine > ($countTreatment + $countReceipt + $countRefund)){
             $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
         }
-        else if($totalLine == ($countTreatment + $countReceipt + $countRefund)){
-            $lineleft = $totalLine - ($countTreatment + $countReceipt + $countRefund);
-        }
         else{
             $lineleft = 11 - $totalLine;
         }
@@ -1371,7 +1368,7 @@ print_r($cagaranitem);
      * @return Bill the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function findModel($bill_uid)
+    protected function findModel($bill_uid)
     {
         if (($model = Bill::findOne(['bill_uid' => $bill_uid])) !== null) {
             return $model;
