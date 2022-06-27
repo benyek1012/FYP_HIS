@@ -52,11 +52,16 @@ class Patient_admissionSearch extends Patient_admission
         // ->from($query1)
         // ->groupBy(['patient_uid']);
 
+        $datetime = Patient_admission::find()
+        ->select('MAX(entry_datetime)')
+        ->from("patient_admission")
+        ->groupBy('patient_uid');
 
         $query = Patient_admission::find()
-        ->select('patient_information.*, rn, MAX(entry_datetime) as entry_datetime')
+        ->select('patient_admission.*')
         ->from('patient_admission')
         ->joinWith('patient_information',true)
+        ->where(['in','entry_datetime',$datetime])
         ->groupBy(['patient_uid']);
         
         $dataProvider = new ActiveDataProvider([
