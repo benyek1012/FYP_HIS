@@ -34,10 +34,9 @@ if (Yii::$app->user->isGuest){
 
         <li class="nav-item dropdown">
 
-            <a id="admission" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                    <li><a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Admission'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
                 </ul>
         </li>

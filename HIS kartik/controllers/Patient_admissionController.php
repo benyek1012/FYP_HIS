@@ -50,14 +50,19 @@ class Patient_admissionController extends Controller
     public function actionIndex()
     {
         $searchModel = new Patient_AdmissionSearch();
+        // $searchModel::find()->select('max(entry_datetime)', 'patient_uid');
+        // $searchModel::find()->groupBy('patient_uid');
+        // //$searchModel = Patient_AdmissionSearch::class()->findAll($searchModel);
 
-        
+
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     
         return $this->render('search_index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+
     } 
    /**
      * Displays a single Patient_admission model.
@@ -99,7 +104,7 @@ class Patient_admissionController extends Controller
 
             $model->rn = $rn;
             $model->patient_uid = Yii::$app->request->get('id');
-            $model->entry_datetime = $date->format('Y-m-d H:i');
+            $model->entry_datetime = $date->format('Y-m-d H:i:s');
             $model->type = Yii::$app->request->get('type');
             $model->loadDefaultValues();
             $model->save();

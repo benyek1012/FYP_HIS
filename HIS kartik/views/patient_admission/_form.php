@@ -50,13 +50,6 @@ use kartik\datetime\DateTimePicker;
         </div>
         
         <div class="col-sm-6">
-            <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(), 
-                ['options' => ['placeholder' => 'Enter the entry date and time ...'],
-                'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
-            ])?>
-        </div>
-
-        <div class="col-sm-6">
             <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
              ['prompt'=> Yii::t('app','Please select ward code')]
             ) ?>
