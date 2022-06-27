@@ -12,6 +12,12 @@ use yii\bootstrap4\Html;
 ?>
 <div class="patient-information-update">
     <?php 
+        $rows_patient_information_race = (new \yii\db\Query())
+        ->select('*')
+        ->from('patient_information')
+        ->where(['patient_uid'=> Yii::$app->request->get('id')])
+        ->all();
+
         $rows_nationality = (new \yii\db\Query())
         ->select('*')
         ->from('lookup_general')
@@ -42,8 +48,14 @@ use yii\bootstrap4\Html;
         
         $race = array();
         foreach($rows_race as $row_race){
-            $race[$row_race['name']] = $row_race['name'];
+            $race[$row_race['code']] = $row_race['code'] . ' - ' . $row_race['name'] . ' [ ' .  $row_race['long_description'] . ' ]';
         } 
+
+        foreach($rows_patient_information_race as $row_patient_information_race){
+            if(empty($race[$row_patient_information_race['race']])){
+                $race[$row_patient_information_race['race']] = $row_patient_information_race['race'];
+            }            
+        }
 
     $form = kartik\form\ActiveForm::begin([
         'action' => ['patient_information/update', 'id' =>  $model->patient_uid],
@@ -71,8 +83,18 @@ use yii\bootstrap4\Html;
                     ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'race')->dropDownList($race, 
-                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true, 'readonly' => true]) ?>
+            <!-- <?= $form->field($model, 'race')->dropDownList($race, 
+                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true, 'readonly' => true]) ?> -->
+
+            <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
+                'disabled' => true,
+                'data' => $race,
+                'options' => ['placeholder' => Yii::t('app','Please select race'), 'id' => 'race',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'tags' => true,
+                ],
+            ]); ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'readonly' => true]) ?>
