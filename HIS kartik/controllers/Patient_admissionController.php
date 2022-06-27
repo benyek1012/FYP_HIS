@@ -107,6 +107,9 @@ class Patient_admissionController extends Controller
             $model->entry_datetime = $date->format('Y-m-d H:i:s');
             $model->type = Yii::$app->request->get('type');
             $model->loadDefaultValues();
+            $model->initial_ward_class = "UNKNOWN";
+            $model->initial_ward_code = "UNKNOWN";
+            $model->reminder_given = 0;
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
