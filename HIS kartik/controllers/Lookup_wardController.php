@@ -55,14 +55,37 @@ class Lookup_wardController extends Controller
      */
     public function actionIndex()
     {
-        $modelLOW = new Lookup_ward();
+        $model = new Lookup_ward();
         $searchModel = new Lookup_wardSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
+        if ($this->request->isPost && $model->load($this->request->post()))
         {
-            if ($modelLOW->load($this->request->post())) $this->actionLOW($modelLOW);
-            else $modelLOW->loadDefaultValues();
+            $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));
+
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error_ward', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('ward_code', $message);
+            }
+        }
+        else
+        {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [
@@ -71,34 +94,7 @@ class Lookup_wardController extends Controller
         ]);
     }
 
-    public function actionLOW($modelLOW){
-        if ($modelLOW->save()) {
-             $model_founded = Lookup_wardController::findModel($modelLOW->ward_uid);
-             if(!empty($model_founded))
-                 return Yii::$app->getResponse()->redirect(array('/lookup_ward/index', 
-                     'ward' => $model_founded->ward_uid));
-         }
-    }
 
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `lookup_ward` (
-                `ward_uid` VARCHAR(64) NOT NULL,
-                `ward_code` VARCHAR(20) UNIQUE NOT NULL,
-                `ward_name` VARCHAR(50) NOT NULL,
-                `sex` VARCHAR(20),
-                `min_age` INT,
-                `max_age` INT,
-                PRIMARY KEY (`ward_uid`)
-            );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
-    }
     /**
      * Displays a single Lookup_ward model.
      * @param string $ward_uid Ward Uid
@@ -120,17 +116,38 @@ class Lookup_wardController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_ward();
+        $searchModel = new Lookup_wardSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
+
+            $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));
+
+            if (empty($checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
             }
-        } else {
-            $model->loadDefaultValues();
-        }
+            else
+            {
+                Yii::$app->session->setFlash('error_ward', '
+                <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
+                );
+            }
+        } 
 
-        return $this->render('create', [
+        $model->loadDefaultValues();
+
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

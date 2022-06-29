@@ -26,9 +26,6 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 <div class ="row">
     <div class="col-sm-6">
-        <?= $form->field($model, 'department_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $department_uid]) ?>
-    </div>
-    <div class="col-sm-6">
         <?= $form->field($model, 'department_code')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
@@ -45,6 +42,9 @@ use GpsLab\Component\Base64UID\Base64UID;
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'department_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $department_uid])->label(false)?>
     </div>
 </div>
     <div class="form-group">

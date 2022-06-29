@@ -7,18 +7,18 @@ return [
 
 
     'languages' => [
-    'en' => 'english',
-    'ms' => 'malay'
+    'en' => 'English',
+    'ms' => 'Bahasa Melayu'
     ],
 
-    'borangdafter' => 'smb://JOSH2-LAPTOP/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson 
-    'chargesheet' => 'smb://JOSH2-LAPTOP/EPSON',
-    'casehistory' => 'smb://JOSH2-LAPTOP/EPSON',
-    'sticker' => 'smb://JOSH2-LAPTOP/EPSON',
-    'receipt' => 'smb://JOSH2-LAPTOP/EPSON',
-    'bill' => 'smb://JOSH2-LAPTOP/EPSON',
+    'borangdafter' => 'smb://JOSH-PC/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson JOSH-PC/EPSON
+    'chargesheet' => 'smb://JOSH-PC/EPSON',
+    'casehistory' => 'smb://JOSH-PC/EPSON',
+    'sticker' => 'smb://JOSH-PC/EPSON',
+    'receipt' => 'smb://JOSH-PC/EPSON',
+    'bill' => 'smb://JOSH-PC/EPSON',
 
 
-    'printerstatus' => 'false',  // anything beside true will not print
+    'printerstatus' => 'true',  // anything beside true will not print
 
 ];

@@ -41,7 +41,10 @@ class Patient_information extends \yii\db\ActiveRecord
         return [
             [['first_reg_date'], 'required'],
             [['name'], 'string', 'max' => 200],
-            ['name', 'match', 'pattern' => '/^[a-z,.\s-]+$/i', 'message' => 'Name can only contain word characters'],
+            ['name', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Name can only contain word characters'],
+            // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
+            // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
+            // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             [['first_reg_date'], 'safe'],
           //  [['nric'], 'integer'],
             [['phone_number'], 'integer'],
@@ -61,7 +64,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return [
             'patient_uid' => Yii::t('app','Patient Uid'),
             'first_reg_date' => Yii::t('app','First Reg Date'),
-            'nric' => 'Nric',
+            'nric' => 'NRIC',
             'nationality' => Yii::t('app','Nationality'),
             'name' => Yii::t('app','Name'),
             'sex' => Yii::t('app','Sex'),
@@ -84,7 +87,7 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientAdmissions()
     {
-        return $this->hasMany(Patient_Admission::className(), ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
     }
 
     /**
@@ -94,10 +97,10 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientNextOfKins()
     {
-        return $this->hasMany(Patient_Next_Of_Kin::class, ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_next_of_kin::class, ['patient_uid' => 'patient_uid']);
     }
 
-    public static function getBalance($patient_uid)
+    public function getBalance($patient_uid)
     { 
         $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
 
@@ -110,7 +113,7 @@ class Patient_information extends \yii\db\ActiveRecord
         $billable_sum = 0.0;
         foreach($adm as $rn)
         {
-            $billable_sum += Bill::getAmtDued($rn);
+            $billable_sum += (new Bill())  -> getAmtDued($rn);
         }
 
         if($billable_sum < 0)
@@ -121,7 +124,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return Yii::t('app','Amount Due')." : ". Yii::$app->formatter->asCurrency($billable_sum);                
     }
 
-    public static function getUnclaimedBalance($patient_uid)
+    public function getUnclaimedBalance($patient_uid)
     { 
         $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
      
@@ -134,7 +137,7 @@ class Patient_information extends \yii\db\ActiveRecord
         $unclaimed_sum = 0.0;
         foreach($adm as $rn)
         {
-            $unclaimed_sum += Bill::getUnclaimed($rn);
+            $unclaimed_sum += (new Bill())  -> getUnclaimed($rn);
         }
 
         return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                

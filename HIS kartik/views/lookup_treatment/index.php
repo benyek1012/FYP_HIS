@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_treatmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Lookup Treatments');
+$this->title = Yii::t('app','Treatment Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-treatment-index">
@@ -21,6 +21,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Create Lookup Treatment', ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
+
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('error_treatment')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_treatment') ?>
+        </div>
+    <?php endif;?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
@@ -40,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -106,6 +113,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+</div>
+
 <script>
 
 function showForm() {
@@ -115,7 +124,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOT_div").style.display = "none";
 }
+
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
 </script>
-
-
-</div>

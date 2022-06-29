@@ -12,7 +12,7 @@ use yii\data\ActiveDataProvider;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$this->title = Yii::t('app','Lookup Departments');
+$this->title = Yii::t('app','Department Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-department-index">
@@ -22,6 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Create Lookup Department', ['create'], ['class' => 'btn btn-success']) ?>
     </p>-->
+
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('error_department')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_department') ?>
+        </div>
+    <?php endif;?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
@@ -41,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -116,6 +123,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+
+</div>
+
 <script>
 
 function showForm() {
@@ -125,7 +135,6 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOD_div").style.display = "none";
 }
+
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000);
 </script>
-
-
-</div>

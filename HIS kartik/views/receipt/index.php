@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use kartik\grid\GridView;
-use app\models\NewUser;
+use app\models\New_user;
 use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
@@ -18,9 +18,9 @@ $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
 $this->title = Yii::t('app','Payments');
 if($temp2->name != "")
-    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 else 
-    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/index', 'id' => $temp2->patient_uid]];
+    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">
@@ -32,24 +32,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= \hail812\adminlte\widgets\Callout::widget([
                 'type' => 'info',
                // 'head' => 'I am a danger callout!',
-               'body' => '<b>Sum of Deposit</b> : '.Yii::$app->formatter->asCurrency(Bill::getSumDeposit(Yii::$app->request->get('rn'))).
-               '<br/><b>Billable Total</b> : '.Patient_admission::get_billable_sum(Yii::$app->request->get('rn')).
-               '<br/><b>Amount Due</b> : '.Yii::$app->formatter->asCurrency(Bill::getAmtDued(Yii::$app->request->get('rn'))).
-               '<br/><b>Unclaimed Balance</b> : '.Yii::$app->formatter->asCurrency(Bill::getUnclaimed(Yii::$app->request->get('rn')))
+               'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.(new Patient_admission()) -> get_billable_sum(Yii::$app->request->get('rn')).
+               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))).
+               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
         <?php } ?>
         </div>
     </div>
 
     <p>
-        <?php 
-        // $info = Bill::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        // if(!empty($info)){
-        ?>
         <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
-        <?php
-       // }
-        ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -57,31 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
-        'emptyText' => 'No Payment Founded!',
+        'emptyText' => Yii::t('app','Payment record is not found'),
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            [
-                'attribute' => 'rn',
-                'label' => 'Registeration Number ',
-                'format' => 'raw',
-                'value'=>function ($data) {
-                    return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
-                },
-            ],
-            'receipt_type',
-            [
-                'attribute' => 'receipt_content_sum',
-                'label' => 'Receipt Sum (RM)',
-              //  'format' => 'raw',
-                'value'=>function ($data) {
-                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
-                        return '+'.$data['receipt_content_sum'];
-                    else return '-'.$data['receipt_content_sum'];
-                },
-            ],
-          //  'receipt_content_bill_id',
-            //'receipt_content_description',
             [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
@@ -97,18 +68,60 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $tag;
                 },
             ],
+            [
+                'attribute' => 'receipt_serial_number',
+                "format"=>"raw",
+                'value'=>function ($data) {
+                    $tag = Html::tag ( 'span' , $data['receipt_serial_number'] , [
+                        // title
+                        'title' => $data['receipt_content_description'] ,
+                        'data-placement' => 'top' ,
+                        'data-toggle'=>'tooltip',
+                        'style' => 'white-space:pre;'
+                    ] );
+                    return $tag;
+                },
+            ],
+            [
+                'attribute' => 'receipt_content_sum',
+                'value'=>function ($data) {
+                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
+                        return '+'.$data['receipt_content_sum'];
+                    else return '-'.$data['receipt_content_sum'];
+                },
+            ],
+            // [
+            //     'attribute' => 'rn',
+            //     'format' => 'raw',
+            //     'value'=>function ($data) {
+            //         return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+            //     },
+            // ],
+            [
+                'attribute'=>'receipt_type',
+                'filter'=> array(
+                    'deposit'=> Yii::t('app','Deposit'),
+                    'bill'=> Yii::t('app','Bill'),
+                    'refund'=> Yii::t('app','Refund'),
+                ),
+            ],
+            //'receipt_content_description',
+            [
+                'attribute'=>'receipt_content_payment_method',
+                'filter'=> array(
+                    'cash'=> Yii::t('app','Cash'),
+                    'card'=> Yii::t('app','Debit/Credit Card'),
+                    'cheque'=> Yii::t('app','Cheque Numbers'),
+                ),
+            ],
             'receipt_content_payer_name',
-            'receipt_content_payment_method',
-            //'card_no',
-            //'cheque_number',
             [
                 'attribute' => 'receipt_responsible',
                 'value'=>function ($data) {
-                    $model_User = NewUser::findOne(['user_uid' => $data['receipt_responsible']]);
-                    return $model_User->username;
+                    $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
+                    return $model_User->getName();
                 },
             ],
-            'receipt_serial_number',
             [
                 'class' => ActionColumn::className(),
                 'template' => '{view}',
@@ -118,16 +131,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-
-    <?php 
-    //  $dataProvider2 = new ActiveDataProvider([
-    //     'query'=> Bill::find()->where(['rn'=>Yii::$app->request->get('rn')]),
-    //     'pagination'=>['pageSize'=>3],
-    //     ]);
-    // echo $this->render('/bill/index', ['dataProvider'=>$dataProvider2]);
-    
-    ?>
-
 
 </div>
 
@@ -140,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
             html:true
         });
     });
-    SCRIPT;
+SCRIPT;
     // Register tooltip/popover initialization javascript
     $this->registerJs ( $js );
 ?>

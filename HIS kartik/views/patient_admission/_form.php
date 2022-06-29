@@ -58,13 +58,13 @@ use kartik\datetime\DateTimePicker;
 
         <div class="col-sm-6">
             <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
-             ['prompt'=>'Please select ward code']
+             ['prompt'=> Yii::t('app','Please select ward code')]
             ) ?>
         </div>
 
         <div class="col-sm-6">
             <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
-             ['prompt'=>'Please select ward class']
+             ['prompt'=> Yii::t('app','Please select ward class')]
             ) ?>
         </div>
 
@@ -72,10 +72,10 @@ use kartik\datetime\DateTimePicker;
             <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'medigal_legal_code')->textInput() ?>
+            <?= $form->field($model, 'medical_legal_code')->textInput() ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reminder_given')->textInput() ?>
+            <?= $form->field($model, 'reminder_given')->textInput(['disabled' => true, ]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true]) ?>
@@ -93,7 +93,7 @@ use kartik\datetime\DateTimePicker;
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
-        <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?>
+        <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

@@ -10,11 +10,11 @@ use Yii;
  * @property string $rn
  * @property string $entry_datetime
  * @property string $patient_uid
- * @property string $initial_ward_code
- * @property string $initial_ward_class
+ * @property string|null $initial_ward_code
+ * @property string|null $initial_ward_class
  * @property string|null $reference
- * @property int|null $medigal_legal_code
- * @property int $reminder_given
+ * @property int|null $medical_legal_code
+ * @property int|null $reminder_given
  * @property string|null $guarantor_name
  * @property string|null $guarantor_nric
  * @property string|null $guarantor_phone_number
@@ -42,7 +42,7 @@ class Patient_admission extends \yii\db\ActiveRecord
         return [
             [['rn', 'entry_datetime', 'patient_uid', 'type'], 'required'],
             [['entry_datetime'], 'safe'],
-            [['medigal_legal_code', 'reminder_given'], 'integer'],
+            [['medical_legal_code', 'reminder_given'], 'integer'],
             [['rn'], 'string', 'max' => 11],
             [['patient_uid'], 'string', 'max' => 64],
             [['initial_ward_code', 'initial_ward_class'], 'string', 'max' => 20],
@@ -63,16 +63,16 @@ class Patient_admission extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'rn' => 'Rn',
+            'rn' =>  Yii::t('app','Registration Number (R/N)'),
             'entry_datetime' => Yii::t('app','Entry Datetime'),
             'patient_uid' => Yii::t('app','Patient Uid'),
             'initial_ward_code' => Yii::t('app','Initial Ward Code'),
             'initial_ward_class' => Yii::t('app','Initial Ward Class'),
             'reference' => Yii::t('app','Reference'),
-            'medigal_legal_code' => Yii::t('app','Medical Legal Code'),
+            'medical_legal_code' => Yii::t('app','Medical Legal Code'),
             'reminder_given' => Yii::t('app','Reminder Given'),
             'guarantor_name' => Yii::t('app','Guarantor Name'),
-            'guarantor_nric' => Yii::t('app','Guarantor Nric'),
+            'guarantor_nric' => Yii::t('app','Guarantor NRIC'),
             'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
             'guarantor_email' => Yii::t('app','Guarantor Email'),
             'type' => Yii::t('app','Type')
@@ -80,23 +80,24 @@ class Patient_admission extends \yii\db\ActiveRecord
     }
 
 
-    public static function get_bill($rn){
-        if( Bill::getUnclaimed($rn) <= 0 )
-            return Yii::t('app','Amount Due')." : ".Yii::$app->formatter->asCurrency(Bill::getAmtDued($rn));
-        else return Yii::t('app','Unclaimed Balance')." : ".Yii::$app->formatter->asCurrency(Bill::getUnclaimed($rn));
+    public function get_bill($rn){
+        if( (new Bill())  -> getUnclaimed($rn) <= 0 )
+            return Yii::t('app','Amount Due')." : ".Yii::$app->formatter->asCurrency((new Bill())  -> getAmtDued($rn));
+        else return Yii::t('app','Unclaimed Balance')." : ".Yii::$app->formatter->asCurrency((new Bill())  -> getUnclaimed($rn));
 
         return null;
     }
 
-    public static function get_billable_sum($rn){
+    public function get_billable_sum($rn){
         $billable = 0;
-        $model_bill = Bill::findOne(['rn' => $rn]);
-        if(!empty($model_bill))
+        $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($model_bill) && (new Bill())  -> isGenerated($rn))
         {
             $billable = $model_bill->bill_generation_billable_sum_rm;
             // If billable sum in database in not set, assign to 0
             if(empty($billable)) $billable = 0;
         }
+     
         return Yii::$app->formatter->asCurrency($billable);
     }
 

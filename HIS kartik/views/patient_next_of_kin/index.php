@@ -10,28 +10,22 @@ use kartik\editable\Editable;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_next_of_kinSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+$rows_relationship = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Relationship'])
+->all();
+
+$relationship = array();
+foreach($rows_relationship as $row_relationship){
+    $relationship[$row_relationship['name']] = $row_relationship['name'];
+} 
+
+
+
 ?>
 <div class="patient-next-of-kin-index">
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Patient Next Of Kin', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
-
-    <?php     
-        $relationship = array(
-            'father'=>'Father',
-            'mother'=>'Mother',
-            'husband/spouse' => 'husband/Spouse',
-            'brother' => 'Brother',
-            'sister' => 'Sister',
-            'son' => 'Son',
-            'daughter' => 'Daughter',
-            'other' => 'Other'
-    );// echo $this->render('_search', ['model' => $searchModel]); 
-    ?>
-
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
@@ -55,16 +49,7 @@ use kartik\editable\Editable;
                     'size' => 'md',
                     'inputType' => Editable::INPUT_DROPDOWN_LIST,
                     'asPopover' => false,
-                    'data' => [
-                        'father'=>'Father',
-                        'mother'=>'Mother',
-                        'husband/spouse' => 'husband/Spouse',
-                        'brother' => 'Brother',
-                        'sister' => 'Sister',
-                        'son' => 'Son',
-                        'daughter' => 'Daughter',
-                        'other' => 'Other'
-                    ],
+                    'data' => $relationship,
                     'formOptions' => ['action' => ['/site/nok']],
                 ],
             ],

@@ -82,7 +82,7 @@ class PrintForm
 
     }
 
-    public function printElement($len, $value, $uppercase=false)
+    public function printElement($len, $value, $uppercase=false, $rightalign=false)
     {
         if($uppercase)
             $value = strtoupper($value);
@@ -90,16 +90,27 @@ class PrintForm
         if($value == "\n"){
             $this->printNewLine($len);
         }
-       
         
-        $this->printer -> text(mb_strimwidth($value,0,$len));
+        if($rightalign)
+        {
+            $fixvalue = $len - strlen($value);
+            if($fixvalue < 0){
+                $fixvalue = 0;
+            }
+            
+            $this->printer -> text(str_repeat("\x20", $fixvalue));
+            $this->printer -> text(mb_strimwidth($value,0,$len));
+        }
+        else{        
+            $this->printer -> text(mb_strimwidth($value,0,$len));
 
-        $blanklen = $len - strlen($value);
+            $blanklen = $len - strlen($value);
 
-        if($blanklen < 0)
-            $blanklen = 0;
+            if($blanklen < 0)
+                $blanklen = 0;
 
-        $this->printer -> text(str_repeat("\x20", $blanklen)); // space for r/n value
+            $this->printer -> text(str_repeat("\x20", $blanklen)); 
+        }
     }
 
     public function printElementArray($array)
@@ -107,9 +118,13 @@ class PrintForm
         for($i = 0; $i < count($array); $i++){
             if(count($array[$i]) < 3)
                 $this->printElement($array[$i][0], $array[$i][1]);
-            else
+            else if(count($array[$i]) == 3)
                 $this->printElement($array[$i][0], $array[$i][1], $array[$i][2]);
+            else{
+                $this->printElement($array[$i][0], $array[$i][1], $array[$i][2], $array[$i][3]);
+            }
         }
+
         // if(count($array) < 3)
         //     $this->printElement($array[0], $array[0]);
         // else
@@ -124,7 +139,7 @@ class PrintForm
         }
         $this->printer -> text($newLine);
     }
-
+    
     public function close()
     {
         
@@ -146,10 +161,10 @@ class PrintForm
     public function printMore($totalCost){
         $this->printElementArray(
             [
-                [6, "\x20"],
+                [8, "\x20"],
                 [4, "...."],
-                [57, "\x20"],
-                [9, number_format((float)$totalCost, 2, '.', '')],
+                [55, "\x20"],
+                [9, number_format((float)$totalCost, 2, '.', ''),false,true],
             ]
      
         );
@@ -174,12 +189,13 @@ class PrintForm
                 [1,"\x20"],
                 [30, $treatment_name,true],
                 [2,"\x20"],
-                [1,"x"],
+                [1,"X"],
                 [2,"\x20"],
                 [5,$item_count],
-                [7,"\x20"],
-                [8, $item_per_unit_cost],
-                [8, $item_total_unit_cost],
+                [5,"\x20"],
+                [8, $item_per_unit_cost,false,true],
+                [2,"\x20"],
+                [9, $item_total_unit_cost,false,true],
 
             ]
         );
@@ -204,8 +220,8 @@ class PrintForm
                 [8, "\x20"],
                 [14, "Tolak Cagaran "],
                 [8,$receipt_serial_number],
-                [38,"\x20"],
-                [9, $receipt_content_sum],
+                [37,"\x20"],
+                [9, $receipt_content_sum,false,true],
             
             ]
         );
@@ -225,8 +241,8 @@ class PrintForm
             [
                 [8, "\x20"],
                 [18, "------------------"],
-                [45, "\x20"],
-                [9, "0.00"], // need ask what price is this for
+                [46, "\x20"],
+                [4, "0.00"], // need ask what price is this for
             ]
         );
         $this->printNewLine(1);
@@ -239,8 +255,8 @@ class PrintForm
         $this->printNewLine(1);
         $this->printElementArray(
             [
-                [68, "\x20"],
-                [9, $billAble],
+                [67, "\x20"],
+                [9, $billAble,false,true],
             ]
         );
         $this->printNewLine(1);
@@ -259,11 +275,11 @@ class PrintForm
             [
                 [8, "\x20"],
                 [18, "------------------"],
-                [45, "\x20"],
-                [9, "0.00"], // need ask what price is this for
+                [46, "\x20"],
+                [4, "0.00"], // need ask what price is this for
             ]
         );
-        $this->printNewLine(3);
+        $this->printNewLine(1);
     }
 
     public function printBillRefund($rn, $receipt_serial_number, $receipt_content_sum){
@@ -272,8 +288,8 @@ class PrintForm
                 [8, "\x20"],
                 [14, "Refund "],
                 [8,$receipt_serial_number],
-                [37,"\x20"],
-                [9, "-".$receipt_content_sum],
+                [36,"\x20"],
+                [10, "-".$receipt_content_sum,false,true],
             
             ]
         );

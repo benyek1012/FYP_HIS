@@ -20,16 +20,18 @@ use GpsLab\Component\Base64UID\Base64UID;
         
     ]); 
     $nokuid = Base64UID::generate(32);
-    $relationship = array(
-        'father'=>'Father',
-        'mother'=>'Mother',
-        'husband/spouse' => 'husband/Spouse',
-        'brother' => 'Brother',
-        'sister' => 'Sister',
-        'son' => 'Son',
-        'daughter' => 'Daughter',
-        'other' => 'Other'
-    );
+    $rows_relationship = (new \yii\db\Query())
+    ->select('*')
+    ->from('lookup_general')
+    ->where(['category'=> 'Relationship'])
+    ->all();
+    
+    $relationship = array();
+    foreach($rows_relationship as $row_relationship){
+        $relationship[$row_relationship['name']] = $row_relationship['name'];
+    } 
+
+   
     ?>
 
     <div class="row">
@@ -43,12 +45,11 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, ['prompt'=>'Please select relationship','maxlength' => true]) ?>
+            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, 
+                    ['prompt'=> Yii::t('app','Please select relationship'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
@@ -60,7 +61,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-outline-primary align-self-start']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

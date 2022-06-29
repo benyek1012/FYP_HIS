@@ -12,27 +12,38 @@ use yii\bootstrap4\Html;
 ?>
 <div class="patient-information-update">
     <?php 
-     $countries = array(
-        'malaysia'=>'Malaysia',
-        'indonesia'=>'Indonesia',
-        'singapore' => 'Singapore',
-        'thailand' => 'Thailand',
-        'china' => 'China'
-    );
+        $rows_nationality = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Nationality'])
+        ->all();
+        
+        $countries = array();
+        foreach($rows_nationality as $row_nationality){
+            $countries[$row_nationality['name']] = $row_nationality['name'];
+        } 
 
-    $sex = array(
-        'male'=>Yii::t('app','Male'),
-        'female'=>Yii::t('app','Female'),
-    );
+        $rows_sex = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Sex'])
+        ->all();
+        
+        $sex = array();
+        foreach($rows_sex as $row_sex){
+            $sex[$row_sex['name']] = $row_sex['name'];
+        } 
 
-    $race = array(
-        'malay'=> Yii::t('app','Malay'),
-        'chinese'=> Yii::t('app','Chinese'),
-        'indian'=> Yii::t('app','Indian'),
-        'kadazandusun' => 'Kadazandusun',
-        'iban' => 'Iban',
-        'others'=> 'Others',
-    );
+        $rows_race = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Race'])
+        ->all();
+        
+        $race = array();
+        foreach($rows_race as $row_race){
+            $race[$row_race['name']] = $row_race['name'];
+        } 
 
     $form = kartik\form\ActiveForm::begin([
         'action' => ['patient_information/update', 'id' =>  $model->patient_uid],
@@ -46,39 +57,34 @@ use yii\bootstrap4\Html;
 
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'first_reg_date')->widget(DatePicker::classname(), 
-        ['options' => ['placeholder' => 'Enter the fist registeration date ...'],
-        'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd' ],
-        ])?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nationality')->dropDownList($countries, ['prompt'=>'Please select country','maxlength' => true]) ?>
+            <?= $form->field($model, 'nationality')->dropDownList($countries, 
+                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'sex')->dropDownList($sex, ['prompt'=>'Please select sex','maxlength' => true]) ?>
+            <?= $form->field($model, 'sex')->dropDownList($sex, 
+                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'race')->dropDownList($race, ['prompt'=>'Please select race','maxlength' => true]) ?>
+            <?= $form->field($model, 'race')->dropDownList($race, 
+                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'address2')->textInput(['maxlength' => true])->label(false)?>
             <?= $form->field($model, 'address3')->textInput(['maxlength' => true])->label(false)?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
         </div>
 
     </div>

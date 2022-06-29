@@ -54,50 +54,45 @@ class Lookup_departmentController extends Controller
      */
     public function actionIndex()
     {
-        $modelLOD = new Lookup_department();
+        $model = new Lookup_department();
         $searchModel = new Lookup_departmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
-        {
-            if ($modelLOD->load($this->request->post())) $this->actionLOD($modelLOD);
-            else $modelLOD->loadDefaultValues();
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_department::findOne(['department_code' => $model->department_code, 'department_name' => $model->department_name]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                // try catch of check row is inserted in SQL
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'department_uid' => $model->department_uid]);
+            }
+            else
+            {
+                // set the flash message
+                Yii::$app->session->setFlash('error_department', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Department Code '.$model->department_name.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('department_code', $message);
+            }
+           
+        } 
+        else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    }
-
-    public function actionLOD($modelLOD){
-        if ($modelLOD->save()) {
-             $model_founded = Lookup_departmentController::findModel($modelLOD->department_uid);
-             if(!empty($model_founded))
-                 return Yii::$app->getResponse()->redirect(array('/lookup_department/index', 
-                     'depart' => $model_founded->department_uid));
-         }
-    }
-
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `lookup_department` (
-                `department_uid` VARCHAR(64) NOT NULL,
-                `department_code` VARCHAR(20) UNIQUE NOT NULL,
-                `department_name` VARCHAR(50) NOT NULL,
-                `phone_number` VARCHAR(100),
-                `address1` VARCHAR(100),
-                `address2` VARCHAR(100),
-                `address3` VARCHAR(100),
-                PRIMARY KEY (`department_uid`)
-            );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
     }
 
     /**
@@ -121,19 +116,42 @@ class Lookup_departmentController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_department();
+        $searchModel = new Lookup_departmentSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_department::findOne(['department_code' => $model->department_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'department_uid' => $model->department_uid]);
             }
-        } else {
-            $model->loadDefaultValues();
+            else
+            {
+                // set the flash message
+                Yii::$app->session->setFlash('error_department', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Department Code '.$model->department_code.' is duplicated. !</div>'
+                );
+            }
+           
         }
+        $model->loadDefaultValues();
 
-        return $this->render('create', [
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
+    
 
     /**
      * Updates an existing Lookup_department model.

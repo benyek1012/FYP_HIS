@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\Lookup_wardSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Lookup Wards');
+$this->title = Yii::t('app','Ward Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-ward-index">
@@ -20,6 +20,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a(Yii::t('app','Create Lookup Ward'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>-->
+
+    <?php if(Yii::$app->session->hasFlash('error_ward')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_ward') ?>
+        </div>
+    <?php endif; ?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
@@ -38,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -104,6 +110,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+</div>
+
 <script>
 
 function showForm() {
@@ -113,6 +121,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOW_div").style.display = "none";
 }
-</script>
 
-</div>
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
+</script>

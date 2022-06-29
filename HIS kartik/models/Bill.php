@@ -26,8 +26,8 @@ use Yii;
  * @property string|null $bill_print_responsible_uid
  * @property string|null $bill_print_datetime
  * @property string|null $bill_print_id
+ * @property int $deleted
  *
- * @property BillContentReceipt[] $billContentReceipts
  * @property PatientAdmission $rn0
  * @property TreatmentDetails[] $treatmentDetails
  * @property Ward[] $wards
@@ -50,7 +50,7 @@ class Bill extends \yii\db\ActiveRecord
         return [
             [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'daily_ward_cost'], 'required'],
             [['daily_ward_cost', 'bill_generation_billable_sum_rm', 'bill_generation_final_fee_rm'], 'number'],
-            [['is_free'], 'integer'],
+            [['is_free', 'deleted'], 'integer'],
             [['bill_generation_datetime', 'bill_print_datetime'], 'safe'],
             [['bill_uid', 'generation_responsible_uid', 'bill_print_responsible_uid'], 'string', 'max' => 64],
             [['rn'], 'string', 'max' => 11],
@@ -58,7 +58,7 @@ class Bill extends \yii\db\ActiveRecord
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
-            [['bill_print_id'], 'integer'],
+           // [['bill_print_id'], 'integer'],
          //   [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['bill_print_id'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
@@ -84,31 +84,14 @@ class Bill extends \yii\db\ActiveRecord
             'nurse_responsible' => Yii::t('app','Nurse Responsible'),
             'bill_generation_datetime' => Yii::t('app','Bill Generation Datetime'),
             'generation_responsible_uid' => Yii::t('app','Generation Responsible Uid'),
-            'bill_generation_billable_sum_rm' => Yii::t('app','Billable Total (RM)'), //Bill Generation Billable Sum Rm
+            'bill_generation_billable_sum_rm' => Yii::t('app','Billable Total')." (RM)", //Bill Generation Billable Sum Rm
             'bill_generation_final_fee_rm' => Yii::t('app','Final Fee (RM)'), //Bill Generation Final Fee Rm
             'description' => Yii::t('app','Bill Description'),
             'bill_print_responsible_uid' => ('Bill Print Responsible Uid'),
             'bill_print_datetime' => Yii::t('app','Bill Print Datetime'),
             'bill_print_id' => Yii::t('app','Bill Print ID'),
+            'deleted' => 'Deleted',
         ];
-    }
-
-    public static function checkExistPrint($rn)
-    {
-        $model = Bill::findOne( [ 'rn' => $rn] );
-        if(!empty($model->bill_print_id))
-            return true;
-        else return false;
-    }
-
-    /**
-     * Gets query for [[BillContentReceipts]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBillContentReceipts()
-    {
-        return $this->hasMany(Bill_Content_Receipt::className(), ['bill_uid' => 'bill_uid']);
     }
 
     /**
@@ -118,7 +101,7 @@ class Bill extends \yii\db\ActiveRecord
      */
     public function getRn0()
     {
-        return $this->hasOne(Patient_Admission::className(), ['rn' => 'rn']);
+        return $this->hasOne(Patient_admission::className(), ['rn' => 'rn']);
     }
 
     /**
@@ -128,7 +111,7 @@ class Bill extends \yii\db\ActiveRecord
      */
     public function getTreatmentDetails()
     {
-        return $this->hasMany(Treatment_Details::className(), ['bill_uid' => 'bill_uid']);
+        return $this->hasMany(Treatment_details::className(), ['bill_uid' => 'bill_uid']);
     }
 
     /**
@@ -142,7 +125,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get Ward Total Days Cost
-    public static function getTotalWardCost($bill_uid) {
+    public function getTotalWardCost($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
         $totalWardCost = 0.0;
@@ -160,11 +143,12 @@ class Bill extends \yii\db\ActiveRecord
 
         $totalWardCost = $dailyWardCost * $totalWardDays;
 
+        // return Yii::$app->formatter->asCurrency($totalWardCost);                  
         return number_format((float)$totalWardCost, 2, '.', '');                
     }
 
     // Get Treatment Total Item Cost
-    public static function getTotalTreatmentCost($bill_uid) {
+    public function getTotalTreatmentCost($bill_uid) {
         $totalItemCost = 0.0;
 
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
@@ -174,11 +158,12 @@ class Bill extends \yii\db\ActiveRecord
             $totalItemCost += $modelTreatment->item_total_unit_cost_rm;
         }
 
-        return Yii::t('app','Total')." : ". Yii::$app->formatter->asCurrency($totalItemCost);                
+        // return Yii::$app->formatter->asCurrency($totalItemCost);     
+        return number_format((float)$totalItemCost, 2, '.', '');            
     }
 
     // Calculate Billable
-    public static function calculateBillable($bill_uid) {
+    public function calculateBillable($bill_uid) {
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
         $totalTreatmentCost = 0.0;
@@ -205,56 +190,42 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($modelBill) && $modelBill->is_free == 1)
             $billable = 0;
 
+        $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
     }
 
-    // Get Unclaimed balance 
-    public static function getUnclaimed($rn) {
-        $model_bill = Bill::findOne(['rn' => $rn]);
-        if(!empty($model_bill))
-        {
-            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0.0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
-        }
-        else
-        {
-            return (Bill::getDeposit($rn) + Bill::getRefund($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn)) ;
-        }
+     // Get Unclaimed balance 
+     public function getUnclaimed($rn) {
+        $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($model_bill)  && Bill::isGenerated($rn))
+            return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
+        else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) ;
     }
 
     // Get Amt Due
-    public static function getAmtDued($rn) {
-        $model_bill = Bill::findOne(['rn' => $rn]);
-        if(!empty($model_bill))
-            return Bill::calculateFinalFee($model_bill->bill_uid) < 0 ? 0.0 : Bill::calculateFinalFee($model_bill->bill_uid);
-        else return (0 - (Bill::getDeposit($rn) + Bill::getRefund($rn)))  < 0 ? 0 : (0 -(Bill::getDeposit($rn) + Bill::getRefund($rn))) ;
+    public function getAmtDued($rn) {
+        $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($model_bill) && Bill::isGenerated($rn))
+            return Bill::calculateFinalFee($model_bill->bill_uid) < 0 ? 0 : Bill::calculateFinalFee($model_bill->bill_uid);
+        else return (0 - (Bill::getDeposit($rn) + Bill::getRefund($rn)+ Bill::getPayedAmt($rn)))  < 0 ? 0 : (0 -(Bill::getDeposit($rn) + Bill::getRefund($rn)+ Bill::getPayedAmt($rn))) ;
     }
 
     // Return Negative values
-    public static function calculateFinalFee($bill_uid) {
+    public function calculateFinalFee($bill_uid) {
         $billable = 0.0;
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         if(!empty($modelBill))
         {
             // Billable_sum - sum of deposit - sum of payed - sum of refund
             $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($modelBill->rn)
-             - Bill::getPayedAmt($bill_uid) - Bill::getRefund($modelBill->rn);
+             - Bill::getPayedAmt($modelBill->rn) - Bill::getRefund($modelBill->rn);
         }
+        $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
     }
 
-        // Return Negative values
-        public static function determineFinalFee($rn) {
-            $model_bill = Bill::findOne(['rn' => $rn]);
-            $billable = 0.0;
-            if(!empty($model_bill))
-            {
-                return Bill::calculateFinalFee($model_bill->bill_uid);
-            }
-            return $billable;
-        }
-
     // All Deposit
-    public static function getDeposit($rn){
+    public function getDeposit($rn){
         $sum_deposit = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -266,19 +237,19 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Deposit - Refund
-    public static function getSumDeposit($rn)
+    public function getSumDeposit($rn)
     {
         $sum_deposit = 0.0;
-        $sum_deposit = Bill::getDeposit($rn) + Bill::getRefund($rn);
+      //  $sum_deposit = Bill::getDeposit($rn) + Bill::getRefund($rn);
+        $sum_deposit = Bill::getDeposit($rn);
         return $sum_deposit < 0 ?  0.0 : $sum_deposit;
     }
 
-    // Payed Amount
-    public static function getPayedAmt($bill_uid){
+    // Get all Payed Amount
+    public function getPayedAmt($rn){
         $payed_amt = 0.0;
-        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
 
-        $info_receipt = Receipt::findAll(['rn' => $modelBill->rn, 'receipt_type' => 'bill']);
+        $info_receipt = Receipt::findAll(['rn' => $rn, 'receipt_type' => 'bill']);
         if(!empty($info_receipt))
         {
             foreach($info_receipt as $r)
@@ -289,8 +260,8 @@ class Bill extends \yii\db\ActiveRecord
         return $payed_amt;
     }
 
-    // REfund Amount
-    public static function getRefund($rn){
+    // Get all Refund Amount (Negative) 
+    public function getRefund($rn){
         $sum_refund = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -304,5 +275,25 @@ class Bill extends \yii\db\ActiveRecord
         return 0 - $sum_refund;
     }
 
+    // Check whether bill is generated
+    public function isGenerated($rn){
+        $row_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($row_bill))
+            return !empty($row_bill['bill_generation_datetime']) ? $row_bill['bill_generation_datetime'] : false;
+    }
+
+    // Check whether bill is free
+    public function isFree($rn){
+        $row_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($row_bill))
+            return !empty($row_bill['is_free']) ? $row_bill['is_free'] : false;
+    }
+
+    // Check whether bill is printed
+    public function isPrinted($rn){
+        $row_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($row_bill))
+            return !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
+    }
     
 }

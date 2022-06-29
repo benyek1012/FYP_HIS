@@ -54,51 +54,46 @@ class Lookup_statusController extends Controller
      */
     public function actionIndex()
     {
-        $modelLOS = new Lookup_status();
+        $model = new Lookup_status();
         $searchModel = new Lookup_statusSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
+        if ($this->request->isPost && $model->load($this->request->post())) 
         {
-            if ($modelLOS->load($this->request->post())) $this->actionLOS($modelLOS);
-            else $modelLOS->loadDefaultValues();
+            
+            $checkDuplicatedCode = Lookup_status::findOne(['status_code' => $model->status_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                // try catch of check row is inserted in SQL
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'status_uid' => $model->status_uid]);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error_status', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Status Code '.$model->status_code.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('status_code', $message);
+            }
+           
+        } 
+        else 
+        {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    }
-
-    public function actionLOS($modelLOS){
-        if ($modelLOS->save()) {
-             $model_founded = Lookup_statusController::findModel($modelLOS->status_uid);
-             if(!empty($model_founded))
-                 return Yii::$app->getResponse()->redirect(array('/lookup_status/index', 
-                     'stat' => $model_founded->status_uid));
-         }
-    }
-
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `lookup_status` (
-                `status_uid` VARCHAR(64) NOT NULL,
-                `status_code` VARCHAR(20) UNIQUE NOT NULL,
-                `status_description` VARCHAR(100) NOT NULL,
-                `class_1a_ward_cost` DECIMAL(10,2) NOT NULL,
-                `class_1b_ward_cost` DECIMAL(10,2) NOT NULL,
-                `class_1c_ward_cost` DECIMAL(10,2) NOT NULL,
-                `class_2_ward_cost` DECIMAL(10,2) NOT NULL,
-                `class_3_ward_cost` DECIMAL(10,2) NOT NULL,
-                PRIMARY KEY (`status_uid`)
-        );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
     }
     
 
@@ -123,17 +118,40 @@ class Lookup_statusController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_status();
+        $searchModel = new Lookup_statusSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) 
+        {
+            
+            $checkDuplicatedCode = Lookup_status::findOne(['status_code' => $model->status_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'status_uid' => $model->status_uid]);
             }
-        } else {
-            $model->loadDefaultValues();
-        }
+            else
+            {
+                Yii::$app->session->setFlash('error_status', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Status Code '.$model->status_code.' is duplicated. !</div>'
+                );
+            }
+           
+        } 
+        
+        $model->loadDefaultValues();
 
-        return $this->render('create', [
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

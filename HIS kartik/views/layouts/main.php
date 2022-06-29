@@ -24,10 +24,32 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
     <?php $this->head() ?>
 </head>
 
-<body class="d-flex flex-column">
+<?php if(YII::$app->user->isGuest){ ?>
+<?= $this->render('main-login', ['content' => $content, 'assetDir' => $assetDir]) ?>
+<?php }else{
+
+$flag = false;
+$actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");
+foreach ($actions_sidebar as $action) {
+    if(Yii::$app->controller->id == "site" && Yii::$app->controller->action->id == "admission")
+    {
+        $flag = true;
+        break;
+    }
+    if(Yii::$app->controller->id == $action)
+    {
+        $flag = true;
+        break;
+    }
+}
+
+?>
+
+<body class="d-flex flex-column  <?php if($flag == false){ echo "sidebar-collapse"; }?>">
     <?php $this->beginBody() ?>
 
     <div class="wrapper">
+
         <!-- Navbar -->
         <?= $this->render('navbar', ['assetDir' => $assetDir]) ?>
         <!-- /.navbar -->
@@ -38,6 +60,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
         <div class="card">
             <div class="card-body">
                 <!-- Content Wrapper. Contains page content -->
+
                 <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
                 <!-- /.content-wrapper -->
             </div>
@@ -47,6 +70,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 
     <?php $this->endBody() ?>
 </body>
+<?php } ?>
 
 </html>
 <?php $this->endPage() ?>
