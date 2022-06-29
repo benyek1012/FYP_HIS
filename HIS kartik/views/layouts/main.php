@@ -38,7 +38,13 @@ foreach ($actions_sidebar as $action) {
     }
     if(Yii::$app->controller->id == $action)
     {
+
         $flag = true;
+        if(Yii::$app->controller->id == 'patient_admission' && Yii::$app->controller->action->id == "index")
+        {
+            $flag = false;
+            break;
+        }
         break;
     }
 }

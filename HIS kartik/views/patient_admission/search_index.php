@@ -116,10 +116,23 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             [
                                 'attribute' => 'billable_sum',
                                 'label' => Yii::t('app','Billable Total').' (RM)',
+                                'value' => function($data){
+                                    return  (new Patient_admission()) -> get_billable_sum($data->rn);
+                                },
                             ],
                             [
-                                'attribute' => 'final_fee',
-                                'label' => Yii::t('app','Amount Due').' / '.Yii::t('app','Unclaimed Balance').' (RM)',
+                                'attribute' => 'amount_due',
+                                'value' => function($data){
+                                    return ((new Patient_information())->getBalance($data->patient_uid));
+                                },
+                                'label' => Yii::t('app','Amount Due'),
+                            ],
+                            [
+                                'attribute' => 'unclaimed_balance',
+                                'value' => function($data){
+                                    return ((new Patient_information())->getUnclaimedBalance($data->patient_uid));
+                                },
+                                'label' => Yii::t('app','Unclaimed Balance').' (RM)',
                             ],
                         ],
                 ]) ?>
@@ -150,7 +163,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
             <?php 
                     if(!empty($model))
                     {
-                        $dataProvider1 = new ActiveDataProvider([
+                             $dataProvider1 = new ActiveDataProvider([
                             'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
                             ->orderBy(['entry_datetime' => SORT_DESC]),
                             'pagination'=>['pageSize'=>5],
