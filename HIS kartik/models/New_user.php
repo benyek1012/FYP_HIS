@@ -78,6 +78,27 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
         return self::findOne(['username'=>$username]);
     }
 
+    public function isCashier(){
+        $user = New_user::findOne([Yii::$app->user->identity->getId()]);
+        if($user->role_cashier == '1')
+            return true;
+        else return false;
+    }
+
+    public function isClerk(){
+        $user = New_user::findOne([Yii::$app->user->identity->getId()]);
+        if($user->role_clerk == '1')
+            return true;
+        else return false;
+    }
+
+    public function isAdmin(){
+        $user = New_user::findOne([Yii::$app->user->identity->getId()]);
+        if($user->role_admin == '1')
+            return true;
+        else return false;
+    }
+
     public function validatePassword($password){
         return $this->user_password ===  (new LoginForm())  -> hashPassword($password);
     }

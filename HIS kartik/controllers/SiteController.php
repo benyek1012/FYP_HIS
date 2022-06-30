@@ -261,4 +261,9 @@ class SiteController extends Controller
     public function errorMessage($message){
         echo '<script>alert('.$message.')</script>';
     }
+    
+    public function actionNo_access()
+    {
+        return $this->render('no_access');
+    }
 }

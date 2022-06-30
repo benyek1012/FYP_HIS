@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /**
  * NewuserController implements the CRUD actions for Newuser model.
@@ -58,16 +59,20 @@ class New_userController extends Controller
         $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
+        if((new New_user()) -> isAdmin() || ((new New_user()) -> isCashier()))
         {
-            if ($modeluser->load($this->request->post())) $this->actionuser($modeluser);
-            else $modeluser->loadDefaultValues();
-        }
+            if ($this->request->isPost)
+            {
+                if ($modeluser->load($this->request->post())) $this->actionuser($modeluser);
+                else $modeluser->loadDefaultValues();
+            }
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        }
+        else $this->redirect (Url::to(['/site/no_access']));
     }
 
     public function actionuser($modeluser){
