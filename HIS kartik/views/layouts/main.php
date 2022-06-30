@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
+use app\controllers\SiteController;
 
 \hail812\adminlte3\assets\FontAwesomeAsset::register($this);
 \hail812\adminlte3\assets\AdminLteAsset::register($this);
@@ -27,31 +28,9 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 <?php if(YII::$app->user->isGuest){ ?>
 <?= $this->render('main-login', ['content' => $content, 'assetDir' => $assetDir]) ?>
 <?php }else{
-
-$flag = false;
-$actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");
-foreach ($actions_sidebar as $action) {
-    if(Yii::$app->controller->id == "site" && Yii::$app->controller->action->id == "admission")
-    {
-        $flag = true;
-        break;
-    }
-    if(Yii::$app->controller->id == $action)
-    {
-
-        $flag = true;
-        if(Yii::$app->controller->id == 'patient_admission' && Yii::$app->controller->action->id == "index")
-        {
-            $flag = false;
-            break;
-        }
-        break;
-    }
-}
-
 ?>
 
-<body class="d-flex flex-column  <?php if($flag == false){ echo "sidebar-collapse"; }?>">
+<body class="d-flex flex-column  <?php if((new SiteController(null,null)) -> accessControl() == false){ echo "sidebar-collapse"; }?>">
     <?php $this->beginBody() ?>
 
     <div class="wrapper">

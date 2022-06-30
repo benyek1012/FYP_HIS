@@ -114,7 +114,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php 
+
+    <!-- Temporary hide the print button
+     <?php 
         if(!empty(Receipt::findOne(['rn' => Yii::$app->request->get('rn')])))
         {
             $form = kartik\form\ActiveForm::begin([
@@ -122,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]); ?>
     <?= Html::submitButton(Yii::t('app','Print'), ['class' => 'btn btn-success']) ?>
     <?php kartik\form\ActiveForm::end(); 
-        } ?>
+        } ?> -->
 
 </div>
 
