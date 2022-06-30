@@ -296,10 +296,24 @@ class Bill extends \yii\db\ActiveRecord
             return !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
     }
 
-    public function getBillGeneratedDate($rn){
-        $row_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
-        if(!empty($row_bill))
-            return $row_bill['bill_generation_datetime'];
+    // Call Procedure of receipt and bill 
+    public function getProcedureBillReceipt($rn){
+        $result = \Yii::$app->db->createCommand("CALL receipt_bill_procedure(:rn)") 
+        ->bindValue(':rn' , $rn )
+        ->queryAll();
+        
+        if(!empty($result))
+            return $result;
+    }
+
+    // Call Procedure of receipt and bill 
+    public function getProcedureTransactions($pid){
+        $result = \Yii::$app->db->createCommand("CALL transaction_records(:pid)") 
+        ->bindValue(':pid' , $pid )
+        ->queryAll();
+        
+        if(!empty($result))
+            return $result;
     }
     
 }

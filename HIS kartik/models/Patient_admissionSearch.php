@@ -44,14 +44,6 @@ class Patient_admissionSearch extends Patient_admission
     public function search($params)
     {
         
-        // $query1 = Patient_admission::find()
-        // ->innerJoinWith('patient_information', true);
-
-        // $query = Patient_admission::find()
-        // ->select('patient_information.*, MAX(entry_datetime) as entry_datetime')
-        // ->from($query1)
-        // ->groupBy(['patient_uid']);
-
         $datetime = Patient_admission::find()
         ->select('MAX(entry_datetime)')
         ->from("patient_admission")

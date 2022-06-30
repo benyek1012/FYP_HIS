@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
         'emptyText' => Yii::t('app','Payment record is not found'),
-        'filterModel' => $searchModel,
+       // 'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -72,13 +72,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'receipt_serial_number',
                 "format"=>"raw",
                 'value'=>function ($data) {
-                    $tag = Html::tag ( 'span' , $data['receipt_serial_number'] , [
-                        // title
-                        'title' => $data['receipt_content_description'] ,
-                        'data-placement' => 'top' ,
-                        'data-toggle'=>'tooltip',
-                        'style' => 'white-space:pre;'
-                    ] );
+                    $tag = Html::tag ( 'span' , 
+                        !empty($data['receipt_serial_number']) ? $data['receipt_serial_number'] : '(not printed)'
+                        , [
+                            // title
+                            'title' => $data['receipt_content_description'] ,
+                            'data-placement' => 'top' ,
+                            'data-toggle'=>'tooltip',
+                            'style' => 'white-space:pre;'
+                        ] );
                     return $tag;
                 },
             ],
@@ -90,13 +92,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     else return '-'.$data['receipt_content_sum'];
                 },
             ],
-            // [
-            //     'attribute' => 'rn',
-            //     'format' => 'raw',
-            //     'value'=>function ($data) {
-            //         return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
-            //     },
-            // ],
             [
                 'attribute'=>'receipt_type',
                 'filter'=> array(
@@ -117,46 +112,45 @@ $this->params['breadcrumbs'][] = $this->title;
             'receipt_content_payer_name',
             [
                 'attribute' => 'receipt_responsible',
+                "format"=>"raw",
                 'value'=>function ($data) {
                     $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
-                    return $model_User->getName();
-                },
-            ],
-            [
-                'attribute' => 'billable_sum',
-                'label' => Yii::t('app','Billable Total').' (RM)',
-                'value' => function($data){
-                    return  (new Patient_admission()) -> get_billable_sum($data->rn);
-                },
-            ],
-            [
-                'attribute' => 'bill_generation_datetime',
-                'label' =>Yii::t('app','Bill Generation Datetime'),
-                "format"=>"raw",
-                'value' => function($data){
-                    $d = (new Bill()) -> getBillGeneratedDate($data->rn);
-                    if(!empty($d))
+                    if(!empty($model_User) && !empty($data['receipt_type']))
+                        return $model_User->getName();
+                    else
                     {
-                        $date = new DateTime($d);
-                        $tag2 = Html::tag ( 'span' , $date->format('Y-m-d') , [
-                            // title
-                            'title' => $date->format('Y-m-d H:i A') ,
-                            'data-placement' => 'top' ,
-                            'data-toggle'=>'tooltip',
-                            'style' => 'white-space:pre;'
-                        ] );
-                        return $tag2;
+                        
+                        $name = '';
+                        $bill = Bill::findOne(['rn' => $data['rn'], 'deleted' => 0]);
+                        if(!empty($bill->bill_print_responsible_uid))
+                        {
+                            $model_User = New_user::findOne(['user_uid' => $bill->bill_print_responsible_uid]);
+                            if(!empty($model_User))
+                                $name = ' , '.$model_User->getName();
+                        }
+                        return $model_User->getName() . $name;
                     }
-                    else return '(not set)';
                 },
             ],
             [
-                'class' => ActionColumn::className(),
-                'template' => '{view}',
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'receipt_uid' => $model->receipt_uid, 'rn' => Yii::$app->request->get('rn')]);
-                 }
+                'attribute' => 'Type',
+                "format"=>"raw",
+                'value'=>function ($data) {
+                    $tag = Html::tag('span', !empty($data['receipt_type']) ? 'Receipt' : 'Bill' , [
+                        'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')
+                    ]);
+                    return $tag;
+
+                },
             ],
+
+            // [
+            //     'class' => ActionColumn::className(),
+            //     'template' => '{view}',
+            //     'urlCreator' => function ($action, $model, $key, $index, $column) {
+            //         return Url::toRoute([$action, 'receipt_uid' => $model->receipt_uid, 'rn' => Yii::$app->request->get('rn')]);
+            //      }
+            // ],
         ],
     ]); ?>
 

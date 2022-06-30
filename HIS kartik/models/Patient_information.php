@@ -54,6 +54,7 @@ class Patient_information extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 200],
             [['phone_number', 'email', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
             [['patient_uid'], 'unique'],
+            ['race', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Race can only contain word characters'],
         ];
     }
 

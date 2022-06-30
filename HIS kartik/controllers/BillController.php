@@ -244,7 +244,7 @@ class BillController extends Controller
         if (Yii::$app->request->get('confirm') == 'true'){
             if(empty($model->bill_generation_datetime))
             {
-                $model->bill_generation_datetime =  $date->format('Y-m-d H:i');
+                $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
             }
             // var_dump(Yii::$app->session->get('billable_sum'));
             // exit();
@@ -254,9 +254,8 @@ class BillController extends Controller
             if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
             if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
 
-            $cookies = Yii::$app->request->cookies;
-            $model->generation_responsible_uid = $cookies->getValue('cookie_login');
             $model->bill_uid = Yii::$app->request->get('bill_uid');
+            $model->generation_responsible_uid = Yii::$app->user->identity->getId();
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/bill/print', 
@@ -1303,10 +1302,9 @@ print_r($cagaranitem);
 
                 }
                                                 
-                $model->bill_print_datetime =  $date->format('Y-m-d H:i');
+                $model->bill_print_datetime =  $date->format('Y-m-d H:i:s');
                 $model->bill_uid = Yii::$app->request->get('bill_uid');
-                $cookies = Yii::$app->request->cookies;
-                $model->bill_print_responsible_uid = $cookies->getValue('cookie_login');
+                $model->bill_print_responsible_uid = Yii::$app->user->identity->getId();
                 $model->save();
                 return Yii::$app->getResponse()->redirect(array('/bill/print', 
                 'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         

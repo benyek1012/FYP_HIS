@@ -6,6 +6,7 @@ use yii\grid\ActionColumn;
 use kartik\grid\GridView;
 use app\models\New_user;
 use app\models\Receipt;
+use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 
@@ -32,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
         'emptyText' => Yii::t('app','Payment record is not found'),
-        'filterModel' => $searchModel,
+      //  'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -42,9 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                 },
             ],
-            
             'receipt_type',
-
             [
                 'attribute' => 'receipt_content_sum',
                 'value'=>function ($data) {
@@ -53,8 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     else return '-'.$data['receipt_content_sum'];
                 },
             ],
-          //  'receipt_content_bill_id',
-            //'receipt_content_description',
+     
             [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
@@ -72,30 +70,47 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'receipt_content_payer_name',
             'receipt_content_payment_method',
-            //'card_no',
-            //'cheque_number',
             [
                 'attribute' => 'receipt_responsible',
+                "format"=>"raw",
                 'value'=>function ($data) {
                     $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
-                    return $model_User->getName();
+                    if(!empty($model_User) && !empty($data['receipt_type']))
+                        return $model_User->getName();
+                    else
+                    {
+                        
+                        $name = '';
+                        $bill = Bill::findOne(['rn' => $data['rn'], 'deleted' => 0]);
+                        if(!empty($bill->bill_print_responsible_uid))
+                        {
+                            $model_User = New_user::findOne(['user_uid' => $bill->bill_print_responsible_uid]);
+                            if(!empty($model_User))
+                                $name = ' , '.$model_User->getName();
+                        }
+                        return $model_User->getName() . $name;
+                    }
                 },
             ],
             'receipt_serial_number',
             [
-                'attribute' => 'billable_sum',
-                'label' => Yii::t('app','Billable Total').' (RM)',
-                'value' => function($data){
-                    return  (new Patient_admission()) -> get_billable_sum($data->rn);
+                'attribute' => 'Type',
+                "format"=>"raw",
+                'value'=>function ($data) {
+                    $tag = Html::tag('span', !empty($data['receipt_type']) ? 'Receipt' : 'Bill' , [
+                        'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')
+                    ]);
+                    return $tag;
+
                 },
             ],
-            [
-                'class' => ActionColumn::className(),
-                'template' => '{view}',
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'receipt_uid' => $model->receipt_uid, 'rn' => Yii::$app->request->get('rn')]);
-                 }
-            ],
+            // [
+            //     'class' => ActionColumn::className(),
+            //     'template' => '{view}',
+            //     'urlCreator' => function ($action, $model, $key, $index, $column) {
+            //         return Url::toRoute([$action, 'receipt_uid' => $model->receipt_uid, 'rn' => Yii::$app->request->get('rn')]);
+            //      }
+            // ],
         ],
     ]); ?>
 
