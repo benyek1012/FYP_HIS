@@ -59,20 +59,19 @@ class New_userController extends Controller
         $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if((new New_user()) -> isAdmin() || ((new New_user()) -> isCashier()))
+        if(!(new New_user()) -> isAdmin()) echo $this->render('/site/no_access');
+        if ($this->request->isPost)
         {
-            if ($this->request->isPost)
-            {
-                if ($modeluser->load($this->request->post())) $this->actionuser($modeluser);
-                else $modeluser->loadDefaultValues();
-            }
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);
+            if ($modeluser->load($this->request->post())) $this->actionuser($modeluser);
+            else $modeluser->loadDefaultValues();
         }
-        else $this->redirect (Url::to(['/site/no_access']));
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+        
+        //$this->redirect (Url::to(['/site/no_access']));
     }
 
     public function actionuser($modeluser){

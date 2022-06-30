@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\New_user;
 use app\models\Lookup_ward;
 use app\models\Lookup_wardSearch;
 use yii\web\Controller;
@@ -59,6 +60,7 @@ class Lookup_wardController extends Controller
         $searchModel = new Lookup_wardSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        if(!(new New_user()) -> isClerkorAdmin()) echo $this->render('/site/no_access');
         if ($this->request->isPost && $model->load($this->request->post()))
         {
             $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));

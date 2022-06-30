@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\New_user;
 use app\models\Lookup_status;
 use app\models\Lookup_statusSearch;
 use yii\web\Controller;
@@ -58,6 +59,7 @@ class Lookup_statusController extends Controller
         $searchModel = new Lookup_statusSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        if(!(new New_user()) -> isClerkorAdmin()) echo $this->render('/site/no_access');
         if ($this->request->isPost && $model->load($this->request->post())) 
         {
             

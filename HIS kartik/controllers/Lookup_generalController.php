@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\New_user;
 use app\models\Lookup_general;
 use app\models\Lookup_generalSearch;
 use yii\web\Controller;
@@ -59,6 +60,7 @@ class Lookup_generalController extends Controller
         $searchModel = new Lookup_generalSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        if(!(new New_user()) -> isClerkorAdmin()) echo $this->render('/site/no_access');
         if ($this->request->isPost && $model->load($this->request->post())) {
             
             $checkDuplicatedCode = Lookup_general::findOne(['code' => $model->code, 'category' => $model->category]);
@@ -193,4 +195,5 @@ class Lookup_generalController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

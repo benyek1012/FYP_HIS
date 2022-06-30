@@ -55,5 +55,6 @@ class Lookup_general extends \yii\db\ActiveRecord
             'recommend' => Yii::t('app','Recommend'),
         ];
     }
+
 }
 
