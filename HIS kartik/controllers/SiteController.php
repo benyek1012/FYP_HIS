@@ -266,4 +266,28 @@ class SiteController extends Controller
     {
         return $this->render('no_access');
     }
+
+    public function accessControl(){
+        $flag = false;
+        $actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");
+        foreach ($actions_sidebar as $action) {
+            if(Yii::$app->controller->id == "site" && Yii::$app->controller->action->id == "admission")
+            {
+                $flag = true;
+                break;
+            }
+            if(Yii::$app->controller->id == $action)
+            {
+        
+                $flag = true;
+                if(Yii::$app->controller->id == 'patient_admission' && Yii::$app->controller->action->id == "index")
+                {
+                    $flag = false;
+                    break;
+                }
+                break;
+            }
+        }
+        return $flag;
+    }
 }

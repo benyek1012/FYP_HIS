@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 
 use app\models\Bill_content_receipt;
 use app\models\Bill;
+use app\models\New_user;
 use GpsLab\Component\Base64UID\Base64UID;
 
 
@@ -57,11 +58,6 @@ class ReceiptController extends Controller
     {
 
         $searchModel = new ReceiptSearch();
-        // $dataProvider1 = new ActiveDataProvider([
-        //     'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
-        //     ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
-        //     'pagination'=>['pageSize'=>5],
-        // ]);
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -110,6 +106,7 @@ class ReceiptController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+        
     }
     
 
@@ -274,8 +271,7 @@ class ReceiptController extends Controller
         }
         else
         {
-            $model->receipt_content_datetime_paid = date("Y-m-d H:i");
-            $cookies = Yii::$app->request->cookies;
+            $model->receipt_content_datetime_paid = date("Y-m-d H:i:s");
             $model->receipt_responsible = Yii::$app->user->identity->getId();
             $model->loadDefaultValues();
         }

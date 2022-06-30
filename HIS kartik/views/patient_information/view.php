@@ -48,7 +48,7 @@ use yii\bootstrap4\Html;
         
         $race = array();
         foreach($rows_race as $row_race){
-            $race[$row_race['code']] = $row_race['code'] . ' - ' . $row_race['name'] . ' [ ' .  $row_race['long_description'] . ' ]';  
+            $race[$row_race['code']] = $row_race['code'] . ' - ' . $row_race['name'] . ' [ ' .  $row_race['long_description'] . ' ]';
         } 
 
         foreach($rows_patient_information_race as $row_patient_information_race){
@@ -69,24 +69,25 @@ use yii\bootstrap4\Html;
 
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
+            <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic'), 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'nationality')->dropDownList($countries, 
-                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?>
+                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'sex')->dropDownList($sex, 
-                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true]) ?>
+                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'race')->dropDownList($race, 
-                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true]) ?> -->
+                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true, 'readonly' => true]) ?> -->
 
             <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
+                'disabled' => true,
                 'data' => $race,
                 'options' => ['placeholder' => Yii::t('app','Please select race'), 'id' => 'race',],
                 'pluginOptions' => [
@@ -96,22 +97,18 @@ use yii\bootstrap4\Html;
             ]); ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+            <?= $form->field($model, 'job')->textInput(['maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'address2')->textInput(['maxlength' => true])->label(false)?>
-            <?= $form->field($model, 'address3')->textInput(['maxlength' => true])->label(false)?>
+            <?= $form->field($model, 'address1')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+            <?= $form->field($model, 'address2')->textInput(['maxlength' => true, 'readonly' => true])->label(false)?>
+            <?= $form->field($model, 'address3')->textInput(['maxlength' => true, 'readonly' => true])->label(false)?>
         </div>
 
-    </div>
-
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

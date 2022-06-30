@@ -14,10 +14,13 @@ class Patient_admissionSearch extends Patient_admission
     /**
      * {@inheritdoc}
      */
+    public $name;
+    public $nric;
+    public $race, $sex;
     public function rules()
     {
         return [
-            [['rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type'], 'safe'],
+            [['name','nric','race','sex','rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type'], 'safe'],
             [['medical_legal_code', 'reminder_given'], 'integer'],
         ];
     }
@@ -40,10 +43,19 @@ class Patient_admissionSearch extends Patient_admission
      */
     public function search($params)
     {
-        $query = Patient_admission::find();
+        
+        $datetime = Patient_admission::find()
+        ->select('MAX(entry_datetime)')
+        ->from("patient_admission")
+        ->groupBy('patient_uid');
 
-        // add conditions that should always apply here
-
+        $query = Patient_admission::find()
+        ->select('patient_admission.*')
+        ->from('patient_admission')
+        ->joinWith('patient_information',true)
+        ->where(['in','entry_datetime',$datetime])
+        ->groupBy(['patient_uid']);
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -72,8 +84,11 @@ class Patient_admissionSearch extends Patient_admission
             ->andFilterWhere(['like', 'guarantor_nric', $this->guarantor_nric])
             ->andFilterWhere(['like', 'guarantor_phone_number', $this->guarantor_phone_number])
             ->andFilterWhere(['like', 'guarantor_email', $this->guarantor_email])
-            ->andFilterWhere(['like', 'type', $this->type]);
-
+            ->andFilterWhere(['like', 'type', $this->type])
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'nric', $this->nric])
+            ->andFilterWhere(['like', 'sex', $this->sex])
+            ->andFilterWhere(['like', 'race', $this->race]);
         return $dataProvider;
     }
 }

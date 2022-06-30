@@ -12,6 +12,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use app\models\Patient_admissionSearch;
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
@@ -48,10 +49,22 @@ class Patient_admissionController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $searchModel = new Patient_AdmissionSearch();
+        // $searchModel::find()->select('max(entry_datetime)', 'patient_uid');
+        // $searchModel::find()->groupBy('patient_uid');
+        // //$searchModel = Patient_AdmissionSearch::class()->findAll($searchModel);
 
-    /**
+
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    
+        return $this->render('search_index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    } 
+   /**
      * Displays a single Patient_admission model.
      * @param string $rn Rn
      * @return string
@@ -91,9 +104,12 @@ class Patient_admissionController extends Controller
 
             $model->rn = $rn;
             $model->patient_uid = Yii::$app->request->get('id');
-            $model->entry_datetime = $date->format('Y-m-d H:i');
+            $model->entry_datetime = $date->format('Y-m-d H:i:s');
             $model->type = Yii::$app->request->get('type');
             $model->loadDefaultValues();
+            $model->initial_ward_class = "UNKNOWN";
+            $model->initial_ward_code = "UNKNOWN";
+            $model->reminder_given = 0;
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
@@ -2150,6 +2166,7 @@ $caseblankfront2 = str_repeat("\x20", 16);
         else return 0;
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+   
 }
 
 ?>

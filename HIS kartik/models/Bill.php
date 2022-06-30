@@ -295,5 +295,25 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($row_bill))
             return !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
     }
+
+    // Call Procedure of receipt and bill 
+    public function getProcedureBillReceipt($rn){
+        $result = \Yii::$app->db->createCommand("CALL receipt_bill_procedure(:rn)") 
+        ->bindValue(':rn' , $rn )
+        ->queryAll();
+        
+        if(!empty($result))
+            return $result;
+    }
+
+    // Call Procedure of receipt and bill 
+    public function getProcedureTransactions($pid){
+        $result = \Yii::$app->db->createCommand("CALL transaction_records(:pid)") 
+        ->bindValue(':pid' , $pid )
+        ->queryAll();
+        
+        if(!empty($result))
+            return $result;
+    }
     
 }
