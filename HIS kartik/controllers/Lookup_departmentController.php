@@ -59,7 +59,7 @@ class Lookup_departmentController extends Controller
         $searchModel = new Lookup_departmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if(!(new New_user()) -> isClerkorAdmin()) echo $this->render('/site/no_access');
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
         if ($this->request->isPost && $model->load($this->request->post())) {
             
             $checkDuplicatedCode = Lookup_department::findOne(['department_code' => $model->department_code, 'department_name' => $model->department_name]);

@@ -60,7 +60,7 @@ class Lookup_generalController extends Controller
         $searchModel = new Lookup_generalSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if(!(new New_user()) -> isClerkorAdmin()) echo $this->render('/site/no_access');
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
         if ($this->request->isPost && $model->load($this->request->post())) {
             
             $checkDuplicatedCode = Lookup_general::findOne(['code' => $model->code, 'category' => $model->category]);

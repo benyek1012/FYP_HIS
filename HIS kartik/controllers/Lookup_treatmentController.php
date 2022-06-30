@@ -59,7 +59,7 @@ class Lookup_treatmentController extends Controller
         $searchModel = new Lookup_treatmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if(!(new New_user()) -> isClerkorAdmin()) echo $this->render('/site/no_access');
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
         if ($this->request->isPost && $model->load($this->request->post())) {
             
             $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
