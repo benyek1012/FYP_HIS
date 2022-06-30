@@ -123,14 +123,14 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             [
                                 'attribute' => 'amount_due',
                                 'value' => function($data){
-                                    return ((new Patient_information())->getBalance($data->patient_uid));
+                                    return ((new Patient_information())->getBalanceRM($data->patient_uid));
                                 },
-                                'label' => Yii::t('app','Amount Due'),
+                                'label' => Yii::t('app','Amount Due').' (RM)',
                             ],
                             [
                                 'attribute' => 'unclaimed_balance',
                                 'value' => function($data){
-                                    return ((new Patient_information())->getUnclaimedBalance($data->patient_uid));
+                                    return ((new Patient_information())->getUnclaimedBalanceRM($data->patient_uid));
                                 },
                                 'label' => Yii::t('app','Unclaimed Balance').' (RM)',
                             ],

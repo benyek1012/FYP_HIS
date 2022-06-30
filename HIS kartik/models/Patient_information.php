@@ -54,7 +54,6 @@ class Patient_information extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 200],
             [['phone_number', 'email', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
             [['patient_uid'], 'unique'],
-            ['race', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Race can only contain word characters'],
         ];
     }
 
@@ -126,6 +125,30 @@ class Patient_information extends \yii\db\ActiveRecord
         return Yii::t('app','Amount Due')." : ". Yii::$app->formatter->asCurrency($billable_sum);                
     }
 
+    public function getBalanceRM($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $billable_sum = 0.0;
+        foreach($adm as $rn)
+        {
+            $billable_sum += (new Bill())  -> getAmtDued($rn);
+        }
+
+        if($billable_sum < 0)
+        {
+            $billable_sum = 0.0;           
+        }
+
+        return  Yii::$app->formatter->asCurrency($billable_sum);                
+    }
+
     public function getUnclaimedBalance($patient_uid)
     { 
         $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
@@ -144,6 +167,25 @@ class Patient_information extends \yii\db\ActiveRecord
 
         return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                
     }
+    public function getUnclaimedBalanceRM($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+     
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $unclaimed_sum = 0.0;
+        foreach($adm as $rn)
+        {
+            $unclaimed_sum += (new Bill())  -> getUnclaimed($rn);
+        }
+
+        return  Yii::$app->formatter->asCurrency($unclaimed_sum);                
+    }
+
     public function getPatient_admission() 
     {
         return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
