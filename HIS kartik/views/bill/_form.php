@@ -791,7 +791,8 @@ if($print_readonly)
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?>
+                    <!-- <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?> -->
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'readonly' => true])?>
                 </div>
             </div>
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){

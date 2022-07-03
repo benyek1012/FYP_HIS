@@ -56,24 +56,17 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                         ['class' => 'yii\grid\SerialColumn'],
                             [
                                 'attribute' => 'name',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->name;
                                 },
                             ],
-                        
-                            // [
-                            //     'format' => 'raw',
-                            //     'attribute'=>'name',
-                            //     'value' => function($model) {
-                            //         foreach ($model->patient_information as $patient_information) {
-                            //             $name[] =  $patient_information->name;
-                            //         }
-                            //         return implode("\n", $name);
-                            //     },
-                            // ],
                             [
                                 'attribute' => 'nric',
                                 'format' => 'raw',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     $ic = ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->nric;
                                     return  Html::a($ic, \yii\helpers\Url::to(['/site/admission', 'id' => $data['patient_uid'], '#' => 'patient']));
@@ -81,12 +74,16 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             ],
                             [
                                 'attribute' => 'race',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->race;
                                 },
                             ],
                             [
                                 'attribute' => 'sex',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->sex;
                                 },
@@ -94,6 +91,8 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             [
                                 'attribute' => 'rn',
                                 'format' => 'raw',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value'=>function ($data) {
                                     return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                                 },
@@ -101,6 +100,8 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             [
                                 'attribute' => 'entry_datetime',
                                 "format"=>"raw",
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value'=>function ($data) {
                                     $date = new DateTime($data['entry_datetime']);
                                     $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
@@ -116,12 +117,16 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             [
                                 'attribute' => 'billable_sum',
                                 'label' => Yii::t('app','Billable Total').' (RM)',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     return  (new Patient_admission()) -> get_billable_sum($data->rn);
                                 },
                             ],
                             [
                                 'attribute' => 'amount_due',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     return ((new Patient_information())->getBalanceRM($data->patient_uid));
                                 },
@@ -129,6 +134,8 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                             ],
                             [
                                 'attribute' => 'unclaimed_balance',
+                                'headerOptions'=>['style'=>'max-width: 100px;'],
+                                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                                 'value' => function($data){
                                     return ((new Patient_information())->getUnclaimedBalanceRM($data->patient_uid));
                                 },

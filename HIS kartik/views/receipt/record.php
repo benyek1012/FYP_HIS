@@ -39,13 +39,22 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'rn',
                 'format' => 'raw',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                 },
             ],
-            'receipt_type',
+            [
+                'attribute' =>   'receipt_type',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            ],  
+          
             [
                 'attribute' => 'receipt_content_sum',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
                         return '+'.$data['receipt_content_sum'];
@@ -56,6 +65,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $date = new DateTime($data['receipt_content_datetime_paid']);
                     $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
@@ -68,11 +79,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $tag;
                 },
             ],
-            'receipt_content_payer_name',
-            'receipt_content_payment_method',
+            [
+                'attribute' =>  'receipt_content_payer_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            ],   
+            [
+                'attribute' => 'receipt_content_payment_method',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            ],   
             [
                 'attribute' => 'receipt_responsible',
                 "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
                     if(!empty($model_User) && !empty($data['receipt_type']))
@@ -92,9 +113,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 },
             ],
-            'receipt_serial_number',
+            [
+                'attribute' => 'receipt_serial_number',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            ],   
             [
                 'attribute' => 'Type',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 "format"=>"raw",
                 'value'=>function ($data) {
                     $tag = Html::tag('span', !empty($data['receipt_type']) ? 'Receipt' : 'Bill' , [

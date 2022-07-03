@@ -55,6 +55,7 @@ $relationship = array_unique($relationship);
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -69,6 +70,8 @@ $relationship = array_unique($relationship);
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'code',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -76,15 +79,10 @@ $relationship = array_unique($relationship);
             ],
 
             [
-                'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'lookup_general_uid',
-                'visible' => false,
-                'hidden' => true,
-            ],
-
-            [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'category',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'filter'=> $relationship,
                 'editableOptions' =>  [                
                     'asPopover' => false,
@@ -95,6 +93,8 @@ $relationship = array_unique($relationship);
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -104,6 +104,8 @@ $relationship = array_unique($relationship);
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'long_description',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -113,6 +115,8 @@ $relationship = array_unique($relationship);
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'recommend',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
