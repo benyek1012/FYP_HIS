@@ -56,6 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $date = new DateTime($data['receipt_content_datetime_paid']);
                     $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
@@ -71,6 +73,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'receipt_serial_number',
                 "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $tag = Html::tag ( 'span' , 
                         !empty($data['receipt_serial_number']) ? $data['receipt_serial_number'] : '(not printed)'
@@ -86,6 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'receipt_content_sum',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
                         return '+'.$data['receipt_content_sum'];
@@ -94,25 +100,35 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute'=>'receipt_type',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'filter'=> array(
                     'deposit'=> Yii::t('app','Deposit'),
                     'bill'=> Yii::t('app','Bill'),
                     'refund'=> Yii::t('app','Refund'),
                 ),
             ],
-            //'receipt_content_description',
             [
                 'attribute'=>'receipt_content_payment_method',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'filter'=> array(
                     'cash'=> Yii::t('app','Cash'),
                     'card'=> Yii::t('app','Debit/Credit Card'),
                     'cheque'=> Yii::t('app','Cheque Numbers'),
                 ),
             ],
-            'receipt_content_payer_name',
+            [
+                'attribute'=> 'receipt_content_payer_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            ],
+           
             [
                 'attribute' => 'receipt_responsible',
                 "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $model_User = New_user::findOne(['user_uid' => $data['receipt_responsible']]);
                     if(!empty($model_User) && !empty($data['receipt_type']))
@@ -135,6 +151,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'Type',
                 "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $tag = Html::tag('span', !empty($data['receipt_type']) ? 'Receipt' : 'Bill' , [
                         'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')

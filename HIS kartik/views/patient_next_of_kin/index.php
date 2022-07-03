@@ -36,6 +36,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/site/nok']],
@@ -45,6 +47,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_relationship',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
                     'size' => 'md',
                     'inputType' => Editable::INPUT_DROPDOWN_LIST,
@@ -57,6 +61,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_phone_number',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/site/nok']],
@@ -66,6 +72,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_email',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,
@@ -76,6 +84,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address1',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,
@@ -86,6 +96,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address2',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,
@@ -96,6 +108,8 @@ foreach($rows_relationship as $row_relationship){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address3',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,

@@ -1321,6 +1321,18 @@ print_r($cagaranitem);
                 ]);
             }
         }
+        else{
+            if(!(new Bill()) -> isPrinted(Yii::$app->request->get('rn')))
+            {
+                $count = Bill::find()->select('rn')->distinct()
+                ->where(['deleted' => 0])
+                ->andWhere(['not', ['bill_print_id' => null]])
+                ->count();
+
+                $id = "B".sprintf('%06d', $count + 1);
+                $model->bill_print_id = $id;
+            }
+        }
 
         return $this->render('print', [
             'model' => $model,
