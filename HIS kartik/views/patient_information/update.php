@@ -12,7 +12,7 @@ use yii\bootstrap4\Html;
 ?>
 <div class="patient-information-update">
     <?php 
-        $rows_patient_information_race = (new \yii\db\Query())
+        $rows_patient_information = (new \yii\db\Query())
         ->select('*')
         ->from('patient_information')
         ->where(['patient_uid'=> Yii::$app->request->get('id')])
@@ -26,8 +26,14 @@ use yii\bootstrap4\Html;
         
         $countries = array();
         foreach($rows_nationality as $row_nationality){
-            $countries[$row_nationality['name']] = $row_nationality['name'];
+            $countries[$row_nationality['code']] = $row_nationality['code'] . ' - ' . $row_nationality['name'] . ' [ ' .  $row_nationality['long_description'] . ' ]';  
         } 
+
+        foreach($rows_patient_information as $row_patient_information){
+            if(empty($countries[$row_patient_information['nationality']])){
+                $countries[$row_patient_information['nationality']] = $row_patient_information['nationality'];
+            }            
+        }
 
         $rows_sex = (new \yii\db\Query())
         ->select('*')
@@ -37,7 +43,7 @@ use yii\bootstrap4\Html;
         
         $sex = array();
         foreach($rows_sex as $row_sex){
-            $sex[$row_sex['name']] = $row_sex['name'];
+            $sex[$row_sex['code']] = $row_sex['name'];
         } 
 
         $rows_race = (new \yii\db\Query())
@@ -51,9 +57,9 @@ use yii\bootstrap4\Html;
             $race[$row_race['code']] = $row_race['code'] . ' - ' . $row_race['name'] . ' [ ' .  $row_race['long_description'] . ' ]';  
         } 
 
-        foreach($rows_patient_information_race as $row_patient_information_race){
-            if(empty($race[$row_patient_information_race['race']])){
-                $race[$row_patient_information_race['race']] = $row_patient_information_race['race'];
+        foreach($rows_patient_information as $row_patient_information){
+            if(empty($race[$row_patient_information['race']])){
+                $race[$row_patient_information['race']] = $row_patient_information['race'];
             }            
         }
 
@@ -75,17 +81,25 @@ use yii\bootstrap4\Html;
             <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nationality')->dropDownList($countries, 
-                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?>
+            <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 
+                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?> -->
+                    
+            <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
+                'data' => $countries,
+                'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'tags' => true,
+                ],
+            ]); ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'sex')->dropDownList($sex, 
-                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'race')->dropDownList($race, 
-                    ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true]) ?> -->
+            <!-- <?= $form->field($model, 'sex')->dropDownList($sex, 
+                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true]) ?> -->
 
+            <?= $form->field($model, 'sex')->radioList($sex, ['custom' => true, 'inline' => true]); ?>
+        </div>
+        <div class="col-sm-6">
             <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
                 'data' => $race,
                 'options' => ['placeholder' => Yii::t('app','Please select race'), 'id' => 'race',],

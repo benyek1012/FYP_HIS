@@ -20,6 +20,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         
     ]); 
     $nokuid = Base64UID::generate(32);
+
     $rows_relationship = (new \yii\db\Query())
     ->select('*')
     ->from('lookup_general')
@@ -28,9 +29,8 @@ use GpsLab\Component\Base64UID\Base64UID;
     
     $relationship = array();
     foreach($rows_relationship as $row_relationship){
-        $relationship[$row_relationship['name']] = $row_relationship['name'];
+        $relationship[$row_relationship['code']] = $row_relationship['code'] . ' - ' . $row_relationship['name'] . ' [ ' .  $row_relationship['long_description'] . ' ]';  
     } 
-
    
     ?>
 
@@ -45,8 +45,17 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, 
-                    ['prompt'=> Yii::t('app','Please select relationship'),'maxlength' => true]) ?>
+            <!-- <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, 
+                    ['prompt'=> Yii::t('app','Please select relationship'),'maxlength' => true]) ?> -->
+
+            <?= $form->field($model, 'nok_relationship')->widget(kartik\select2\Select2::classname(), [
+                'data' => $relationship,
+                'options' => ['placeholder' => Yii::t('app','Please select relationship'), 'id' => 'relationship',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'tags' => true,
+                ],
+            ]); ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>

@@ -11,6 +11,12 @@ use kartik\editable\Editable;
 /* @var $searchModel app\models\Patient_next_of_kinSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+$rows_patient_nok = (new \yii\db\Query())
+->select('*')
+->from('patient_next_of_kin')
+->where(['patient_uid'=> Yii::$app->request->get('id')])
+->all();
+
 $rows_relationship = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_general')
@@ -19,10 +25,14 @@ $rows_relationship = (new \yii\db\Query())
 
 $relationship = array();
 foreach($rows_relationship as $row_relationship){
-    $relationship[$row_relationship['name']] = $row_relationship['name'];
+    $relationship[$row_relationship['code']] = $row_relationship['code'];
 } 
 
-
+foreach($rows_patient_nok as $row_patient_nok){
+    if(empty($relationship[$row_patient_nok['nok_relationship']])){
+        $relationship[$row_patient_nok['nok_relationship']] = $row_patient_nok['nok_relationship'];
+    }            
+}
 
 ?>
 <div class="patient-next-of-kin-index">
@@ -51,9 +61,16 @@ foreach($rows_relationship as $row_relationship){
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
                     'size' => 'md',
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'inputType' => Editable::INPUT_SELECT2,
                     'asPopover' => false,
-                    'data' => $relationship,
+                    'options' => [
+                        'data' => $relationship,
+                        'class' => 'patient-nok-relationship', 
+                        'pluginOptions' => [
+                            'tags' => true,
+                            'width' => '200px',
+                        ],
+                    ],
                     'formOptions' => ['action' => ['/site/nok']],
                 ],
             ],

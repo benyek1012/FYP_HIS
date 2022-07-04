@@ -108,7 +108,31 @@ $rows = (new \yii\db\Query())
 $department_code = array();
 foreach($rows as $row){
     $department_code[$row['department_code']] = $row['department_code'];
+} 
+
+$rows_nurse = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Nurse'])
+->all();
+
+$rows_bill = (new \yii\db\Query())
+->select('*')
+->from('bill')
+->where(['rn'=> Yii::$app->request->get('rn')])
+->all();
+
+$nurse_responsible = array();
+foreach($rows_nurse as $row_nurse){
+    $nurse_responsible[$row_nurse['code']] = $row_nurse['code'] . ' - ' . $row_nurse['name'] . ' [ ' .  $row_nurse['long_description'] . ' ]';  
+
 }  
+
+foreach($rows_bill as $row_bill){
+    if(empty($nurse_responsible[$row_bill['nurse_responsible']])){
+        $nurse_responsible[$row_bill['nurse_responsible']] = $row_bill['nurse_responsible'];
+    }            
+}
 
 $rows = (new \yii\db\Query())
 ->select('*')
@@ -371,8 +395,17 @@ if($print_readonly)
                     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'status_code')->dropDownList($status_code, ['id'=>'statusCode',
-                    'prompt'=> Yii::t('app','Please select status code'),'maxlength' => true, 'disabled' => $print_readonly]) ?>
+                        <!-- <?= $form->field($model, 'status_code')->dropDownList($status_code, ['id'=>'statusCode',
+                    'prompt'=> Yii::t('app','Please select status code'),'maxlength' => true, 'disabled' => $print_readonly]) ?> -->
+
+                        <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
+                            'data' => $status_code,
+                            'disabled' => $print_readonly,
+                            'options' => ['placeholder' => Yii::t('app','Please select status code'), 'id' => 'statusCode',],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ]); ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -381,11 +414,28 @@ if($print_readonly)
 
                     <div class="col-sm-6">
                         <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
-                        <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'value' => $initial_ward_class]) ?>
+                        <!-- <?= $form->field($model, 'class')->dropDownList($ward_class, 
+                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'value' => $initial_ward_class]) ?> -->
+
+                            <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
+                                'data' => $ward_class,
+                                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass', 'value' => $initial_ward_class],
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                ],
+                            ]); ?>
                         <?php }else{ ?>
-                        <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'disabled' => $print_readonly]) ?>
+                        <!-- <?= $form->field($model, 'class')->dropDownList($ward_class, 
+                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'disabled' => $print_readonly]) ?> -->
+
+                            <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
+                                'data' => $ward_class,
+                                'disabled' => $print_readonly,
+                                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass',],
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                ],
+                            ]); ?>
                         <?php } ?>
 
                     </div>
@@ -396,8 +446,17 @@ if($print_readonly)
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
-                    'prompt'=> Yii::t('app','Please select department code'),'maxlength' => true, 'disabled' => $print_readonly]) ?>
+                        <!-- <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
+                    'prompt'=> Yii::t('app','Please select department code'),'maxlength' => true, 'disabled' => $print_readonly]) ?> -->
+
+                        <?= $form->field($model, 'department_code')->widget(kartik\select2\Select2::classname(), [
+                            'data' => $department_code,
+                            'disabled' => $print_readonly,
+                            'options' => ['placeholder' => Yii::t('app','Please select department code'), 'id' => 'departmentCode',],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ]); ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -406,7 +465,14 @@ if($print_readonly)
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'is_free')->dropDownList($free, ['disabled' => $print_readonly]) ?>
+                        <!-- <?= $form->field($model, 'is_free')->dropDownList($free, ['disabled' => $print_readonly]) ?> -->
+                        <!-- <?= $form->field($model, 'is_free')->radioList($free, ['value' => 0, 'custom' => true, 'inline' => true, 'disabled' => $print_readonly]); ?> -->
+
+                        <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
+                            <?= $form->field($model, 'is_free')->radioList($free, ['value' => 0, 'custom' => true, 'inline' => true, 'disabled' => $print_readonly]); ?>
+                        <?php }else{ ?>
+                            <?= $form->field($model, 'is_free')->radioList($free, ['custom' => true, 'inline' => true, 'disabled' => $print_readonly]); ?>
+                        <?php } ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -414,7 +480,17 @@ if($print_readonly)
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'nurse_responsible')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
+                        <!-- <?= $form->field($model, 'nurse_responsible')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?> -->
+
+                        <?= $form->field($model, 'nurse_responsible')->widget(kartik\select2\Select2::classname(), [
+                            'data' => $nurse_responsible,
+                            'disabled' => $print_readonly,
+                            'options' => ['placeholder' => Yii::t('app','Please select nurse responsible'), 'id' => 'nurse_responsible',],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                                'tags' => true
+                            ],
+                        ]); ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -492,16 +568,44 @@ if($print_readonly)
                             <?php 
                             if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
                             ?>
-                                <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                                <!-- <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
                                 'prompt'=> Yii::t('app','Select ward code'), 'maxlength' => true, 'value' => $admission_model->initial_ward_code,
-                                'disabled' => $print_readonly])->label(false) ?>
+                                'disabled' => $print_readonly])->label(false) ?> -->
+                                
+                                <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
+                                    'data' => $wardcode,
+                                    'disabled' => $print_readonly,
+                                    'options' => [
+                                        'placeholder' => Yii::t('app','Select ward code'), 
+                                        'class' => 'wardCode',
+                                        'value' => $admission_model->initial_ward_code,
+                                    ],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                        'width' => '200px',
+                                    ],
+                                ])->label(false); ?>
                             <?php 
                             }
                             else{
                             ?>
-                                <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
+                                <!-- <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
                                 'prompt'=> Yii::t('app','Select ward code'), 'maxlength' => true, 'value' => $modelWard->ward_code,
-                                'disabled' => $print_readonly])->label(false) ?>
+                                'disabled' => $print_readonly])->label(false) ?> -->
+
+                                <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
+                                    'data' => $wardcode,
+                                    'disabled' => $print_readonly,
+                                    'options' => [
+                                        'placeholder' => Yii::t('app','Select ward code'), 
+                                        'class' => 'wardCode',
+                                        'value' => $modelWard->ward_code,
+                                    ],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                        'width' => '200px',
+                                    ],
+                                ])->label(false); ?>
                             <?php
                             }
                             ?>
@@ -614,8 +718,22 @@ if($print_readonly)
                     </tr>
                     <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
                     <tr>
-                        <td><?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
-                                'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?>
+                        <td>
+                            <!-- <?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
+                                'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?> -->
+                            
+                            <?= $form->field($modelTreatment, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
+                                'data' => $treatment_code,
+                                'disabled' => $print_readonly,
+                                'options' => [
+                                    'placeholder' => Yii::t('app','Select treatment code'), 
+                                    'class' => 'treatmentCode',
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                    'width' => '200px',
+                                ],
+                            ])->label(false); ?>
                         </td>
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',

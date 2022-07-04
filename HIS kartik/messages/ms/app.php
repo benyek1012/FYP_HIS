@@ -178,6 +178,7 @@ return[
     'Please select ward class' => 'Sila pilih klas wad',
     'Please select ward code' => 'Sila pilih kod wad',
     'Please select department code' => 'Sila pilih kod jabatan',
+    'Please select nurse responsible' => 'Sila pilih jururawat yang bertanggungjawab',
     'Please select payer name' => 'Sila pilih nama pembayar',
     'Please select receipt' => 'Sila pilih resit',
     'Please select payment method' => 'Sila pilih kaedah pembayaran',

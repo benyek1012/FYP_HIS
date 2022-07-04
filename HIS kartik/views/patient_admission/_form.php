@@ -11,16 +11,27 @@ use kartik\datetime\DateTimePicker;
 <div class="patient-admission-form">
 
     <?php 
-    
+    $rows_patient_admission = (new \yii\db\Query())
+    ->select('*')
+    ->from('patient_admission')
+    ->where(['rn'=> Yii::$app->request->get('rn')])
+    ->all();
+
     $rows = (new \yii\db\Query())
-    ->select('ward_code')
+    ->select('*')
     ->from('lookup_ward')
     ->all();
 
     $ward_code = array();
     foreach($rows as $row){
-      $ward_code[$row['ward_code']] = $row['ward_code'];
+      $ward_code[$row['ward_code']] = $row['ward_code'] . " - " . $row['ward_name'];
     }  
+
+    // foreach($rows_patient_admission as $row_patient_admission){
+    //     if(empty($ward_code[$row_patient_admission['initial_ward_code']])){
+    //         $ward_code[$row_patient_admission['initial_ward_code']] = $row_patient_admission['initial_ward_code'];
+    //     }            
+    // }
 
     $ward_class = array(
         "1a" =>'1a', 
@@ -29,6 +40,13 @@ use kartik\datetime\DateTimePicker;
         "2" =>'2', 
         "3" =>'3', 
     );
+
+    // foreach($rows_patient_admission as $row_patient_admission){
+    //     if(empty($ward_class[$row_patient_admission['initial_ward_class']])){
+    //         $ward_class[$row_patient_admission['initial_ward_class']] = $row_patient_admission['initial_ward_class'];
+    //     }            
+    // }
+
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
@@ -50,15 +68,33 @@ use kartik\datetime\DateTimePicker;
         </div>
         
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
+            <!-- <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
              ['prompt'=> Yii::t('app','Please select ward code')]
-            ) ?>
+            ) ?> -->
+
+            <?= $form->field($model, 'initial_ward_code')->widget(kartik\select2\Select2::classname(), [
+                'data' => $ward_code,
+                'options' => ['placeholder' => Yii::t('app','Please select ward code'), 'id' => 'initial_ward_code',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    // 'tags' => true,
+                ],
+            ]); ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
+            <!-- <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
              ['prompt'=> Yii::t('app','Please select ward class')]
-            ) ?>
+            ) ?> -->
+
+            <?= $form->field($model, 'initial_ward_class')->widget(kartik\select2\Select2::classname(), [
+                'data' => $ward_class,
+                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'initial_ward_class',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    // 'tags' => true,
+                ],
+            ]); ?>
         </div>
 
         <div class="col-sm-6">
