@@ -22,6 +22,7 @@ use app\models\Receipt;
 use app\models\Patient_information;
 use app\models\Patient_admission;
 use app\models\Patient_next_of_kin;
+use app\models\Serial;
 use GpsLab\Component\Base64UID\Base64UID;
 use yii\helpers\ArrayHelper;
 
@@ -1301,7 +1302,11 @@ print_r($cagaranitem);
                         $form->close();
 
                 }
-                                                
+                          
+                $model_serial = new Serial();
+                $model_serial->bill_serial = $model_serial->getBillSerialNumber();
+                $model_serial->save();
+                
                 $model->bill_print_datetime =  $date->format('Y-m-d H:i:s');
                 $model->bill_uid = Yii::$app->request->get('bill_uid');
                 $model->bill_print_responsible_uid = Yii::$app->user->identity->getId();
@@ -1324,12 +1329,16 @@ print_r($cagaranitem);
         else{
             if(!(new Bill()) -> isPrinted(Yii::$app->request->get('rn')))
             {
-                $count = Bill::find()->select('rn')->distinct()
-                ->where(['deleted' => 0])
-                ->andWhere(['not', ['bill_print_id' => null]])
-                ->count();
+                // $count = Bill::find()->select('rn')->distinct()
+                // ->where(['deleted' => 0])
+                // ->andWhere(['not', ['bill_print_id' => null]])
+                // ->count();
 
-                $id = "B".sprintf('%06d', $count + 1);
+                // $id = "B".sprintf('%06d', $count + 1);
+                // $model->bill_print_id = $id;
+
+                $model_serial = new Serial();
+                $id = "B".sprintf('%06d', $model_serial->getBillSerialNumber());
                 $model->bill_print_id = $id;
             }
         }

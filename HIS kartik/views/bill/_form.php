@@ -792,13 +792,19 @@ if($print_readonly)
             <div class="row">
                 <div class="col-sm-12">
                     <!-- <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?> -->
-                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'readonly' => true])?>
+                    <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'readonly' => true, 'id' => 'serial_number']) ?>
                 </div>
             </div>
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){
                 if(empty( $row_bill['bill_print_id'])){
             ?>
             <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
+            <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
+            'onclick' => '(function ( $event ) {
+                 document.getElementById("serial_number").readOnly = false; 
+                 document.getElementById("serial_number").value = "";
+                 document.getElementById("serial_number").focus();
+            })();' ]) ?>
             <?php }else echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
             <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>

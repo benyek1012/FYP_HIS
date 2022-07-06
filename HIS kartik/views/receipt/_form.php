@@ -150,12 +150,19 @@ use app\models\Patient_information;
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number', 
-                ['labelOptions' => [ 'id' => 'receipt_label' ]])->textInput(['maxlength' => true]) ?>
+                ['labelOptions' => [ 'id' => 'receipt_label' ]])->textInput(['maxlength' => true, 
+                    'readonly' => true, 'id' => 'serial_number']) ?>
         </div>
     </div>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
+        <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
+            'onclick' => '(function ( $event ) {
+                 document.getElementById("serial_number").readOnly = false; 
+                 document.getElementById("serial_number").value = "";
+                 document.getElementById("serial_number").focus();
+            })();' ]) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
@@ -186,5 +193,9 @@ function myfunctionforType(val) {
     if (val == "refund")
         document.getElementById("receipt_label").innerHTML =  '<?php echo Yii::t('app','Document Number');?>'; 
     else document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
+}
+
+function reset() {
+   alert("aaa");
 }
 </script>
