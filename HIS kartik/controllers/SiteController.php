@@ -206,7 +206,16 @@ class SiteController extends Controller
         ));
         
     }
-
+    public function actionReport1()
+    {
+        $report1 = new \app\reports\MyReport1;
+        $report1->run();
+        return $this->render('report1',array(
+            "report1"=>$report1
+        ));
+        
+    }
+    
 
     /**
      * Displays about page.

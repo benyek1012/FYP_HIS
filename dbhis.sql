@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2022 at 09:16 AM
+-- Generation Time: Jun 22, 2022 at 03:59 PM
 -- Server version: 10.4.19-MariaDB
--- PHP Version: 7.3.7
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -49,20 +48,8 @@ CREATE TABLE `bill` (
   `description` varchar(200) DEFAULT NULL,
   `bill_print_responsible_uid` varchar(64) DEFAULT NULL,
   `bill_print_datetime` datetime DEFAULT NULL,
-  `bill_print_id` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bill_content_receipt`
---
-
-CREATE TABLE `bill_content_receipt` (
-  `bill_content_receipt_uid` varchar(64) NOT NULL,
-  `bill_uid` varchar(64) NOT NULL,
-  `rn` varchar(11) NOT NULL,
-  `bill_generation_billable_sum_rm` decimal(10,2) DEFAULT NULL
+  `bill_print_id` varchar(20) DEFAULT NULL,
+  `deleted` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -346,7 +333,9 @@ CREATE TABLE `new_user` (
   `user_uid` varchar(64) NOT NULL,
   `username` varchar(100) NOT NULL,
   `user_password` varchar(64) NOT NULL,
-  `role` varchar(20) NOT NULL,
+  `role_cashier` tinyint(1) NOT NULL DEFAULT 0,
+  `role_clerk` tinyint(1) NOT NULL DEFAULT 0,
+  `role_admin` tinyint(1) NOT NULL DEFAULT 0,
   `retire` tinyint(1) DEFAULT 0,
   `authKey` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -355,10 +344,10 @@ CREATE TABLE `new_user` (
 -- Dumping data for table `new_user`
 --
 
-INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role`, `retire`, `authKey`) VALUES
-('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Administrator', 1, '12345b'),
-('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Cashier', 1, '12345a'),
-('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 'Clerk', 1, '12345c');
+INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`, `role_clerk`, `role_admin`, `retire`, `authKey`) VALUES
+('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 1, '12345b'),
+('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 1, '12345a'),
+('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 1, '12345c');
 
 -- --------------------------------------------------------
 
@@ -373,8 +362,8 @@ CREATE TABLE `patient_admission` (
   `initial_ward_code` varchar(20) NOT NULL,
   `initial_ward_class` varchar(20) NOT NULL,
   `reference` varchar(200) DEFAULT NULL,
-  `medigal_legal_code` tinyint(1) DEFAULT 0,
-  `reminder_given` int(11) NOT NULL,
+  `medical_legal_code` tinyint(1) DEFAULT 0,
+  `reminder_given` int(11) NOT NULL DEFAULT 0,
   `guarantor_name` varchar(200) DEFAULT NULL,
   `guarantor_nric` varchar(20) DEFAULT NULL,
   `guarantor_phone_number` varchar(100) DEFAULT NULL,
@@ -487,12 +476,6 @@ CREATE TABLE `ward` (
 ALTER TABLE `bill`
   ADD PRIMARY KEY (`bill_uid`),
   ADD KEY `rn` (`rn`);
-
---
--- Indexes for table `bill_content_receipt`
---
-ALTER TABLE `bill_content_receipt`
-  ADD PRIMARY KEY (`bill_content_receipt_uid`);
 
 --
 -- Indexes for table `lookup_department`
