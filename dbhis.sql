@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 30, 2022 at 03:34 PM
+-- Generation Time: Jul 06, 2022 at 09:52 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
@@ -472,6 +472,17 @@ CREATE TABLE `receipt` (
   `cheque_number` varchar(20) DEFAULT NULL,
   `receipt_responsible` varchar(64) NOT NULL,
   `receipt_serial_number` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `serial`
+--
+
+CREATE TABLE `serial` (
+  `bill_serial` int(11) NOT NULL DEFAULT 0,
+  `receipt_serial` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
