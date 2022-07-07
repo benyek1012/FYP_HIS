@@ -25,6 +25,7 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use app\models\PrintForm;
+use app\models\Serial;
 
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
@@ -141,7 +142,9 @@ class ReceiptController extends Controller
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
             }
 
-            // $model_receipt = Receipt::findOne(['rn' => Yii::$app->request->get('rn'), 'receipt_type' => 'bill']);
+            $model_serial = new Serial();
+            $model_serial->receipt_serial = $model_serial->getReceiptSerialNumber();
+            $model_serial->save();
 
             if($model->validate() && $model->save()){
                 $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
@@ -273,6 +276,11 @@ class ReceiptController extends Controller
         {
             $model->receipt_content_datetime_paid = date("Y-m-d H:i:s");
             $model->receipt_responsible = Yii::$app->user->identity->getId();
+         
+            $model_serial = new Serial();
+            $id = "R".sprintf('%06d', $model_serial->getReceiptSerialNumber());
+            $model->receipt_serial_number = $id;
+
             $model->loadDefaultValues();
         }
 
