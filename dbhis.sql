@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2022 at 09:52 AM
+-- Generation Time: Jul 06, 2022 at 12:36 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
@@ -62,6 +62,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `transaction_records` (IN `pid` VARC
 END$$
 
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `batch`
+--
+
+CREATE TABLE `batch` (
+  `id` int(11) NOT NULL,
+  `batch` bigint(20) NOT NULL,
+  `file_import` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -481,7 +493,7 @@ CREATE TABLE `receipt` (
 --
 
 CREATE TABLE `serial` (
-  `bill_serial` int(11) NOT NULL DEFAULT 0,
+  `bill_serial` int(11) DEFAULT 0,
   `receipt_serial` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -520,6 +532,12 @@ CREATE TABLE `ward` (
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `batch`
+--
+ALTER TABLE `batch`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `bill`
@@ -610,6 +628,16 @@ ALTER TABLE `treatment_details`
 ALTER TABLE `ward`
   ADD PRIMARY KEY (`ward_uid`),
   ADD KEY `bill_uid` (`bill_uid`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `batch`
+--
+ALTER TABLE `batch`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
