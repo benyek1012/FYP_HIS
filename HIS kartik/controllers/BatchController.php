@@ -91,7 +91,7 @@ class BatchController extends Controller
 
                 }
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         } else {
             $model->loadDefaultValues();
