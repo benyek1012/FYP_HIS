@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Bill;
+use app\models\Lookup_general;
 use app\models\Patient_admission;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -63,46 +64,9 @@ function items()
 
     $items = [];
 
-    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
-
-    if(empty($model_bill))
-        $url_bill = 'bill/create';
-    else if(empty($model_bill->bill_generation_datetime))
-        $url_bill = 'bill/generate';
-    else $url_bill = 'bill/print';
-
-    if(!empty($model_bill))
-    {
-        foreach ($rows as $row) {
-            array_push($items, 
-            ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']],
-                'items' => [
-                    ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
-                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
-                    'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
-                    ['label' => Yii::t('app','Payment'), 'iconClass' => '',
-                        'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
-                ]
-            ]);
-        }
+    foreach ($rows as $row) {
+        array_push($items, ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]]);
     }
-    else{
-        foreach ($rows as $row) {
-            array_push($items, 
-            ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']],
-                'items' => [
-                    ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
-                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
-                        'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
-                    ['label' => Yii::t('app','Payment'), 'iconClass' => '', 
-                        'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
-                        
-                ]
-            ]);
-        }
-    }
-
-
     return $items;
 }
 
@@ -153,9 +117,9 @@ if(!empty(Yii::$app->request->queryParams))
                 if(!empty($info)){
                     if($info->name == "") $temp_name = "Unknown";
                     else $temp_name = $info->name;
-            //         echo \hail812\adminlte\widgets\Menu::widget([
-            //             'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
-            // ?>
+                    echo \hail812\adminlte\widgets\Menu::widget([
+                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
+            ?>
             <div class="mt-1 ml-1 d-flex">
                 <div class="info">
                     <p class="text-white"><?php echo Yii::t('app','Patient IC')." : ".$info->nric;?></p>
@@ -175,17 +139,69 @@ if(!empty(Yii::$app->request->queryParams))
             </div>
             <?php  } ?>
 
+            <!-- Sidebar Menu Line Break -->
+         
+
             <!-- Return all RN from particular patient -->
             <?php 
                 if(!empty($info)){
             ?>
             <div class="mt-2"></div>
             <?php
-              echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+                    echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+
+                    
+                    echo \hail812\adminlte\widgets\Menu::widget(['items' => 
+                        [   
+                            ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+                            'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+                        ]
+                    ]);
                 }
             ?>
-            </nav>
-            <!-- /.sidebar-menu -->
+
+            <!-- Sidebar Menu Line Break -->
+            <div class="user-panel "></div>
+
+            <!-- Load bill and payment tab when RN is selected -->
+            <?php
+                if(!empty($info) && !empty(Yii::$app->request->get('rn')
+                    ||Yii::$app->request->get('receipt_uid') ||Yii::$app->request->get('bill_uid')))
+                {
+                    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+
+                    // Here is loaded when bill is generated
+                    if(!empty($model_bill))
+                    {
+                        if(empty($model_bill))
+                            $url_bill = 'bill/create';
+                        else if(empty($model_bill->bill_generation_datetime))
+                            $url_bill = 'bill/generate';
+                        else $url_bill = 'bill/print';
+
+                        echo \hail812\adminlte\widgets\Menu::widget([
+                            'items' => [
+                                    ['label' => $model_bill->rn, 'header' => true],
+                                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
+                                        'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
+                                    ['label' => Yii::t('app','Payment'), 'iconClass' => '',
+                                        'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
+                                    ]
+                            ]);
+                    }
+                    else 
+                        // Here is loaded when bill is created
+                        echo \hail812\adminlte\widgets\Menu::widget([
+                            'items' => [
+                                ['label' => Yii::$app->request->get('rn'), 'header' => true],
+                                ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
+                                    'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
+                                ['label' => Yii::t('app','Payment'), 'iconClass' => '', 
+                                    'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
+                                ]
+                        ]);
+                }
+            ?>
         </div>
         <!-- /.sidebar -->
 </aside>

@@ -67,7 +67,7 @@ if (Yii::$app->user->isGuest){
                 <!-- <li><a href="/patient_admission" class="dropdown-item"><?php echo Yii::t('app','Search'); ?></a></li> -->
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/batch']); ?>" class="dropdown-item"><?php echo Yii::t('app','Testing'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/batch']); ?>" class="dropdown-item"><?php echo Yii::t('app','Testing csv upload'); ?></a></li>
             </ul>
         </li>
 

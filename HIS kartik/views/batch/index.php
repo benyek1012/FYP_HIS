@@ -13,7 +13,16 @@ $this->title = 'Batches';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="batch-index">
-
+    <div class="card card-outline card-info">
+        <!-- /.card-header -->
+        <div class="card-body">
+            This is the testing page that user can upload CSV file and insert into database table directly.<br/>
+            Currently, the CSV file can be traced with batch # and insert into lookup ward table. 
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <br/>
     <div id="lookup_form">
         <?php
             $model = new Batch();

@@ -26,6 +26,7 @@ use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use app\models\PrintForm;
 use app\models\Serial;
+use app\models\SerialNumber;
 
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
@@ -142,11 +143,26 @@ class ReceiptController extends Controller
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
             }
 
-            $model_serial = new Serial();
-            $model_serial->receipt_serial = $model_serial->getReceiptSerialNumber();
-            $model_serial->save();
-
             if($model->validate() && $model->save()){
+
+                if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
+                {
+                    $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
+
+                    $str = $model->receipt_serial_number;
+                    $only_integer = preg_replace('/[^0-9]/', '', $str);
+                    $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
+                    $model_serial->digit_length = strlen($only_integer);
+                    $model_serial->running_value = $only_integer;
+
+                    $model_serial->save();    
+                }
+                else{
+                    $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
+                    $model_serial->running_value =  $model_serial->running_value + 1;
+                    $model_serial->save();    
+                }
+
                 $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
                 $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
 
@@ -277,9 +293,7 @@ class ReceiptController extends Controller
             $model->receipt_content_datetime_paid = date("Y-m-d H:i:s");
             $model->receipt_responsible = Yii::$app->user->identity->getId();
          
-            $model_serial = new Serial();
-            $id = "R".sprintf('%06d', $model_serial->getReceiptSerialNumber());
-            $model->receipt_serial_number = $id;
+            $model->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
 
             $model->loadDefaultValues();
         }
