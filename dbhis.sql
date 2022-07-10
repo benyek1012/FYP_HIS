@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2022 at 12:36 PM
+-- Generation Time: Jul 10, 2022 at 10:52 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
@@ -489,13 +489,23 @@ CREATE TABLE `receipt` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `serial`
+-- Table structure for table `serial_number`
 --
 
-CREATE TABLE `serial` (
-  `bill_serial` int(11) DEFAULT 0,
-  `receipt_serial` int(11) DEFAULT 0
+CREATE TABLE `serial_number` (
+  `serial_name` varchar(11) NOT NULL,
+  `prepend` varchar(11) NOT NULL,
+  `digit_length` int(8) NOT NULL,
+  `running_value` int(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `serial_number`
+--
+
+INSERT INTO `serial_number` (`serial_name`, `prepend`, `digit_length`, `running_value`) VALUES
+('bill', 'B', 6, 0),
+('receipt', 'R', 6, 0);
 
 -- --------------------------------------------------------
 
@@ -614,6 +624,12 @@ ALTER TABLE `patient_next_of_kin`
 ALTER TABLE `receipt`
   ADD PRIMARY KEY (`receipt_uid`),
   ADD KEY `rn` (`rn`);
+
+--
+-- Indexes for table `serial_number`
+--
+ALTER TABLE `serial_number`
+  ADD PRIMARY KEY (`serial_name`);
 
 --
 -- Indexes for table `treatment_details`
