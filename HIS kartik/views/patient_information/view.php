@@ -84,7 +84,7 @@ use yii\bootstrap4\Html;
             <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 
                     ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true, 'readonly' => true]) ?> -->
 
-            <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
+            <!-- <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
                 'data' => $countries,
                 'disabled' => true,
                 'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality',],
@@ -92,7 +92,9 @@ use yii\bootstrap4\Html;
                     'allowClear' => true,
                     'tags' => true,
                 ],
-            ]); ?>
+            ]); ?> -->
+
+            <?= $form->field($model, 'nationality')->textInput(['maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'sex')->dropDownList($sex, 
@@ -104,7 +106,7 @@ use yii\bootstrap4\Html;
             <!-- <?= $form->field($model, 'race')->dropDownList($race, 
                     ['prompt'=> Yii::t('app','Please select race'),'maxlength' => true, 'readonly' => true]) ?> -->
 
-            <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
+            <!-- <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
                 'disabled' => true,
                 'data' => $race,
                 'options' => ['placeholder' => Yii::t('app','Please select race'), 'id' => 'race',],
@@ -112,7 +114,9 @@ use yii\bootstrap4\Html;
                     'allowClear' => true,
                     'tags' => true,
                 ],
-            ]); ?>
+            ]); ?> -->
+
+            <?= $form->field($model, 'race')->textInput(['maxlength' => true, 'readonly' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'readonly' => true]) ?>

@@ -47,9 +47,12 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                     'emptyText' => Yii::t('app','Patient admission record is not founded'),
                 
                     'rowOptions' => function($model) {
-                        $url = Url::to([Yii::$app->controller->id.'/index', 'id' => $model['patient_uid']]);
+                        // $url = Url::to([Yii::$app->controller->id.'/index', 'id' => $model['patient_uid']]);
+                        $urlPatientAdmission = Url::toRoute(['patient_admission/patient', 'id' => $model['patient_uid']]);
+                        $urlPatientInformation = Url::toRoute(['patient_information/patient', 'id' => $model['patient_uid']]);
                         return [
-                            'onclick' => "window.location.href='{$url}'"
+                            // 'onclick' => "window.location.href='{$url}'"
+                            'onclick' => "patientAdmission('{$urlPatientAdmission}'); patientInformation('{$urlPatientInformation}');",
                         ];
                     },
                     'columns' => [
@@ -166,19 +169,12 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
             <!-- /.card-tools -->
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
+        <div class="card-body" id="patient-admission-summary">
             <?php 
-                    if(!empty($model))
+                    if(empty($model))
                     {
-                             $dataProvider1 = new ActiveDataProvider([
-                            'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
-                            ->orderBy(['entry_datetime' => SORT_DESC]),
-                            'pagination'=>['pageSize'=>5],
-                        ]);
-                        
-                        echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);            
+                        echo Yii::t('app','Patient admission record is not found');        
                     } 
-                    else echo Yii::t('app','Patient admission record is not found');
                 ?>
         </div>
         <!-- /.card-body -->
@@ -196,16 +192,13 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
             <!-- /.card-tools -->
         </div>
         <!-- /.card-header -->
-        <div class="card-body">
+        <div class="card-body" id="patient-information">
             <!-- This is the form that shows patient information which can directly updating-->
             <?php
-                    if(!empty($model))
+                    if(empty($model))
                     {
-            ?>
-            <?= $this->render('/patient_information/view', [
-                        'model' => $model]) ?>
-            <?php   } 
-                    else echo Yii::t('app','Patient record is not found');
+                        echo Yii::t('app','Patient record is not found');
+                    } 
             ?>
         </div>
         <!-- /.card-body -->
@@ -215,7 +208,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
 
 
 <?php
-    $js = <<<SCRIPT
+$js = <<<SCRIPT
     /* To initialize BS3 tooltips set this below */
     $(function () { 
        $('body').tooltip({
@@ -224,6 +217,30 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
         });
     });
 SCRIPT;
-    // Register tooltip/popover initialization javascript
-    $this->registerJs ( $js );
+// Register tooltip/popover initialization javascript
+$this->registerJs ( $js );
 ?>
+
+<script>
+function patientAdmission(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            document.getElementById("patient-admission-summary").innerHTML = this.responseText;
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
+
+function patientInformation(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            document.getElementById("patient-information").innerHTML = this.responseText;
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
+</script>

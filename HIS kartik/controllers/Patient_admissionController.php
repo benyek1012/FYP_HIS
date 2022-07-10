@@ -13,6 +13,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\Patient_admissionSearch;
+use yii\data\ActiveDataProvider;
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
@@ -40,6 +41,19 @@ class Patient_admissionController extends Controller
                 ],
             ]
         );
+    }
+
+    public function actionPatient()
+    {
+        $model = Patient_information::findOne(Yii::$app->request->get('id'));
+
+        $dataProvider1 = new ActiveDataProvider([
+            'query'=> Patient_admission::find()->where(['patient_uid'=>$model->patient_uid])
+            ->orderBy(['entry_datetime' => SORT_DESC]),
+            'pagination'=>['pageSize'=>5],
+        ]);
+        
+        return $this->renderPartial('/patient_admission/index', ['dataProvider'=>$dataProvider1]);   
     }
 
     /**

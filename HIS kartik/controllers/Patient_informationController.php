@@ -33,6 +33,13 @@ class Patient_informationController extends Controller
         );
     }
 
+    public function actionPatient()
+    {
+        $model = Patient_information::findOne(Yii::$app->request->get('id'));
+
+        return $this->renderPartial('/patient_information/view', ['model' => $model]);
+    }
+
     /**
      * Creates a new Patient_information model.
      * If creation is successful, the browser will be redirected to the 'view' page.

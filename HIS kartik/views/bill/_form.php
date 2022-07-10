@@ -198,7 +198,7 @@ $this->registerJs(
     "$('#statusCode').change(function() {
         var statusCode = $(this).val();
         var wardClass = $('#wardClass :selected').text();
-        $.get('". Url::to(['/bill/status'])."', {status : statusCode}, function(data){
+        $.get('". Url::toRoute(['/bill/status'])."', {status : statusCode}, function(data){
             var data = $.parseJSON(data);
             $('#status_des').attr('value', data.status_description);
             if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
@@ -214,7 +214,7 @@ $this->registerJs(
     "$('#wardClass').change(function() {
         var wardClass = $(this).val();
         var statusCode = $('#statusCode :selected').text();
-        $.get('". Url::to(['/bill/status'])."', {status : statusCode}, function(data){
+        $.get('". Url::toRoute(['/bill/status'])."', {status : statusCode}, function(data){
             var data = $.parseJSON(data);
         
             if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
@@ -226,7 +226,7 @@ $this->registerJs(
             $('.treatmentCode', document).each(function(index, item){
                 var billClass = $('#wardClass').val();
                 var treatmentCode = this.value;
-                $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
+                $.get('". Url::toRoute(['/bill/treatment'])."', {treatment : treatmentCode}, function(data){
                     var data = $.parseJSON(data);
                     $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
                     if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
@@ -248,71 +248,72 @@ $this->registerJs(
 $this->registerJs(
     "$('#departmentCode').change(function() {
         var departmentCode = $(this).val();
-        $.get('". Url::to(['/bill/department'])."', {department : departmentCode}, function(data){
+        $.get('". Url::toRoute(['/bill/department'])."', {department : departmentCode}, function(data){
             var data = $.parseJSON(data);
             $('#departmentName').attr('value', data.department_name);
         });
     });"
 );
 
-$this->registerJs(
-    "$('.wardCode', document).each(function(index, item){
         $(item).on('change', function() {
-            var wardCode = this.value;
-            $.get('". Url::to(['/bill/ward'])."', {ward : wardCode}, function(data){
-                var data = $.parseJSON(data);
-                $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
-            });
-        });
-    });
-    "
-);
+// $this->registerJs(
+//     "$('.wardCode', document).each(function(index, item){
+//             var wardCode = this.value;
+//             $.get('". Url::to(['/bill/ward'])."', {ward : wardCode}, function(data){
+//                 var data = $.parseJSON(data);
+//                 $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
+//             });
+//         });
+//     });
+//     "
+// );
 
-$this->registerJs(
-    "$('.treatmentCode', document).each(function(index, item){
-        var billClass = $('#wardClass').val();
-        $(item).on('change', function() {
-            var treatmentCode = this.value;
-            $.get('". Url::to(['/bill/treatment'])."', {treatment : treatmentCode}, function(data){
-                var data = $.parseJSON(data);
-                $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
-                if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
-                    $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
-                }
-                if(billClass == '2'){
-                    $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
-                }
-                if(billClass == '3'){
-                    $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
-                }
-                // calculateItemCost();
-            });
-        });
-    });
-    "
-);
+// $this->registerJs(
+//     "$('.treatmentCode', document).each(function(index, item){
+//         var billClass = $('#wardClass').val();
+//         $(item).on('change', function() {
+//             var treatmentCode = this.value;
+//             $.get('". Url::to(['/bill/treatment'])."', {treatment : treatmentCode}, function(data){
+//                 var data = $.parseJSON(data);
+//                 $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
+//                 if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
+//                     $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
+//                 }
+//                 if(billClass == '2'){
+//                     $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
+//                 }
+//                 if(billClass == '3'){
+//                     $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
+//                 }
+//                 // calculateItemCost();
+//             });
+//         });
+//     });
+//     "
+// );
 
-$this->registerJs(
-    "$('#addWardRow').on('click', function() { 
-        var countWard = $('#countWard').val();    
+// $this->registerJs(
+//     "$('#addWardRow').on('click', function() { 
+//         var countWard = $('#countWard').val();    
       
-        $.get('". Url::to(['/bill/wardRow'])."', {ward : countWard}, function(data){
-            var data = $.parseJSON(data);
-            $('#countWard').attr('value', data.length);
-        });
-    });"
-);
+//         $.get('". Url::to(['/bill/wardRow'])."', {ward : countWard}, function(data){
+//             // var data = $.parseJSON(data);
+//             // $('#countWard').attr('value', data.length);
+//             alert('asd')
+//         });
+//     });"
+// );
 
-$this->registerJs(
-    "$('#addTreatmentRow').on('click', function() { 
-        var countTreatment = $('#countTreatment').val();    
+// $this->registerJs(
+//     "$('#addTreatmentRow').on('click', function() { 
+//         var countTreatment = $('#countTreatment').val();    
        
-        $.get('". Url::to(['/bill/treatmentRow'])."', {treatment : countTreatment}, function(data){
-            var data = $.parseJSON(data);
-            $('#countTreatment').attr('value', data.length);
-        });
-    });"
-);
+//         $.get('". Url::to(['/bill/treatmentRow'])."', {treatment : countTreatment}, function(data){
+//             var data = $.parseJSON(data);
+//             $('#countTreatment').attr('value', data.length);
+//         });
+//     });"
+// );
 
 // $this->registerJs(
 //     "$('.wardCode', document).each(function(index, item){
@@ -335,7 +336,7 @@ if(!empty($admission_model->initial_ward_code) && empty($modelWard->ward_code)){
         "$('.wardCode', document).each(function(index, item){
             var wardCode = this.value;
 
-            $.get('". Url::to(['/bill/ward'])."', {ward : wardCode}, function(data){
+            $.get('". Url::toRoute(['/bill/ward'])."', {ward : wardCode}, function(data){
                 var data = $.parseJSON(data);
                 $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
             });
@@ -356,6 +357,7 @@ if($print_readonly)
     );
 }
 
+$urlStatus = Url::toRoute(['/bill/status']);
 ?>
 
 <style>
@@ -499,9 +501,9 @@ if($print_readonly)
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getDailyWardCost();']) ?>
+                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');"]) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getDailyWardCost();']) ?>
+                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');"]) ?>
                 <?php } ?>
             </div>
             <!-- /.card-body -->
@@ -511,25 +513,14 @@ if($print_readonly)
     </a>
 
     <a name="ward">
-        <?php $form = kartik\form\ActiveForm::begin([
-            'id' => 'ward-form',
-            'type' => 'vertical',
-            'action' =>  Url::to(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'ward']),
-            'fieldConfig' => [
-                'template' => "{label}\n{input}\n{error}",
-                'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-            ],
-        ]); 
-    ?>
-
         <div class="card" id="ward_div" style="display:none;">
             <div class="card-header text-white bg-primary">
                 <h3 class="card-title"><?php echo Yii::t('app','Ward Details');?></h3>
                 <div class="d-flex justify-content-end">
                     <?php
-                if(!empty($model))
-                    echo "<div>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
-                ?>
+                    if(!empty($model))
+                        echo "<div>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -539,152 +530,23 @@ if($print_readonly)
                 <!-- /.card-tools -->
             </div>
             <!-- /.card-header -->
-            <div class="card-body">
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                <?php }else{ ?>
-                <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-sm']) ?>
-                <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-sm']) ?>
-                <?php } ?>
-                <input type="hidden" id="countWard" name="countWard" value="<?php echo count($modelWard); ?>">
-                <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
-                <table id="ward-table">
-                    <tr>
-                        <td><?php echo Yii::t('app','Ward Code');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Ward Name');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Ward Start Datetime');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Ward End Datetime');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Ward Number of Days');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td> </td>
-                    </tr>
-
-                    <?php foreach ($modelWard as $index => $modelWard) { ?>
-                    <tr>
-                        <td>
-                            <?php 
-                            if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
-                            ?>
-                                <!-- <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                                'prompt'=> Yii::t('app','Select ward code'), 'maxlength' => true, 'value' => $admission_model->initial_ward_code,
-                                'disabled' => $print_readonly])->label(false) ?> -->
-                                
-                                <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
-                                    'data' => $wardcode,
-                                    'disabled' => $print_readonly,
-                                    'options' => [
-                                        'placeholder' => Yii::t('app','Select ward code'), 
-                                        'class' => 'wardCode',
-                                        'value' => $admission_model->initial_ward_code,
-                                    ],
-                                    'pluginOptions' => [
-                                        'allowClear' => true,
-                                        'width' => '200px',
-                                    ],
-                                ])->label(false); ?>
-                            <?php 
-                            }
-                            else{
-                            ?>
-                                <!-- <?= $form->field($modelWard, "[$index]ward_code")->dropDownList($wardcode, ['class' => 'wardCode',
-                                'prompt'=> Yii::t('app','Select ward code'), 'maxlength' => true, 'value' => $modelWard->ward_code,
-                                'disabled' => $print_readonly])->label(false) ?> -->
-
-                                <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
-                                    'data' => $wardcode,
-                                    'disabled' => $print_readonly,
-                                    'options' => [
-                                        'placeholder' => Yii::t('app','Select ward code'), 
-                                        'class' => 'wardCode',
-                                        'value' => $modelWard->ward_code,
-                                    ],
-                                    'pluginOptions' => [
-                                        'allowClear' => true,
-                                        'width' => '200px',
-                                    ],
-                                ])->label(false); ?>
-                            <?php
-                            }
-                            ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
-                            'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'start_date', 'disabled' => $print_readonly],
-                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
-                        'pluginEvents' => [
-                            'change' => 'function () {
-                                calculateDays();
-                             }',
-                        ],])->label(false)?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'end_date', 'disabled' => $print_readonly], 
-                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
-                        'pluginEvents' => [
-                            'change' => 'function () {
-                                calculateDays();
-                             }',
-                        ],])->label(false)?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-
-                        <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true,
-                                             'class' => 'day',  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>
-                            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                            <?php }else{ 
-                                if(!empty($modelWard->ward_uid)){ ?>
-                                    <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                                        'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
-                            <?php }
-                            } ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </table>
-
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
-                <?php }else{ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
-                <?php } ?>
-
+            <div class="card-body" id="ward-div">
+                <?= $this->render('/ward/_form', ['modelWard' => $modelWard]) ?> 
             </div>
             <!-- /.card-body -->
         </div>
     </a>
     <!-- /.card -->
-    <?php kartik\form\ActiveForm::end(); ?>
 
     <a name="treatment">
-        <?php $form = kartik\form\ActiveForm::begin([
-        'id' => 'treatment-form',
-        'type' => 'vertical',
-        'action' =>  Url::to(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'treatment']),
-        'fieldConfig' => [
-            'template' => "{label}\n{input}\n{error}",
-            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-        ],
-    ]); 
-    ?>
-
         <div class="card" id="treatment_div" style="display:none;">
             <div class="card-header text-white bg-primary">
                 <h3 class="card-title"><?php echo Yii::t('app','Treatment Details');?></h3>
                 <div class="d-flex justify-content-end">
                     <?php
-                if(!empty($model))
-                    echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
-                ?>
+                    if(!empty($model))
+                        echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -694,135 +556,16 @@ if($print_readonly)
                 <!-- /.card-tools -->
             </div>
             <!-- /.card-header -->
-            <div class="card-body">
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                <?php }else{ ?>
-                <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-info btn-sm']) ?>
-                <?= Html::submitButton('-', ['id' => 'removeTreatmentRow', 'name' => 'removeTreatmentRow', 'value' => 'true', 'class' => 'btn btn-danger btn-sm']) ?>
-                <?php } ?>
-                <input type="hidden" id="countTreatment" name="countTreatment"
-                    value="<?php echo count($modelTreatment); ?>">
-                <table>
-                    <tr>
-                        <td><?php echo Yii::t('app','Treatment Code');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Treatment Name');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Item Per Unit Cost (RM)');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Item Count');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?php echo Yii::t('app','Item Total Unit Cost (RM)');?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td> </td>
-                    </tr>
-                    <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
-                    <tr>
-                        <td>
-                            <!-- <?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
-                                'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?> -->
-                            
-                            <?= $form->field($modelTreatment, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
-                                'data' => $treatment_code,
-                                'disabled' => $print_readonly,
-                                'options' => [
-                                    'placeholder' => Yii::t('app','Select treatment code'), 
-                                    'class' => 'treatmentCode',
-                                ],
-                                'pluginOptions' => [
-                                    'allowClear' => true,
-                                    'width' => '200px',
-                                ],
-                            ])->label(false); ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
-                                    'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-
-
-
-                        <div class="col-sm-6">
-                            <td>
-                                <?php 
-                                  if(empty( Yii::$app->request->get('bill_uid'))){ 
-                      if($initial_ward_class == "1a"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
-                                        'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
-                                <?php 
-                      }
-                      
-                      else if($initial_ward_class == "1b"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
-                                        'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
-                                <?php 
-                      }
-
-                      else if($initial_ward_class == "1c"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
-                                        'class' => '1_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
-                                <?php 
-                      }
-
-                      else if($initial_ward_class == "2"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
-                                        'class' => '2_unit_cost', 'onchange' => 'calculateItemCost();'])->label(false) ?>
-                                <?php 
-                      }
-
-                      else if($initial_ward_class == "3"){?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
-                                        'class' => '3_unit_cos','onchange' => 'calculateItemCost();'])->label(false) ?>
-                                <?php 
-                      }
-                    }else{ ?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(
-                                    [ 'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
-                                <?php    }
-              ?>
-                            </td>
-                        </div>
-
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                                    'disabled' => $print_readonly, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
-                                     'disabled' => $print_readonly, 'class' => 'item_total_cost'])->label(false) ?>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>
-                            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                            <?php }else{ 
-                                if(!empty($modelTreatment->treatment_details_uid)){
-                                ?>
-                                    <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $modelTreatment->treatment_details_uid,
-                                        'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs"]) ?>
-                            <?php }
-                            } ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </table>
-
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
-                <?php }else{ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateItemCost();']) ?>
-                <?php } ?>
-
+            <div class="card-body" id="treatment-div">
+                <?= $this->render('/treatment_details/_form', ['modelTreatment' => $modelTreatment]) ?> 
             </div>
+            <!-- /.card-body -->
         </div>
-        <!-- /.card-body -->
-</div>
-</a>
-<!-- /.card -->
-<?php kartik\form\ActiveForm::end(); ?>
+    </a>
+    <!-- /.card -->
 
-<?php $form = kartik\form\ActiveForm::begin([
+<a name="billGeneration">
+    <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'bill-generation-form',
         'type' => 'vertical',
         'fieldConfig' => [
@@ -831,8 +574,6 @@ if($print_readonly)
         ],
     ]); 
     ?>
-
-<a name="billGeneration">
     <div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
             else echo 'style="display:block;"';
     ?>>
@@ -881,10 +622,11 @@ if($print_readonly)
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
+    <?php kartik\form\ActiveForm::end(); ?>
 </a>
-<?php kartik\form\ActiveForm::end(); ?>
 
-<?php $form = kartik\form\ActiveForm::begin([
+<a name="printing">
+    <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'bill-print-form',
         'type' => 'vertical',
         'fieldConfig' => [
@@ -893,8 +635,6 @@ if($print_readonly)
         ],
     ]); 
     ?>
-
-<a name="printing">
     <div class="card" id="print_div" style="display:none;">
         <div class="card-header text-white bg-primary">
             <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
@@ -931,7 +671,6 @@ if($print_readonly)
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-</a>
 
 
 <!-- <div class="form-group">
@@ -947,6 +686,7 @@ if($print_readonly)
 
 
 <?php kartik\form\ActiveForm::end(); ?>
+</a>
 
 </div>
 
@@ -961,71 +701,6 @@ document.getElementById('print_div').style.display = "none";
 document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
-
-function calculateDays() {
-    var countWard = $("#countWard").val();
-
-    for (var i = 0; i < countWard; i++) {
-        var date1 = new Date($("#ward-" + i + "-ward_start_datetime").val());
-        var date2 = new Date($("#ward-" + i + "-ward_end_datetime").val());
-
-        var SDT = date1.getDate() + "/" + (date1.getMonth() + 1) + "/" + date1.getFullYear();
-        var EDT = date2.getDate() + "/" + (date2.getMonth() + 1) + "/" + date2.getFullYear();
-
-        function parseDate(str) {
-            var mdy = str.split("/");
-            return new Date(mdy[2], mdy[1] - 1, mdy[0]);
-        }
-
-        function datediff(first, second) {
-            // Take the difference between the dates and divide by milliseconds per day.
-            // Round to nearest whole number to deal with DST.
-            return Math.round((second - first) / (1000 * 60 * 60 * 24));
-        }
-
-        if (date1 != "Invalid Date" && date2 != "Invalid Date") {
-            var timeDifference = datediff(parseDate(SDT), parseDate(EDT));
-            var daysDiff = timeDifference;
-            var days = Math.round(daysDiff);
-
-            if (date2.getHours() >= 12)
-                days += 1;
-
-            if (date1.getDate() == date2.getDate())
-                days = 1;
-
-            $("#ward-" + i + "-ward_number_of_days").val(days);
-        }
-    }
-}
-
-function calculateItemCost() {
-    $('.treatmentCode', document).each(function(index, item){
-        var billClass = $('#wardClass').val();
-        var treatmentCode = this.value;
-        $.get('/bill/treatment', {treatment : treatmentCode}, function(data){
-            var data = $.parseJSON(data);
-            $('#treatment_details-'+index+'-treatment_name').attr('value', data.treatment_name);
-            if(billClass == '1a' || billClass == '1b' || billClass == '1c'){
-                $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_1_cost_per_unit);
-            }
-            if(billClass == '2'){
-                $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_2_cost_per_unit);
-            }
-            if(billClass == '3'){
-                $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
-            }
-
-            var itemPerUnit = $('#treatment_details-' + index + '-item_per_unit_cost_rm').val();
-            var itemCount = $('#treatment_details-' + index + '-item_count').val();
-
-            if (itemCount != '' && itemPerUnit != "") {
-                var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
-                $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
-            }
-        });
-    });
-}
 
 function calculateItemTotalCost() {
     $('.treatmentCode', document).each(function(index, item){
@@ -1046,10 +721,10 @@ function getBillableAndFinalFee(){
     $('#bill-bill_generation_final_fee_rm').val(<?php echo (new Bill())  -> calculateFinalFee(Yii::$app->request->get('bill_uid')); ?>);
 }
 
-function getDailyWardCost() {
+function getDailyWardCost(url) {
     var wardClass = $('#wardClass').val();
     var statusCode = $('#statusCode :selected').text();
-    $.get('/bill/status', {status : statusCode}, function(data){
+    $.get(url, {status : statusCode}, function(data){
         var data = $.parseJSON(data);
 
         if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
