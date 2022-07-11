@@ -255,7 +255,7 @@ $this->registerJs(
     });"
 );
 
-        $(item).on('change', function() {
+  //      $(item).on('change', function() {
 // $this->registerJs(
 //     "$('.wardCode', document).each(function(index, item){
 //             var wardCode = this.value;

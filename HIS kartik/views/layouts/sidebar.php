@@ -77,11 +77,11 @@ function items()
             array_push($items, 
             ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']],
                 'items' => [
-                    ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
+                    ['label' => 'Admission','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
                     ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
-                    'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
+                    'bill_uid' =>  $model_bill->bill_uid,  'rn' => $row['rn']]],
                     ['label' => Yii::t('app','Payment'), 'iconClass' => '',
-                        'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
+                        'url' => ['receipt/index', 'rn' =>  $row['rn']]],
                 ]
             ]);
         }
@@ -91,16 +91,22 @@ function items()
             array_push($items, 
             ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']],
                 'items' => [
-                    ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
+                    ['label' => 'Admission','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
                     ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
-                        'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
+                        'url' => ['bill/create', 'rn' =>  $row['rn']]],
                     ['label' => Yii::t('app','Payment'), 'iconClass' => '', 
-                        'url' => ['receipt/index', 'rn' =>  Yii::$app->request->get('rn')]],
+                        'url' => ['receipt/index', 'rn' =>  $row['rn']]],
                         
                 ]
             ]);
         }
     }
+    
+
+    array_push($items, 
+        ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+        'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+    );
 
 
     return $items;
@@ -179,9 +185,16 @@ if(!empty(Yii::$app->request->queryParams))
             <?php 
                 if(!empty($info)){
             ?>
+            <!-- Sidebar Menu Line Break -->
+            <div class="user-panel "></div>
             <div class="mt-2"></div>
             <?php
-              echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+                    echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
+            ?>
+            <div class="mt-2"></div>
+            <!-- Sidebar Menu Line Break -->
+            <div class="user-panel "></div>
+            <?php
                 }
             ?>
             </nav>

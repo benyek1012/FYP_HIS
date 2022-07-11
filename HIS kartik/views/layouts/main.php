@@ -40,7 +40,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <?= $this->render('temp', ['assetDir' => $assetDir]) ?>
+        <?= $this->render('sidebar', ['assetDir' => $assetDir]) ?>
 
         <div class="card">
             <div class="card-body">
