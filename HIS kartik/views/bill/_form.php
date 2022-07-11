@@ -255,9 +255,9 @@ $this->registerJs(
     });"
 );
 
-  //      $(item).on('change', function() {
 // $this->registerJs(
 //     "$('.wardCode', document).each(function(index, item){
+//           $(item).on('change', function() {
 //             var wardCode = this.value;
 //             $.get('". Url::to(['/bill/ward'])."', {ward : wardCode}, function(data){
 //                 var data = $.parseJSON(data);

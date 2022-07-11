@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 10, 2022 at 10:52 AM
--- Server version: 10.4.19-MariaDB
+-- Generation Time: Jul 11, 2022 at 05:03 PM
+-- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -388,8 +388,8 @@ CREATE TABLE `new_user` (
   `role_cashier` tinyint(1) NOT NULL DEFAULT 0,
   `role_clerk` tinyint(1) NOT NULL DEFAULT 0,
   `role_admin` tinyint(1) NOT NULL DEFAULT 0,
-  `retire` tinyint(1) DEFAULT 0,
-  `authKey` varchar(45) DEFAULT NULL
+  `retire` tinyint(1) NOT NULL DEFAULT 0,
+  `authKey` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -420,7 +420,7 @@ CREATE TABLE `patient_admission` (
   `guarantor_nric` varchar(20) DEFAULT NULL,
   `guarantor_phone_number` varchar(100) DEFAULT NULL,
   `guarantor_email` varchar(100) DEFAULT NULL,
-  `type` varchar(20) DEFAULT NULL
+  `type` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
