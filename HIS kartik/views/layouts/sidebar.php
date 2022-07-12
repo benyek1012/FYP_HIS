@@ -64,6 +64,7 @@ function items()
     $items = [];
 
     $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+    $model_rn = Patient_admission::findOne(['patient_uid' =>  $info->patient_uid]);
 
     if(empty($model_bill))
         $url_bill = 'bill/create';
@@ -102,11 +103,11 @@ function items()
         }
     }
     
-
-    array_push($items, 
-        ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
-        'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
-    );
+    if(!empty($model_rn))
+        array_push($items, 
+            ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+            'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+        );
 
 
     return $items;
@@ -115,6 +116,9 @@ function items()
 
 if(!empty(Yii::$app->request->queryParams))
     $info = getInfo();
+
+if(!empty($info))
+    $model_rn = Patient_admission::findOne(['patient_uid' =>  $info->patient_uid]);
 
 ?>
 
@@ -184,16 +188,18 @@ if(!empty(Yii::$app->request->queryParams))
             <!-- Return all RN from particular patient -->
             <?php 
                 if(!empty($info)){
+                    if(!empty($model_rn)){
             ?>
-            <!-- Sidebar Menu Line Break -->
-            <div class="user-panel "></div>
-            <div class="mt-2"></div>
+                        <!-- Sidebar Menu Line Break -->
+                        <div class="user-panel "></div>
+                        <div class="mt-2"></div>
             <?php
+                    }
                     echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
             ?>
-            <div class="mt-2"></div>
-            <!-- Sidebar Menu Line Break -->
-            <div class="user-panel "></div>
+                    <div class="mt-2"></div>
+                    <!-- Sidebar Menu Line Break -->
+                    <div class="user-panel "></div>
             <?php
                 }
             ?>

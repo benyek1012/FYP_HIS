@@ -94,7 +94,8 @@ class ReceiptController extends Controller
         $dataProvider = $searchModel->transactionRecords($this->request->queryParams);
 
         // Print all record from customer
-        if ($this->request->isPost)
+        $searchModel = new ReceiptSearch();
+        if ($this->request->isPost && $searchModel->load($this->request->post()))
         {
              // This is showing all RN from payment 
             $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
