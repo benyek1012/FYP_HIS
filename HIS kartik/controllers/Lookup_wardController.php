@@ -6,6 +6,7 @@ use Yii;
 use app\models\New_user;
 use app\models\Lookup_ward;
 use app\models\Lookup_wardSearch;
+use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -56,6 +57,11 @@ class Lookup_wardController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
         $model = new Lookup_ward();
         $searchModel = new Lookup_wardSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);

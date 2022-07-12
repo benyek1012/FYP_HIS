@@ -63,6 +63,11 @@ class Patient_admissionController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+        
         $searchModel = new Patient_AdmissionSearch();
         // $searchModel::find()->select('max(entry_datetime)', 'patient_uid');
         // $searchModel::find()->groupBy('patient_uid');
@@ -148,6 +153,11 @@ class Patient_admissionController extends Controller
      */
     public function actionUpdate($rn)
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
         $model = $this->findModel($rn);
         $modelpatient = Patient_information::findOne(['patient_uid' => $model->patient_uid]);
         $modelnok = Patient_next_of_kin::findOne(['patient_uid' => $modelpatient->patient_uid]);

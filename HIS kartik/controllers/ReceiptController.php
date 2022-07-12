@@ -58,6 +58,10 @@ class ReceiptController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
 
         $searchModel = new ReceiptSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
@@ -76,6 +80,11 @@ class ReceiptController extends Controller
      */
     public function actionRecord()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
         $searchModel = new ReceiptSearch();
         // $dataProvider1 = new ActiveDataProvider([
         //     'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
@@ -99,10 +108,10 @@ class ReceiptController extends Controller
             }
 
             $query = Receipt::find()->where(['rn' => $rn_array]);
-            echo "<pre>";
-            var_dump($query);
-            exit();
-            echo "</pre>";
+            // echo "<pre>";
+            // var_dump($query);
+            // exit();
+            // echo "</pre>";
         }
         return $this->render('record', [
             'searchModel' => $searchModel,
@@ -132,6 +141,11 @@ class ReceiptController extends Controller
      */
     public function actionCreate()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+        
         $model = new Receipt();
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
 

@@ -155,7 +155,7 @@ class Patient_informationController extends Controller
             // exit; 
             echo "<script type='text/javascript'>
             setTimeout(function(){
-                confirmAction();
+                confirmActionPatient();
                 },200);
             </script>";
         }
@@ -169,12 +169,13 @@ class Patient_informationController extends Controller
 
 <?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation dialog
-function confirmAction() {
+function confirmActionPatient() {
     var answer = confirm("Are you sure to create patient information?");
     if (answer) {
         window.location.href =  '<?php echo Url::to(['/patient_information/create']) ?>';
     } else {
-        window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
+        // window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
+        window.location.href = history.back();
     }   
 }
 
@@ -186,12 +187,13 @@ function duplicateIC(ic) {
 
 <?php }else{?>
 // The function below will start the confirmation dialog
-function confirmAction() {
+function confirmActionPatient() {
     var answer = confirm("Adakah anda pasti untuk membuat butiran pesakit?");
     if (answer) {
         window.location.href =  '<?php echo Url::to(['/patient_information/create']) ?>';
     } else {
-        window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
+        // window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
+        window.location.href = history.back();
     }   
 }
 

@@ -135,7 +135,7 @@ if(!empty(Yii::$app->request->queryParams))
                 <?php 
                     $model = new Patient_information();
                     $form = ActiveForm::begin([
-                    'action' => ['site/admission'],
+                    // 'action' => ['site/admission'],
                     'enableClientValidation'=> false,
                     'options' => [
                         'class' => 'input-group'

@@ -94,6 +94,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+        
         if (Yii::$app->user->isGuest)
         $this->redirect (Url::to(['/site/login']));
         else return $this->render('index');

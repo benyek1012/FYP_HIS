@@ -139,6 +139,11 @@ class BillController extends Controller
      */
     public function actionCreate()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
         $model = new Bill();
         $rowsWard = (new \yii\db\Query())
             ->select('ward_uid')
@@ -220,6 +225,11 @@ class BillController extends Controller
      */
     public function actionGenerate($bill_uid)
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
             
@@ -384,6 +394,11 @@ class BillController extends Controller
      */
     public function actionPrint($bill_uid)
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+        
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
             

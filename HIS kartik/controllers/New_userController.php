@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\New_user;
 use app\models\New_userSearch;
+use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -55,6 +56,11 @@ class New_userController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
         $modeluser = new New_user();
         $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);

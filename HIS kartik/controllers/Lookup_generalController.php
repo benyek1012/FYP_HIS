@@ -6,6 +6,7 @@ use Yii;
 use app\models\New_user;
 use app\models\Lookup_general;
 use app\models\Lookup_generalSearch;
+use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -55,6 +56,10 @@ class Lookup_generalController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
 
         $model = new Lookup_general();
         $searchModel = new Lookup_generalSearch();
