@@ -15,6 +15,9 @@ use Exception;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use app\models\BillSearch;
+use app\models\Patient_admissionSearch;
+use app\models\Lookup_general;
 
 class SiteController extends Controller
 {
@@ -210,8 +213,13 @@ class SiteController extends Controller
     {
         $report1 = new \app\reports\MyReport1;
         $report1->run();
+        $searchModel = new Patient_information();
+        
+
         return $this->render('report1',array(
-            "report1"=>$report1
+            "report1"=>$report1,
+            "searchModel" => $searchModel,
+           
         ));
         
     }
