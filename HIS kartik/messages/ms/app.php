@@ -200,6 +200,20 @@ return[
     'Debit/Credit Card' => 'Kad Debit/Kredit',
     'Cheque Numbers' => 'Nombor Cek',
     'Search Admission' => 'Pendaftaran Cari',
-    'Search Patient Name' => 'Nama Pesakit Cari'
+    'Search Patient Name' => 'Nama Pesakit Cari',
+    'Phone Number can only contain digit number' => 'Nombor Telefon hanya boleh mengandungi nombor digit',
+    'Name can only contain word characters' => 'Nama hanya boleh mengandungi aksara perkataan',
+    'Patient admission record is not founded' => 'Rekod pendaftaran pesakit tidak diasaskan',
+    'Please fill out the following fields to login:' => 'Sila isi ruangan berikut untuk log masuk:',
+    'Patient Result' => 'Keputusan Pesakit',
+    'Initial Ward Code and Initial Ward Class cannot be blank' => 'Kod Wad Permulaan dan Kelas Wad Permulaan tidak boleh kosong',
+    'Registration Form' => 'Borang Pendaftaran',
+    'Charge Sheet' => 'Lembaran Pertuduhan',
+    'Case History Sheet' => 'Lembaran Sejarah Kes',
+    'Sticker' => 'Pelekat',
+    'Reset' => 'Set Semula',
+    'No' => 'Tidak',
+    'Yes' => 'Ya',
+    'Patient Admission' => 'Pendaftaran Pesakit'
 ];
 ?>

@@ -43,7 +43,7 @@ use yii\bootstrap4\Html;
         
         $sex = array();
         foreach($rows_sex as $row_sex){
-            $sex[$row_sex['code']] = $row_sex['name'];
+            $sex[$row_sex['code']] = Yii::t('app', $row_sex['name']);
         } 
 
         $rows_race = (new \yii\db\Query())

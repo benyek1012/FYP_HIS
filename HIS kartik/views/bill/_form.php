@@ -190,8 +190,8 @@ foreach($rows as $row){
 $billuid = Base64UID::generate(32);
 
 $free = array(
-    0 =>'No', //false
-    1 =>'Yes',    //true
+    0 => Yii::t('app', 'No'), //false
+    1 => Yii::t('app', 'Yes'),    //true
 );
 
 $this->registerJs(

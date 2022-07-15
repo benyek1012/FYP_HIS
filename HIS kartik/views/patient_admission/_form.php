@@ -135,10 +135,10 @@ use kartik\datetime\DateTimePicker;
 
 </div>
 <div >
-<?= Html::a('Registration Form', ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-<?= Html::a('Charge Sheet', ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-<?= Html::a('Case History Sheet', ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-<?= Html::a('Sticker', ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
 
 
 </div>

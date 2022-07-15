@@ -9,13 +9,13 @@ use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 use app\models\LoginForm;
 
-$this->title = 'Login';
+$this->title = Yii::t('app','Login');
 $this->params['breadcrumbs'][] = $this->title;
 //echo LoginForm::hashPassword("12345");
 ?>
 <div class="site-login ">
 
-    <p>Please fill out the following fields to login:</p>
+    <p><?php echo Yii::t('app', 'Please fill out the following fields to login:') ?></p>
 
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="form-group">
             <div class="col-lg-11 justify-content-center row">
-                <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                <?= Html::submitButton(Yii::t('app', 'Login'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
             </div>
         </div>
 
