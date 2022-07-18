@@ -69,6 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ] );
                     return $tag;
                 },
+                'label' => Yii::t('app','Receipt Content Datetime Paid')
             ],
             [
                 'attribute' => 'receipt_serial_number',
@@ -87,6 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ] );
                     return $tag;
                 },
+                'label' => Yii::t('app','Receipt Serial Number')
             ],
             [
                 'attribute' => 'receipt_content_sum',
@@ -97,6 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '+'.$data['receipt_content_sum'];
                     else return '-'.$data['receipt_content_sum'];
                 },
+                'label' => Yii::t('app','Receipt Content Sum')
             ],
             [
                 'attribute'=>'receipt_type',
@@ -107,6 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'bill'=> Yii::t('app','Bill'),
                     'refund'=> Yii::t('app','Refund'),
                 ),
+                'label' => Yii::t('app','Receipt Type')
             ],
             [
                 'attribute'=>'receipt_content_payment_method',
@@ -117,11 +121,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'card'=> Yii::t('app','Debit/Credit Card'),
                     'cheque'=> Yii::t('app','Cheque Numbers'),
                 ),
+                'label' => Yii::t('app','Receipt Content Payment Method')
             ],
             [
                 'attribute'=> 'receipt_content_payer_name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Receipt Content Payer Name')
             ],
            
             [
@@ -147,6 +153,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model_User->getName() . $name;
                     }
                 },
+                'label' => Yii::t('app','Receipt Responsible')
             ],
             [
                 'attribute' => 'Type',
@@ -160,6 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $tag;
 
                 },
+                'label' => Yii::t('app','Type')
             ],
 
             // [

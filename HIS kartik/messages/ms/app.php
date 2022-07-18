@@ -214,6 +214,10 @@ return[
     'Reset' => 'Set Semula',
     'No' => 'Tidak',
     'Yes' => 'Ya',
-    'Patient Admission' => 'Pendaftaran Pesakit'
+    'Patient Admission' => 'Pendaftaran Pesakit',
+    'Receipt Content Sum' => 'Jumlah Kandungan Resit',
+    'Receipt Content Datetime Paid' => 'Kandungan Resit Tarikh Masa Dibayar',
+    'Receipt Content Payer Name' => 'Nama Pembayar Kandungan Resit',
+    'Receipt Content Payment Method' => 'Kaedah Pembayaran Kandungan Resit', 
 ];
 ?>

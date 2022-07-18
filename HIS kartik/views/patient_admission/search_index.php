@@ -64,6 +64,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                 'value' => function($data){
                                     return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->name;
                                 },
+                                'label' => Yii::t('app','Name')
                             ],
                             [
                                 'attribute' => 'nric',
@@ -74,6 +75,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                     $ic = ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->nric;
                                     return  Html::a($ic, \yii\helpers\Url::to(['/site/admission', 'id' => $data['patient_uid'], '#' => 'patient']));
                                 },
+                                'label' => Yii::t('app','NRIC')
                             ],
                             [
                                 'attribute' => 'race',
@@ -82,6 +84,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                 'value' => function($data){
                                     return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->race;
                                 },
+                                'label' => Yii::t('app','Race')
                             ],
                             [
                                 'attribute' => 'sex',
@@ -90,6 +93,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                 'value' => function($data){
                                     return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->sex;
                                 },
+                                'label' => Yii::t('app','Sex')
                             ],
                             [
                                 'attribute' => 'rn',

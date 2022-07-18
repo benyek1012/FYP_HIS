@@ -49,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' =>   'receipt_type',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Receipt Type')
             ],  
           
             [
@@ -60,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '+'.$data['receipt_content_sum'];
                     else return '-'.$data['receipt_content_sum'];
                 },
+                'label' => Yii::t('app','Receipt Content Sum')
             ],
      
             [
@@ -78,16 +80,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     ] );
                     return $tag;
                 },
+                'label' => Yii::t('app','Receipt Content Datetime Paid')
             ],
             [
                 'attribute' =>  'receipt_content_payer_name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Receipt Content Payer Name')
             ],   
             [
                 'attribute' => 'receipt_content_payment_method',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Receipt Content Method')
             ],   
             [
                 'attribute' => 'receipt_responsible',
@@ -112,11 +117,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model_User->getName() . $name;
                     }
                 },
+                'label' => Yii::t('app','Receipt Responsible')
             ],
             [
                 'attribute' => 'receipt_serial_number',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Receipt Responsible')
             ],   
             [
                 'attribute' => 'Type',
@@ -130,6 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $tag;
 
                 },
+                'label' => Yii::t('app','Type')
             ],
             // [
             //     'class' => ActionColumn::className(),
