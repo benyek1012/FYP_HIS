@@ -33,7 +33,7 @@ $this->registerCssFile('https://code.ionicframework.com/ionicons/2.0.1/css/ionic
         <div class="col-6 mx-auto">
             <div class="card shadow border">
                 <div class="card-body">
-                    <h1>Login</h1>
+                    <h1><?php echo Yii::t('app','Login') ?></h1>
                     <?= $content ?>
                     <!-- /.content-wrapper -->
                 </div>

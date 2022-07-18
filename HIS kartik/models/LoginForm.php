@@ -108,4 +108,16 @@ class LoginForm extends Model
         $salt = "stev37f";
         return md5($password.$salt);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => Yii::t('app','Username'),
+            'password' => Yii::t('app','Password'),
+            'rememberMe' => Yii::t('app','Remember Me'),
+        ];
+    }
 }
