@@ -44,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>function ($data) {
                     return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                 },
+                'label' => Yii::t('app','Registration Number (R/N)')
             ],
             [
                 'attribute' =>   'receipt_type',
@@ -58,8 +59,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
-                        return '+'.$data['receipt_content_sum'];
-                    else return '-'.$data['receipt_content_sum'];
+                        return '+ '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
+                    else return '- '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
                 },
                 'label' => Yii::t('app','Receipt Content Sum')
             ],
@@ -92,7 +93,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'receipt_content_payment_method',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'label' => Yii::t('app','Receipt Content Method')
+                'label' => Yii::t('app','Receipt Content Payment Method'),
+                'value'=>function ($data) {
+                    if($data['receipt_content_payment_method'] == 'cash')
+                        return Yii::t('app','Cash');
+                    else if($data['receipt_content_payment_method'] == 'card')
+                        return Yii::t('app','Debit/Credit Card');
+                    else if($data['receipt_content_payment_method'] == 'cheque')
+                        return Yii::t('app','Cheque Numbers');
+                },
             ],   
             [
                 'attribute' => 'receipt_responsible',
@@ -131,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 "format"=>"raw",
                 'value'=>function ($data) {
-                    $tag = Html::tag('span', !empty($data['receipt_type']) ? 'Receipt' : 'Bill' , [
+                    $tag = Html::tag('span', !empty($data['receipt_type']) ?  Yii::t('app','Receipt') :  Yii::t('app','Bill') , [
                         'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')
                     ]);
                     return $tag;

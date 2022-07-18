@@ -53,6 +53,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                         return [
                             // 'onclick' => "window.location.href='{$url}'"
                             'onclick' => "patientAdmission('{$urlPatientAdmission}'); patientInformation('{$urlPatientInformation}');",
+                            'style' => "cursor:pointer"
                         ];
                     },
                     'columns' => [

@@ -56,7 +56,7 @@ return[
     'Guarantor NRIC' => 'NRIC Penjamin',
     'Guarantor Phone Number' => 'Nombor Telefon Penjamin',
     'Guarantor Email' => 'Emel Penjamin',
-    'Type' => 'Taip',
+    'Type' => 'Jenis',
     'First Reg Date' => 'Tarikh Berdaftar Pertama',
     'Nationality' => 'Nasionaliti',
     'Name' => 'Nama',
@@ -219,5 +219,6 @@ return[
     'Receipt Content Datetime Paid' => 'Kandungan Resit Tarikh Masa Dibayar',
     'Receipt Content Payer Name' => 'Nama Pembayar Kandungan Resit',
     'Receipt Content Payment Method' => 'Kaedah Pembayaran Kandungan Resit', 
+    'Receipt' => 'Resit', 
 ];
 ?>

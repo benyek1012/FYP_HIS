@@ -96,8 +96,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
-                        return '+'.$data['receipt_content_sum'];
-                    else return '-'.$data['receipt_content_sum'];
+                        return '+ '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
+                    else return '- '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
                 },
                 'label' => Yii::t('app','Receipt Content Sum')
             ],
@@ -105,22 +105,38 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'receipt_type',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'filter'=> array(
-                    'deposit'=> Yii::t('app','Deposit'),
-                    'bill'=> Yii::t('app','Bill'),
-                    'refund'=> Yii::t('app','Refund'),
-                ),
+                'value'=>function ($data) {
+                    if($data['receipt_type'] == 'deposit')
+                        return Yii::t('app','Deposit');
+                    else if($data['receipt_type'] == 'bill')
+                        return Yii::t('app','Bill');
+                    else if($data['receipt_type'] == 'refund')
+                        return Yii::t('app','Refund');
+                },
+                // 'filter'=> array(
+                //     'deposit'=> Yii::t('app','Deposit'),
+                //     'bill'=> Yii::t('app','Bill'),
+                //     'refund'=> Yii::t('app','Refund'),
+                // ),
                 'label' => Yii::t('app','Receipt Type')
             ],
             [
                 'attribute'=>'receipt_content_payment_method',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'filter'=> array(
-                    'cash'=> Yii::t('app','Cash'),
-                    'card'=> Yii::t('app','Debit/Credit Card'),
-                    'cheque'=> Yii::t('app','Cheque Numbers'),
-                ),
+                'value'=>function ($data) {
+                    if($data['receipt_content_payment_method'] == 'cash')
+                        return Yii::t('app','Cash');
+                    else if($data['receipt_content_payment_method'] == 'card')
+                        return Yii::t('app','Debit/Credit Card');
+                    else if($data['receipt_content_payment_method'] == 'cheque')
+                        return Yii::t('app','Cheque Numbers');
+                },
+                // 'filter'=> array(
+                //     'cash'=> Yii::t('app','Cash'),
+                //     'card'=> Yii::t('app','Debit/Credit Card'),
+                //     'cheque'=> Yii::t('app','Cheque Numbers'),
+                // ),
                 'label' => Yii::t('app','Receipt Content Payment Method')
             ],
             [
@@ -161,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
-                    $tag = Html::tag('span', !empty($data['receipt_type']) ? 'Receipt' : 'Bill' , [
+                    $tag = Html::tag('span', !empty($data['receipt_type']) ?  Yii::t('app','Receipt') :  Yii::t('app','Bill') , [
                         'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')
                     ]);
                     return $tag;

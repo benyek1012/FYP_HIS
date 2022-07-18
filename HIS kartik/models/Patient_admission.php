@@ -75,7 +75,8 @@ class Patient_admission extends \yii\db\ActiveRecord
             'guarantor_nric' => Yii::t('app','Guarantor NRIC'),
             'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
             'guarantor_email' => Yii::t('app','Guarantor Email'),
-            'type' => Yii::t('app','Type')
+            'type' => Yii::t('app','Type'),
+            'name' =>  Yii::t('app','Name')
         ];
     }
 
