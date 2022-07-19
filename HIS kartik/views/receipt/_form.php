@@ -112,7 +112,7 @@ use app\models\Patient_information;
         </div>
 
         <div class="col-sm-6">
-            <?php  if(!empty($model_bill)){
+            <!-- <?php  if(!empty($model_bill)){
                     if((new Bill()) -> calculateFinalFee($model_bill->bill_uid) >= 0){
         ?>
             <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> calculateFinalFee($model_bill->bill_uid)]) ?>
@@ -122,7 +122,8 @@ use app\models\Patient_information;
             <?php }
             }else{ ?>
             <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
-            <?php } ?>
+            <?php } ?> -->
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6">

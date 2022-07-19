@@ -50,21 +50,11 @@ function getInfo()
 }
 
 // return all RN from particular patient 
-function items()
+function items($rn)
 {
-    $info = getInfo();
-
-    $rows = (new \yii\db\Query())
-    ->select(['rn'])
-    ->from('patient_admission')
-    ->where(['patient_uid' => $info->patient_uid])
-    ->orderBy(['entry_datetime' => SORT_DESC, 'rn' => SORT_DESC])
-    ->all();
-
     $items = [];
 
     $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
-    $model_rn = Patient_admission::findOne(['patient_uid' =>  $info->patient_uid]);
 
     if(empty($model_bill))
         $url_bill = 'bill/create';
@@ -74,41 +64,29 @@ function items()
 
     if(!empty($model_bill))
     {
-        foreach ($rows as $row) {
-            array_push($items, 
-            ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']],
-                'items' => [
-                    ['label' => 'Admission','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
-                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
-                    'bill_uid' =>  $model_bill->bill_uid,  'rn' => $row['rn']]],
-                    ['label' => Yii::t('app','Payment'), 'iconClass' => '',
-                        'url' => ['receipt/index', 'rn' =>  $row['rn']]],
-                ]
-            ]);
+        array_push($items, 
+        ['label' => '' .  $rn .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $rn]]);
+
+        if($rn == Yii::$app->request->get('rn'))
+        {
+            array_push($items,['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
+            'bill_uid' =>  $model_bill->bill_uid,  'rn' => $rn]]);
+            array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
+            'url' => ['receipt/index', 'rn' =>  $rn]]);
         }
     }
     else{
-        foreach ($rows as $row) {
-            array_push($items, 
-            ['label' => '' .  $row['rn'] .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']],
-                'items' => [
-                    ['label' => 'Admission','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $row['rn']]],
-                    ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
-                        'url' => ['bill/create', 'rn' =>  $row['rn']]],
-                    ['label' => Yii::t('app','Payment'), 'iconClass' => '', 
-                        'url' => ['receipt/index', 'rn' =>  $row['rn']]],
-                        
-                ]
-            ]);
+        array_push($items, 
+        ['label' => '' .  $rn .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $rn]]);
+
+        if($rn == Yii::$app->request->get('rn'))
+        {
+            array_push($items, ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
+                        'url' => ['bill/create', 'rn' =>  $rn]]);
+            array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
+            'url' => ['receipt/index', 'rn' =>  $rn]]);
         }
     }
-    
-    if(!empty($model_rn))
-        array_push($items, 
-            ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
-            'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
-        );
-
 
     return $items;
 }
@@ -118,7 +96,16 @@ if(!empty(Yii::$app->request->queryParams))
     $info = getInfo();
 
 if(!empty($info))
+{
+    // check whether any rn belongs to patient
     $model_rn = Patient_admission::findOne(['patient_uid' =>  $info->patient_uid]);
+    $rows = (new \yii\db\Query())
+    ->select(['rn'])
+    ->from('patient_admission')
+    ->where(['patient_uid' => $info->patient_uid])
+    ->orderBy(['entry_datetime' => SORT_DESC, 'rn' => SORT_DESC])
+    ->all();
+}
 
 ?>
 
@@ -163,9 +150,9 @@ if(!empty($info))
                 if(!empty($info)){
                     if($info->name == "") $temp_name = "Unknown";
                     else $temp_name = $info->name;
-            //         echo \hail812\adminlte\widgets\Menu::widget([
-            //             'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
-            // ?>
+                        echo \hail812\adminlte\widgets\Menu::widget([
+                         'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
+             ?>
             <div class="mt-1 ml-1 d-flex">
                 <div class="info">
                     <p class="text-white"><?php echo Yii::t('app','Patient IC')." : ".$info->nric;?></p>
@@ -184,27 +171,29 @@ if(!empty($info))
                 </div>
             </div>
             <?php  } ?>
-
-            <!-- Return all RN from particular patient -->
-            <?php 
-                if(!empty($info)){
-                    if(!empty($model_rn)){
-            ?>
-                        <!-- Sidebar Menu Line Break -->
-                        <div class="user-panel "></div>
-                        <div class="mt-2"></div>
-            <?php
-                    }
-                    echo \hail812\adminlte\widgets\Menu::widget(['items' => items()]);
-            ?>
-                    <div class="mt-2"></div>
-                    <!-- Sidebar Menu Line Break -->
-                    <div class="user-panel "></div>
-            <?php
-                }
-            ?>
-            </nav>
-            <!-- /.sidebar-menu -->
         </div>
+        <!-- Return all RN from particular patient -->
+        <?php 
+            if(!empty($info)){
+                if(!empty($model_rn)){
+                    echo '<div class="mt-2"></div><div class="user-panel">'.
+                        \hail812\adminlte\widgets\Menu::widget(['items' => 
+                            [   
+                                ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
+                                'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
+                            ]
+                        ]). '</div><div class="mt-2"></div>';
+                }
+
+                foreach ($rows as $row) {
+                    echo '<div class="mt-2"></div><div class="user-panel">'
+                            .\hail812\adminlte\widgets\Menu::widget(['items' => items($row['rn'])]).
+                        '</div><div class="mt-2"></div>';
+                  //  echo '<div class="mt-2"></div><div class="user-panel "></div><div class="mt-2"></div>';
+                }
+            }
+        ?>
         <!-- /.sidebar -->
+    </div>
+
 </aside>

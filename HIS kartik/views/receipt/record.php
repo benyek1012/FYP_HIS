@@ -47,25 +47,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => Yii::t('app','Registration Number (R/N)')
             ],
             [
-                'attribute' =>   'receipt_type',
-                'headerOptions'=>['style'=>'max-width: 100px;'],
-                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'label' => Yii::t('app','Receipt Type')
-            ],  
-          
-            [
-                'attribute' => 'receipt_content_sum',
-                'headerOptions'=>['style'=>'max-width: 100px;'],
-                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'value'=>function ($data) {
-                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
-                        return '+ '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
-                    else return '- '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
-                },
-                'label' => Yii::t('app','Receipt Content Sum')
-            ],
-     
-            [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
                 'headerOptions'=>['style'=>'max-width: 100px;'],
@@ -81,19 +62,44 @@ $this->params['breadcrumbs'][] = $this->title;
                     ] );
                     return $tag;
                 },
-                'label' => Yii::t('app','Receipt Content Datetime Paid')
+                'label' => Yii::t('app', 'Datetime Paid')
             ],
             [
-                'attribute' =>  'receipt_content_payer_name',
+                'attribute' => 'receipt_serial_number',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'label' => Yii::t('app','Receipt Content Payer Name')
+                'label' => 'ID'
             ],   
+            [
+                'attribute' => 'receipt_content_sum',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'value'=>function ($data) {
+                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
+                        return '+ '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
+                    else return '- '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
+                },
+                'label' => Yii::t('app','Total')
+            ],
+            [
+                'attribute' => 'receipt_type',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Type'),
+                'value'=>function ($data) {
+                    if(empty($data['receipt_type']))
+                        return  Yii::t('app','Bill Payment');
+                    else if($data['receipt_type'] == "deposit")
+                        return  Yii::t('app','Deposit Payment');
+                    else if($data['receipt_type'] == "refund")
+                        return  Yii::t('app','Refund');
+                }
+            ],  
             [
                 'attribute' => 'receipt_content_payment_method',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'label' => Yii::t('app','Receipt Content Payment Method'),
+                'label' => Yii::t('app','Payment Method'),
                 'value'=>function ($data) {
                     if($data['receipt_content_payment_method'] == 'cash')
                         return Yii::t('app','Cash');
@@ -102,6 +108,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     else if($data['receipt_content_payment_method'] == 'cheque')
                         return Yii::t('app','Cheque Numbers');
                 },
+            ],   
+            [
+                'attribute' =>  'receipt_content_payer_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'label' => Yii::t('app','Payer Name')
             ],   
             [
                 'attribute' => 'receipt_responsible',
@@ -126,14 +138,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $model_User->getName() . $name;
                     }
                 },
-                'label' => Yii::t('app','Receipt Responsible')
+                'label' => Yii::t('app','Responsible')
             ],
-            [
-                'attribute' => 'receipt_serial_number',
-                'headerOptions'=>['style'=>'max-width: 100px;'],
-                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'label' => Yii::t('app','Receipt Responsible')
-            ],   
+        
             [
                 'attribute' => 'Type',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
@@ -148,6 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'label' => Yii::t('app','Type')
             ],
+
             // [
             //     'class' => ActionColumn::className(),
             //     'template' => '{view}',

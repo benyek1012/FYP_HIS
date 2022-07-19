@@ -218,9 +218,10 @@ return[
     'Yes' => 'Ya',
     'Patient Admission' => 'Pendaftaran Pesakit',
     'Receipt Content Sum' => 'Jumlah Kandungan Resit',
-    'Receipt Content Datetime Paid' => 'Kandungan Resit Tarikh Masa Dibayar',
-    'Receipt Content Payer Name' => 'Nama Pembayar Kandungan Resit',
-    'Receipt Content Payment Method' => 'Kaedah Pembayaran Kandungan Resit', 
+    'Datetime Paid' => 'Tarikh Masa Dibayar',
+    'Payer Name' => 'Nama Pembayar',
+    'Payment Method' => 'Kaedah Pembayaran', 
     'Receipt' => 'Resit', 
+    'Responsible'=> 'Bertanggungjawab',
 ];
 ?>

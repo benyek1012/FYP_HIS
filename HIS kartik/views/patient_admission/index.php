@@ -2,6 +2,7 @@
 
 use app\models\Patient_admission;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_admissionSearch */
@@ -22,8 +23,10 @@ use yii\helpers\Html;
                     'format' => 'raw',
                     'headerOptions'=>['style'=>'max-width: 100px;'],
                     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                    'value'=>function ($data) {
-                        return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                    'value'=>function ($data, $key, $index){ 
+                        return ($index == 0) ?
+                            '<b>'.Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']])).'</b>'
+                            :  Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                     },
                 ],
                 [
@@ -58,16 +61,16 @@ use yii\helpers\Html;
                     'headerOptions'=>['style'=>'max-width: 100px;'],
                     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 ],
-                [
-                    'attribute' =>  'medical_legal_code',
-                    'headerOptions'=>['style'=>'max-width: 100px;'],
-                    'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                ],
-                [
-                    'attribute' =>  'reminder_given',
-                    'headerOptions'=>['style'=>'max-width: 100px;'],
-                    'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                ],
+                // [
+                //     'attribute' =>  'medical_legal_code',
+                //     'headerOptions'=>['style'=>'max-width: 100px;'],
+                //     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                // ],
+                // [
+                //     'attribute' =>  'reminder_given',
+                //     'headerOptions'=>['style'=>'max-width: 100px;'],
+                //     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                // ],
                 [
                     'attribute' =>  'guarantor_name',
                     'headerOptions'=>['style'=>'max-width: 100px;'],

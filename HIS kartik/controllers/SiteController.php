@@ -272,6 +272,7 @@ class SiteController extends Controller
         return $this->render('no_access');
     }
 
+    // Return true = controller ID equels url
     public function accessControl(){
         $flag = false;
         $actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");

@@ -15,25 +15,32 @@ $this->params['breadcrumbs'][] = $this->title;
 //echo LoginForm::hashPassword("12345");
 ?>
 <div class="site-login ">
-<!-- Navbar -->
-<nav class="navbar navbar-expand navbar-white navbar-light">
- <!-- Right navbar links -->
- <ul class="navbar-nav ml-auto">
-<li class="nav-item dropdown">
-    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
-    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-        <?php
-            foreach(Yii::$app->params['languages'] as $key => $language){
-                echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
-            }
-        ?>
-    </ul>
-</li>
-</ul>
-</nav>
 
-    <p><?php echo Yii::t('app',"Please fill out the following fields to login:")?></p>
+    <div class="row">
+        <div class="col-sm">
+            <p><?php echo Yii::t('app',"Please fill out the following fields to login:")?></p>
+        </div>
+        <div class="col-sm">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand navbar-white navbar-light">
+                <!-- Right navbar links -->
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"
+                            class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
+                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                            <?php
+                                    foreach(Yii::$app->params['languages'] as $key => $language){
+                                        echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
+                                    }
+                                ?>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
@@ -46,23 +53,23 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    <?= $form->field($model, 'username', ['labelOptions' => [ 'class' => 'col-lg-3' ]])->textInput(['autofocus' => true]) ?>
 
-        <?= $form->field($model, 'password')->passwordInput() ?>
+    <?= $form->field($model, 'password', ['labelOptions' => [ 'class' => 'col-lg-3' ]])->passwordInput() ?>
 
-        <?= $form->field($model, 'rememberMe')->checkbox([
+    <?= $form->field($model, 'rememberMe')->checkbox([
             'template' => "<div class=\" col-lg-3 custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
         ]) ?>
 
-        <div class="form-group">
-            <div class="col-lg-11 justify-content-center row">
-                <?= Html::submitButton(Yii::t('app','Login'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-            </div>
+    <div class="form-group">
+        <div class="col-lg-11 justify-content-center row">
+            <?= Html::submitButton(Yii::t('app','Login'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
         </div>
+    </div>
 
     <?php ActiveForm::end(); ?>
-    
-<?php
+
+    <?php
 $this->registerJs(
     "$(document).on('click', '.language', function() {
         var lang = $(this).attr('id');
@@ -77,5 +84,5 @@ $this->registerJs(
 
 ?>
 
-    
+
 </div>
