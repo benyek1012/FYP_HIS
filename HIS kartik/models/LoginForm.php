@@ -35,6 +35,15 @@ class LoginForm extends Model
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'username' => Yii::t('app','Username'),
+            'password' => Yii::t('app','Password'),
+            'rememberMe' => Yii::t('app','Remember Me'),
+        ];
+    }
+
     /**
      * Validates the password.
      * This method serves as the inline validation for password.
@@ -107,17 +116,5 @@ class LoginForm extends Model
     public function hashPassword($password) {// Function to create password hash
         $salt = "stev37f";
         return md5($password.$salt);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'username' => Yii::t('app','Username'),
-            'password' => Yii::t('app','Password'),
-            'rememberMe' => Yii::t('app','Remember Me'),
-        ];
     }
 }

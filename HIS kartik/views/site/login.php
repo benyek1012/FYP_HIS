@@ -8,14 +8,32 @@
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 use app\models\LoginForm;
+use yii\helpers\Url;
 
 $this->title = Yii::t('app','Login');
 $this->params['breadcrumbs'][] = $this->title;
 //echo LoginForm::hashPassword("12345");
 ?>
 <div class="site-login ">
+<!-- Navbar -->
+<nav class="navbar navbar-expand navbar-white navbar-light">
+ <!-- Right navbar links -->
+ <ul class="navbar-nav ml-auto">
+<li class="nav-item dropdown">
+    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
+    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+        <?php
+            foreach(Yii::$app->params['languages'] as $key => $language){
+                echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
+            }
+        ?>
+    </ul>
+</li>
+</ul>
+</nav>
 
-    <p><?php echo Yii::t('app', 'Please fill out the following fields to login:') ?></p>
+    <p><?php echo Yii::t('app',"Please fill out the following fields to login:")?></p>
 
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
@@ -38,10 +56,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="form-group">
             <div class="col-lg-11 justify-content-center row">
-                <?= Html::submitButton(Yii::t('app', 'Login'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                <?= Html::submitButton(Yii::t('app','Login'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
             </div>
         </div>
 
     <?php ActiveForm::end(); ?>
+    
+<?php
+$this->registerJs(
+    "$(document).on('click', '.language', function() {
+        var lang = $(this).attr('id');
+        var str = window.location.pathname;
+        var lastChar = str[str.length - 1];
+        $.post('". Url::to(['/site/language'])."', {'lang':lang}, function(data){
+            if(lastChar == '/') window.location.href = '". Url::to(['/site/index'])."';
+            else location.reload();
+        });
+    });"
+);
+
+?>
+
     
 </div>
