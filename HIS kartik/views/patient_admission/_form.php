@@ -127,7 +127,7 @@ use kartik\datetime\DateTimePicker;
             echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
         }
         ?>
-        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success']) ?>
         <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>
 

@@ -61,7 +61,7 @@ class Bill extends \yii\db\ActiveRecord
            // [['bill_print_id'], 'integer'],
          //   [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['bill_print_id'], 'unique'],
-            [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
+            [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
 

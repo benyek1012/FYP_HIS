@@ -109,6 +109,7 @@ if($print_readonly)
 }
 
 $url = Url::toRoute(['/bill/ward']);
+$urlDate = Url::toRoute(['/bill/date']);
 ?>
 
 <a name="ward">
@@ -245,6 +246,7 @@ $url = Url::toRoute(['/bill/ward']);
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveWard', 'name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
         <?php } ?>
         <input type="hidden" id="wardURL" name="wardURL" value="<?php echo $url ?>">
+        <input type="hidden" id="dateURL" name="dateURL" value="<?php echo $urlDate ?>">
     <?php kartik\form\ActiveForm::end(); ?>
     <?php Pjax::end(); ?>
 </a>
@@ -357,6 +359,31 @@ $(document).on('click', '#addWardRow', function(e){
         }
     });
 })
+
+// Date Clashing
+var billUid = $('#ward-bill-uid').val();
+var url = document.getElementById("dateURL").value;
+
+$.get(url, {bill_uid : billUid}, function(data){
+    var data = $.parseJSON(data);
+
+    for(var i = 0; i < data.length; i++){
+        var start = new Date(data[i].ward_start_datetime).getTime();
+        var end = new Date(data[i].ward_end_datetime).getTime();
+
+        for(var j = 0; j < data.length; j++){
+            var from = new Date(data[j].ward_start_datetime).getTime();
+            var to = new Date(data[j].ward_end_datetime).getTime()
+            if(j != i){
+                if(start >= from && start <= to || end >= from && end <= to){
+                    $('#ward-'+i+'-ward_start_datetime').addClass('textColor');
+                    $('#ward-'+i+'-ward_end_datetime').addClass('textColor');
+                }
+            }
+        }
+    }
+});
+
 JS;
 $this->registerJS($script);
 ?>

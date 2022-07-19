@@ -54,7 +54,7 @@ class Receipt extends \yii\db\ActiveRecord
            // [['receipt_serial_number'], 'exist', 'skipOnError' => true, 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_serial_number' => 'receipt_serial_number']],
          //    [['receipt_serial_number', 'unique', 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_serial_number' => 'receipt_serial_number'],
            //      'message' => 'This receipt serial number is use.']],
-            [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_Admission::className(), 'targetAttribute' => ['rn' => 'rn']],
+            [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
 

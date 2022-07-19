@@ -113,11 +113,11 @@ class BillController extends Controller
     public function actionDate($bill_uid){
         $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
          
-        if($modelWard != null){
-            $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
-        }
-        echo Json::encode($modelDate);
-    }   
+        // if($modelWard != null){
+        //     $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
+        // }
+        echo Json::encode($modelWard);
+    }    
 
     /**
      * Displays a single Bill model.
