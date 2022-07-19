@@ -315,5 +315,12 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($result))
             return $result;
     }
+
+    // Check whether bill is generated
+    public function getFinalFee($rn){
+        $row_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        if(!empty($row_bill))
+            return !empty($row_bill['bill_generation_final_fee_rm']) ? $row_bill['bill_generation_final_fee_rm'] : number_format((float) 0, 2, '.', '');
+    }
     
 }

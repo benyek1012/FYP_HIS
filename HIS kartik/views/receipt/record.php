@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'label' => Yii::t('app','Type'),
                 'value'=>function ($data) {
-                    if(empty($data['receipt_type']))
+                    if($data['receipt_type'] == "bill")
                         return  Yii::t('app','Bill Payment');
                     else if($data['receipt_type'] == "deposit")
                         return  Yii::t('app','Deposit Payment');
