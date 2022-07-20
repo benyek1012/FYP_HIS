@@ -295,5 +295,16 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($row_bill))
             return !empty($row_bill['bill_print_id']) ? $row_bill['bill_print_id'] : false;
     }
+
+    public function getPatient_admission()
+    {
+        return $this->hasMany(Patient_admission::className(), ['rn' => 'rn']);
+    }
+
+    public function getPatient_information() {
+        return $this->hasMany(Patient_information::className(), ['patient_uid' => 'patient_uid'])
+            ->viaTable('patient_admission', ['rn' => 'rn']);
+    }
     
+
 }

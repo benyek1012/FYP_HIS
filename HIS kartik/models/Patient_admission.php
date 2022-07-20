@@ -130,4 +130,14 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Receipt::className(), ['rn' => 'rn']);
     }
+
+    public function getPatient_information() 
+    {
+        return $this->hasMany(Patient_information::className(), ['patient_uid' => 'patient_uid']);
+    }
+
+    public function getBill()
+    {
+        return $this->hasMany(Bill::className(), ['rn' => 'rn']);
+    }
 }

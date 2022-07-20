@@ -10,14 +10,12 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\Patient_information;
 use app\controllers\Patient_informationController;
+use app\models\BillSearch;
 use app\models\Patient_next_of_kin;
 use Exception;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use app\models\BillSearch;
-use app\models\Patient_admissionSearch;
-use app\models\Lookup_general;
 
 class SiteController extends Controller
 {
@@ -213,15 +211,12 @@ class SiteController extends Controller
     {
         $report1 = new \app\reports\MyReport1;
         $report1->run();
-        $searchModel = new Patient_information();
-        
-
+        $searchModel = new BillSearch();
+      
         return $this->render('report1',array(
             "report1"=>$report1,
             "searchModel" => $searchModel,
-           
         ));
-        
     }
     
 

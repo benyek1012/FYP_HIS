@@ -10,10 +10,12 @@ use yii\widgets\ActiveForm;
 
 <div class="patient-admission-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php
+    $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
+
 
     <?= $form->field($model, 'rn') ?>
 

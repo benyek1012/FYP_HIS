@@ -90,6 +90,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
     }
 
+
     /**
      * Gets query for [[PatientNextOfKins]].
      *
@@ -141,5 +142,14 @@ class Patient_information extends \yii\db\ActiveRecord
         }
 
         return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                
+    }
+    public function getPatient_admission() 
+    {
+        return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
+    }
+    public function getBill() 
+    {
+        return $this->hasMany(Bill::className(), ['patient_uid' => 'patient_uid'])
+            ->viaTable('patient_admission', ['rn' => 'rn']);
     }
 }
