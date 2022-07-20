@@ -128,7 +128,7 @@ $urlDate = Url::toRoute(['/bill/date']);
 
         <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else{ ?>
-        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-sm']) ?>
+        <!-- <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-info btn-sm']) ?> -->
         <!-- <?= Html::submitButton('-', ['name' => 'removeWardRow', 'value' => 'true', 'class' => 'btn btn-danger btn-sm']) ?> -->
         <?php } ?>
         <input type="hidden" id="countWard" name="countWard" value="<?php echo count($modelWard); ?>">
@@ -241,8 +241,10 @@ $urlDate = Url::toRoute(['/bill/date']);
 
         <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
+        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveWard', 'name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
         <?php }else{ ?>
+        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveWard', 'name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
         <?php } ?>
         <input type="hidden" id="wardURL" name="wardURL" value="<?php echo $url ?>">
