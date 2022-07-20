@@ -2,6 +2,7 @@
 /* @var $content string */
 
 use yii\bootstrap4\Breadcrumbs;
+use yii\helpers\Url;
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -22,6 +23,10 @@ use yii\bootstrap4\Breadcrumbs;
                 <div class="col-sm-6">
                     <?php
                     echo Breadcrumbs::widget([
+                        'homeLink' => [
+                            'label' => Yii::t('app', 'Home'),
+                            'url' => Url::to(['/site/index']),
+                        ],
                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                         'options' => [
                             'class' => 'breadcrumb float-sm-right'

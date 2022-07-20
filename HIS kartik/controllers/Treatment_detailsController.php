@@ -2,11 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\Bill;
+use app\models\Model;
+use app\models\Lookup_treatment;
 use app\models\Treatment_details;
 use app\models\Treatment_detailsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use GpsLab\Component\Base64UID\Base64UID;
+use Yii;
 
 /**
  * Treatment_detailsController implements the CRUD actions for Treatment_details model.
@@ -24,11 +29,38 @@ class Treatment_detailsController extends Controller
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete' => ['GET'],
                     ],
                 ],
             ]
         );
+    }
+
+    public function actionTreatmentrow()
+    {
+        if (Yii::$app->request->post('addTreatmentRow') == 'true') {
+            $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+
+            if(empty($dbTreatment)) {
+                $count = count(Yii::$app->request->post('Treatment_details', []));
+                for($i = 0; $i < $count; $i++) {
+                    $modelTreatment[] = new Treatment_details();
+                }
+                $modelTreatment[] = new Treatment_details();
+            }
+            else {
+                $modelTreatment = $dbTreatment;
+                $count = count(Yii::$app->request->post('Treatment_details', [])) - count($dbTreatment);
+                for($i = 0; $i < $count; $i++) {
+                    $modelTreatment[] = new Treatment_details();
+                }
+                $modelTreatment[] = new Treatment_details();
+            }
+
+            return $this->renderPartial('/treatment_details/_form', [
+                'modelTreatment' => $modelTreatment,
+            ]);
+        }
     }
 
     /**
@@ -68,16 +100,12 @@ class Treatment_detailsController extends Controller
     public function actionCreate()
     {
         $model = new Treatment_details();
+        $model->treatment_details_uid = Base64UID::generate(32);
+        $model->loadDefaultValues();
+        $model-> save();
+        return $this->redirect(['bill/create', 'rn' => Yii::$app->request->get('rn')]);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'treatment_details_uid' => $model->treatment_details_uid]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
+        return $this->renderPartial('create', [
             'model' => $model,
         ]);
     }
@@ -89,17 +117,84 @@ class Treatment_detailsController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($treatment_details_uid)
+    public function actionUpdate()
     {
-        $model = $this->findModel($treatment_details_uid);
+         // Insert and Update Treatment
+         if(Yii::$app->request->post('saveTreatment') == 'true' && Yii::$app->request->post('Treatment_details', [])) {
+            $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
+            $modelTreatment = Model::createMultiple(Treatment_details::className());
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'treatment_details_uid' => $model->treatment_details_uid]);
+            if(empty($dbTreatment)) {
+                if( Model::loadMultiple($modelTreatment, Yii::$app->request->post())) {
+                    $valid = Model::validateMultiple($modelTreatment);
+                    
+                    if($valid) {                    
+                        foreach ($modelTreatment as $modelTreatment) {
+                            $modelTreatment->treatment_details_uid = Base64UID::generate(32);
+                            $modelTreatment->bill_uid = Yii::$app->request->get('bill_uid');
+
+                            if(!empty($modelTreatment->treatment_code) && !empty($modelTreatment->treatment_name) && !empty($modelTreatment->item_per_unit_cost_rm) && !empty($modelTreatment->item_count) && !empty($modelTreatment->item_total_unit_cost_rm)){
+                                $modelTreatment->save();
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                $countTreatment = count(Yii::$app->request->post('Treatment_details', []));
+                $countdb = count($dbTreatment);
+
+                if( Model::loadMultiple($modelTreatment, Yii::$app->request->post())) {
+                    $valid = Model::validateMultiple($modelTreatment);
+                    
+                    if($valid) {    
+                        if($countTreatment > $countdb){                
+                            for($i = $countTreatment; $i > $countdb; $i--) {
+                                $modelTreatment[$i - 1]->treatment_details_uid = Base64UID::generate(32);
+                                $modelTreatment[$i - 1]->bill_uid = Yii::$app->request->get('bill_uid');
+
+                                if(!empty($modelTreatment[$i - 1]->treatment_code) && !empty($modelTreatment[$i - 1]->treatment_name) && !empty($modelTreatment[$i - 1]->item_per_unit_cost_rm) && !empty($modelTreatment[$i - 1]->item_count) && !empty($modelTreatment[$i - 1]->item_total_unit_cost_rm)){
+                                    $modelTreatment[$i - 1]->save();
+                                }
+                            }
+                        }
+                        else if($countTreatment == $countdb){
+                            $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                            $modelBill = Bill::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+                
+                            if( Model::loadMultiple($modelTreatmentUpdate, Yii::$app->request->post())) {
+                                $valid = Model::validateMultiple($modelTreatmentUpdate);
+                                
+                                if($valid) {                    
+                                    foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
+                                        $modelLookupTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatmentUpdate->treatment_code]);
+                                        
+                                        if($modelBill->class == '1a' || $modelBill->class == '1b' || $modelBill->class == '1c'){
+                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_1_cost_per_unit;
+                                        }
+                                        if($modelBill->class == '2'){
+                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_2_cost_per_unit;
+                                        }
+                                        if($modelBill->class == '3'){
+                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_3_cost_per_unit;
+                                        }
+                            
+                                        $itemPerUnit = $modelTreatmentUpdate->item_per_unit_cost_rm;
+                                        $itemCount = $modelTreatmentUpdate->item_count;
+                            
+                                        $modelTreatmentUpdate->item_total_unit_cost_rm = $itemPerUnit * $itemCount;
+
+                                        $modelTreatmentUpdate->save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+            // return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+            //     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'treatment'));
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -113,7 +208,10 @@ class Treatment_detailsController extends Controller
     {
         $this->findModel($treatment_details_uid)->delete();
 
-        return $this->redirect(['index']);
+        // if(!empty( Yii::$app->request->get('bill_uid'))){ 
+        //     return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+        //         'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), "#" => 'treatment')); 
+        // } 
     }
 
     /**

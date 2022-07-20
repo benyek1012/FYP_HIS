@@ -10,7 +10,44 @@ use kartik\datetime\DateTimePicker;
 
 <div class="patient-admission-form">
 
-    <?php $form = kartik\form\ActiveForm::begin([
+    <?php 
+    $rows_patient_admission = (new \yii\db\Query())
+    ->select('*')
+    ->from('patient_admission')
+    ->where(['rn'=> Yii::$app->request->get('rn')])
+    ->all();
+
+    $rows = (new \yii\db\Query())
+    ->select('*')
+    ->from('lookup_ward')
+    ->all();
+
+    $ward_code = array();
+    foreach($rows as $row){
+      $ward_code[$row['ward_code']] = $row['ward_code'] . " - " . $row['ward_name'];
+    }  
+
+    // foreach($rows_patient_admission as $row_patient_admission){
+    //     if(empty($ward_code[$row_patient_admission['initial_ward_code']])){
+    //         $ward_code[$row_patient_admission['initial_ward_code']] = $row_patient_admission['initial_ward_code'];
+    //     }            
+    // }
+
+    $ward_class = array(
+        "1a" =>'1a', 
+        "1b" =>'1b', 
+        "1c" =>'1c', 
+        "2" =>'2', 
+        "3" =>'3', 
+    );
+
+    // foreach($rows_patient_admission as $row_patient_admission){
+    //     if(empty($ward_class[$row_patient_admission['initial_ward_class']])){
+    //         $ward_class[$row_patient_admission['initial_ward_class']] = $row_patient_admission['initial_ward_class'];
+    //     }            
+    // }
+
+    $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
             'fieldConfig' => [
@@ -31,25 +68,43 @@ use kartik\datetime\DateTimePicker;
         </div>
         
         <div class="col-sm-6">
-            <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(), 
-                ['options' => ['placeholder' => 'Enter the entry date and time ...'],
-                'pluginOptions' => ['autoclose' => true,  'format' => 'yyyy-mm-dd hh:ii' ]
-            ])?>
+            <!-- <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
+             ['prompt'=> Yii::t('app','Please select ward code')]
+            ) ?> -->
+
+            <?= $form->field($model, 'initial_ward_code')->widget(kartik\select2\Select2::classname(), [
+                'data' => $ward_code,
+                'options' => ['placeholder' => Yii::t('app','Please select ward code'), 'id' => 'initial_ward_code',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    // 'tags' => true,
+                ],
+            ]); ?>
         </div>
+
         <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_code')->textInput(['maxlength' => true]) ?>
+            <!-- <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
+             ['prompt'=> Yii::t('app','Please select ward class')]
+            ) ?> -->
+
+            <?= $form->field($model, 'initial_ward_class')->widget(kartik\select2\Select2::classname(), [
+                'data' => $ward_class,
+                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'initial_ward_class',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    // 'tags' => true,
+                ],
+            ]); ?>
         </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'initial_ward_class')->textInput(['maxlength' => true]) ?>
-        </div>
+
         <div class="col-sm-6">
             <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'medigal_legal_code')->textInput() ?>
+            <?= $form->field($model, 'medical_legal_code')->textInput() ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reminder_given')->textInput() ?>
+            <?= $form->field($model, 'reminder_given')->textInput(['disabled' => true, ]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true]) ?>
@@ -66,9 +121,24 @@ use kartik\datetime\DateTimePicker;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+        <?php
+        if($model->initial_ward_class == "UNKNOWN" || $model->initial_ward_code == "UNKNOWN" || 
+            $model->initial_ward_class == null || $model->initial_ward_code == null){
+            echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
+        }
+        ?>
+        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success']) ?>
+        <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
+
+</div>
+<div >
+<?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+<?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+
 
 </div>

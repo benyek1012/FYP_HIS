@@ -15,7 +15,7 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
-    public $rememberMe = true;
+    public $rememberMe = false;
 
     private $_user = false;
 
@@ -35,6 +35,15 @@ class LoginForm extends Model
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'username' => Yii::t('app','Username'),
+            'password' => Yii::t('app','Password'),
+            'rememberMe' => Yii::t('app','Remember Me'),
+        ];
+    }
+
     /**
      * Validates the password.
      * This method serves as the inline validation for password.
@@ -46,7 +55,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
+        
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
@@ -57,10 +66,21 @@ class LoginForm extends Model
      * Logs in a user using the provided username and password.
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login($model)
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+
+            if(isset($model->rememberMe) && $model->rememberMe =="1")
+            {
+                // Cookie for login
+                $newCookie= new \yii\web\Cookie();
+                $newCookie->name='cookie_login';
+                $newCookie->value = $this->getUserId();
+                $newCookie->expire = time() + 60 * 60 * 24 * 180;
+                Yii::$app->getResponse()->getCookies()->add($newCookie); 
+            }
+            
+            return Yii::$app->user->login($this->getUser(), isset($newCookie) ? time() + 60 * 60 * 24 * 180 : 0);
         }
         return false;
     }
@@ -73,9 +93,28 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = NewUser::findByUsername($this->username);
+            $this->_user = (new New_user()) -> findByUsername($this->username);
         }
 
         return $this->_user;
+    }
+
+        /**
+     * Finds user by [[userId]]
+     *
+     * @return User|null
+     */
+    public function getUserId()
+    {
+        if ($this->_user === false) {
+            $this->_user = (new New_user()) -> findByUsername($this->username);
+        }
+
+        return $this->_user->user_uid;
+    }
+
+    public function hashPassword($password) {// Function to create password hash
+        $salt = "stev37f";
+        return md5($password.$salt);
     }
 }

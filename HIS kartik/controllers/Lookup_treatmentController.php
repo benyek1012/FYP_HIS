@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\New_user;
 use app\models\Lookup_treatment;
 use app\models\Lookup_treatmentSearch;
+use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -54,49 +56,49 @@ class Lookup_treatmentController extends Controller
      */
     public function actionIndex()
     {
-        $modelLOT = new Lookup_treatment();
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
+
+        $model = new Lookup_treatment();
         $searchModel = new Lookup_treatmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
-        {
-            if ($modelLOT->load($this->request->post())) $this->actionLOT($modelLOT);
-            else $modelLOT->loadDefaultValues();
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error_treatment', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('treatment_code', $message);
+            }
+           
+        } 
+        else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    }
-
-    public function actionLOT($modelLOT){
-        if ($modelLOT->save()) {
-             $model_founded = Lookup_treatmentController::findModel($modelLOT->treatment_uid);
-             if(!empty($model_founded))
-                 return Yii::$app->getResponse()->redirect(array('/lookup_treatment/index', 
-                     'treat' => $model_founded->treatment_uid));
-         }
-    }
-
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `lookup_treatment` (
-                `treatment_uid` VARCHAR(64) NOT NULL,
-                `treatment_code` VARCHAR(20) UNIQUE NOT NULL,
-                `treatment_name` VARCHAR(50) NOT NULL,
-                `class_1_cost_per_unit` DECIMAL(10,2) NOT NULL,
-                `class_2_cost_per_unit` DECIMAL(10,2) NOT NULL,
-                `class_3_cost_per_unit` DECIMAL(10,2) NOT NULL,
-                PRIMARY KEY (`treatment_uid`)
-            );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
     }
 
     /**
@@ -120,17 +122,38 @@ class Lookup_treatmentController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_treatment();
+        $searchModel = new Lookup_treatmentSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
                 return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
             }
-        } else {
-            $model->loadDefaultValues();
+            else
+            {
+                Yii::$app->session->setFlash('error_treatment', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
+                );
+            } 
         }
+        
+        $model->loadDefaultValues();
 
-        return $this->render('create', [
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

@@ -11,7 +11,8 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_departmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Departments';
+
+$this->title = Yii::t('app','Department Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-department-index">
@@ -22,11 +23,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Lookup Department', ['create'], ['class' => 'btn btn-success']) ?>
     </p>-->
 
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('error_department')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_department') ?>
+        </div>
+    <?php endif;?>
+
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">
@@ -40,7 +48,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -55,22 +69,18 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'department_code',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_department/department']],
                 ]
             ],
-
-            [
-                'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'department_uid',
-                'visible' => false,
-                'hidden' => true,
-            ],
-
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'department_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_department/department']],
@@ -80,6 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'phone_number',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_department/department']],
@@ -89,6 +101,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'address1',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_department/department']],
@@ -98,6 +112,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'address2',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_department/department']],
@@ -107,6 +123,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'address3',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_department/department']],
@@ -114,6 +132,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
+
+
+</div>
 
 <script>
 
@@ -124,7 +145,6 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOD_div").style.display = "none";
 }
+
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000);
 </script>
-
-
-</div>

@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\Lookup_wardSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Wards';
+$this->title = Yii::t('app','Ward Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-ward-index">
@@ -18,14 +18,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <!--<h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Lookup Ward', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app','Create Lookup Ward'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>-->
+
+    <?php if(Yii::$app->session->hasFlash('error_ward')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_ward') ?>
+        </div>
+    <?php endif; ?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">
@@ -38,7 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -53,6 +65,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'ward_code',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_ward/ward']],
@@ -60,15 +74,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'ward_uid',
-                'visible' => false,
-                'hidden' => true,
-            ],
-
-            [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'ward_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_ward/ward']],
@@ -78,6 +87,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'sex',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_ward/ward']],
@@ -87,6 +98,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'min_age',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_ward/ward']],
@@ -96,6 +109,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'max_age',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_ward/ward']],
@@ -103,6 +118,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
+
+</div>
 
 <script>
 
@@ -113,6 +130,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOW_div").style.display = "none";
 }
-</script>
 
-</div>
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
+</script>

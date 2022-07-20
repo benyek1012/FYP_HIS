@@ -40,16 +40,24 @@ class Patient_information extends \yii\db\ActiveRecord
     {
         return [
             [['first_reg_date'], 'required'],
+            [['nric'], 'unique'],
             [['name'], 'string', 'max' => 200],
-            ['name', 'match', 'pattern' => '/^[a-z,.\s-]+$/i', 'message' => 'Name can only contain word characters'],
+            ['name', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Name can only contain word characters'],
+            // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
+            // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
+            // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             [['first_reg_date'], 'safe'],
           //  [['nric'], 'integer'],
             [['phone_number'], 'integer'],
             [['email'], 'email'],
-            [['nric', 'nationality', 'sex', 'job', 'race'], 'string', 'max' => 20],
+            // [['nric', 'nationality', 'sex', 'job', 'race'], 'string', 'max' => 20],
+            [['nric', 'job'], 'string', 'max' => 20],
+            [['nationality', 'sex', 'race'], 'safe'],
             [['name'], 'string', 'max' => 200],
             [['phone_number', 'email', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
             [['patient_uid'], 'unique'],
+            ['race', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Race can only contain word characters'],
+            ['nationality', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Nationality can only contain word characters'],
         ];
     }
 
@@ -61,7 +69,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return [
             'patient_uid' => Yii::t('app','Patient Uid'),
             'first_reg_date' => Yii::t('app','First Reg Date'),
-            'nric' => 'Nric',
+            'nric' => 'NRIC',
             'nationality' => Yii::t('app','Nationality'),
             'name' => Yii::t('app','Name'),
             'sex' => Yii::t('app','Sex'),
@@ -84,7 +92,7 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientAdmissions()
     {
-        return $this->hasMany(Patient_Admission::className(), ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
     }
 
     /**
@@ -94,6 +102,96 @@ class Patient_information extends \yii\db\ActiveRecord
      */
     public function getPatientNextOfKins()
     {
-        return $this->hasMany(Patient_Next_Of_Kin::class, ['patient_uid' => 'patient_uid']);
+        return $this->hasMany(Patient_next_of_kin::class, ['patient_uid' => 'patient_uid']);
+    }
+
+    public function getBalance($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $billable_sum = 0.0;
+        foreach($adm as $rn)
+        {
+            $billable_sum += (new Bill())  -> getAmtDued($rn);
+        }
+
+        if($billable_sum < 0)
+        {
+            $billable_sum = 0.0;           
+        }
+
+        return Yii::t('app','Amount Due')." : ". Yii::$app->formatter->asCurrency($billable_sum);                
+    }
+
+    public function getBalanceRM($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $billable_sum = 0.0;
+        foreach($adm as $rn)
+        {
+            $billable_sum += (new Bill())  -> getAmtDued($rn);
+        }
+
+        if($billable_sum < 0)
+        {
+            $billable_sum = 0.0;           
+        }
+
+        return  Yii::$app->formatter->asCurrency($billable_sum);                
+    }
+
+    public function getUnclaimedBalance($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+     
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $unclaimed_sum = 0.0;
+        foreach($adm as $rn)
+        {
+            $unclaimed_sum += (new Bill())  -> getUnclaimed($rn);
+        }
+
+        return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                
+    }
+    public function getUnclaimedBalanceRM($patient_uid)
+    { 
+        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
+     
+        $adm = array();
+        foreach($info as $x)
+        {
+            $adm[] = $x->rn; 
+        }
+
+        $unclaimed_sum = 0.0;
+        foreach($adm as $rn)
+        {
+            $unclaimed_sum += (new Bill())  -> getUnclaimed($rn);
+        }
+
+        return  Yii::$app->formatter->asCurrency($unclaimed_sum);                
+    }
+
+    public function getPatient_admission() 
+    {
+        return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
     }
 }

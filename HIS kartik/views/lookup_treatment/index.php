@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_treatmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Treatments';
+$this->title = Yii::t('app','Treatment Codes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-treatment-index">
@@ -22,11 +22,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Lookup Treatment', ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
 
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('error_treatment')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_treatment') ?>
+        </div>
+    <?php endif;?>
+
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">
@@ -40,7 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -55,6 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'treatment_code',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
@@ -62,15 +77,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'treatment_uid',
-                'visible' => false,
-                'hidden' => true,
-            ],
-
-            [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'treatment_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
@@ -80,6 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_1_cost_per_unit',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
@@ -89,6 +101,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_2_cost_per_unit',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
@@ -98,6 +112,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_3_cost_per_unit',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
@@ -105,6 +121,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
+
+</div>
 
 <script>
 
@@ -115,7 +133,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOT_div").style.display = "none";
 }
+
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
 </script>
-
-
-</div>

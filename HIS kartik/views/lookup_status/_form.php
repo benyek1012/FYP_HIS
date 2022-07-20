@@ -26,9 +26,6 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 <div class ="row">
     <div class="col-sm-6">
-        <?= $form->field($model, 'status_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $status_uid]) ?>
-    </div>
-    <div class="col-sm-6">
         <?= $form->field($model, 'status_code')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
@@ -49,10 +46,13 @@ use GpsLab\Component\Base64UID\Base64UID;
     <div class="col-sm-6">
         <?= $form->field($model, 'class_3_ward_cost')->textInput(['maxlength' => true]) ?>
     </div>
+    <div class="col-sm-6">
+        <?= $form->field($model, 'status_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $status_uid])->label(false)?>
+    </div>
 </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
 

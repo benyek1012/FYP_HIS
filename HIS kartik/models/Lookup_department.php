@@ -47,13 +47,13 @@ class Lookup_department extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'department_uid' => 'Department Uid',
-            'department_code' => 'Department Code',
-            'department_name' => 'Department Name',
-            'phone_number' => 'Phone Number',
-            'address1' => 'Address 1',
-            'address2' => 'Address 2',
-            'address3' => 'Address 3',
+            'department_uid' => Yii::t('app','Department Uid'),
+            'department_code' => Yii::t('app','Department Code'),
+            'department_name' => Yii::t('app','Department Name'),
+            'phone_number' => Yii::t('app','Phone Number'),
+            'address1' => Yii::t('app','Address 1'),
+            'address2' => Yii::t('app','Address 2'),
+            'address3' => Yii::t('app','Address 3'),
         ];
     }
 }

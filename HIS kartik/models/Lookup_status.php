@@ -48,14 +48,14 @@ class Lookup_status extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'status_uid' => 'Status Uid',
-            'status_code' => 'Status Code',
-            'status_description' => 'Status Description',
-            'class_1a_ward_cost' => 'Class  1a Ward Cost',
-            'class_1b_ward_cost' => 'Class  1b Ward Cost',
-            'class_1c_ward_cost' => 'Class  1c Ward Cost',
-            'class_2_ward_cost' => 'Class  2 Ward Cost',
-            'class_3_ward_cost' => 'Class  3 Ward Cost',
+            'status_uid' => Yii::t('app','Status Uid'),
+            'status_code' => Yii::t('app','Status Code'),
+            'status_description' => Yii::t('app','Status Description'),
+            'class_1a_ward_cost' => Yii::t('app','Class 1a Ward Cost'),
+            'class_1b_ward_cost' => Yii::t('app','Class 1b Ward Cost'),
+            'class_1c_ward_cost' => Yii::t('app','Class 1c Ward Cost'),
+            'class_2_ward_cost' => Yii::t('app','Class 2 Ward Cost'),
+            'class_3_ward_cost' => Yii::t('app','Class 3 Ward Cost'),
         ];
     }
 }

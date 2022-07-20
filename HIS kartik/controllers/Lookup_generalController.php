@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\New_user;
 use app\models\Lookup_general;
 use app\models\Lookup_generalSearch;
+use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -54,15 +56,43 @@ class Lookup_generalController extends Controller
      */
     public function actionIndex()
     {
+        // Create Patient Confirm Box 
+        $model_Patient = new Patient_information();
+        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
+        else $model_Patient->loadDefaultValues();
 
-        $modelLOK = new Lookup_general();
+        $model = new Lookup_general();
         $searchModel = new Lookup_generalSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost)
-        {
-            if ($modelLOK->load($this->request->post())) $this->actionLOK($modelLOK);
-            else $modelLOK->loadDefaultValues();
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_general::findOne(['code' => $model->code, 'category' => $model->category]);
+       
+            if($model->validate() && empty( $checkDuplicatedCode))
+            {
+                // try catch of check row is inserted in SQL
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'lookup_general_uid' => $model->lookup_general_uid]);
+            }
+            else
+            {
+                // set the flash message
+                Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> Code '.$model->code.' is duplicated in category '.$model->category.' !</div>'
+                );
+            }
+           
+        } 
+        else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [
@@ -71,34 +101,6 @@ class Lookup_generalController extends Controller
         ]);
     }
 
-    public function actionLOK($modelLOK){
-       if ($modelLOK->save()) {
-            $model_founded = Lookup_generalController::findModel($modelLOK->lookup_general_uid);
-            if(!empty($model_founded))
-                return Yii::$app->getResponse()->redirect(array('/lookup_general/index', 
-                    'lok' => $model_founded->lookup_general_uid));
-        }
-    }
-
-    public function InitSQL(){
-        $Tables = array(
-            "CREATE TABLE IF NOT EXISTS `lookup_general` (
-                `lookup_general_uid` VARCHAR(64) NOT NULL,
-                `code` VARCHAR(20) UNIQUE NOT NULL,
-                `category` VARCHAR(20) NOT NULL,
-                `name` VARCHAR(50) NOT NULL,
-                `long_description` VARCHAR(100) NOT NULL,
-                `recommend` BOOLEAN NOT NULL DEFAULT true,
-                PRIMARY KEY (`lookup_general_uid`)
-           );"
-        );
-
-        for($i=0; $i < count($Tables); $i++)
-        {
-            $sqlCommand = Yii::$app->db->createCommand($Tables[$i]);
-            $sqlCommand->execute();    
-        }
-    }
 
     /**
      * Displays a single Lookup_general model.
@@ -122,11 +124,25 @@ class Lookup_generalController extends Controller
     {
         $model = new Lookup_general();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_general::findOne(['code' => $model->code, 'category' => $model->category]);
+            // var_dump($checkDuplicatedCode);
+            // exit();
+            if(empty( $checkDuplicatedCode))
+            {
+                $model->save();
                 return $this->redirect(['index', 'lookup_general_uid' => $model->lookup_general_uid]);
             }
-        } else {
+            else
+            {
+                $message = 'Code should not be duplicated.';
+                $model->addError('code', $message);
+            }
+           
+        } 
+        else 
+        {
             $model->loadDefaultValues();
         }
 
@@ -184,4 +200,5 @@ class Lookup_generalController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

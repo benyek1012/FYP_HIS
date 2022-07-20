@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_statusSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Statuses';
+$this->title = Yii::t('app','Status Lookup');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-status-index">
@@ -19,14 +19,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <!--<h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Lookup Status', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app','Create Lookup Status'), ['create'], ['class' => 'btn btn-success']) ?>
     </p> -->
+
+    <?php if(Yii::$app->session->hasFlash('error_status')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_status') ?>
+        </div>
+    <?php endif; ?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">
@@ -40,7 +46,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -55,6 +67,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'status_code',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -62,15 +76,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'status_uid',
-                'visible' => false,
-                'hidden' => true,
-            ],
-
-            [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'status_description',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -80,6 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_1a_ward_cost',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -89,6 +100,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_1b_ward_cost',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -98,6 +111,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_1c_ward_cost',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -107,6 +122,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_2_ward_cost',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -116,6 +133,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_3_ward_cost',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_status/status']],
@@ -123,6 +142,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
+
+
+</div>
 
 <script>
 
@@ -133,7 +155,7 @@ function showForm() {
 function hiddenForm() {
     document.getElementById("LOS_div").style.display = "none";
 }
+
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
 </script>
-
-
-</div>

@@ -9,7 +9,11 @@ use app\models\WardSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\base\Exception;
+use kartik\grid\EditableColumnAction;
+use yii\helpers\ArrayHelper;
+use GpsLab\Component\Base64UID\Base64UID;
+use yii\helpers\Json;
+
 
 /**
  * WardController implements the CRUD actions for Ward model.
@@ -27,11 +31,39 @@ class WardController extends Controller
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete' => ['GET'],
                     ],
                 ],
             ]
         );
+    }
+
+    public function actionWardrow()
+    {
+        // Add Ward Row
+        if (Yii::$app->request->post('addWardRow') == 'true') {
+            $dbWard = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
+
+            if(empty($dbWard)) {
+                $countWard = count(Yii::$app->request->post('Ward', []));
+                for($i = 0; $i < $countWard; $i++) {
+                    $modelWard[] = new Ward();
+                }
+                $modelWard[] = new Ward();
+            }
+            else {
+                $modelWard = $dbWard;
+                $countWard = count(Yii::$app->request->post('Ward', [])) - count($dbWard);
+                for($i = 0; $i < $countWard; $i++) {
+                    $modelWard[] = new Ward();
+                }
+                $modelWard[] = new Ward();
+            }   
+
+            return $this->renderPartial('/ward/_form', [
+                'modelWard' => $modelWard,
+            ]);
+        }
     }
 
     /**
@@ -71,56 +103,15 @@ class WardController extends Controller
     public function actionCreate()
     {
         $model = new Ward();
-        $modelWard = [new Ward];
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                $modelWard = Model::createMultiple(Ward::classname());
-                Model::loadMultiple($modelWard, Yii::$app->request->post());
-
-                // ajax validation
-                // if (Yii::$app->request->isAjax) {
-                //     Yii::$app->response->format = Response::FORMAT_JSON;
-                //     return ArrayHelper::merge(
-                //         ActiveForm::validateMultiple($modelsAddress),
-                //         ActiveForm::validate($modelCustomer)
-                //     );
-                // }
-
-                // validate all models
-                $valid = $model->validate();
-                $valid = Model::validateMultiple($modelWard) && $valid;
-                
-                if ($valid) {
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    try {
-                        if ($flag = $model->save(false)) {
-                            foreach ($modelWard as $modelWard) {
-                                $modelWard->bill_uid = $model->bill_uid;
-                                if (! ($flag = $modelWard->save(false))) {
-                                    $transaction->rollBack();
-                                    break;
-                                }
-                            }
-                        }
-                        if ($flag) {
-                            $transaction->commit();
-                            return $this->redirect(['view', 'id' => $model->bill_uid]);
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollBack();
-                    }
-                }
-
-                // return $this->redirect(['view', 'ward_uid' => $model->ward_uid]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
+        $model->ward_uid = Base64UID::generate(32);
+        $model->ward_start_datetime = date("d-m-Y H:i:s");
+        $model->ward_end_datetime = date("d-m-Y H:i:s");
+        $model->loadDefaultValues();
+        $model-> save();
+        return $this->redirect(['bill/create', 'rn' =>  Yii::$app->request->get('rn')]);
 
         return $this->render('create', [
             'model' => $model,
-            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
         ]);
     }
 
@@ -131,17 +122,67 @@ class WardController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($ward_uid)
+    public function actionUpdate()
     {
-        $model = $this->findModel($ward_uid);
+        // Insert and Update Ward
+        if(Yii::$app->request->post('saveWard') == 'true' && Yii::$app->request->post('Ward', [])) {
+            $dbWard = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
+            $modelWard = Model::createMultiple(Ward::className());
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'ward_uid' => $model->ward_uid]);
+            if(empty($dbWard)) {
+                if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
+                    $valid = Model::validateMultiple($modelWard);
+                    
+                    
+                    if($valid ) {                    
+                        foreach ($modelWard as $modelWard) {
+                            $modelWard->ward_uid = Base64UID::generate(32);
+                            $modelWard->bill_uid = Yii::$app->request->get('bill_uid');
+
+                            if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
+                                $modelWard->save();
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                $countWard = count(Yii::$app->request->post('Ward', []));
+                $countdb = count($dbWard);
+
+                if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
+                    $valid = Model::validateMultiple($modelWard);
+                    
+                    if($valid) {         
+                        if($countWard > $countdb){
+                            for($i = $countWard; $i > $countdb; $i--) {
+                                $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
+                                $modelWard[$i - 1]->bill_uid = Yii::$app->request->get('bill_uid');
+
+                                if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
+                                    $modelWard[$i - 1]->save();
+                                }
+                            }
+                        }   
+                        else if($countWard == $countdb){   
+                            $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                            if( Model::loadMultiple($modelWardUpdate, Yii::$app->request->post())) {
+                                $valid = Model::validateMultiple($modelWardUpdate);
+                                
+                                if($valid) {            
+                                    foreach ($modelWardUpdate as $modelWardUpdate) {
+                                        $modelWardUpdate->save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+
+            // return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+            //     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'))->send();
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**
@@ -155,7 +196,10 @@ class WardController extends Controller
     {
         $this->findModel($ward_uid)->delete();
 
-        return $this->redirect(['index']);
+        // if(!empty( Yii::$app->request->get('bill_uid'))){ 
+        //     return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+        //         'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn'), '#' => 'ward')); 
+        // } 
     }
 
     /**

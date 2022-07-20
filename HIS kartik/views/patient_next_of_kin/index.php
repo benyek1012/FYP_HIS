@@ -10,36 +10,50 @@ use kartik\editable\Editable;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\Patient_next_of_kinSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+$rows_patient_nok = (new \yii\db\Query())
+->select('*')
+->from('patient_next_of_kin')
+->where(['patient_uid'=> Yii::$app->request->get('id')])
+->all();
+
+$rows_relationship = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Relationship'])
+->all();
+
+$relationship = array();
+foreach($rows_relationship as $row_relationship){
+    $relationship[$row_relationship['code']] = $row_relationship['code'];
+} 
+
+foreach($rows_patient_nok as $row_patient_nok){
+    if(empty($relationship[$row_patient_nok['nok_relationship']])){
+        $relationship[$row_patient_nok['nok_relationship']] = $row_patient_nok['nok_relationship'];
+    }            
+}
+
 ?>
 <div class="patient-next-of-kin-index">
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Patient Next Of Kin', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
-
-    <?php     
-        $relationship = array(
-        'father'=>'Father',
-        'monther'=>'Monther',
-        'couple' => 'Couple',
-        'brother' => 'Brother',
-        'sister' => 'Sister',
-        'other' => 'Other'
-    );// echo $this->render('_search', ['model' => $searchModel]); 
-    ?>
-
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         // 'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/site/nok']],
@@ -49,17 +63,19 @@ use kartik\editable\Editable;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_relationship',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
                     'size' => 'md',
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'inputType' => Editable::INPUT_SELECT2,
                     'asPopover' => false,
-                    'data' => [
-                        'father'=>'Father',
-                        'monther'=>'Monther',
-                        'couple' => 'Couple',
-                        'brother' => 'Brother',
-                        'sister' => 'Sister',
-                        'other' => 'Other'
+                    'options' => [
+                        'data' => $relationship,
+                        'class' => 'patient-nok-relationship', 
+                        'pluginOptions' => [
+                            'tags' => true,
+                            'width' => '200px',
+                        ],
                     ],
                     'formOptions' => ['action' => ['/site/nok']],
                 ],
@@ -68,6 +84,8 @@ use kartik\editable\Editable;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_phone_number',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/site/nok']],
@@ -77,6 +95,8 @@ use kartik\editable\Editable;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_email',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,
@@ -87,6 +107,8 @@ use kartik\editable\Editable;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address1',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,
@@ -97,6 +119,8 @@ use kartik\editable\Editable;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address2',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,
@@ -107,6 +131,8 @@ use kartik\editable\Editable;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address3',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
                     return [                
                         'asPopover' => false,

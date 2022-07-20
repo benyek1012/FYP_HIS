@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Patient_next_of_kin */
 
 $this->title = $model->nok_uid;
-$this->params['breadcrumbs'][] = ['label' => 'Patient Next Of Kins', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Patient Next of Kins', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>

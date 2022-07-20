@@ -11,22 +11,36 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel app\models\Lookup_generalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lookup Generals';
+$this->title = Yii::t('app','General Lookup');
 $this->params['breadcrumbs'][] = $this->title;
+
+$rows_relationship = (new \yii\db\Query())
+->select('category')
+->from('lookup_general')
+->all();
+
+$relationship = array();
+foreach($rows_relationship as $row_relationship){
+    $relationship[$row_relationship['category']] = $row_relationship['category'];
+} 
+
+// removes duplicate values from an array
+$relationship = array_unique($relationship);
 ?>
 <div class="lookup-general-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Lookup General', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('msg')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('msg') ?>
+        </div>
+    <?php endif; ?>
 
     <div class="form-group">
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();">Create</button>
+            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
         <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();">Cancel</button>
+            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
     </div>
 
     <div id="lookup_form">
@@ -40,7 +54,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
@@ -55,6 +75,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'code',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -62,15 +84,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'lookup_general_uid',
-                'visible' => false,
-                'hidden' => true,
-            ],
-
-            [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'category',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'filter'=> $relationship,
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -80,6 +98,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'name',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -89,6 +109,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'long_description',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -98,6 +120,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'recommend',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/lookup_general/lookup']],
@@ -106,16 +130,21 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-<script>
-
-function showForm() {
-        document.getElementById("LOK_div").style.display = "block";
-    }
-
-    function hiddenForm() {
-        document.getElementById("LOK_div").style.display = "none";
-    }
-</script>
 
 
 </div>
+
+
+<script>
+function showForm() {
+    document.getElementById("LOK_div").style.display = "block";
+}
+
+function hiddenForm() {
+    document.getElementById("LOK_div").style.display = "none";
+}
+
+// Fade the flash message by 5 sec
+window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
+
+</script>

@@ -25,8 +25,11 @@ use GpsLab\Component\Base64UID\Base64UID;
     ?>
 
 <div class ="row">
-    <div class="col-sm-6">
-        <?= $form->field($model, 'ward_uid')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $ward_uid]) ?>
+
+
+
+    <div class="col-sn-6">
+        <?= $form->field($model, 'ward_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $ward_uid])->label(false); ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'ward_code')->textInput(['maxlength' => true]) ?>
@@ -35,7 +38,7 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'ward_name')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'sex')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'sex')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'min_age')->textInput() ?>
@@ -46,7 +49,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 </div>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
