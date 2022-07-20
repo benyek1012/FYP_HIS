@@ -30,7 +30,8 @@ if (Yii::$app->user->isGuest){
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <?php 
-            if((new SiteController(null,null)) -> accessControl() == true)
+            if((new SiteController(null,null)) -> accessControl() == true
+                || (Yii::$app->controller->id == 'patient_admission' && Yii::$app->controller->action->id == "index"))
             { 
                 echo '<li class="nav-item">
                         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>

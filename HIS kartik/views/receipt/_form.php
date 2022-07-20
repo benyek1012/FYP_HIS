@@ -164,6 +164,7 @@ use app\models\Patient_information;
                  document.getElementById("serial_number").value = "";
                  document.getElementById("serial_number").focus();
             })();' ]) ?>
+        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary']) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>

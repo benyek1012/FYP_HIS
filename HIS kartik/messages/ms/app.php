@@ -223,5 +223,6 @@ return[
     'Payment Method' => 'Kaedah Pembayaran', 
     'Receipt' => 'Resit', 
     'Responsible'=> 'Bertanggungjawab',
+    'Refresh' => 'Semula'
 ];
 ?>
