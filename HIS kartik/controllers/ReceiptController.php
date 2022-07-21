@@ -51,6 +51,11 @@ class ReceiptController extends Controller
         );
     }
 
+    public function actionRefresh()
+    {
+        return SerialNumber::getSerialNumber("receipt");
+    }
+
     /**
      * Lists all Receipt models.
      *

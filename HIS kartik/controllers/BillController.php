@@ -71,6 +71,11 @@ class BillController extends Controller
         ]);
     }
 
+    public function actionRefresh()
+    {
+        return SerialNumber::getSerialNumber("bill");
+    }
+
     public function actionStatus($status) {
         $model = Lookup_status::findOne( ['status_code' => $status]);
         echo Json::encode($model);

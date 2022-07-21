@@ -21,6 +21,7 @@ use yii\helpers\Url;
     //     var_dump('treu');
     //     exit();
     // }
+$url = Url::toRoute(['bill/refresh']);
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $modelWardDate = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
@@ -676,11 +677,13 @@ $urlStatus = Url::toRoute(['/bill/status']);
             ?>
                 <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
                 <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
-            'onclick' => '(function ( $event ) {
-                 document.getElementById("serial_number").readOnly = false; 
-                 document.getElementById("serial_number").value = "";
-                 document.getElementById("serial_number").focus();
-            })();' ]) ?>
+                    'onclick' => '(function ( $event ) {
+                        document.getElementById("serial_number").readOnly = false; 
+                        document.getElementById("serial_number").value = "";
+                        document.getElementById("serial_number").focus();
+                    })();' ]) ?>
+               <?= Html::button(Yii::t('app', 'Refresh'), 
+                        ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
                 <?php }else echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
                 <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
@@ -780,4 +783,16 @@ function confirmAction() {
     }
 }
 <?php } ?>
+
+function refreshButton(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            document.getElementById("serial_number").value = this.responseText;
+            document.getElementById("serial_number").readOnly = true; 
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
 </script>
