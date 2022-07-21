@@ -11,7 +11,7 @@ use yii\helpers\Url;
 /* @var $model app\models\Receipt */
 /* @var $form yii\widgets\ActiveForm */
 
-$url = Url::toRoute(['receipt/refresh', 'rn' => Yii::$app->request->get('rn')]);
+$url = Url::toRoute(['receipt/refresh']);
 ?>
 
 <div class="receipt-form">
@@ -200,15 +200,12 @@ function myfunctionforType(val) {
     else document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
 }
 
-function reset() {
-   alert("aaa");
-}
-
 function refreshButton(url) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange  = function() {
         if(xhttp.readyState == 4 && xhttp.status == 200){
             document.getElementById("serial_number").value = this.responseText;
+            document.getElementById("serial_number").readOnly = true; 
         }
     }
     xhttp.open("GET", url, true);
