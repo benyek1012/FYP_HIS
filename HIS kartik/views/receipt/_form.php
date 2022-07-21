@@ -5,10 +5,13 @@ use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
 /* @var $form yii\widgets\ActiveForm */
+
+$url = Url::toRoute(['receipt/refresh', 'rn' => Yii::$app->request->get('rn')]);
 ?>
 
 <div class="receipt-form">
@@ -164,7 +167,7 @@ use app\models\Patient_information;
                  document.getElementById("serial_number").value = "";
                  document.getElementById("serial_number").focus();
             })();' ]) ?>
-        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary']) ?>
+        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
@@ -199,5 +202,16 @@ function myfunctionforType(val) {
 
 function reset() {
    alert("aaa");
+}
+
+function refreshButton(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            document.getElementById("serial_number").value = this.responseText;
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
 }
 </script>
