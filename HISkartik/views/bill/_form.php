@@ -53,6 +53,7 @@ $row_bill = (new \yii\db\Query())
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
 ->one();
 
+
 $isGenerated = false;
 $isFree = false;
 $isPrinted = false;
@@ -65,7 +66,6 @@ if(!empty($row_bill))
    $isPrinted =  (new Bill()) -> isPrinted($row_bill['rn']);
    $finalFee =  (new Bill()) -> getFinalFee($row_bill['rn']);
 }
-
 
 $rows = (new \yii\db\Query())
 ->select('*')
@@ -672,8 +672,8 @@ $urlStatus = Url::toRoute(['/bill/status']);
                         <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'readonly' => true, 'id' => 'serial_number']) ?>
                     </div>
                 </div>
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){
-                if(empty( $row_bill['bill_print_id'])){
+                <?php 
+                if( !$isPrinted ){
             ?>
                 <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
                 <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
@@ -684,7 +684,7 @@ $urlStatus = Url::toRoute(['/bill/status']);
                     })();' ]) ?>
                <?= Html::button(Yii::t('app', 'Refresh'), 
                         ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
-                <?php }else echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
+                <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
                 <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php } ?>
@@ -692,19 +692,6 @@ $urlStatus = Url::toRoute(['/bill/status']);
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
-
-
-        <!-- <div class="form-group">
-
-    <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-    <?= Html::submitButton('Print', ['class' => 'btn btn-success']) ?>
-    <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-    <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
-    <?php }else{ ?>
-    <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
-    <?php } ?>
-</div> -->
-
 
         <?php kartik\form\ActiveForm::end(); ?>
     </a>
