@@ -14,6 +14,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\Patient_admissionSearch;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Json;
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
@@ -62,12 +63,7 @@ class Patient_admissionController extends Controller
      * @return string
      */
     public function actionIndex()
-    {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
+    {        
         $searchModel = new Patient_AdmissionSearch();
         // $searchModel::find()->select('max(entry_datetime)', 'patient_uid');
         // $searchModel::find()->groupBy('patient_uid');
@@ -135,11 +131,12 @@ class Patient_admissionController extends Controller
             'rn' => $model->rn));          
         }
         else 
-            echo '<script type="text/javascript">',
-                    'setTimeout(function(){',
-                        'confirmAction();',
-                        '},200);',
-                '</script>';
+            return false;
+            // echo '<script type="text/javascript">',
+            //         'setTimeout(function(){',
+            //             'confirmAction();',
+            //             '},200);',
+            //     '</script>';
         
     }
 
@@ -153,10 +150,6 @@ class Patient_admissionController extends Controller
      */
     public function actionUpdate($rn)
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
 
         $model = $this->findModel($rn);
         $modelpatient = Patient_information::findOne(['patient_uid' => $model->patient_uid]);
@@ -2194,26 +2187,4 @@ $caseblankfront2 = str_repeat("\x20", 16);
 }
 
 ?>
-<script>
-<?php if( Yii::$app->language == "en"){ ?>
-// The function below will start the confirmation dialog
-function confirmAction() {
-    var answer = confirm("Are you sure to create patient admission?");
-    if (answer) {
-        window.location.href = window.location + '&confirm=t';
-    } else {
-        window.location.href = history.back();
-    }
-}
-<?php }else{?>
 
-function confirmAction() {
-    var answer = confirm("Adakah anda pasti untuk membuat pendaftaran pesakit?");
-    if (answer) {
-        window.location.href = window.location + '&confirm=t';
-    } else {
-        window.location.href = history.back();
-    }
-}
-<?php } ?>
-</script>

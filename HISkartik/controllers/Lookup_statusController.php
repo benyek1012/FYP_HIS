@@ -55,12 +55,7 @@ class Lookup_statusController extends Controller
      * @return string
      */
     public function actionIndex()
-    {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
+    {        
         $model = new Lookup_status();
         $searchModel = new Lookup_statusSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);

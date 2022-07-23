@@ -56,11 +56,6 @@ class Lookup_departmentController extends Controller
      */
     public function actionIndex()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
         $model = new Lookup_department();
         $searchModel = new Lookup_departmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);

@@ -249,6 +249,20 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
 </a>
 
 <script>
+    function calculateItemTotalCost() {
+        $('.treatmentCode', document).each(function(index, item) {
+            var treatmentCode = this.value;
+
+            var itemPerUnit = $('#treatment_details-' + index + '-item_per_unit_cost_rm').val();
+            var itemCount = $('#treatment_details-' + index + '-item_count').val();
+
+            if (itemCount != '' && itemPerUnit != "") {
+                var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
+                $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
+            }
+        });
+    }
+
     function calculateItemCost(url) {
         $('.treatmentCode', document).each(function(index, item){
             var billClass = $('#wardClass').val();

@@ -153,56 +153,13 @@ class Patient_informationController extends Controller
             $session->set('patient_ic', $patient_nric);
             // var_dump($patient_nric);
             // exit; 
-            echo "<script type='text/javascript'>
-            setTimeout(function(){
-                confirmActionPatient();
-                },200);
-            </script>";
-        }
-          
+            // echo "<script type='text/javascript'>
+            // setTimeout(function(){
+            //     confirmActionPatient();
+            //     },200);
+            // </script>";
+        }          
     }
 
 }
 ?>
-
-<script>
-
-<?php if( Yii::$app->language == "en"){ ?>
-// The function below will start the confirmation dialog
-function confirmActionPatient() {
-    var answer = confirm("Are you sure to create patient information?");
-    if (answer) {
-        window.location.href =  '<?php echo Url::to(['/patient_information/create']) ?>';
-    } else {
-        // window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
-        window.location.href = history.back();
-    }   
-}
-
-// The function below will start the confirmation dialog
-function duplicateIC(ic) {
-   alert('NRIC ' + ic + ' is existed in system!');
-   window.location.href = history.go(-1);
-}
-
-<?php }else{?>
-// The function below will start the confirmation dialog
-function confirmActionPatient() {
-    var answer = confirm("Adakah anda pasti untuk membuat butiran pesakit?");
-    if (answer) {
-        window.location.href =  '<?php echo Url::to(['/patient_information/create']) ?>';
-    } else {
-        // window.location.href = '<?php echo Url::to(['/site/admission']) ?>';
-        window.location.href = history.back();
-    }   
-}
-
-// The function below will start the confirmation dialog
-function duplicateIC(ic) {
-   alert('NRIC ' + ic + ' wujud dalam sistem!');
-    window.location.href = history.go(-1);
-}
-
-<?php } ?>
-
-</script>

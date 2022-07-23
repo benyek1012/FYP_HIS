@@ -63,11 +63,6 @@ class ReceiptController extends Controller
      */
     public function actionIndex()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-
         $searchModel = new ReceiptSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -85,11 +80,6 @@ class ReceiptController extends Controller
      */
     public function actionRecord()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-
         $searchModel = new ReceiptSearch();
         // $dataProvider1 = new ActiveDataProvider([
         //     'query'=> Receipt::find()->where(['rn'=> Yii::$app->request->get('rn')])
@@ -146,12 +136,7 @@ class ReceiptController extends Controller
      * @return string|\yii\web\Response
      */
     public function actionCreate()
-    {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
+    {       
         $model = new Receipt();
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
 

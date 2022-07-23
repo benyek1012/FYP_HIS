@@ -723,20 +723,6 @@ document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
 
-function calculateItemTotalCost() {
-    $('.treatmentCode', document).each(function(index, item) {
-        var treatmentCode = this.value;
-
-        var itemPerUnit = $('#treatment_details-' + index + '-item_per_unit_cost_rm').val();
-        var itemCount = $('#treatment_details-' + index + '-item_count').val();
-
-        if (itemCount != '' && itemPerUnit != "") {
-            var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
-            $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
-        }
-    });
-}
-
 function getBillableAndFinalFee() {
     $('#bill-bill_generation_billable_sum_rm').val(
         <?php echo (new Bill())  -> calculateBillable(Yii::$app->request->get('bill_uid')); ?>);
