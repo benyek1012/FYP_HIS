@@ -25,9 +25,11 @@ else
     $this->params['breadcrumbs'][] = ['label' => $name];
 }
 
-$urlNormal = Url::toRoute(['patient_admission/create', 'id' => $model->patient_uid, 'type' => 'Normal']);
-$urlLabor = Url::toRoute(['patient_admission/create', 'id' => $model->patient_uid, 'type' => 'Labor']);
-$urlPatientAdmission = Url::toRoute(['patient_admission/update']);
+if(!empty($model)){
+    $urlNormal = Url::toRoute(['patient_admission/create', 'id' => $model->patient_uid, 'type' => 'Normal']);
+    $urlLabor = Url::toRoute(['patient_admission/create', 'id' => $model->patient_uid, 'type' => 'Labor']);
+    $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
+}
 ?>
 
 <body>
