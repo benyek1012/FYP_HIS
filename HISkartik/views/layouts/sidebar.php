@@ -139,7 +139,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                     'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/RN')])->label(false)?>
 
                 <div class="input-group-append">
-                    <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]) ?>
+                    <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
@@ -202,9 +202,16 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
 </aside>
 
 <script>
+document.getElementById("patient_information-nric")
+    .addEventListener("keypress", function(event) {
+    if (event.keyCode == 13) {
+        document.getElementById("searchButton").onclick();
+        event.preventDefault();
+    }
+});
+
 function sidebar(url, urlAdmission, urlPatientAdmission) {
     var search = document.getElementById("patient_information-nric").value;
-
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange  = function() {
         if(xhttp.readyState == 4 && xhttp.status == 200){
