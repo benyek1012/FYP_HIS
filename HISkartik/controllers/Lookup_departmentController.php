@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\New_user;
-use app\models\Lookup_ward;
-use app\models\Lookup_wardSearch;
+use app\models\Lookup_department;
+use app\models\Lookup_departmentSearch;
 use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -13,11 +13,10 @@ use yii\filters\VerbFilter;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 
-
 /**
- * Lookup_wardController implements the CRUD actions for Lookup_ward model.
+ * Lookup_departmentController implements the CRUD actions for Lookup_department model.
  */
-class Lookup_wardController extends Controller
+class Lookup_departmentController extends Controller
 {
     /**
      * @inheritDoc
@@ -40,9 +39,9 @@ class Lookup_wardController extends Controller
     public function actions()
     {
         return ArrayHelper::merge(parent::actions(), [
-            'ward' => [                                                              // identifier for your editable action
+            'department' => [                                                              // identifier for your editable action
                 'class' => EditableColumnAction::className(),                       // action class name
-                'modelClass' => Lookup_ward::className(),                   // the update model class
+                'modelClass' => Lookup_department::className(),                   // the update model class
                 'outputValue' => function ($model, $attribute, $key, $index) {
                     $value = $model->$attribute;  
                 }
@@ -51,48 +50,45 @@ class Lookup_wardController extends Controller
     }
 
     /**
-     * Lists all Lookup_ward models.
+     * Lists all Lookup_department models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-
-        $model = new Lookup_ward();
-        $searchModel = new Lookup_wardSearch();
+        $model = new Lookup_department();
+        $searchModel = new Lookup_departmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
-        if ($this->request->isPost && $model->load($this->request->post()))
-        {
-            $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));
-
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $checkDuplicatedCode = Lookup_department::findOne(['department_code' => $model->department_code, 'department_name' => $model->department_name]);
+       
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
+                // try catch of check row is inserted in SQL
                 try{
                     $model->save();
                 }catch(\yii\db\Exception $e){
                     var_dump($e->getMessage()); //Get the error messages accordingly.
                 }
-                return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
+                return $this->redirect(['index', 'department_uid' => $model->department_uid]);
             }
             else
             {
-                Yii::$app->session->setFlash('error_ward', '
+                // set the flash message
+                Yii::$app->session->setFlash('error_department', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
+                    <strong>Validation error! </strong>Department Code '.$model->department_name.' is duplicated. !</div>'
                 );
                 //$message = 'Code should not be duplicated.';
-                //$model->addError('ward_code', $message);
+                //$model->addError('department_code', $message);
             }
-        }
-        else
-        {
+           
+        } 
+        else {
             $model->loadDefaultValues();
         }
 
@@ -102,54 +98,54 @@ class Lookup_wardController extends Controller
         ]);
     }
 
-
     /**
-     * Displays a single Lookup_ward model.
-     * @param string $ward_uid Ward Uid
+     * Displays a single Lookup_department model.
+     * @param string $department_uid Department Uid
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($ward_uid)
+    public function actionView($department_uid)
     {
         return $this->render('view', [
-            'model' => $this->findModel($ward_uid),
+            'model' => $this->findModel($department_uid),
         ]);
     }
 
     /**
-     * Creates a new Lookup_ward model.
+     * Creates a new Lookup_department model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Lookup_ward();
-        $searchModel = new Lookup_wardSearch();
+        $model = new Lookup_department();
+        $searchModel = new Lookup_departmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-
-            $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));
-
-            if (empty($checkDuplicatedCode))
+            
+            $checkDuplicatedCode = Lookup_department::findOne(['department_code' => $model->department_code]);
+       
+            if($model->validate() &&  empty( $checkDuplicatedCode))
             {
                 try{
                     $model->save();
                 }catch(\yii\db\Exception $e){
                     var_dump($e->getMessage()); //Get the error messages accordingly.
                 }
-                return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
+                return $this->redirect(['index', 'department_uid' => $model->department_uid]);
             }
             else
             {
-                Yii::$app->session->setFlash('error_ward', '
-                <div class="alert alert-danger alert-dismissable">
-                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
+                // set the flash message
+                Yii::$app->session->setFlash('error_department', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong>Department Code '.$model->department_code.' is duplicated. !</div>'
                 );
             }
-        } 
-
+           
+        }
         $model->loadDefaultValues();
 
         return $this->render('index', [
@@ -158,20 +154,21 @@ class Lookup_wardController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    
 
     /**
-     * Updates an existing Lookup_ward model.
+     * Updates an existing Lookup_department model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $ward_uid Ward Uid
+     * @param string $department_uid Department Uid
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($ward_uid)
+    public function actionUpdate($department_uid)
     {
-        $model = $this->findModel($ward_uid);
+        $model = $this->findModel($department_uid);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'ward_uid' => $model->ward_uid]);
+            return $this->redirect(['view', 'department_uid' => $model->department_uid]);
         }
 
         return $this->render('update', [
@@ -180,29 +177,29 @@ class Lookup_wardController extends Controller
     }
 
     /**
-     * Deletes an existing Lookup_ward model.
+     * Deletes an existing Lookup_department model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $ward_uid Ward Uid
+     * @param string $department_uid Department Uid
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($ward_uid)
+    public function actionDelete($department_uid)
     {
-        $this->findModel($ward_uid)->delete();
+        $this->findModel($department_uid)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Lookup_ward model based on its primary key value.
+     * Finds the Lookup_department model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $ward_uid Ward Uid
-     * @return Lookup_ward the loaded model
+     * @param string $department_uid Department Uid
+     * @return Lookup_department the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($ward_uid)
+    protected function findModel($department_uid)
     {
-        if (($model = Lookup_ward::findOne(['ward_uid' => $ward_uid])) !== null) {
+        if (($model = Lookup_department::findOne(['department_uid' => $department_uid])) !== null) {
             return $model;
         }
 

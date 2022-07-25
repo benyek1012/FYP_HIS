@@ -107,6 +107,9 @@ if(!empty($info))
     ->all();
 }
 
+$url = Url::toRoute(['site/sidebar']);
+$urlAdmission = Url::toRoute(['site/admission']);
+$urlPatientAdmission = Url::toRoute(['patient_admission/update']);
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -136,7 +139,7 @@ if(!empty($info))
                     'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/RN')])->label(false)?>
 
                 <div class="input-group-append">
-                    <?= Html::submitButton('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar']) ?>
+                    <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
@@ -197,3 +200,75 @@ if(!empty($info))
     </div>
 
 </aside>
+
+<script>
+document.getElementById("patient_information-nric")
+    .addEventListener("keypress", function(event) {
+    if (event.keyCode == 13) {
+        document.getElementById("searchButton").onclick();
+        event.preventDefault();
+    }
+});
+
+function sidebar(url, urlAdmission, urlPatientAdmission) {
+    var search = document.getElementById("patient_information-nric").value;
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            if(this.responseText != false){
+                var data = $.parseJSON(this.responseText);
+                if(data.rn != null){
+                    location.href = urlPatientAdmission + "&rn=" + data.rn;
+                }
+                else if(data.patient_uid != null){
+                    location.href = urlAdmission + "&id=" + data.patient_uid;
+                }
+            }
+            else{
+                confirmActionPatient();
+            }
+        }
+    }
+    xhttp.open("GET", url + "&search=" + search, true);
+    xhttp.send();
+}
+
+<?php if( Yii::$app->language == "en"){ ?>
+// The function below will start the confirmation dialog
+function confirmActionPatient() {
+    var answer = confirm("Are you sure to create patient information?");
+    if (answer) {
+        window.location.href =  '<?php echo Url::toRoute(['/patient_information/create']) ?>';
+    } else {
+        // window.location.href = '<?php echo Url::toRoute(['/site/admission']) ?>';
+        // window.location.href = history.back();
+    }   
+}
+
+// The function below will start the confirmation dialog
+function duplicateIC(ic) {
+   alert('NRIC ' + ic + ' is existed in system!');
+   window.location.href = history.go(-1);
+}
+
+<?php }else{?>
+// The function below will start the confirmation dialog
+function confirmActionPatient() {
+    var answer = confirm("Adakah anda pasti untuk membuat butiran pesakit?");
+    if (answer) {
+        window.location.href =  '<?php echo Url::toRoute(['/patient_information/create']) ?>';
+    } else {
+        // window.location.href = '<?php echo Url::toRoute(['/site/admission']) ?>';
+        // window.location.href = history.back();
+    }   
+}
+
+// The function below will start the confirmation dialog
+function duplicateIC(ic) {
+   alert('NRIC ' + ic + ' wujud dalam sistem!');
+    window.location.href = history.go(-1);
+}
+
+<?php } ?>
+
+</script>

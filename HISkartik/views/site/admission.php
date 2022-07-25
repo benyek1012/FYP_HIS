@@ -6,6 +6,7 @@ use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
 use yii\data\ActiveDataProvider;
 use yii\bootstrap4\Html;
+use yii\helpers\Url;
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 if(empty($model))
@@ -22,6 +23,12 @@ else
     $this->title = $name;
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app','Admission'), 'url' => ['site/admission']]; 
     $this->params['breadcrumbs'][] = ['label' => $name];
+}
+
+if(!empty($model)){
+    $urlNormal = Url::toRoute(['patient_admission/create', 'id' => $model->patient_uid, 'type' => 'Normal']);
+    $urlLabor = Url::toRoute(['patient_admission/create', 'id' => $model->patient_uid, 'type' => 'Labor']);
+    $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
 }
 ?>
 
@@ -59,10 +66,11 @@ else
         ?>
                 <div class="form-group">
                     <br />
-                    <?= Html::a(Yii::t('app','Add New Admission'),['site/admission', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
+                    <!-- <?= Html::a(Yii::t('app','Add New Admission'),['site/admission', 'id' => $model->patient_uid,'type' => 'Normal'], ['class' => 'btn btn-outline-primary align-self-start']) ?> -->
+                    <?= Html::button(Yii::t('app','Add New Admission'), ['class' => 'btn btn-outline-primary align-self-start', 'onclick' => "addNormal('{$urlNormal}', '{$urlPatientAdmission}')"]) ?>
                     &nbsp;&nbsp;
-                    <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/admission', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?>
-
+                    <!-- <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/admission', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?> -->
+                    <?= Html::button(Yii::t('app','Add New Labor Admission'), ['class' => 'btn btn-outline-primary align-self-start', 'onclick' => "addNormal('{$urlLabor}', '{$urlPatientAdmission}')"]) ?>
                 </div>
         <?php
             } 
@@ -150,11 +158,49 @@ else
     </div>
 
 <script>
-    function hiddenForm() {
-        document.getElementById("NOk_Div").style.display = "none";
-    }
+function hiddenForm() {
+    document.getElementById("NOk_Div").style.display = "none";
+}
 
-    function showDiv() {
-        document.getElementById('NOk_Div').style.display = "block";
+function showDiv() {
+    document.getElementById('NOk_Div').style.display = "block";
+}
+
+function addNormal(url, urlPatientAdmission) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            if(this.responseText == false){
+                confirmAction(url);
+                
+            }
+        }
     }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
+
+<?php if( Yii::$app->language == "en"){ ?>
+// The function below will start the confirmation dialog
+function confirmAction(url) {
+    var answer = confirm("Are you sure to create patient admission?");
+    if (answer) {
+        // window.location.href = window.location + '&confirm=t';
+        window.location.href = url + '&confirm=t';
+    } else {
+        // window.location.href = history.back();
+    }
+}
+<?php }else{?>
+
+function confirmAction(url) {
+    var answer = confirm("Adakah anda pasti untuk membuat pendaftaran pesakit?");
+    if (answer) {
+        // window.location.href = window.location + '&confirm=t';
+        window.location.href = url + '&confirm=t';
+    } else {
+        // window.location.href = history.back();
+    }
+}
+<?php } ?>
 </script>

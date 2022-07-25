@@ -144,11 +144,6 @@ class BillController extends Controller
      */
     public function actionCreate()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-
         $model = new Bill();
         $rowsWard = (new \yii\db\Query())
             ->select('ward_uid')
@@ -199,26 +194,34 @@ class BillController extends Controller
     public function actionUpdate($bill_uid)
     {
         $model = $this->findModel($bill_uid);
-        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
-        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-            foreach($modelWard as $w)
-                $w->save();
-            foreach($modelTreatment as $t)
-                $t->save();
-
-            $model->bill_uid = Yii::$app->request->get('bill_uid');
-            $model->save();
-            return Yii::$app->getResponse()->redirect(array('/bill/update', 
-            'bill_uid' => $bill_uid, 'rn' => $model->rn));     
+            $model->bill_uid = $bill_uid;
+            $model->save();           
         }
 
-        return $this->render('update', [
-            'model' => $model,
-            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-            'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details()] : $modelTreatment,
-        ]);
+        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+        $wardClass = $model->class;
+
+        foreach($modelTreatment as $modelTreatment){
+            $modelLoopUpTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatment->treatment_code]);
+            if($wardClass == '1a' || $wardClass == '1b' || $wardClass == '1c') {
+                $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_1_cost_per_unit;
+            }
+            if($wardClass == '2'){
+                $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_2_cost_per_unit;
+            }
+            if($wardClass == '3'){
+                $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_3_cost_per_unit;
+            }
+
+            $modelTreatment->item_total_unit_cost_rm = $modelTreatment->item_per_unit_cost_rm * $modelTreatment->item_count;
+
+            $modelTreatment->save();
+        }      
+        
+        return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+            'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
     }
 
       /**
@@ -230,88 +233,16 @@ class BillController extends Controller
      */
     public function actionGenerate($bill_uid)
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
             
         $model = $this->findModel($bill_uid);
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
-
-        // Post method from form
-        if ($this->request->isPost && $model->load($this->request->post()) && Yii::$app->request->post('generate') == 'true') {
-            Yii::$app->session->set('billable_sum', $model->bill_generation_billable_sum_rm);
-            Yii::$app->session->set('final_fee', $model->bill_generation_final_fee_rm);
-            
-            // Popup Generation
-            if(Yii::$app->request->get('confirm') != 'true'){
-                echo '<script type="text/javascript">',
-                    'setTimeout(function(){',
-                        'confirmAction();',
-                        '},200);',
-                '</script>';
-            }
-        }   
-
-        if (Yii::$app->request->get('confirm') == 'true'){
-            if(empty($model->bill_generation_datetime))
-            {
-                $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
-            }
-
-            $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
-            $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
-
-            if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
-            if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
-
-            $model->bill_uid = Yii::$app->request->get('bill_uid');
-            $model->generation_responsible_uid = Yii::$app->user->identity->getId();
-            $model->save();
-
-            return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
-        }
-        // else{
-        //     if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
-        //     if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
-        // }
         
         // Update Bill
         if(Yii::$app->request->post('updateBill') == 'true') {
-            $model = $this->findModel($bill_uid);
-
-            if ($this->request->isPost && $model->load($this->request->post())) {
-                $model->bill_uid = $bill_uid;
-                $model->save();           
-            }
-
-            $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
-            $wardClass = $model->class;
-
-            foreach($modelTreatment as $modelTreatment){
-                $modelLoopUpTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatment->treatment_code]);
-                if($wardClass == '1a' || $wardClass == '1b' || $wardClass == '1c') {
-                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_1_cost_per_unit;
-                }
-                if($wardClass == '2'){
-                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_2_cost_per_unit;
-                }
-                if($wardClass == '3'){
-                    $modelTreatment->item_per_unit_cost_rm = $modelLoopUpTreatment->class_3_cost_per_unit;
-                }
-
-                $modelTreatment->item_total_unit_cost_rm = $modelTreatment->item_per_unit_cost_rm * $modelTreatment->item_count;
-
-                $modelTreatment->save();
-            }      
-            
-            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-                'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
+            $this->actionUpdate($bill_uid);
         }
 
         // Insert and Update Ward
@@ -389,6 +320,38 @@ class BillController extends Controller
         ]);
     }
 
+    public function actionGeneratebill($bill_uid)
+    {
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+        $model = Bill::findOne(['bill_uid' => $bill_uid]);
+
+        // // Popup Generation
+        if(Yii::$app->request->get('confirm') != 'true'){
+            return false;
+        }
+
+        if (Yii::$app->request->get('confirm') == 'true'){
+            if(empty($model->bill_generation_datetime))
+            {
+                $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
+            }
+
+            $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
+            $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
+
+            if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
+            if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+
+            $model->bill_uid = Yii::$app->request->get('bill_uid');
+            $model->generation_responsible_uid = Yii::$app->user->identity->getId();
+            $model->save();
+
+            return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
+        }
+    }
+
     
       /**
      * Updates an existing Bill model.
@@ -398,12 +361,7 @@ class BillController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionPrint($bill_uid)
-    {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
+    {        
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
             

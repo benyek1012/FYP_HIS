@@ -15,6 +15,7 @@ use Exception;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\helpers\Json;
 
 class SiteController extends Controller
 {
@@ -93,12 +94,7 @@ class SiteController extends Controller
      * @return string
      */
     public function actionIndex()
-    {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
+    {        
         if (Yii::$app->user->isGuest)
         $this->redirect (Url::to(['/site/login']));
         else return $this->render('index');
@@ -118,8 +114,8 @@ class SiteController extends Controller
 
         if ($this->request->isPost)
         {
-            if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
-            else $model_Patient->loadDefaultValues();
+            // if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
+            // else $model_Patient->loadDefaultValues();
             
             try{
                 if ($model_NOK->load($this->request->post())) {
@@ -136,7 +132,7 @@ class SiteController extends Controller
             }
         }
 
-        if(!empty(Yii::$app->request->get('type'))) (new Patient_admissionController(null, null)) -> actionCreate();
+        // if(!empty(Yii::$app->request->get('type'))) (new Patient_admissionController(null, null)) -> actionCreate();
         
         return $this->render('admission');
     }
@@ -181,14 +177,18 @@ class SiteController extends Controller
 
 
     //Functions of search patient in sidebar
-    public function actionSidebar($model)
+    public function actionSidebar()
     {
-        $globalSearch = $model->nric;
+        // $globalSearch = $model->nric;
+        $globalSearch = Yii::$app->request->get('search');
         $model_admission_founded = (new Patient_admissionController(null, null)) -> findModel($globalSearch);
         // RN is founded
         if(!empty( $model_admission_founded)){
-            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                'rn' => $model_admission_founded->rn));
+            echo Json::encode($model_admission_founded);
+            // use this 
+            // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+            //     'rn' => $model_admission_founded->rn)); 
+
             // return Yii::$app->getResponse()->redirect(array('/site/index', 
             // 'id' => $model_admission_founded->patient_uid));
         }
@@ -197,8 +197,11 @@ class SiteController extends Controller
             // IC is founded
             $model_founded = (new Patient_informationController(null, null)) -> findModel_nric($globalSearch);
             if(!empty($model_founded))
-                return Yii::$app->getResponse()->redirect(array('/site/admission', 
-                    'id' => $model_founded->patient_uid));
+                echo Json::encode($model_founded);
+                // return Yii::$app->getResponse()->redirect(array('/site/admission', 
+                //     'id' => $model_founded->patient_uid));
+            else
+                return false;
         }
     }
 

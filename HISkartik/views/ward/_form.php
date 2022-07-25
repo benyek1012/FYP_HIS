@@ -58,22 +58,22 @@ $dayly_ward_cost = "";
 $status_code = array();
 $unit_class = "";
 foreach($rows as $row){
-  $status_code[$row['status_code']] = $row['status_code'];
-  if($initial_ward_class == "1a"){
-      $unit_class = "1";
-  }
-  else if($initial_ward_class == "1b"){
-    $unit_class = "1";
-  }
-  else if($initial_ward_class == "1c"){
-    $unit_class = "1";
-  }
-  else if($initial_ward_class == "2"){
-    $unit_class = "2";
-  }
-  else if($initial_ward_class == "3"){
-    $unit_class = "3";
-  }
+    $status_code[$row['status_code']] = $row['status_code'] . ' - ' . $row['status_description'] ;
+    if($initial_ward_class == "1a"){
+        $unit_class = "1";
+    }
+    else if($initial_ward_class == "1b"){
+        $unit_class = "1";
+    }
+    else if($initial_ward_class == "1c"){
+        $unit_class = "1";
+    }
+    else if($initial_ward_class == "2"){
+        $unit_class = "2";
+    }
+    else if($initial_ward_class == "3"){
+        $unit_class = "3";
+    }
 }  
 
 $rows = (new \yii\db\Query())
@@ -88,13 +88,13 @@ foreach($rows as $row){
 } 
 
 $rows_ward = (new \yii\db\Query())
-->select('ward_code')
+->select('*')
 ->from('lookup_ward')
 ->all();
 
 $wardcode = array();
 foreach($rows_ward as $row_ward){
-  $wardcode[$row_ward['ward_code']] = $row_ward['ward_code'];
+  $wardcode[$row_ward['ward_code']] = $row_ward['ward_code'] . ' - ' . $row_ward['ward_name'];
 } 
 
 if(empty($print_readonly)) $print_readonly = false;
@@ -169,7 +169,7 @@ $urlDate = Url::toRoute(['/bill/date']);
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
-                                'width' => '200px',
+                                'width' => '220px',
                             ],
                         ])->label(false); ?>
                     <?php 
@@ -191,7 +191,7 @@ $urlDate = Url::toRoute(['/bill/date']);
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
-                                'width' => '200px',
+                                'width' => '220px',
                             ],
                         ])->label(false); ?>
                     <?php
@@ -200,7 +200,7 @@ $urlDate = Url::toRoute(['/bill/date']);
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
-                    'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
+                    'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly, 'style' => 'width: 180px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
@@ -241,11 +241,11 @@ $urlDate = Url::toRoute(['/bill/date']);
 
         <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveWard', 'name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
+        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?php }else{ ?>
-        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveWard', 'name' => 'saveWard', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'calculateDays();']) ?>
+        <?= Html::submitButton('+', ['id' => 'addWardRow', 'name' => 'addWardRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?php } ?>
         <input type="hidden" id="wardURL" name="wardURL" value="<?php echo $url ?>">
         <input type="hidden" id="dateURL" name="dateURL" value="<?php echo $urlDate ?>">

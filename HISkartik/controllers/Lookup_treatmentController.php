@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\New_user;
-use app\models\Lookup_status;
-use app\models\Lookup_statusSearch;
+use app\models\Lookup_treatment;
+use app\models\Lookup_treatmentSearch;
 use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -14,9 +14,9 @@ use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 
 /**
- * Lookup_statusController implements the CRUD actions for Lookup_status model.
+ * Lookup_treatmentController implements the CRUD actions for Lookup_treatment model.
  */
-class Lookup_statusController extends Controller
+class Lookup_treatmentController extends Controller
 {
     /**
      * @inheritDoc
@@ -39,9 +39,9 @@ class Lookup_statusController extends Controller
     public function actions()
     {
         return ArrayHelper::merge(parent::actions(), [
-            'status' => [                                                              // identifier for your editable action
+            'treatment' => [                                                              // identifier for your editable action
                 'class' => EditableColumnAction::className(),                       // action class name
-                'modelClass' => Lookup_status::className(),                   // the update model class
+                'modelClass' => Lookup_treatment::className(),                   // the update model class
                 'outputValue' => function ($model, $attribute, $key, $index) {
                     $value = $model->$attribute;  
                 }
@@ -50,51 +50,43 @@ class Lookup_statusController extends Controller
     }
 
     /**
-     * Lists all Lookup_status models.
+     * Lists all Lookup_treatment models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-        
-        $model = new Lookup_status();
-        $searchModel = new Lookup_statusSearch();
+        $model = new Lookup_treatment();
+        $searchModel = new Lookup_treatmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
-        if ($this->request->isPost && $model->load($this->request->post())) 
-        {
+        if ($this->request->isPost && $model->load($this->request->post())) {
             
-            $checkDuplicatedCode = Lookup_status::findOne(['status_code' => $model->status_code]);
+            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
        
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
-                // try catch of check row is inserted in SQL
                 try{
                     $model->save();
                 }catch(\yii\db\Exception $e){
                     var_dump($e->getMessage()); //Get the error messages accordingly.
                 }
-                return $this->redirect(['index', 'status_uid' => $model->status_uid]);
+                return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
             }
             else
             {
-                Yii::$app->session->setFlash('error_status', '
+                Yii::$app->session->setFlash('error_treatment', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong>Status Code '.$model->status_code.' is duplicated. !</div>'
+                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
                 );
                 //$message = 'Code should not be duplicated.';
-                //$model->addError('status_code', $message);
+                //$model->addError('treatment_code', $message);
             }
            
         } 
-        else 
-        {
+        else {
             $model->loadDefaultValues();
         }
 
@@ -103,36 +95,34 @@ class Lookup_statusController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    
 
     /**
-     * Displays a single Lookup_status model.
-     * @param string $status_uid Status Uid
+     * Displays a single Lookup_treatment model.
+     * @param string $treatment_uid Treatment Uid
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($status_uid)
+    public function actionView($treatment_uid)
     {
         return $this->render('view', [
-            'model' => $this->findModel($status_uid),
+            'model' => $this->findModel($treatment_uid),
         ]);
     }
 
     /**
-     * Creates a new Lookup_status model.
+     * Creates a new Lookup_treatment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Lookup_status();
-        $searchModel = new Lookup_statusSearch();
+        $model = new Lookup_treatment();
+        $searchModel = new Lookup_treatmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost && $model->load($this->request->post())) 
-        {
+        if ($this->request->isPost && $model->load($this->request->post())) {
             
-            $checkDuplicatedCode = Lookup_status::findOne(['status_code' => $model->status_code]);
+            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
        
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
@@ -141,18 +131,17 @@ class Lookup_statusController extends Controller
                 }catch(\yii\db\Exception $e){
                     var_dump($e->getMessage()); //Get the error messages accordingly.
                 }
-                return $this->redirect(['index', 'status_uid' => $model->status_uid]);
+                return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
             }
             else
             {
-                Yii::$app->session->setFlash('error_status', '
+                Yii::$app->session->setFlash('error_treatment', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong>Status Code '.$model->status_code.' is duplicated. !</div>'
+                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
                 );
-            }
-           
-        } 
+            } 
+        }
         
         $model->loadDefaultValues();
 
@@ -164,18 +153,18 @@ class Lookup_statusController extends Controller
     }
 
     /**
-     * Updates an existing Lookup_status model.
+     * Updates an existing Lookup_treatment model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $status_uid Status Uid
+     * @param string $treatment_uid Treatment Uid
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($status_uid)
+    public function actionUpdate($treatment_uid)
     {
-        $model = $this->findModel($status_uid);
+        $model = $this->findModel($treatment_uid);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'status_uid' => $model->status_uid]);
+            return $this->redirect(['view', 'treatment_uid' => $model->treatment_uid]);
         }
 
         return $this->render('update', [
@@ -184,29 +173,29 @@ class Lookup_statusController extends Controller
     }
 
     /**
-     * Deletes an existing Lookup_status model.
+     * Deletes an existing Lookup_treatment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $status_uid Status Uid
+     * @param string $treatment_uid Treatment Uid
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($status_uid)
+    public function actionDelete($treatment_uid)
     {
-        $this->findModel($status_uid)->delete();
+        $this->findModel($treatment_uid)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Lookup_status model based on its primary key value.
+     * Finds the Lookup_treatment model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $status_uid Status Uid
-     * @return Lookup_status the loaded model
+     * @param string $treatment_uid Treatment Uid
+     * @return Lookup_treatment the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($status_uid)
+    protected function findModel($treatment_uid)
     {
-        if (($model = Lookup_status::findOne(['status_uid' => $status_uid])) !== null) {
+        if (($model = Lookup_treatment::findOne(['treatment_uid' => $treatment_uid])) !== null) {
             return $model;
         }
 

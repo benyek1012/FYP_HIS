@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\New_user;
-use app\models\Lookup_treatment;
-use app\models\Lookup_treatmentSearch;
+use app\models\Lookup_ward;
+use app\models\Lookup_wardSearch;
 use app\models\Patient_information;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -13,10 +13,11 @@ use yii\filters\VerbFilter;
 use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 
+
 /**
- * Lookup_treatmentController implements the CRUD actions for Lookup_treatment model.
+ * Lookup_wardController implements the CRUD actions for Lookup_ward model.
  */
-class Lookup_treatmentController extends Controller
+class Lookup_wardController extends Controller
 {
     /**
      * @inheritDoc
@@ -39,9 +40,9 @@ class Lookup_treatmentController extends Controller
     public function actions()
     {
         return ArrayHelper::merge(parent::actions(), [
-            'treatment' => [                                                              // identifier for your editable action
+            'ward' => [                                                              // identifier for your editable action
                 'class' => EditableColumnAction::className(),                       // action class name
-                'modelClass' => Lookup_treatment::className(),                   // the update model class
+                'modelClass' => Lookup_ward::className(),                   // the update model class
                 'outputValue' => function ($model, $attribute, $key, $index) {
                     $value = $model->$attribute;  
                 }
@@ -50,26 +51,21 @@ class Lookup_treatmentController extends Controller
     }
 
     /**
-     * Lists all Lookup_treatment models.
+     * Lists all Lookup_ward models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        // Create Patient Confirm Box 
-        $model_Patient = new Patient_information();
-        if($model_Patient->load($this->request->post())) (new SiteController(null, null))->actionSidebar($model_Patient);
-        else $model_Patient->loadDefaultValues();
-
-        $model = new Lookup_treatment();
-        $searchModel = new Lookup_treatmentSearch();
+        $model = new Lookup_ward();
+        $searchModel = new Lookup_wardSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            
-            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
-       
+        if ($this->request->isPost && $model->load($this->request->post()))
+        {
+            $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));
+
             if($model->validate() &&  empty( $checkDuplicatedCode))
             {
                 try{
@@ -77,21 +73,21 @@ class Lookup_treatmentController extends Controller
                 }catch(\yii\db\Exception $e){
                     var_dump($e->getMessage()); //Get the error messages accordingly.
                 }
-                return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
+                return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
             }
             else
             {
-                Yii::$app->session->setFlash('error_treatment', '
+                Yii::$app->session->setFlash('error_ward', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
+                    <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
                 );
                 //$message = 'Code should not be duplicated.';
-                //$model->addError('treatment_code', $message);
+                //$model->addError('ward_code', $message);
             }
-           
-        } 
-        else {
+        }
+        else
+        {
             $model->loadDefaultValues();
         }
 
@@ -101,53 +97,54 @@ class Lookup_treatmentController extends Controller
         ]);
     }
 
+
     /**
-     * Displays a single Lookup_treatment model.
-     * @param string $treatment_uid Treatment Uid
+     * Displays a single Lookup_ward model.
+     * @param string $ward_uid Ward Uid
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($treatment_uid)
+    public function actionView($ward_uid)
     {
         return $this->render('view', [
-            'model' => $this->findModel($treatment_uid),
+            'model' => $this->findModel($ward_uid),
         ]);
     }
 
     /**
-     * Creates a new Lookup_treatment model.
+     * Creates a new Lookup_ward model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Lookup_treatment();
-        $searchModel = new Lookup_treatmentSearch();
+        $model = new Lookup_ward();
+        $searchModel = new Lookup_wardSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-            
-            $checkDuplicatedCode = Lookup_treatment::findOne(['treatment_code' => $model->treatment_code]);
-       
-            if($model->validate() &&  empty( $checkDuplicatedCode))
+
+            $checkDuplicatedCode = Lookup_ward::findOne((['ward_code' => $model->ward_code]));
+
+            if (empty($checkDuplicatedCode))
             {
                 try{
                     $model->save();
                 }catch(\yii\db\Exception $e){
                     var_dump($e->getMessage()); //Get the error messages accordingly.
                 }
-                return $this->redirect(['index', 'treatment_uid' => $model->treatment_uid]);
+                return $this->redirect(['index', 'ward_uid' => $model->ward_uid]);
             }
             else
             {
-                Yii::$app->session->setFlash('error_treatment', '
-                    <div class="alert alert-danger alert-dismissable">
-                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong>Treatment Code '.$model->treatment_code.' is duplicated. !</div>'
+                Yii::$app->session->setFlash('error_ward', '
+                <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                <strong>Validation error! </strong> Ward Code '.$model->ward_code.' is duplicated. !</div>'
                 );
-            } 
-        }
-        
+            }
+        } 
+
         $model->loadDefaultValues();
 
         return $this->render('index', [
@@ -158,18 +155,18 @@ class Lookup_treatmentController extends Controller
     }
 
     /**
-     * Updates an existing Lookup_treatment model.
+     * Updates an existing Lookup_ward model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $treatment_uid Treatment Uid
+     * @param string $ward_uid Ward Uid
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($treatment_uid)
+    public function actionUpdate($ward_uid)
     {
-        $model = $this->findModel($treatment_uid);
+        $model = $this->findModel($ward_uid);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'treatment_uid' => $model->treatment_uid]);
+            return $this->redirect(['view', 'ward_uid' => $model->ward_uid]);
         }
 
         return $this->render('update', [
@@ -178,29 +175,29 @@ class Lookup_treatmentController extends Controller
     }
 
     /**
-     * Deletes an existing Lookup_treatment model.
+     * Deletes an existing Lookup_ward model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $treatment_uid Treatment Uid
+     * @param string $ward_uid Ward Uid
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($treatment_uid)
+    public function actionDelete($ward_uid)
     {
-        $this->findModel($treatment_uid)->delete();
+        $this->findModel($ward_uid)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Lookup_treatment model based on its primary key value.
+     * Finds the Lookup_ward model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $treatment_uid Treatment Uid
-     * @return Lookup_treatment the loaded model
+     * @param string $ward_uid Ward Uid
+     * @return Lookup_ward the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($treatment_uid)
+    protected function findModel($ward_uid)
     {
-        if (($model = Lookup_treatment::findOne(['treatment_uid' => $treatment_uid])) !== null) {
+        if (($model = Lookup_ward::findOne(['ward_uid' => $ward_uid])) !== null) {
             return $model;
         }
 
