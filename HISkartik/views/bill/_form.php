@@ -76,7 +76,7 @@ $dayly_ward_cost = "";
 $status_code = array();
 $unit_class = "";
 foreach($rows as $row){
-  $status_code[$row['status_code']] = $row['status_code'];
+  $status_code[$row['status_code']] = $row['status_code'] . ' - ' . $row['status_description'] ;
   if($initial_ward_class == "1a"){
       $unit_class = "1";
   }
@@ -110,7 +110,7 @@ $rows = (new \yii\db\Query())
 
 $department_code = array();
 foreach($rows as $row){
-    $department_code[$row['department_code']] = $row['department_code'];
+    $department_code[$row['department_code']] = $row['department_code'] . ' - ' . $row['department_name'] ;
 } 
 
 $rows_nurse = (new \yii\db\Query())
@@ -216,7 +216,7 @@ $this->registerJs(
 $this->registerJs(
     "$('#wardClass').change(function() {
         var wardClass = $(this).val();
-        var statusCode = $('#statusCode :selected').text();
+        var statusCode = $('#statusCode').val();
         $.get('". Url::toRoute(['/bill/status'])."', {status : statusCode}, function(data){
             var data = $.parseJSON(data);
         
@@ -361,6 +361,7 @@ if($print_readonly)
 }
 
 $urlStatus = Url::toRoute(['/bill/status']);
+$urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->request->get('bill_uid')]);
 ?>
 
 <style>
@@ -571,6 +572,7 @@ $urlStatus = Url::toRoute(['/bill/status']);
         <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'bill-generation-form',
         'type' => 'vertical',
+        'action' => Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->request->get('bill_uid')]),
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -634,8 +636,9 @@ $urlStatus = Url::toRoute(['/bill/status']);
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?>
-                <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
+                    <?= Html::button(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();"]) ?>
+                    <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
+                    <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php } ?>
             </div>
             <!-- /.card-body -->
@@ -737,23 +740,25 @@ function getDailyWardCost(url) {
 
 <?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation  dialog
-function confirmAction() {
+function confirmAction(url) {
     var answer = confirm("Are you sure to generate bill?");
     if (answer) {
-        window.location.href = window.location + '&confirm=true';
-    } else {
-        window.location.href = history.go(-1);
-    }
+        window.location.href = url + '&confirm=true';
+    } 
+    // else {
+    //     window.location.href = history.go(-1);
+    // }
 }
 <?php }else{?>
 // The function below will start the confirmation  dialog
-function confirmAction() {
+function confirmAction(url) {
     var answer = confirm("Adakah anda pasti menjana bil?");
     if (answer) {
-        window.location.href = window.location + '&confirm=true';
-    } else {
-        window.location.href = history.go(-1);
-    }
+        window.location.href = url + '&confirm=true';
+    } 
+    // else {
+        // window.location.href = history.go(-1);
+    // }
 }
 <?php } ?>
 
@@ -763,6 +768,20 @@ function refreshButton(url) {
         if(xhttp.readyState == 4 && xhttp.status == 200){
             document.getElementById("serial_number").value = this.responseText;
             document.getElementById("serial_number").readOnly = true; 
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
+
+function generateBill(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            console.log(this.responseText);
+            if(this.responseText == false){
+                confirmAction(url);
+            }
         }
     }
     xhttp.open("GET", url, true);

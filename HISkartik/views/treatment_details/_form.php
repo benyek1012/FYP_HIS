@@ -56,22 +56,22 @@ $dayly_ward_cost = "";
 $status_code = array();
 $unit_class = "";
 foreach($rows as $row){
-  $status_code[$row['status_code']] = $row['status_code'];
-  if($initial_ward_class == "1a"){
-      $unit_class = "1";
-  }
-  else if($initial_ward_class == "1b"){
-    $unit_class = "1";
-  }
-  else if($initial_ward_class == "1c"){
-    $unit_class = "1";
-  }
-  else if($initial_ward_class == "2"){
-    $unit_class = "2";
-  }
-  else if($initial_ward_class == "3"){
-    $unit_class = "3";
-  }
+    $status_code[$row['status_code']] = $row['status_code'] . ' - ' . $row['status_description'] ;
+    if($initial_ward_class == "1a"){
+        $unit_class = "1";
+    }
+    else if($initial_ward_class == "1b"){
+        $unit_class = "1";
+    }
+    else if($initial_ward_class == "1c"){
+        $unit_class = "1";
+    }
+    else if($initial_ward_class == "2"){
+        $unit_class = "2";
+    }
+    else if($initial_ward_class == "3"){
+        $unit_class = "3";
+    }
 }  
 
 $rows = (new \yii\db\Query())
@@ -82,7 +82,7 @@ $rows = (new \yii\db\Query())
 $treatment_code = array();
 $unit_cost = "";
 foreach($rows as $row){
-    $treatment_code[$row['treatment_code']] = $row['treatment_code'];
+    $treatment_code[$row['treatment_code']] = $row['treatment_code'] . ' - ' . $row['treatment_name'];
     if($unit_class == "1"){
         $unit_cost = $row['class_1_cost_per_unit'];
     }
@@ -160,13 +160,13 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'width' => '200px',
+                            'width' => '220px',
                         ],
                     ])->label(false); ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
-                        'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
+                        'readonly' => true, 'disabled' => $print_readonly, 'style' => 'width: 280px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -238,11 +238,11 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
 
         <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');"]) ?>
+        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?php }else{ ?>
-        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');"]) ?>
+        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
         <?php } ?>
     <?php kartik\form\ActiveForm::end(); ?>
     <?php Pjax::end(); ?>

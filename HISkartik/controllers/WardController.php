@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\Bill;
 use app\models\Ward;
 use app\models\Model;
 use app\models\WardSearch;
@@ -141,6 +142,8 @@ class WardController extends Controller
 
                             if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
                                 $modelWard->save();
+                                Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
+                                Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
                             }
                         }
                     }
@@ -161,6 +164,8 @@ class WardController extends Controller
 
                                 if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
                                     $modelWard[$i - 1]->save();
+                                    Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
+                                    Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
                                 }
                             }
                         }   
@@ -172,6 +177,8 @@ class WardController extends Controller
                                 if($valid) {            
                                     foreach ($modelWardUpdate as $modelWardUpdate) {
                                         $modelWardUpdate->save();
+                                        Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
+                                        Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
                                     }
                                 }
                             }
