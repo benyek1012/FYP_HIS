@@ -98,11 +98,35 @@ $url = Url::toRoute(['receipt/refresh']);
     <div class="row">
         <div class="col-sm-6">
             <?php  if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
+            <!-- <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
+            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?> -->
+
+            <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
+                'data' => $receipt,
+                'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
+                    'id' => 'receipt_type', 
+                    'onchange' => 'myfunctionforType(this.value)',
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumResultsForSearch' => 'Infinity',
+                ],
+            ]); ?>
             <?php }else{ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?>
+            <!-- <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
+            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?> -->
+
+            <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
+                'data' => $receipt,
+                'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
+                    'id' => 'receipt_type', 
+                    'onchange' => 'myfunctionforType(this.value)',
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumResultsForSearch' => 'Infinity',
+                ],
+            ]); ?>
             <?php } ?>
         </div>
 
@@ -134,8 +158,21 @@ $url = Url::toRoute(['receipt/refresh']);
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($payment_method, ['class'=>'payment',
-             'prompt'=> Yii::t('app','Please select payment method'),'maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?>
+            <!-- <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($payment_method, ['class'=>'payment',
+             'prompt'=> Yii::t('app','Please select payment method'),'maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?> -->
+
+            <?= $form->field($model, 'receipt_content_payment_method')->widget(kartik\select2\Select2::classname(), [
+                'data' => $payment_method,
+                'options' => ['placeholder' => Yii::t('app','Please select payment method'), 
+                    'id' => 'receipt_content_payment_method', 
+                    'class'=>'payment',
+                    'onchange' => 'myfunctionforValuecheck(this.value)',
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumResultsForSearch' => 'Infinity',
+                ],
+            ]); ?>
         </div>
 
         <div class="col-sm-6">
@@ -212,3 +249,17 @@ function refreshButton(url) {
     xhttp.send();
 }
 </script>
+
+<?php 
+$script = <<< JS
+$(document).on('focus', '.select2.select2-container', function (e) {
+    var isOriginalEvent = e.originalEvent // don't re-open on closing focus event
+    var isSingleSelect = $(this).find(".select2-selection--single").length > 0 // multi-select will pass focus to input
+
+    if (isOriginalEvent && isSingleSelect) {
+        $(this).siblings('select:enabled').select2('open');
+    } 
+});
+JS;
+$this->registerJS($script);
+?>
