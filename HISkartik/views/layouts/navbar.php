@@ -47,14 +47,6 @@ if (Yii::$app->user->isGuest){
                 </ul>
         </li>
         
-        <!-- <li class="nav-item dropdown">
-            <a id="report"  href="<?php echo Url::to(['/site/admission']); ?>" onMouseOver="document.location.href='<?php echo Url::to(['/patient_admission']); ?>'" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
-        </li> -->
-
-        <!-- <li class="nav-item dropdown">
-            <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
-        </li> -->
-        
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
@@ -71,7 +63,11 @@ if (Yii::$app->user->isGuest){
             </ul>
         </li>
 
-        <!-- <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
+            <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
+        </li>
+
+        <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app', "Others"); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
@@ -79,7 +75,7 @@ if (Yii::$app->user->isGuest){
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/batch']); ?>" class="dropdown-item"><?php echo Yii::t('app','Testing csv upload'); ?></a></li>
             </ul>
-        </li> -->
+        </li>
 
     </ul>
 
