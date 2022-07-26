@@ -135,8 +135,6 @@ class Treatment_detailsController extends Controller
 
                             if(!empty($modelTreatment->treatment_code) && !empty($modelTreatment->treatment_name) && !empty($modelTreatment->item_per_unit_cost_rm) && !empty($modelTreatment->item_count) && !empty($modelTreatment->item_total_unit_cost_rm)){
                                 $modelTreatment->save();
-                                Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
-                                Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
                             }
                         }
                     }
@@ -157,8 +155,6 @@ class Treatment_detailsController extends Controller
 
                                 if(!empty($modelTreatment[$i - 1]->treatment_code) && !empty($modelTreatment[$i - 1]->treatment_name) && !empty($modelTreatment[$i - 1]->item_per_unit_cost_rm) && !empty($modelTreatment[$i - 1]->item_count) && !empty($modelTreatment[$i - 1]->item_total_unit_cost_rm)){
                                     $modelTreatment[$i - 1]->save();
-                                    Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
-                                    Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
                                 }
                             }
                         }
@@ -189,8 +185,6 @@ class Treatment_detailsController extends Controller
                                         $modelTreatmentUpdate->item_total_unit_cost_rm = $itemPerUnit * $itemCount;
 
                                         $modelTreatmentUpdate->save();
-                                        Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
-                                        Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
                                     }
                                 }
                             }

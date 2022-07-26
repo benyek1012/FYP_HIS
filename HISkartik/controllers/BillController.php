@@ -328,6 +328,8 @@ class BillController extends Controller
 
         // // Popup Generation
         if(Yii::$app->request->get('confirm') != 'true'){
+            Yii::$app->session->set('billable_sum', (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')));
+            Yii::$app->session->set('final_fee', (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')));
             return false;
         }
 

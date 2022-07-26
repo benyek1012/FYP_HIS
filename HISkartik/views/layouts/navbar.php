@@ -20,13 +20,12 @@ if (Yii::$app->user->isGuest){
     display: none;
 }
 </style>
-
 <?php
 }
     
 ?>
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light ">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <?php 
@@ -38,20 +37,19 @@ if (Yii::$app->user->isGuest){
                     </li>'; 
             }
         ?>
-<!-- 
-        <li class="nav-item dropdown">
 
+        <li class="nav-item dropdown">
             <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
                 </ul>
-        </li> -->
-
-        <li class="nav-item dropdown">
-            <a id="report"  href="<?php echo Url::to(['/site/admission']); ?>" onMouseOver="document.location.href='<?php echo Url::to(['/patient_admission']); ?>'" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
         </li>
+        
+        <!-- <li class="nav-item dropdown">
+            <a id="report"  href="<?php echo Url::to(['/site/admission']); ?>" onMouseOver="document.location.href='<?php echo Url::to(['/patient_admission']); ?>'" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
+        </li> -->
 
         <!-- <li class="nav-item dropdown">
             <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
@@ -120,4 +118,31 @@ $this->registerJs(
     });"
 );
 
+$this->registerJs('
+const $dropdown = $(".dropdown");
+const $dropdownToggle = $(".dropdown-toggle");
+const $dropdownMenu = $(".dropdown-menu");
+const showClass = "show";
+ 
+$(window).on("load resize", function() {
+  if (this.matchMedia("(min-width: 768px)").matches) {
+    $dropdown.hover(
+      function() {
+        const $this = $(this);
+        $this.addClass(showClass);
+        $this.find($dropdownToggle).attr("aria-expanded", "true");
+        $this.find($dropdownMenu).addClass(showClass);
+      },
+      function() {
+        const $this = $(this);
+        $this.removeClass(showClass);
+        $this.find($dropdownToggle).attr("aria-expanded", "false");
+        $this.find($dropdownMenu).removeClass(showClass);
+      }
+    );
+  } else {
+    $dropdown.off("mouseenter mouseleave");
+  }
+});'
+);
 ?>
