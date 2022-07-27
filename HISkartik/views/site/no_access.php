@@ -10,5 +10,5 @@ use yii\bootstrap4\Html;
 $this->title = Yii::t('app','Sorry, you do not have permission to access this page');
 ?>
 <div>
-    <p>Please contact your administrator for assistance</p>
+    <p><?php echo Yii::t('app', 'Please contact your administrator for assistance'); ?></p>
 </div>

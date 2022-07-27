@@ -223,6 +223,8 @@ return[
     'Payment Method' => 'Kaedah Pembayaran', 
     'Receipt' => 'Resit', 
     'Responsible'=> 'Bertanggungjawab',
-    'Refresh' => 'Semula'
+    'Refresh' => 'Semula',
+    'Sorry, you do not have permission to access this page' => 'Maaf, anda tiada kebenaran untuk mengakses halaman ini',
+    'Please contact your administrator for assistance' => 'Sila hubungi pentadbir anda untuk mendapatkan bantuan',
 ];
 ?>

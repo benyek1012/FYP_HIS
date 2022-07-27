@@ -249,17 +249,3 @@ function refreshButton(url) {
     xhttp.send();
 }
 </script>
-
-<?php 
-$script = <<< JS
-$(document).on('focus', '.select2.select2-container', function (e) {
-    var isOriginalEvent = e.originalEvent // don't re-open on closing focus event
-    var isSingleSelect = $(this).find(".select2-selection--single").length > 0 // multi-select will pass focus to input
-
-    if (isOriginalEvent && isSingleSelect) {
-        $(this).siblings('select:enabled').select2('open');
-    } 
-});
-JS;
-$this->registerJS($script);
-?>
