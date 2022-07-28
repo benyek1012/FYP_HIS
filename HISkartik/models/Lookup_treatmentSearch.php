@@ -18,7 +18,7 @@ class Lookup_treatmentSearch extends Lookup_treatment
     {
         return [
             [['treatment_uid', 'treatment_code', 'treatment_name'], 'safe'],
-            [['class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit'], 'number'],
+            [['class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit', 'class_Daycare_FPP_per_unit'], 'number'],
         ];
     }
 
@@ -61,6 +61,7 @@ class Lookup_treatmentSearch extends Lookup_treatment
             'class_1_cost_per_unit' => $this->class_1_cost_per_unit,
             'class_2_cost_per_unit' => $this->class_2_cost_per_unit,
             'class_3_cost_per_unit' => $this->class_3_cost_per_unit,
+            'class_Daycare_FPP_per_unit' => $this->class_Daycare_FPP_per_unit,
         ]);
 
         $query->andFilterWhere(['like', 'treatment_uid', $this->treatment_uid])

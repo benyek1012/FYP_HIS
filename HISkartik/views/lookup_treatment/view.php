@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'class_1_cost_per_unit',
             'class_2_cost_per_unit',
             'class_3_cost_per_unit',
+            'class_Daycare_FPP_per_unit'
         ],
     ]) ?>
 

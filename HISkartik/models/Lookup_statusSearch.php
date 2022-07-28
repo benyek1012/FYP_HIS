@@ -18,7 +18,7 @@ class Lookup_statusSearch extends Lookup_status
     {
         return [
             [['status_uid', 'status_code', 'status_description'], 'safe'],
-            [['class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost'], 'number'],
+            [['class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost', 'class_Daycare_FPP_ward_cost'], 'number'],
         ];
     }
 
@@ -63,6 +63,7 @@ class Lookup_statusSearch extends Lookup_status
             'class_1c_ward_cost' => $this->class_1c_ward_cost,
             'class_2_ward_cost' => $this->class_2_ward_cost,
             'class_3_ward_cost' => $this->class_3_ward_cost,
+            'class_Daycare_FPP_ward_cost' => $this->class_Daycare_FPP_ward_cost,
         ]);
 
         $query->andFilterWhere(['like', 'status_uid', $this->status_uid])

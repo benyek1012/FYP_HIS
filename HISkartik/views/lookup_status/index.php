@@ -140,6 +140,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'formOptions' => ['action' => ['/lookup_status/status']],
                 ]
             ],
+
+            [
+                'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'class_Daycare_FPP_ward_cost',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'editableOptions' =>  [                
+                    'asPopover' => false,
+                    'formOptions' => ['action' => ['/lookup_status/status']],
+                ]
+            ],
         ],
     ]); ?>
 

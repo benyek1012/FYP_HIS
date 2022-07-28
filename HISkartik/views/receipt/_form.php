@@ -33,12 +33,23 @@ $url = Url::toRoute(['receipt/refresh']);
                 'refund'=>  Yii::t('app','Refund'),
                 'exception' =>Yii::t('app','Exception')
             );
+        
+        $rows_payment = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Payment Method'])
+        ->all();
 
-        $payment_method = array(
-            'cash'=> Yii::t('app','Cash'),
-            'card'=> Yii::t('app','Debit/Credit Card'),
-            'cheque'=> Yii::t('app','Cheque Numbers'),
-        );
+        $method = array();
+        foreach ($rows_payment as $row_payment){
+            $method[$row_payment['name']] = $row_payment['name'];
+        }
+
+        //$payment_method = array(
+        //    'cash'=> Yii::t('app','Cash'),
+        //    'card'=> Yii::t('app','Debit/Credit Card'),
+        //    'cheque'=> Yii::t('app','Cheque Numbers'),
+        //);
 
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
         $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
@@ -160,11 +171,11 @@ $url = Url::toRoute(['receipt/refresh']);
         </div>
 
         <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($payment_method, ['class'=>'payment',
+            <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($method, ['prompt'=>'Please select payment method','maxlength' => true])/*['class'=>'payment',
              'prompt'=> Yii::t('app','Please select payment method'),'maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?> -->
 
             <?= $form->field($model, 'receipt_content_payment_method')->widget(kartik\select2\Select2::classname(), [
-                'data' => $payment_method,
+                'data' => $rows_payment,
                 'options' => ['placeholder' => Yii::t('app','Please select payment method'), 
                     'id' => 'receipt_content_payment_method', 
                     'class'=>'payment',
@@ -174,7 +185,7 @@ $url = Url::toRoute(['receipt/refresh']);
                     'allowClear' => true,
                     'minimumResultsForSearch' => 'Infinity',
                 ],
-            ]); ?>
+            ]);*/ ?>
         </div>
 
         <div class="col-sm-6">

@@ -13,6 +13,7 @@ use Yii;
  * @property float $class_1_cost_per_unit
  * @property float $class_2_cost_per_unit
  * @property float $class_3_cost_per_unit
+ * @property float $class_Daycare_FPP_per_unit
  */
 class Lookup_treatment extends \yii\db\ActiveRecord
 {
@@ -30,8 +31,8 @@ class Lookup_treatment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['treatment_uid', 'treatment_code', 'treatment_name', 'class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit'], 'required'],
-            [['class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit'], 'number'],
+            [['treatment_uid', 'treatment_code', 'treatment_name', 'class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit', 'class_Daycare_FPP_per_unit'], 'required'],
+            [['class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit', 'class_Daycare_FPP_per_unit'], 'number'],
             [['treatment_uid'], 'string', 'max' => 64],
             [['treatment_code'], 'string', 'max' => 20],
             [['treatment_name'], 'string', 'max' => 50],
@@ -52,6 +53,7 @@ class Lookup_treatment extends \yii\db\ActiveRecord
             'class_1_cost_per_unit' => Yii::t('app','Class  1 Cost Per Unit'),
             'class_2_cost_per_unit' => Yii::t('app','Class  2 Cost Per Unit'),
             'class_3_cost_per_unit' => Yii::t('app','Class  3 Cost Per Unit'),
+            'class_Daycare_FPP_per_unit' => Yii::t('app','Class  DayCare FPP Cost Per Unit'),
         ];
     }
 }
