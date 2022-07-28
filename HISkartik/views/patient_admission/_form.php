@@ -27,6 +27,29 @@ use kartik\datetime\DateTimePicker;
       $ward_code[$row['ward_code']] = $row['ward_code'] . " - " . $row['ward_name'];
     }  
 
+    $reference = array();
+    $rows_reference = (new \yii\db\Query())
+    ->select('*')
+    ->from('lookup_general')
+    ->where(['category'=> 'Admission Reference'])
+    ->all();
+
+    foreach($rows_reference as $row_reference){
+        $reference[$row_reference['code']] = $row_reference['code'] . " - " . $row_reference['name'];
+    }  
+
+    $rows_patient_admission = (new \yii\db\Query())
+    ->select('*')
+    ->from('patient_admission')
+    ->where(['rn'=> Yii::$app->request->get('rn')])
+    ->all();
+
+    foreach($rows_patient_admission as $row_patient_admission){
+        if(empty($reference[$row_patient_admission['reference']])){
+            $reference[$row_patient_admission['reference']] = $row_patient_admission['reference'];
+        }            
+    }
+
     // foreach($rows_patient_admission as $row_patient_admission){
     //     if(empty($ward_code[$row_patient_admission['initial_ward_code']])){
     //         $ward_code[$row_patient_admission['initial_ward_code']] = $row_patient_admission['initial_ward_code'];
@@ -98,7 +121,25 @@ use kartik\datetime\DateTimePicker;
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(),[
+            'options' => ['class' => 'entry_datetime'],
+            'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
+            'pluginEvents' => [
+                
+            ],])?>
+        </div>
+
+        <div class="col-sm-6">
+            <!-- <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?> -->
+
+            <?= $form->field($model, 'reference')->widget(kartik\select2\Select2::classname(), [
+                'data' => $reference,
+                'options' => ['placeholder' => Yii::t('app','Please select reference'), 'id' => 'reference',],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'tags' => true,
+                ],
+            ]); ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput() ?>

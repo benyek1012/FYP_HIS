@@ -203,14 +203,34 @@ $urlDate = Url::toRoute(['/bill/date']);
                     'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly, 'style' => 'width: 180px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
-                'options' => ['class' => 'start_date', 'disabled' => $print_readonly],
-                'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
-                'pluginEvents' => [
-                    'change' => 'function () {
-                        calculateDays();
-                        }',
-                ],])->label(false)?></td>
+                <td>
+                    <?php 
+                    if($admission_model->initial_ward_code != "UNKNOWN" && empty($modelWard->ward_code) && $index == 0){
+                    ?>
+                        <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        'options' => ['class' => 'start_date', 'disabled' => $print_readonly, 'value' => $admission_model->entry_datetime],
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
+                        'pluginEvents' => [
+                            'change' => 'function () {
+                                calculateDays();
+                                }',
+                        ],])->label(false)?>
+                    <?php 
+                    }
+                    else{
+                    ?>
+                        <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        'options' => ['class' => 'start_date', 'disabled' => $print_readonly],
+                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
+                        'pluginEvents' => [
+                            'change' => 'function () {
+                                calculateDays();
+                                }',
+                        ],])->label(false)?>
+                    <?php
+                    }
+                    ?>
+                </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'end_date', 'disabled' => $print_readonly], 

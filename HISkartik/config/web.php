@@ -106,7 +106,7 @@ $config = [
         'class' => 'yii\filters\AccessControl',
         'rules' => [
             [
-                'actions' => ['login', 'error'],
+                'actions' => ['login', 'language','error'],
                 'allow' => true,
             ],
             [
