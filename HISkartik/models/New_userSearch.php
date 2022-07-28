@@ -17,7 +17,7 @@ class New_UserSearch extends New_user
     public function rules()
     {
         return [
-            [['user_uid', 'username', 'user_password', 'role_cashier', 'role_clerk', 'role_admin', 'authKey'], 'safe'],
+            [['user_uid', 'username', 'user_password', 'role_cashier', 'role_clerk', 'role_admin', 'role_guest_print', 'authKey'], 'safe'],
             [['retire'], 'integer'],
         ];
     }

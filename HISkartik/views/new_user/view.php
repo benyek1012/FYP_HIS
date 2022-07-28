@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'role_cashier',
             'role_clerk',
             'role_admin',
+            'role_guest_print',
             'retire',
             'authKey',
         ],

@@ -27,6 +27,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'role_admin') ?>
 
+    <?= $form->field($model, 'role_guest_print') ?>
+
     <?= $form->field($model, 'retire') ?>
 
     <?php // echo $form->field($model, 'authKey') ?>

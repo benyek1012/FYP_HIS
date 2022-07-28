@@ -35,6 +35,7 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'role_cashier')->checkbox(['checked'=> false, 'uncheck'=>'0', 'value' => '1']) ?>
             <?= $form->field($model, 'role_clerk')->checkbox(['checked'=> false, 'uncheck'=>'0', 'value' => '1']) ?>
             <?= $form->field($model, 'role_admin')->checkbox(['checked'=> false, 'uncheck'=>'0', 'value' => '1']) ?>
+            <?= $form->field($model, 'role_guest_print')->checkbox(['checked'=> false, 'uncheck'=>'0', 'value' => '1']) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'retire')->textInput(['value' => '0']) ?>
