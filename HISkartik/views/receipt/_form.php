@@ -198,8 +198,19 @@ $url = Url::toRoute(['receipt/refresh']);
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="div_print">
         <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?>
+        <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
+            'onclick' => '(function ( $event ) {
+                 document.getElementById("serial_number").readOnly = false; 
+                 document.getElementById("serial_number").value = "";
+                 document.getElementById("serial_number").focus();
+            })();' ]) ?>
+        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
+    </div>
+
+    
+    <div class="form-group" id="div_no_print">
         <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
             'onclick' => '(function ( $event ) {
                  document.getElementById("serial_number").readOnly = false; 
@@ -239,16 +250,20 @@ function myfunctionforType(val) {
         document.getElementById("receipt_label").innerHTML =  '<?php echo Yii::t('app','Document Number');?>'; 
         document.getElementById("serial_number").value = '';
         document.getElementById("serial_number").readOnly = false; 
-    if (val == "exception"){
-        document.getElementById("print").style.visibility = 'hidden';
-        // var elem = document.getElementById('print');
-        // elem.parentNode.removeChild(elem);
     }
     else{
         document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
         refreshButton('<?php echo $url?>');
-        document.getElementById("print").style.visibility = 'visible';
     }  
+
+    if (val == "exception"){
+        document.getElementById("div_print").style.display = "none";
+        document.getElementById("div_no_print").style.display = "block";
+    }
+    else{
+        document.getElementById("div_no_print").style.display = "none";
+        document.getElementById("div_print").style.display = "block";
+    } 
 
 
 }
@@ -264,4 +279,6 @@ function refreshButton(url) {
     xhttp.open("GET", url, true);
     xhttp.send();
 }
+
+document.getElementById("div_no_print").style.display = "none";
 </script>
