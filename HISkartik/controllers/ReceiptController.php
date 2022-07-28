@@ -150,22 +150,25 @@ class ReceiptController extends Controller
 
             if($model->validate() && $model->save()){
 
-                if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
+                if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit')
                 {
-                    $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
+                    if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
+                    {
+                        $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
 
-                    $str = $model->receipt_serial_number;
-                    $only_integer = preg_replace('/[^0-9]/', '', $str);
-                    $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
-                    $model_serial->digit_length = strlen($only_integer);
-                    $model_serial->running_value = $only_integer;
+                        $str = $model->receipt_serial_number;
+                        $only_integer = preg_replace('/[^0-9]/', '', $str);
+                        $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
+                        $model_serial->digit_length = strlen($only_integer);
+                        $model_serial->running_value = $only_integer;
 
-                    $model_serial->save();    
-                }
-                else{
-                    $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
-                    $model_serial->running_value =  $model_serial->running_value + 1;
-                    $model_serial->save();    
+                        $model_serial->save();    
+                    }
+                    else{
+                        $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
+                        $model_serial->running_value =  $model_serial->running_value + 1;
+                        $model_serial->save();    
+                    }
                 }
 
                 $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;

@@ -232,9 +232,16 @@ function myfunctionforType(val) {
     else
         document.getElementById("bill_div").style.display = "none";
 
-    if (val == "refund")
+    if (val == "refund" || val == "exception")
+    {
         document.getElementById("receipt_label").innerHTML =  '<?php echo Yii::t('app','Document Number');?>'; 
-    else document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
+        document.getElementById("serial_number").value = '';
+        document.getElementById("serial_number").readOnly = false; 
+    }
+    else{
+        document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
+        refreshButton('<?php echo $url?>');
+    } 
 }
 
 function refreshButton(url) {
@@ -248,4 +255,6 @@ function refreshButton(url) {
     xhttp.open("GET", url, true);
     xhttp.send();
 }
+
+
 </script>
