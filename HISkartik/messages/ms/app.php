@@ -227,5 +227,6 @@ return[
     'Sorry, you do not have permission to access this page' => 'Maaf, anda tiada kebenaran untuk mengakses halaman ini',
     'Please contact your administrator for assistance' => 'Sila hubungi pentadbir anda untuk mendapatkan bantuan',
     'Please select reference' => 'Sila pilih rujukan',
+    'Exception' => 'Pengecualian'
 ];
 ?>

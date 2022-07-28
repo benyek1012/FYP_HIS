@@ -25,11 +25,13 @@ $url = Url::toRoute(['receipt/refresh']);
             $receipt = array(
                 'bill'=> Yii::t('app','Bill'),
                 'refund'=> Yii::t('app','Refund'),
+                'exception' =>Yii::t('app','Exception')
             );
         else
             $receipt = array(
                 'deposit'=> Yii::t('app','Deposit'),
                 'refund'=>  Yii::t('app','Refund'),
+                'exception' =>Yii::t('app','Exception')
             );
 
         $payment_method = array(
@@ -197,7 +199,7 @@ $url = Url::toRoute(['receipt/refresh']);
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?>
         <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
             'onclick' => '(function ( $event ) {
                  document.getElementById("serial_number").readOnly = false; 
@@ -237,11 +239,18 @@ function myfunctionforType(val) {
         document.getElementById("receipt_label").innerHTML =  '<?php echo Yii::t('app','Document Number');?>'; 
         document.getElementById("serial_number").value = '';
         document.getElementById("serial_number").readOnly = false; 
+    if (val == "exception"){
+        document.getElementById("print").style.visibility = 'hidden';
+        // var elem = document.getElementById('print');
+        // elem.parentNode.removeChild(elem);
     }
     else{
         document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
         refreshButton('<?php echo $url?>');
-    } 
+        document.getElementById("print").style.visibility = 'visible';
+    }  
+
+
 }
 
 function refreshButton(url) {
@@ -255,6 +264,4 @@ function refreshButton(url) {
     xhttp.open("GET", url, true);
     xhttp.send();
 }
-
-
 </script>
