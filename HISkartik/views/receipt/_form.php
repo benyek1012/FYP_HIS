@@ -171,21 +171,8 @@ $url = Url::toRoute(['receipt/refresh']);
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, ['prompt'=>'Please select payment method','maxlength' => true])/*['class'=>'payment',
-             'prompt'=> Yii::t('app','Please select payment method'),'maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?> -->
-
-            <?= $form->field($model, 'receipt_content_payment_method')->widget(kartik\select2\Select2::classname(), [
-                'data' => $rows_payment,
-                'options' => ['placeholder' => Yii::t('app','Please select payment method'), 
-                    'id' => 'receipt_content_payment_method', 
-                    'class'=>'payment',
-                    'onchange' => 'myfunctionforValuecheck(this.value)',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'minimumResultsForSearch' => 'Infinity',
-                ],
-            ]);*/ ?>
+            <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
+                    ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'value' => 'cash']) ?>
         </div>
 
         <div class="col-sm-6">
@@ -233,23 +220,9 @@ $url = Url::toRoute(['receipt/refresh']);
 
     <?php kartik\form\ActiveForm::end(); ?>
 
-
 </div>
 
 <script>
-function myfunctionforValuecheck(val) {
-    if (val == "cash" || val == "") {
-        document.getElementById("cheque_div").style.display = "none";
-        document.getElementById('card_div').style.display = "none";
-    } else if (val == "card") {
-        document.getElementById("cheque_div").style.display = "none";
-        document.getElementById('card_div').style.display = "block";
-    } else if (val == "cheque") {
-        document.getElementById("cheque_div").style.display = "block";
-        document.getElementById('card_div').style.display = "none";
-    }
-}
-
 function myfunctionforType(val) {
     if (val == "bill")
         document.getElementById("bill_div").style.display = "block";
@@ -275,8 +248,6 @@ function myfunctionforType(val) {
         document.getElementById("div_no_print").style.display = "none";
         document.getElementById("div_print").style.display = "block";
     } 
-
-
 }
 
 function refreshButton(url) {
@@ -292,4 +263,20 @@ function refreshButton(url) {
 }
 
 document.getElementById("div_no_print").style.display = "none";
+
+// For onchage hide and show payment method input
+document.querySelectorAll("#radio input[type='radio']").forEach(function(element){
+    element.addEventListener('click',function(){
+        if(this.value == "cash"  || this.value == "") {
+            document.getElementById("cheque_div").style.display = "none";
+            document.getElementById('card_div').style.display = "none";
+        } else if (this.value == "card") {
+            document.getElementById("cheque_div").style.display = "none";
+            document.getElementById('card_div').style.display = "block";
+        } else if (this.value == "cheque") {
+            document.getElementById("cheque_div").style.display = "block";
+            document.getElementById('card_div').style.display = "none";
+        }
+    });
+});
 </script>
