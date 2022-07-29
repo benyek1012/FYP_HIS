@@ -207,7 +207,7 @@ $url = Url::toRoute(['receipt/refresh']);
         <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
     </div>
 
-    
+
     <div class="form-group" id="div_no_print">
         <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
             'onclick' => '(function ( $event ) {
@@ -229,33 +229,30 @@ function myfunctionforType(val) {
     else
         document.getElementById("bill_div").style.display = "none";
 
-    if (val == "refund" || val == "exception")
-    {
-        document.getElementById("receipt_label").innerHTML =  '<?php echo Yii::t('app','Document Number');?>'; 
+    if (val == "refund" || val == "exception") {
+        document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Document Number');?>';
         document.getElementById("serial_number").value = '';
-        document.getElementById("serial_number").readOnly = false; 
-    }
-    else{
-        document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>'; 
+        document.getElementById("serial_number").readOnly = false;
+    } else {
+        document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>';
         refreshButton('<?php echo $url?>');
-    }  
+    }
 
-    if (val == "exception"){
+    if (val == "exception") {
         document.getElementById("div_print").style.display = "none";
         document.getElementById("div_no_print").style.display = "block";
-    }
-    else{
+    } else {
         document.getElementById("div_no_print").style.display = "none";
         document.getElementById("div_print").style.display = "block";
-    } 
+    }
 }
 
 function refreshButton(url) {
     const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange  = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200){
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
             document.getElementById("serial_number").value = this.responseText;
-            document.getElementById("serial_number").readOnly = true; 
+            document.getElementById("serial_number").readOnly = true;
         }
     }
     xhttp.open("GET", url, true);
@@ -265,9 +262,9 @@ function refreshButton(url) {
 document.getElementById("div_no_print").style.display = "none";
 
 // For onchage hide and show payment method input
-document.querySelectorAll("#radio input[type='radio']").forEach(function(element){
-    element.addEventListener('click',function(){
-        if(this.value == "cash"  || this.value == "") {
+document.querySelectorAll("#radio input[type='radio']").forEach(function(element) {
+    element.addEventListener('click', function() {
+        if (this.value == "cash" || this.value == "") {
             document.getElementById("cheque_div").style.display = "none";
             document.getElementById('card_div').style.display = "none";
         } else if (this.value == "card") {

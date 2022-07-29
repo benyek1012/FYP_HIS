@@ -636,9 +636,9 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                    <?= Html::button(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();"]) ?>
-                    <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
-                    <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
+                <?= Html::button(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();"]) ?>
+                <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
+                <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php } ?>
             </div>
             <!-- /.card-body -->
@@ -685,9 +685,17 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                         document.getElementById("serial_number").value = "";
                         document.getElementById("serial_number").focus();
                     })();' ]) ?>
-               <?= Html::button(Yii::t('app', 'Refresh'), 
+                <?= Html::button(Yii::t('app', 'Refresh'), 
                         ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
                 <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
+
+                <!-- If the flash message existed, show it  -->
+                <?php if(Yii::$app->session->hasFlash('msg')):?>
+                <div id="flashError">
+                    <?= Yii::$app->session->getFlash('msg') ?>
+                </div>
+                <?php endif; ?>
+                
                 <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php } ?>
@@ -744,7 +752,7 @@ function confirmAction(url) {
     var answer = confirm("Are you sure to generate bill?");
     if (answer) {
         window.location.href = url + '&confirm=true';
-    } 
+    }
     // else {
     //     window.location.href = history.go(-1);
     // }
@@ -755,19 +763,19 @@ function confirmAction(url) {
     var answer = confirm("Adakah anda pasti menjana bil?");
     if (answer) {
         window.location.href = url + '&confirm=true';
-    } 
+    }
     // else {
-        // window.location.href = history.go(-1);
+    // window.location.href = history.go(-1);
     // }
 }
 <?php } ?>
 
 function refreshButton(url) {
     const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange  = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200){
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
             document.getElementById("serial_number").value = this.responseText;
-            document.getElementById("serial_number").readOnly = true; 
+            document.getElementById("serial_number").readOnly = true;
         }
     }
     xhttp.open("GET", url, true);
@@ -776,10 +784,10 @@ function refreshButton(url) {
 
 function generateBill(url) {
     const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange  = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200){
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
             console.log(this.responseText);
-            if(this.responseText == false){
+            if (this.responseText == false) {
                 confirmAction(url);
             }
         }

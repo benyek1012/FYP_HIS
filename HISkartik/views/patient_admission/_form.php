@@ -77,7 +77,7 @@ use kartik\datetime\DateTimePicker;
         <div class="col-sm-6">
             <?= $form->field($model, 'type')->hiddenInput(['readonly' => true,'maxlength' => true, 'value' => Yii::$app->request->get('type')])->label(false) ?>
         </div>
-        
+
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
              ['prompt'=> Yii::t('app','Please select ward code')]
@@ -165,12 +165,17 @@ use kartik\datetime\DateTimePicker;
     <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
-<div >
-<?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-<?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-<?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-<?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-
-
+<div>
+    <?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
 </div>
+<br/>
 
+<!-- If the flash message existed, show it  -->
+<?php if(Yii::$app->session->hasFlash('msg')):?>
+<div id="flashError">
+    <?= Yii::$app->session->getFlash('msg') ?>
+</div>
+<?php endif; ?>

@@ -20,10 +20,6 @@ use yii\data\ActiveDataProvider;
 use app\models\Patient_information;
 use yii\helpers\ArrayHelper;
 
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use app\models\PrintForm;
 use app\models\Serial;
 use app\models\SerialNumber;
@@ -175,123 +171,16 @@ class ReceiptController extends Controller
                 $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
 
                 // Print Bill / Deposit 
-                if($model->receipt_type !='refund')
+                if(($model->receipt_type !='refund') && ($model->receipt_type !='exception'))
                 {
-                    $nocagaran = " ";
-                    $blankfront = str_repeat("\x20", 15); // adds 14 spaces
-                    $fixbackblank = str_repeat("\x20", 33);
-                    $fixbackblank2 = str_repeat("\x20", 31);
-                    $fixbackblank3 = str_repeat("\x20", 32);
-                    $entrydate = date("d/m/Y" , strtotime($model->receipt_content_datetime_paid));
-                    $entrytime =date("H:i" , strtotime($model->receipt_content_datetime_paid));
-                    if($modelpatient->nric != ""){
-                        $nric = $modelpatient->nric;
-                        if(strlen($nric) == 12){
-                            $printic = $nric[0].$nric[1].$nric[2].$nric[3].$nric[4].$nric[5]."-".$nric[6].$nric[7]."-".$nric[8].$nric[9].$nric[10].$nric[11];
-                            $dob = mb_strimwidth($nric,0,6);
-                            $dateofbirth = $dob[0] . $dob[1] . "-" . $dob[2] . $dob[3] . "-".$dob[4] . $dob[5];
-                            $patientdob = date("d/m/Y" , strtotime($dateofbirth));
-                            $today = date("y-m-d");
-                            $diff = date_diff(date_create($dateofbirth),date_create($today));
-                            $age = $diff->format('%Y').",".$diff->format('%m').",".$diff->format('%d');
-                        }
-                        
+                    $error = PrintForm::printReceipt($model, $modelpatient);
+                    if(!empty($error))
+                    {
+                        Yii::$app->session->setFlash('msg', '
+                        <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
                     }
-                    else{
-                        $age = "";
-                        $patientdob = "";
-                        $printic = $modelpatient->nric;
-                    }
-
-                    if (Yii::$app->params['printerstatus'] == "true"){
-                        $form = new PrintForm(PrintForm::Receipt);
-                        //$form = new PrintForm(PrintForm::BorangDaftarMasuk);
-                        $form->printNewLine(6);
-                        $form->printElementArray(
-                                [
-                                    //receiptline 1, receipt serial number, ic
-                                    [15, "\x20"],
-                                    [8, $model->receipt_serial_number,true],
-                                    [33,"\x20"],
-                                    [14, $printic],
-                                ]
-                            );
-                        $form->printNewLine(1);
-                        $form->printElementArray(
-                                [
-                                    //line2 , pay date, rn
-                                    [15, "\x20"],
-                                    [10, $entrydate],
-                                    [33, "\x20"],
-                                    [11, $model->rn],
-                                    
-                                   // [13, "\x20"], for status in the future
-                                ]
-                        );
-                        $form->printNewLine(1);
-
-                        $form->printElementArray(
-                            [
-                                //line 3, pay time, bil number
-                                [15, "\x20"],
-                                [5, $entrytime],
-                                [36, "\x20"],
-                                [8, $model->receipt_content_bill_id, true],
-
-                            ]
-                        );
-                        $form->printNewLine(1);
-                        $form->printElementArray(
-                            [
-                                //line 4 akaun, total 
-                                [15, "\x20"],
-                                [1, " "], // akaun, maybe phase 2?
-                                [40, "\x20"],
-                                [9, $model->receipt_content_sum],
-                            ]
-                        );
-                        $form->printNewLine(1);
-                        $form->printElementArray(
-                            [
-                                // line 5, OP mayb phase 2?
-                                [15, "\x20"],
-                                [1, " "],
-                            ]
-                        );
-                        $form->printNewLine(1);
-                            $form->printElementArray(
-                                [
-                                    //line 6, cagaran and nama pembayar
-                                    [15, "\x20"],
-                                    [8, $nocagaran,true],
-                                    [33, "\x20"],
-                                    [20, $model->receipt_content_payer_name,true],
-                                ]
-                            );
-                        $form->printNewLine(2);
-                        $form->printElementArray(
-                            [
-                                //line 7, patient name, payment method 25,15 42-8
-                                [15, "\x20"],
-                                [25, $modelpatient->name,true],
-                                [16, "\x20"],
-                                [17, $model->receipt_content_payment_method,true],
-                            ]
-                        );
-                        $form->printNewLine(2);
-                        $form->printElementArray(
-                            [
-                                //line 8, penjelasan, descripton
-                                [7, "\x20"],
-                                [13, "Penjelasan : "],
-                                [50, $model->receipt_content_description,true],
-                                
-                            ]
-                        );
-                        $form -> close();              
-                    }
-                } 
-
+                }
+				
                 return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                 'rn' => $model->rn));
             }

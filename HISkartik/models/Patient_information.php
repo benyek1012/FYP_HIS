@@ -83,7 +83,61 @@ class Patient_information extends \yii\db\ActiveRecord
         ];
     }
 
- 
+ 	public function hasValidIC()
+	{
+		if(is_null($this->nric))
+			return false;
+		return preg_match("/^\d{6}-\d{2}-\d{4}$/", $this->nric);
+	}
+
+	public function getDOB()
+	{
+		if($this->hasValidIC())
+		{
+			$targetString = (explode('-', $this->nric))[0];
+			$targetString = substr_replace ( $targetString , "/" , 4 , 0 );
+			$targetString = substr_replace ( $targetString , "/" , 2 , 0 );
+			return $targetString;
+		}
+		else
+			return "N/A";
+	}
+	
+	public function getAge($format)
+	{
+		if($this->hasValidIC())
+		{
+			$targetString = (explode('-', $this->nric))[0];
+			$targetString = substr_replace ( $targetString , "/" , 4 , 0 );
+			$targetString = substr_replace ( $targetString , "/" , 2 , 0 );
+			
+			$centuryIdentifierInt = (int)(explode('-', $this->nric))[2][0];
+			{
+				//at time of writing, wiki says for final 4 digits, 1st digit will be 0 if 2000+, 5-7 if 1900+
+				if($centuryIdentifierInt == 0)
+					$targetString = "20".$targetString;
+				else if($centuryIdentifierInt >=5 && $centuryIdentifierInt<=7)
+					$targetString = "19".$targetString;
+				else
+					return "N/A";
+			}
+			
+			$startDate = new \DateTime($targetString);
+			$endDate = new \DateTime();
+
+			$difference = $endDate->diff($startDate);
+			
+			return $difference->format($format);
+		}
+		else
+			return "N/A";
+	}
+	
+	public function getLatestNOK()
+	{
+		return Patient_next_of_kin::find()->where(['patient_uid' => $this->patient_uid])->orderBy('nok_datetime_updated ASC')->one();
+	}
+
 
     /**
      * Gets query for [[PatientAdmissions]].
