@@ -11,12 +11,12 @@ return [
     'ms' => 'Bahasa Melayu'
     ],
 
-    'borangdafter' => 'smb://JOSH-PC/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson JOSH-PC/EPSON
-    'chargesheet' => 'smb://JOSH-PC/EPSON',
-    'casehistory' => 'smb://JOSH-PC/EPSON',
-    'sticker' => 'smb://JOSH-PC/EPSON',
-    'receipt' => 'smb://JOSH-PC/EPSON',
-    'bill' => 'smb://JOSH-PC/EPSON',
+    'borangdafter' => 'smb://LT-CPTING/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson JOSH-PC/EPSON
+    'chargesheet' => 'smb://LT-CPTING/EPSON',
+    'casehistory' => 'smb://LT-CPTING/EPSON',
+    'sticker' => 'smb://LT-CPTING/EPSON',
+    'receipt' => 'smb://LT-CPTING/EPSON',
+    'bill' => 'smb://LT-CPTING/EPSON',
 
 
     'printerstatus' => 'true',  // anything beside true will not print
