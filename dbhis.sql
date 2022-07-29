@@ -162,9 +162,9 @@ INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, 
 ('Dh9GP_xVMCs1IS_6CKineglPl56QYVUv', 'ME', 'Race', 'Melanau', 'Melanau', 1),
 ('dysj6KiH3X4jsDxS3N3b3GlkNV9yJOPx', 'CH', 'Race', 'Cina', 'Cina', 1),
 ('DyUydTXK7F2zYXrFjfANS06IlGhRnbQ3', 'BI', 'Race', 'Bidayuh', 'Bidayuh', 1),
-('e0Ky93ubNfC3ekGmN3gj5aXW7iD-FyXu', 'CQ', 'Payment Method', 'Cheque', 'Cheque', 1),
+('e0Ky93ubNfC3ekGmN3gj5aXW7iD-FyXu', 'CQ', 'Payment Method', 'cheque', 'cheque', 1),
 ('EnThnPoarmFJQ6LyKfBr0vTT5ChY4Vvi', 'Singapore', 'Nationality', 'Singapore', 'Singapore', 1),
-('jH4xzCyHpJF-Sxp-eUBAx69zZCYwN9ZA', 'CD', 'Payment Method', 'Card', 'Card', 1),
+('jH4xzCyHpJF-Sxp-eUBAx69zZCYwN9ZA', 'CD', 'Payment Method', 'card', 'card', 1),
 ('jmUi7zek4A-0EKslcAAUhJUVcplGa8wz', 'Husband/Spouse', 'Relationship', 'Husband/Spouse', 'Husband/Spouse', 1),
 ('Jor2cgaU0etz67yALq3odFYCl2n5Uc_E', 'Female', 'Sex', 'Female', 'Female', 1),
 ('NgRT9pY7CuuVhBgl2hzZE5o1uGFC3YX0', 'OI', 'Race', 'Others', 'Others (Kenyah, Kelabit, Lunbawang, Kayan, Penan etc)', 1),
@@ -176,7 +176,7 @@ INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, 
 ('u5lcXSAV0bYqVclKtQZao9xRRTykmA_O', 'Sister', 'Relationship', 'Sister', 'Sister', 1),
 ('UAaI0eNAqAEk6VwJaMqXGeYHF9rsqFWY', 'MA', 'Race', 'Malay', 'Malay', 1),
 ('WQSPmw1lcpysbN3sR_IpQsvvEQ8WFzBf', 'Daughter', 'Relationship', 'Daughter', 'Daughter', 1),
-('ZvyRuvg4xhTay4CQsFVnDr7y_Us_DblQ', 'CS', 'Payment Method', 'Cash', 'Cash', 1);
+('ZvyRuvg4xhTay4CQsFVnDr7y_Us_DblQ', 'CS', 'Payment Method', 'cash', 'cash', 1);
 
 -- --------------------------------------------------------
 
