@@ -44,12 +44,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <!-- If the flash message existed, show it  -->
-    <?php if(Yii::$app->session->hasFlash('msg')):?>
+     <!-- If the flash message existed, show it  -->
+    <!-- <?php if(Yii::$app->session->hasFlash('msg')):?>
     <div id="flashError">
-        <?= Yii::$app->session->getFlash('msg') ?>
+    <?= Yii::$app->session->getFlash('msg') ?>
     </div>
-    <?php endif; ?>
+    <?php endif; ?> -->
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
