@@ -45,11 +45,11 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <!-- If the flash message existed, show it  -->
-    <?php if(Yii::$app->session->hasFlash('msg')):?>
+    <!-- <?php if(Yii::$app->session->hasFlash('msg')):?>
     <div id="flashError">
-        <?= Yii::$app->session->getFlash('msg') ?>
+    <?= Yii::$app->session->getFlash('msg') ?>
     </div>
-    <?php endif; ?>
+    <?php endif; ?> -->
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
