@@ -171,7 +171,7 @@ $url = Url::toRoute(['receipt/refresh']);
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payment_method')->dropDownList($method, ['prompt'=>'Please select payment method','maxlength' => true])/*['class'=>'payment',
+            <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, ['prompt'=>'Please select payment method','maxlength' => true])/*['class'=>'payment',
              'prompt'=> Yii::t('app','Please select payment method'),'maxlength' => true, 'onchange' => 'myfunctionforValuecheck(this.value)']) ?> -->
 
             <?= $form->field($model, 'receipt_content_payment_method')->widget(kartik\select2\Select2::classname(), [

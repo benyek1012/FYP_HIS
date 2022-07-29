@@ -53,7 +53,7 @@ class Lookup_treatment extends \yii\db\ActiveRecord
             'class_1_cost_per_unit' => Yii::t('app','Class  1 Cost Per Unit'),
             'class_2_cost_per_unit' => Yii::t('app','Class  2 Cost Per Unit'),
             'class_3_cost_per_unit' => Yii::t('app','Class  3 Cost Per Unit'),
-            'class_Daycare_FPP_per_unit' => Yii::t('app','Class  DayCare FPP Cost Per Unit'),
+            'class_Daycare_FPP_per_unit' => Yii::t('app','Class DayCare FPP Cost Per Unit'),
         ];
     }
 }
