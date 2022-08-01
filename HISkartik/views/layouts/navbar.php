@@ -63,9 +63,9 @@ if (Yii::$app->user->isGuest){
             </ul>
         </li>
 
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
             <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
-        </li>
+        </li> -->
 
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -73,7 +73,7 @@ if (Yii::$app->user->isGuest){
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/batch']); ?>" class="dropdown-item"><?php echo Yii::t('app','Testing csv upload'); ?></a></li>
+                <!-- <li><a href="<?php echo Url::to(['/batch']); ?>" class="dropdown-item"><?php echo Yii::t('app','Testing csv upload'); ?></a></li> -->
             </ul>
         </li>
 
