@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div id="user_form">
         <?php
-            $model = new New_user();
+            // $model = new New_user();
             echo $this->render('_form', ['model' => $model, 'value' => $model->user_uid]);
         ?>
     </div>
@@ -58,7 +58,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => ActionColumn::className(),
-                'template' => '{delete}',
+                'headerOptions' => ['style' => 'width:70px'],
+                'template' => '{delete} {change_password} {update}',
+                'buttons' => [
+                    'change_password' => function ($url, $model, $key) {
+                        return Html::a('<span class="glyphicon glyphicon glyphicon-picture" aria-hidden="true"></span>', ['update', 'user_uid' => $model->user_uid]);
+                    },
+                ],
                 'urlCreator' => function ($action, $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'user_uid' => $model->user_uid]);
                  }
@@ -174,12 +180,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
 
 function showForm() {
-        document.getElementById("user_div").style.display = "block";
-    }
+    document.getElementById("user_div").style.display = "block";
+}
 
-    function hiddenForm() {
-        document.getElementById("user_div").style.display = "none";
-    }
+function hiddenForm() {
+    document.getElementById("user_div").style.display = "none";
+}
 
 // Fade the flash message by 5 sec
 window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 

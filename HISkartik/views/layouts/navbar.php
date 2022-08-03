@@ -2,6 +2,8 @@
 
 use yii\helpers\Url;
 use app\controllers\SiteController;
+use app\models\New_user;
+
 
 if (Yii::$app->user->isGuest){ 
 ?>
@@ -81,6 +83,17 @@ if (Yii::$app->user->isGuest){
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+
+        <?php 
+        if(!(new New_user()) -> isAdmin())
+        {
+        ?>
+        <li class="nav-item dropdown">
+            <a id="password" href="<?php echo Url::to(['/new_user/change_password']); ?>" class="nav-link"><?php echo Yii::t('app', 'Change Password') ?></a>
+        </li>
+        <?php
+        }
+        ?>
 
         <li class="nav-item dropdown">
             <a id="admission" href="<?php echo Url::to(['/site/logout']); ?>" class="nav-link"><?php echo  Yii::t('app','Logout'). 

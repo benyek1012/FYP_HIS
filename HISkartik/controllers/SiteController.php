@@ -80,6 +80,10 @@ class SiteController extends Controller
                     //     return $value;                                             
                     // }                
                     // return '';                                                     // empty is same as $value
+                    $date = new \DateTime();
+                    $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                    $model->nok_datetime_updated = $date->format('Y-m-d H:i:s');
+                    $model->save();
                 },                  
                 // 'outputMessage' => function($model, $attribute, $key, $index) {
                 //     return '';                                                    // any custom error after model save

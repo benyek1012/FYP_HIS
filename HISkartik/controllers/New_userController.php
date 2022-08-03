@@ -49,6 +49,30 @@ class New_userController extends Controller
         ]);
     }
 
+    public function actionChange_password()
+    {
+        $model = $this->findModel(Yii::$app->user->identity->getId());
+
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if($model->user_password == $model->password_repeat){
+                $model->user_password = New_user::hashPassword($model->user_password);
+                $model->password_repeat = New_user::hashPassword($model->password_repeat);
+                $model->save();
+                return $this->redirect(['change_password']);
+            }
+            else{
+                Yii::$app->session->setFlash('error_password', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> New Password and Password Repeat Not Same!</div>'
+                );
+            }
+        }
+        return $this->render('change_password', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Lists all Newuser models.
      *
@@ -56,6 +80,7 @@ class New_userController extends Controller
      */
     public function actionIndex()
     {
+        $model = new New_user();
         $modeluser = new New_user();
         $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
@@ -68,6 +93,7 @@ class New_userController extends Controller
         }
 
         return $this->render('index', [
+            'model' => $model,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -161,14 +187,30 @@ class New_userController extends Controller
     public function actionUpdate($user_uid)
     {
         $model = $this->findModel($user_uid);
+        $searchModel = new New_userSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'user_uid' => $model->user_uid]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if($model->user_password == $model->password_repeat){
+                $model->user_password = New_user::hashPassword($model->user_password);
+                $model->password_repeat = New_user::hashPassword($model->password_repeat);
+                $model->save();
+                return $this->redirect(['index']);
+            }
+            else{
+                Yii::$app->session->setFlash('error_user', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> New Password and Password Repeat Not Same!</div>'
+                );
+            }
         }
 
-        return $this->render('update', [
+        return $this->render('index', [
             'model' => $model,
-        ]);
+            'searchModel' => $searchModel,
+             'dataProvider' => $dataProvider,
+         ]);
     }
 
     /**

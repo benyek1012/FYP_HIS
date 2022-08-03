@@ -38,6 +38,7 @@ foreach($rows_patient_nok as $row_patient_nok){
 <div class="patient-next-of-kin-index">
 
     <?= kartik\grid\GridView::widget([
+        'pjax' => true,
         'dataProvider' => $dataProvider,
         // 'filterModel' => $searchModel,
         'rowOptions' => function ($model, $key, $index, $grid) {
@@ -52,6 +53,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_name',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [                
@@ -63,6 +65,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_relationship',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
@@ -84,6 +87,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_phone_number',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => [
@@ -95,6 +99,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_email',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
@@ -107,6 +112,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address1',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
@@ -119,6 +125,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address2',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
@@ -131,6 +138,7 @@ foreach($rows_patient_nok as $row_patient_nok){
             [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_address3',
+                'refreshGrid' => true,
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' => function ($model) {
@@ -139,9 +147,26 @@ foreach($rows_patient_nok as $row_patient_nok){
                         'formOptions' => ['action' => ['/site/nok']],
                     ];
                 }
-            ],                     
+            ],  
+            [
+                'attribute' => 'nok_datetime_updated',
+                "format"=>"raw",
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'value'=>function ($data) {
+                    $date = new DateTime($data['nok_datetime_updated']);
+                    $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
+                        // title
+                        'title' => $date->format('Y-m-d H:i A') ,
+                        'data-placement' => 'top' ,
+                        'data-toggle'=>'tooltip',
+                        'style' => 'white-space:pre;',
+                        'id' => 'nok_datetime_updated'
+                    ] );
+                    return $tag;
+                },
+            ],                
         ],
     ]); ?>
-
 
 </div>

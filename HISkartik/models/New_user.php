@@ -36,11 +36,10 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             [['user_uid'], 'string', 'max' => 64],
             [['username'], 'string', 'max' => 100],
             [['role_cashier','role_clerk', 'role_admin', 'role_guest_print'], 'boolean', 'strict'=> false],
-            [['user_password'], 'string', 'max' => 40],
+            [['user_password', 'password_repeat'], 'string', 'max' => 40],
             [['authKey'], 'string', 'max' => 45],
             [['user_uid'], 'unique'],
-            [['username'], 'unique'],
-            
+            [['username'], 'unique'],            
         ];
     }
 
@@ -145,6 +144,7 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             'user_uid' => Yii::t('app','User Uid'),
             'username' => Yii::t('app','Username'),
             'user_password' => Yii::t('app','User Password'),
+            'password_repeat' => Yii::t('app','Password Repeat'),
             'role_cashier' => Yii::t('app','Cashier Role'),
             'role_clerk' => Yii::t('app','Clerk Role'),
             'role_admin' => Yii::t('app','Admin Role'),
