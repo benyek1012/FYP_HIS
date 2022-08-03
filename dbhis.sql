@@ -447,7 +447,8 @@ CREATE TABLE `patient_information` (
   `address1` varchar(100) DEFAULT NULL,
   `address2` varchar(100) DEFAULT NULL,
   `address3` varchar(100) DEFAULT NULL,
-  `job` varchar(20) DEFAULT NULL
+  `job` varchar(20) DEFAULT NULL,
+  `DOB` DATE DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -488,7 +489,8 @@ CREATE TABLE `receipt` (
   `card_no` varchar(20) DEFAULT NULL,
   `cheque_number` varchar(20) DEFAULT NULL,
   `receipt_responsible` varchar(64) NOT NULL,
-  `receipt_serial_number` varchar(20) DEFAULT NULL
+  `receipt_serial_number` varchar(20) DEFAULT NULL,
+  `kod_akaun` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
