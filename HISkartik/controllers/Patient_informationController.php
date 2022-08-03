@@ -9,6 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use GpsLab\Component\Base64UID\Base64UID;
 use yii\helpers\Url;
+use yii\helpers\Json;
 
 /**
  * Patient_informationController implements the CRUD actions for Patient_information model.
@@ -59,6 +60,14 @@ class Patient_informationController extends Controller
         else $model->nric = $ic;
         $model->patient_uid = Base64UID::generate(32);
         $model->first_reg_date = date("Y-m-d");     
+
+        // var_dump($model->hasValidIC());
+        // exit();
+        if($model->hasValidIC())
+        {
+            $model->DOB = $model->getDateForDatabase();
+        }
+
         $model->save();
 
         return Yii::$app->getResponse()->redirect(array('/site/admission', 
@@ -97,11 +106,22 @@ class Patient_informationController extends Controller
             }
         
             if($flag == true){
+                // $model->validate();
+                // var_dump($model->errors);
+                // exit();
+                // echo "<pre>";
+                // var_dump($model->DOB);
+                // exit();
+                // echo "</pre>";
+                if($model->hasValidIC())
+                {
+                    $model->DOB = $model->getDateForDatabase();
+                }
                 if($model->save())
                 {
                     return Yii::$app->getResponse()->redirect(array('/site/admission', 
                     'id' => $model->patient_uid, '#' => 'patient'));                 
-                } 
+                }
             }
             else{
                 echo '<script type="text/javascript">',
@@ -115,6 +135,11 @@ class Patient_informationController extends Controller
         return $this->render('/site/admission', [
             'model' => $model,
         ]);
+    }
+
+    public function actionDob($dob, $id) {
+        $model = Patient_information::findOne($id);
+        echo Json::encode($model->getAgeFromDob($dob));
     }
 
 

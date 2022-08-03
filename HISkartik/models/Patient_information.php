@@ -19,12 +19,15 @@ use Yii;
  * @property string|null $address2
  * @property string|null $address3
  * @property string|null $job
+ * @property string|null $DOB
+ * @property string|null $age
  *
  * @property PatientAdmission[] $patientAdmissions
  * @property PatientNextOfKin[] $patientNextOfKins
  */
 class Patient_information extends \yii\db\ActiveRecord
 {
+    public $age;
     /**
      * {@inheritdoc}
      */
@@ -46,7 +49,7 @@ class Patient_information extends \yii\db\ActiveRecord
             // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
-            [['first_reg_date'], 'safe'],
+            [['first_reg_date', 'DOB'], 'safe'],
           //  [['nric'], 'integer'],
             [['phone_number'], 'integer'],
             [['email'], 'email'],
@@ -80,9 +83,11 @@ class Patient_information extends \yii\db\ActiveRecord
             'address2' => 'Address 2',
             'address3' => 'Address 3',
             'job' => Yii::t('app','Job'),
+            'DOB' => 'DOB',
         ];
     }
 
+    // validate IC xxxxxx-xx-xxxx
  	public function hasValidIC()
 	{
 		if(is_null($this->nric))
@@ -90,6 +95,7 @@ class Patient_information extends \yii\db\ActiveRecord
 		return preg_match("/^\d{6}-\d{2}-\d{4}$/", $this->nric);
 	}
 
+    // return DOB yy/mm/dd
 	public function getDOB()
 	{
 		if($this->hasValidIC())
@@ -102,36 +108,70 @@ class Patient_information extends \yii\db\ActiveRecord
 		else
 			return "N/A";
 	}
+
+    // get date for database yyyy-mm-dd
+    public function getDateForDatabase()
+    {
+        if($this->hasValidIC())
+		{
+            $timestamp = strtotime($this->getStartDate());
+            $date_formated = date('Y-m-d', $timestamp);
+            return $date_formated;
+        }
+    }
+
+    // get start date
+    public function getStartDate()
+	{
+		if($this->hasValidIC())
+		{
+			$targetString = $this->getDOB();
+          
+            if($targetString != "N/A")
+            {
+                $centuryIdentifierInt = (int)(explode('-', $this->nric))[2][0];
+                {
+                    //at time of writing, wiki says for final 4 digits, 1st digit will be 0 if 2000+, 5-7 if 1900+
+                    if($centuryIdentifierInt == 0)
+                        return $targetString = "20".$targetString;
+                    else if($centuryIdentifierInt >=5 && $centuryIdentifierInt<=7)
+                        return $targetString = "19".$targetString;
+                    else
+                        return "N/A";
+                }
+            }
+		}
+	}
 	
 	public function getAge($format)
 	{
 		if($this->hasValidIC())
 		{
-			$targetString = (explode('-', $this->nric))[0];
-			$targetString = substr_replace ( $targetString , "/" , 4 , 0 );
-			$targetString = substr_replace ( $targetString , "/" , 2 , 0 );
-			
-			$centuryIdentifierInt = (int)(explode('-', $this->nric))[2][0];
-			{
-				//at time of writing, wiki says for final 4 digits, 1st digit will be 0 if 2000+, 5-7 if 1900+
-				if($centuryIdentifierInt == 0)
-					$targetString = "20".$targetString;
-				else if($centuryIdentifierInt >=5 && $centuryIdentifierInt<=7)
-					$targetString = "19".$targetString;
-				else
-					return "N/A";
-			}
-			
-			$startDate = new \DateTime($targetString);
+			$startDate = new \DateTime($this->getStartDate());
 			$endDate = new \DateTime();
 
 			$difference = $endDate->diff($startDate);
-			
 			return $difference->format($format);
 		}
 		else
 			return "N/A";
 	}
+
+    // get age from datapicker yyyy-mm-dd
+    public function getAgeFromDob($dob)
+    {
+        $startDate = new \DateTime($dob);
+        $endDate = new \DateTime();
+
+        $difference = $endDate->diff($startDate);
+        return $difference->format("%y");
+    }
+
+    public function getAgeFromDatePicker()
+    {
+        $model = Patient_information::findOne(Yii::$app->request->get('id'));
+        return is_null($model->DOB) ? "N/A" : $this->getAgeFromDob($model->DOB); 
+    }
 	
 	public function getLatestNOK()
 	{

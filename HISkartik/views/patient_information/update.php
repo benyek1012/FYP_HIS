@@ -1,13 +1,24 @@
 <?php
 
-use kartik\date\DatePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
+use kartik\date\DatePicker;
+use yii\helpers\Url;
     
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_information */
 /* @var $form yii\widgets\ActiveForm */
 
+$this->registerJs(
+    "$('#DOB').change(function() {
+        var dob = $(this).val();
+        var id = '".Yii::$app->request->get('id')."';
+        $.get('". Url::toRoute(['/patient_information/dob'])."', {dob : dob, id : id}, function(data){
+            var data = $.parseJSON(data);
+            $('#age').attr('value', data);
+        });
+    });"
+);
 
 ?>
 <div class="patient-information-update">
@@ -81,9 +92,21 @@ use yii\bootstrap4\Html;
             <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
         </div>
         <div class="col-sm-6">
+            <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+            'options' => ['id' => 'DOB', 'readonly' => $model->hasValidIC() ? true : false],
+            'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+            'pluginEvents' => [
+                
+            ],])?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
+                  'id' => 'age', 'value' =>  $model->hasValidIC() ? $model->getAge("%y") : $model->getAgeFromDatePicker()]) ?>
+        </div>
+        <div class="col-sm-6">
             <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 
                     ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?> -->
-                    
+
             <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
                 'data' => $countries,
                 'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality',],
@@ -94,9 +117,6 @@ use yii\bootstrap4\Html;
             ]); ?>
         </div>
         <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'sex')->dropDownList($sex, 
-                    ['prompt'=> Yii::t('app','Please select sex'),'maxlength' => true]) ?> -->
-
             <?= $form->field($model, 'sex')->radioList($sex, ['custom' => true, 'inline' => true]); ?>
         </div>
         <div class="col-sm-6">
@@ -121,14 +141,14 @@ use yii\bootstrap4\Html;
             <?= $form->field($model, 'address2')->textInput(['maxlength' => true])->label(false)?>
             <?= $form->field($model, 'address3')->textInput(['maxlength' => true])->label(false)?>
         </div>
-
     </div>
-
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start']) ?>
-    </div>
-
-    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
 
+<div class="form-group">
+    <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start', 'id' => 'update']) ?>
+</div>
+
+<?php kartik\form\ActiveForm::end(); ?>
+
+</div>
