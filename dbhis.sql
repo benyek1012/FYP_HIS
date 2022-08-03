@@ -395,17 +395,19 @@ CREATE TABLE `new_user` (
   `role_admin` tinyint(1) NOT NULL DEFAULT 0,
   `role_guest_print` tinyint(1) NOT NULL,
   `retire` tinyint(1) NOT NULL DEFAULT 0,
-  `authKey` varchar(45) NOT NULL
+  `authKey` varchar(45) NOT NULL,
+  `password_repeat` varchar(64) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `new_user`
 --
 
-INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`, `role_clerk`, `role_admin`, `role_guest_print`, `retire`, `authKey`) VALUES
-('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 0, 0, '12345b'),
-('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 0, 0, '12345a'),
-('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0, 0, '12345c');
+INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`, `role_clerk`, `role_admin`, `role_guest_print`, `retire`, `authKey`, `password_repeat`) VALUES
+('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 0, 0, '12345b', NULL),
+('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 0, 0, '12345a', NULL),
+('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0, 0, '12345c', NULL);
+
 -- --------------------------------------------------------
 
 --

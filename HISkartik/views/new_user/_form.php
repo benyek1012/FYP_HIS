@@ -69,13 +69,13 @@ else{
             <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'user_password')->textInput(['maxlength' => true, 'value' => $value]) ?>
+            <?= $form->field($model, 'user_password')->passwordInput(['maxlength' => true, 'value' => $value]) ?>
         </div>
         <?php
         if(!empty(Yii::$app->request->get('user_uid'))){
         ?>
             <div class="col-sm-6">
-                <?= $form->field($model, 'password_repeat')->textInput(['maxlength' => true, 'value' => $value]) ?>
+                <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true, 'value' => $value]) ?>
             </div>
         <?php
         }

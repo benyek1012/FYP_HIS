@@ -238,7 +238,7 @@ return[
     'Currently, the CSV file can be traced with batch # and insert into lookup ward table.' => 'Pada masa ini, fail CSV boleh dikesan dengan kelompok # dan dimasukkan ke dalam jadual wad carian.',
     'Batch' => 'Kumpulan',
     'File Import' => 'Import Fail',
-    'File' => 'Fail'
+    'File' => 'Fail',
     'Change Password' => 'Tukar Kata Laluan',
     'Password Repeat' => 'Ulang Kata Laluan'
 ];

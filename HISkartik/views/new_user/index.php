@@ -59,12 +59,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::className(),
                 'headerOptions' => ['style' => 'width:70px'],
-                'template' => '{delete} {change_password} {update}',
-                'buttons' => [
-                    'change_password' => function ($url, $model, $key) {
-                        return Html::a('<span class="glyphicon glyphicon glyphicon-picture" aria-hidden="true"></span>', ['update', 'user_uid' => $model->user_uid]);
-                    },
-                ],
+                'template' => '{delete} {update}', // {change_password}
+                // 'buttons' => [
+                //     'change_password' => function ($url, $model, $key) {
+                //         return Html::a('<span class="glyphicon glyphicon glyphicon-picture" aria-hidden="true"></span>', ['update', 'user_uid' => $model->user_uid]);
+                //     },
+                // ],
                 'urlCreator' => function ($action, $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'user_uid' => $model->user_uid]);
                  }

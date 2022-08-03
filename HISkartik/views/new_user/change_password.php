@@ -33,10 +33,10 @@ $this->title = Yii::$app->user->identity->username;
             <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'disabled' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'user_password')->textInput(['maxlength' => true, 'value' => '']) ?>
+            <?= $form->field($model, 'user_password')->passwordInput(['maxlength' => true, 'value' => '']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'password_repeat')->textInput(['maxlength' => true, 'value' => '']) ?>
+            <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true, 'value' => '']) ?>
         </div>
     </div>
 
