@@ -48,6 +48,7 @@ class Receipt extends \yii\db\ActiveRecord
             [['receipt_content_description'], 'string', 'max' => 100],
             [['receipt_content_payer_name'], 'string', 'max' => 200],
             [['receipt_uid'], 'unique'],
+            [['kod_akaun'], 'string'],
            // [['receipt_serial_number'], 'integer'],
           //  [['receipt_serial_number'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
             [['receipt_serial_number'], 'unique'],
@@ -77,6 +78,7 @@ class Receipt extends \yii\db\ActiveRecord
             'cheque_number' => Yii::t('app','Cheque Number'),
             'receipt_responsible' => Yii::t('app','Receipt Responsible'),
             'receipt_serial_number' => Yii::t('app','Receipt Serial Number'),
+            'kod_akaun' => Yii::t('app','Account Code'),	
         ];
     }
 

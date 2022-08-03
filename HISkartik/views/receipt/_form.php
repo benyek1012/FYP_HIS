@@ -44,15 +44,17 @@ $url = Url::toRoute(['receipt/refresh']);
         foreach ($rows_payment as $row_payment){
             $method[$row_payment['name']] = $row_payment['name'];
         }
-
         //$payment_method = array(
         //    'cash'=> Yii::t('app','Cash'),
         //    'card'=> Yii::t('app','Debit/Credit Card'),
         //    'cheque'=> Yii::t('app','Cheque Numbers'),
-        //);
-
+        //)
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
         $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
+
+        if($temp2->hasValidIC() == true) $account_code= '018/76303';
+        else $account_code = '018/76302';
+
 
         $checked_name = "";
         if($temp2->name != "")
@@ -103,6 +105,8 @@ $url = Url::toRoute(['receipt/refresh']);
 
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
+
+    <?= $form->field($model, 'kod_akaun')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $account_code]); ?>
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
 

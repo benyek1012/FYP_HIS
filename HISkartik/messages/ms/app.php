@@ -241,5 +241,6 @@ return[
     'File' => 'Fail',
     'Change Password' => 'Tukar Kata Laluan',
     'Password Repeat' => 'Ulang Kata Laluan'
+    'Account Code' => 'Kod Akaun',
 ];
 ?>
