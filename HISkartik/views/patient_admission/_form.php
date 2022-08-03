@@ -142,18 +142,7 @@ use kartik\datetime\DateTimePicker;
         </div>
 
         <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?> -->
-
-            <?= $form->field($model, 'reference')->radioList($reference, ['custom' => true, 'inline' => true]); ?>
-
-            <!-- <?= $form->field($model, 'reference')->widget(kartik\select2\Select2::classname(), [
-                'data' => $reference,
-                'options' => ['placeholder' => Yii::t('app','Please select reference'), 'id' => 'reference',],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'tags' => true,
-                ],
-            ]); ?> -->
+           <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?> 
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput() ?>

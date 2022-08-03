@@ -40,9 +40,9 @@ class Batch extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'batch' => 'Batch',
-            'file_import' => 'File Import',
+            'id' => Yii::t('app','ID'),
+            'batch' => Yii::t('app','Batch'),
+            'file_import' => Yii::t('app','File Import'),
         ];
     }
 }

@@ -229,7 +229,15 @@ return[
     'Sorry, you do not have permission to access this page' => 'Maaf, anda tiada kebenaran untuk mengakses halaman ini',
     'Please contact your administrator for assistance' => 'Sila hubungi pentadbir anda untuk mendapatkan bantuan',
     'Please select reference' => 'Sila pilih rujukan',
-    'Exception' => 'Pengecualian'
+    'Exception' => 'Pengecualian',
     'Transfer To New Patient' => 'Pemindahan Kepada Pesakit Baru',
+    'Testing Csv Upload' => 'Menguji Muat Naik Csv',
+    'Batches' => 'Kelompok',
+    'Create Batch' => 'Buat Kelompok',
+    'This is the testing page that user can upload CSV file and insert into database table directly.' => 'Ini ialah halaman ujian yang pengguna boleh memuat naik fail CSV dan masukkan ke dalam jadual pangkalan data secara terus.',
+    'Currently, the CSV file can be traced with batch # and insert into lookup ward table.' => 'Pada masa ini, fail CSV boleh dikesan dengan kelompok # dan dimasukkan ke dalam jadual wad carian.',
+    'Batch' => 'Kumpulan',
+    'File Import' => 'Import Fail',
+    'File' => 'Fail'
 ];
 ?>
