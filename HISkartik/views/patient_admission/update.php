@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = Yii::t('app','Update Patient Admission');
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modelpatient' =>$modelpatient,
     ]) ?>
 
 </div>

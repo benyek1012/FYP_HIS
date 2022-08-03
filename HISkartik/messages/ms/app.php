@@ -230,5 +230,6 @@ return[
     'Please contact your administrator for assistance' => 'Sila hubungi pentadbir anda untuk mendapatkan bantuan',
     'Please select reference' => 'Sila pilih rujukan',
     'Exception' => 'Pengecualian'
+    'Transfer To New Patient' => 'Pemindahan Kepada Pesakit Baru',
 ];
 ?>

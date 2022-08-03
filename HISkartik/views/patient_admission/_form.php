@@ -27,16 +27,14 @@ use kartik\datetime\DateTimePicker;
       $ward_code[$row['ward_code']] = $row['ward_code'] . " - " . $row['ward_name'];
     }  
 
-    $reference = array();
-    $rows_reference = (new \yii\db\Query())
+    $rows_patient_information = (new \yii\db\Query())
     ->select('*')
-    ->from('lookup_general')
-    ->where(['category'=> 'Admission Reference'])
+    ->from('patient_information')
     ->all();
-
-    foreach($rows_reference as $row_reference){
-        $reference[$row_reference['code']] =$row_reference['name'];
-    } 
+    $all_Nric = array();
+    foreach( $rows_patient_information as $row){
+        $all_Nric[$row['nric']] = $row['nric'] ;
+      }  
 
     // foreach($rows_patient_admission as $row_patient_admission){
     //     if(empty($ward_code[$row_patient_admission['initial_ward_code']])){
@@ -57,6 +55,32 @@ use kartik\datetime\DateTimePicker;
     //         $ward_class[$row_patient_admission['initial_ward_class']] = $row_patient_admission['initial_ward_class'];
     //     }            
     // }
+
+
+    $form = kartik\form\ActiveForm::begin([
+        'id' => 'patient-admission-form',
+        'type' => 'vertical',
+       // 'action' => ['patient_admission/transfer'],
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+        ],
+    ]); 
+    ?>
+    <?=$form->field($modelpatient, 'nric')->widget(kartik\select2\Select2::classname(), [
+        'data' => $all_Nric,
+        'options' => ['placeholder' => Yii::t('app','Please select NRIC'), 'id' => 'nric',],
+        'pluginOptions' => [
+            'allowClear' => true,
+            // 'tags' => true,
+        ],
+    ])->label(Yii::t('app','Transfer To New Patient'));?>
+    <?= Html::submitButton(Yii::t('app','Yes'), ['class' => 'btn btn-success']) ?>
+
+    <?php kartik\form\ActiveForm::end(); 
+
+
+
 
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',

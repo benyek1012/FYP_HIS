@@ -150,29 +150,38 @@ class Patient_admissionController extends Controller
      */
     public function actionUpdate($rn)
     {
-
         $model = $this->findModel($rn);
 
+        $modelpatient = new Patient_information();
+        if ($this->request->isPost && $modelpatient->load($this->request->post()) ){
+            $modelpatient = Patient_information::find()->where(['nric' => $modelpatient->nric])->one();
+            // var_dump($modelpatient->patient_uid);
+            // exit;
+            $model->patient_uid = $modelpatient->patient_uid;
+            $model->save();
+            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                    'rn' => $model->rn));  
+        }
         if ($this->request->isPost && $model->load($this->request->post()) ) {
             if($model->initial_ward_code == null){
                 $model->initial_ward_code = "UNKNOWN";
             }
-
             if($model->initial_ward_class == null){
                 $model->initial_ward_class = "UNKNOWN";
             }
-
             if($model->save()){
                 return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
                     'rn' => $model->rn));  
             }    
         }
 
+        $modelpatient = Patient_information::findOne(['patient_uid' => $model->patient_uid]);
         return $this->render('update', [
             'model' => $model,
+            'modelpatient' => $modelpatient
         ]);
+       
     }
-
 	public function actionPrint1($rn)
     {
 		$model = $this->findModel($rn);  
