@@ -240,7 +240,7 @@ return[
     'File Import' => 'Import Fail',
     'File' => 'Fail',
     'Change Password' => 'Tukar Kata Laluan',
-    'Password Repeat' => 'Ulang Kata Laluan'
+    'Password Repeat' => 'Ulang Kata Laluan',
     'Account Code' => 'Kod Akaun',
 ];
 ?>
