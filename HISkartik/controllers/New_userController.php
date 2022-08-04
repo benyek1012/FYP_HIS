@@ -58,7 +58,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('success', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    Original Password, New Password and Confirm New Password cannot be blank.</div>'
+                    '.Yii::t('app', 'Original Password, New Password and Confirm New Password cannot be blank.').'</div>'
                 );
             }
             else{
@@ -67,7 +67,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('success', '
                     <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    You have successfully changed your password.</div>'
+                    '.Yii::t('app', 'You have successfully changed your password.').'</div>'
                 );
                 return $this->refresh();
             }
@@ -156,7 +156,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('error_user', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong> Username '.$model->username.' is duplicated. !</div>'
+                    <strong>'.Yii::t('app', 'Validation error! ').'</strong>'.Yii::t('app', 'Username').' '. $model->username.' '.Yii::t('app', ' is duplicated!').'</div>'
                 );
             }
         }else {
@@ -200,7 +200,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('error_user', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    New Password and Confirm New Password cannot be blank.</div>'
+                    '.Yii::t('app', 'New Password and Confirm New Password cannot be blank.').'</div>'
                 );
             }
             else{
@@ -209,7 +209,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('error_user', '
                     <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    You have successfully changed your password.</div>'
+                    '.Yii::t('app', 'You have successfully changed your password.').'</div>'
                 );
                 return $this->refresh();
             }

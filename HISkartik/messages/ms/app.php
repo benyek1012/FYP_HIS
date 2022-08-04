@@ -246,5 +246,10 @@ return[
     'Confirm New Password' => 'Sahkan Kata Laluan Baharu',
     'Passwords does not match with new password' => 'Kata laluan tidak sepadan dengan kata laluan baharu',
     'Original Password Incorrect' => 'Kata Laluan Asal Salah',
+    'New Password and Confirm New Password cannot be blank.' => 'Kata Laluan Baharu dan Sahkan Kata Laluan Baharu tidak boleh kosong.',
+    'You have successfully changed your password.' => 'Anda telah berjaya menukar kata laluan anda.',
+    'Original Password, New Password and Confirm New Password cannot be blank.' => 'Kata Laluan Asal, Kata Laluan Baru dan Sahkan Kata Laluan Baru tidak boleh kosong.',
+    'Validation error! ' => 'Ralat pengesahan! ',
+    ' is duplicated!' => ' adalah pendua!',
 ];
 ?>
