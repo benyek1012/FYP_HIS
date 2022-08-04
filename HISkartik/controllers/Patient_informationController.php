@@ -63,7 +63,7 @@ class Patient_informationController extends Controller
 
         // var_dump($model->hasValidIC());
         // exit();
-        if($model->hasValidIC())
+        if($model->hasValidIC() && $this->Date_validate($this->getStartDate()))
         {
             $model->DOB = $model->getDateForDatabase();
         }
@@ -106,17 +106,11 @@ class Patient_informationController extends Controller
             }
         
             if($flag == true){
-                // $model->validate();
-                // var_dump($model->errors);
-                // exit();
-                // echo "<pre>";
-                // var_dump($model->DOB);
-                // exit();
-                // echo "</pre>";
-                if($model->hasValidIC())
+                if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
                 {
                     $model->DOB = $model->getDateForDatabase();
                 }
+
                 if($model->save())
                 {
                     return Yii::$app->getResponse()->redirect(array('/site/admission', 
@@ -126,7 +120,7 @@ class Patient_informationController extends Controller
             else{
                 echo '<script type="text/javascript">',
                 'setTimeout(function(){',
-                    'duplicateIC('.$model->nric.');',
+                    'duplicateIC();',
                     '},200);',
                 '</script>';
             }

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use DateTime;
 use Yii;
 
 /**
@@ -95,6 +96,13 @@ class Patient_information extends \yii\db\ActiveRecord
 		return preg_match("/^\d{6}-\d{2}-\d{4}$/", $this->nric);
 	}
 
+    // validate IC date is existed in calender
+    public function Date_validate($input_date, $format = 'Y/m/d')
+    {
+        $date_obj = DateTime::createFromFormat($format, $input_date);
+        return $date_obj && $date_obj->format($format) == $input_date;
+    }
+
     // return DOB yy/mm/dd
 	public function getDOB()
 	{
@@ -114,13 +122,18 @@ class Patient_information extends \yii\db\ActiveRecord
     {
         if($this->hasValidIC())
 		{
-            $timestamp = strtotime($this->getStartDate());
-            $date_formated = date('Y-m-d', $timestamp);
-            return $date_formated;
+            if($this->getStartDate())
+            {
+                $timestamp = strtotime($this->getStartDate());
+                $date_formated = date('Y-m-d', $timestamp);
+                return $date_formated;
+            }
+            else return null;
         }
+        else return null;
     }
 
-    // get start date
+    // get date yyyy/mm/dd (validate is 0, 5, 6, 7)
     public function getStartDate()
 	{
 		if($this->hasValidIC())
@@ -137,40 +150,45 @@ class Patient_information extends \yii\db\ActiveRecord
                     else if($centuryIdentifierInt >=5 && $centuryIdentifierInt<=7)
                         return $targetString = "19".$targetString;
                     else
-                        return "N/A";
+                        return false;
                 }
             }
 		}
+        else return false;
 	}
 	
+    // return age from IC 
 	public function getAge($format)
 	{
 		if($this->hasValidIC())
 		{
-			$startDate = new \DateTime($this->getStartDate());
-			$endDate = new \DateTime();
-
-			$difference = $endDate->diff($startDate);
-			return $difference->format($format);
+            if($this->getStartDate() && $this->Date_validate($this->getStartDate()))
+            {
+                $startDate = new \DateTime($this->getStartDate());
+                $endDate = new \DateTime();
+                $difference = $endDate->diff($startDate);
+                return $difference->format($format);
+            }
+            else return "N/A";
 		}
 		else
 			return "N/A";
 	}
 
     // get age from datapicker yyyy-mm-dd
-    public function getAgeFromDob($dob)
-    {
-        $startDate = new \DateTime($dob);
-        $endDate = new \DateTime();
-
-        $difference = $endDate->diff($startDate);
-        return $difference->format("%y");
-    }
-
     public function getAgeFromDatePicker()
     {
         $model = Patient_information::findOne(Yii::$app->request->get('id'));
-        return is_null($model->DOB) ? "N/A" : $this->getAgeFromDob($model->DOB); 
+
+        if(is_null($model->DOB))
+            return "N/A";
+        else
+        {
+            $startDate = new \DateTime($model->DOB);
+            $endDate = new \DateTime();
+            $difference = $endDate->diff($startDate);
+            return $difference->format("%yyrs%mmth%dday");
+        }
     }
 	
 	public function getLatestNOK()

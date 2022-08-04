@@ -101,7 +101,7 @@ $this->registerJs(
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
-                  'id' => 'age', 'value' =>  $model->hasValidIC() ? $model->getAge("%y") : $model->getAgeFromDatePicker()]) ?>
+                  'id' => 'age', 'value' =>  $model->hasValidIC() ? $model->getAge("%yyrs%mmth%dday") : $model->getAgeFromDatePicker()]) ?>
         </div>
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 

@@ -246,8 +246,8 @@ function confirmActionPatient() {
 }
 
 // The function below will start the confirmation dialog
-function duplicateIC(ic) {
-   alert('NRIC ' + ic + ' is existed in system!');
+function duplicateIC() {
+   alert('NRIC is existed in system!');
    window.location.href = history.go(-1);
 }
 
@@ -264,8 +264,8 @@ function confirmActionPatient() {
 }
 
 // The function below will start the confirmation dialog
-function duplicateIC(ic) {
-   alert('NRIC ' + ic + ' wujud dalam sistem!');
+function duplicateIC() {
+   alert('NRIC wujud dalam sistem!');
     window.location.href = history.go(-1);
 }
 
