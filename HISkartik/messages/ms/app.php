@@ -240,7 +240,11 @@ return[
     'File Import' => 'Import Fail',
     'File' => 'Fail',
     'Change Password' => 'Tukar Kata Laluan',
-    'Password Repeat' => 'Ulang Kata Laluan',
     'Account Code' => 'Kod Akaun',
+    'Original Password' => 'Kata Laluan Asal',
+    'New Password' => 'Kata Laluan Baharu',
+    'Confirm New Password' => 'Sahkan Kata Laluan Baharu',
+    'Passwords does not match with new password' => 'Kata laluan tidak sepadan dengan kata laluan baharu',
+    'Original Password Incorrect' => 'Kata Laluan Asal Salah',
 ];
 ?>

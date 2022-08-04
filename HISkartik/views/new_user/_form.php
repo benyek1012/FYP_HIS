@@ -9,7 +9,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 /* @var $form yii\widgets\ActiveForm */
 
 if(empty(Yii::$app->request->get('user_uid'))){
-    $url = ['new_user/create', 'user_uid'=>$model['user_uid']];
+    $url = ['new_user/create'];
     $disabled = false;
     $user_uid = Base64UID::generate(32);
     $authKey = Base64UID::generate(32);
@@ -17,7 +17,6 @@ if(empty(Yii::$app->request->get('user_uid'))){
 else{
     $url = ['new_user/update', 'user_uid'=>$model['user_uid']];
     $disabled = true;
-    $value = '';
     $user_uid = $model->user_uid;
     $authKey = $model->authKey;
 }
@@ -68,18 +67,31 @@ else{
         <div class="col-sm-6">
             <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'user_password')->passwordInput(['maxlength' => true, 'value' => $value]) ?>
-        </div>
         <?php
+        if(empty(Yii::$app->request->get('user_uid'))){
+        ?>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'user_password')->passwordInput(['maxlength' => true]) ?>
+            </div>
+        <?php
+        }
+        else{
+        ?>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'new_password')->passwordInput(['maxlength' => true]) ?>
+            </div>
+        <?php
+        }
+
         if(!empty(Yii::$app->request->get('user_uid'))){
         ?>
             <div class="col-sm-6">
-                <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true, 'value' => $value]) ?>
+                <?= $form->field($model, 'confirm_new_password')->passwordInput(['maxlength' => true]) ?>
             </div>
         <?php
         }
         ?>
+        
         <div class="col-sm-6">
             <?= $form->field($model, 'role_cashier')->checkbox(['checked'=> $role_cashier, 'uncheck'=>'0', 'value' => '1', 'disabled' => $disabled]) ?>
             <?= $form->field($model, 'role_clerk')->checkbox(['checked'=> $role_clerk, 'uncheck'=>'0', 'value' => '1', 'disabled' => $disabled]) ?>

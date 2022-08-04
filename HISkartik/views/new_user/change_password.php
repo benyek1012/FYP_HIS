@@ -10,9 +10,9 @@ use yii\widgets\ActiveForm;
 $this->title = Yii::$app->user->identity->username;
 ?>
 
-<?php if(Yii::$app->session->hasFlash('error_password')):?>
+<?php if(Yii::$app->session->hasFlash('success')):?>
     <div id = "flashError">
-        <?= Yii::$app->session->getFlash('error_password') ?>
+        <?= Yii::$app->session->getFlash('success') ?>
     </div>
 <?php endif; ?>
 
@@ -33,10 +33,13 @@ $this->title = Yii::$app->user->identity->username;
             <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'disabled' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'user_password')->passwordInput(['maxlength' => true, 'value' => '']) ?>
+            <?= $form->field($model, 'original_password')->passwordInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true, 'value' => '']) ?>
+            <?= $form->field($model, 'new_password')->passwordInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'confirm_new_password')->passwordInput(['maxlength' => true]) ?>
         </div>
     </div>
 

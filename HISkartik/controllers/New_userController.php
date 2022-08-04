@@ -53,22 +53,27 @@ class New_userController extends Controller
     {
         $model = $this->findModel(Yii::$app->user->identity->getId());
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            if($model->user_password == $model->password_repeat){
-                $model->user_password = New_user::hashPassword($model->user_password);
-                $model->password_repeat = New_user::hashPassword($model->password_repeat);
-                $model->save();
-                return $this->redirect(['change_password']);
-            }
-            else{
-                Yii::$app->session->setFlash('error_password', '
+        if($this->request->isPost && $model->load($this->request->post()) && $model->validate()) {
+            if(empty($model->new_password) || empty($model->confirm_new_password) || empty($model->original_password)){
+                Yii::$app->session->setFlash('success', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong> New Password and Password Repeat Not Same!</div>'
+                    Original Password, New Password and Confirm New Password cannot be blank.</div>'
                 );
             }
+            else{
+                $model->user_password = New_user::hashPassword($model->new_password);
+                $model->save(false);
+                Yii::$app->session->setFlash('success', '
+                    <div class="alert alert-success alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    You have successfully changed your password.</div>'
+                );
+                return $this->refresh();
+            }
         }
-        return $this->render('change_password', [
+
+         return $this->render('change_password', [
             'model' => $model,
         ]);
     }
@@ -190,19 +195,23 @@ class New_userController extends Controller
         $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            if($model->user_password == $model->password_repeat){
-                $model->user_password = New_user::hashPassword($model->user_password);
-                $model->password_repeat = New_user::hashPassword($model->password_repeat);
-                $model->save();
-                return $this->redirect(['index']);
-            }
-            else{
+        if($this->request->isPost && $model->load($this->request->post()) && $model->validate()) {
+            if(empty($model->new_password) || empty($model->confirm_new_password)){
                 Yii::$app->session->setFlash('error_user', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong> New Password and Password Repeat Not Same!</div>'
+                    New Password and Confirm New Password cannot be blank.</div>'
                 );
+            }
+            else{
+                $model->user_password = New_user::hashPassword($model->new_password);
+                $model->save(false);
+                Yii::$app->session->setFlash('error_user', '
+                    <div class="alert alert-success alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    You have successfully changed your password.</div>'
+                );
+                return $this->refresh();
             }
         }
 

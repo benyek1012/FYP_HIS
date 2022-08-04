@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\controllers\New_userController;
 use Yii;
 use yii\web\IdentityInterface;
 
@@ -17,6 +18,11 @@ use yii\web\IdentityInterface;
  */
 class New_user extends \yii\db\ActiveRecord implements IdentityInterface
 {
+
+    public $new_password;
+    public $original_password;
+    public $confirm_new_password;
+
     /**
      * {@inheritdoc}
      */
@@ -36,11 +42,32 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             [['user_uid'], 'string', 'max' => 64],
             [['username'], 'string', 'max' => 100],
             [['role_cashier','role_clerk', 'role_admin', 'role_guest_print'], 'boolean', 'strict'=> false],
-            [['user_password', 'password_repeat'], 'string', 'max' => 40],
+            [['user_password'], 'string', 'max' => 40],
             [['authKey'], 'string', 'max' => 45],
             [['user_uid'], 'unique'],
-            [['username'], 'unique'],            
+            [['username'], 'unique'],    
+            
+            [['new_password', 'original_password', 'confirm_new_password'], 'safe'],
+            [['original_password'] ,'validateOriginalPassword'],
+            [['new_password', 'confirm_new_password', 'original_password'], 'string', 'max' => 40],
+            [['new_password', 'confirm_new_password'], 'filter', 'filter' => 'trim'],
+            [['confirm_new_password'], 'compare', 'compareAttribute' => 'new_password', 'message' => Yii::t('app', 'Passwords does not match with new password')],
         ];
+    }
+
+    public function validateOriginalPassword() {
+        if(!$this->verifyPassword($this->original_password)) {
+            $this->addError("original_password", Yii::t('app' ,'Original Password Incorrect'));
+        }
+    }
+
+    public function verifyPassword($password) {
+        if($this->hashPassword($password) == $this->user_password){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public function getAuthKey() {
@@ -144,13 +171,15 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             'user_uid' => Yii::t('app','User Uid'),
             'username' => Yii::t('app','Username'),
             'user_password' => Yii::t('app','User Password'),
-            'password_repeat' => Yii::t('app','Password Repeat'),
             'role_cashier' => Yii::t('app','Cashier Role'),
             'role_clerk' => Yii::t('app','Clerk Role'),
             'role_admin' => Yii::t('app','Admin Role'),
             'role_guest_print' => Yii::t('app','Guest Print Role'),
             'retire' => Yii::t('app','Active'),
             'authKey' => Yii::t('app','Auth Key'),
+            'original_password' => Yii::t('app', 'Original Password'),
+            'new_password' => Yii::t('app', 'New Password'),
+            'confirm_new_password' => Yii::t('app', 'Confirm New Password'),
         ];
     }
 }
