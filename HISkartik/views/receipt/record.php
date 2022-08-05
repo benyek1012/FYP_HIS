@@ -93,6 +93,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         return  Yii::t('app','Deposit Payment');
                     else if($data['receipt_type'] == "refund")
                         return  Yii::t('app','Refund');
+                    else if($data['receipt_type'] == 'exception')
+                        return Yii::t('app','Exception');
                 }
             ],  
             [

@@ -687,6 +687,8 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                     })();' ]) ?>
                 <?= Html::button(Yii::t('app', 'Refresh'), 
                         ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
+                <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
+                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
 
                 <!-- If the flash message existed, show it  -->
@@ -695,7 +697,6 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                     <?= Yii::$app->session->getFlash('msg') ?>
                 </div>
                 <?php endif; ?>
-                
                 <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php } ?>

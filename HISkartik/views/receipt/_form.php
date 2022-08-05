@@ -19,7 +19,7 @@ $url = Url::toRoute(['receipt/refresh']);
     <?php  
     // var_dump($userId);
     // exit();
-        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
         if(!empty($model_bill)  && (new Bill()) -> isGenerated($model_bill->rn))
             // Once bill is generated, can't pay deposit. Only allow bill or refund
             $receipt = array(
@@ -38,17 +38,14 @@ $url = Url::toRoute(['receipt/refresh']);
         ->select('*')
         ->from('lookup_general')
         ->where(['category'=> 'Payment Method'])
+        ->orderBy(['lookup_general_uid' => SORT_DESC])
         ->all();
 
         $method = array();
         foreach ($rows_payment as $row_payment){
             $method[$row_payment['name']] = $row_payment['name'];
         }
-        //$payment_method = array(
-        //    'cash'=> Yii::t('app','Cash'),
-        //    'card'=> Yii::t('app','Debit/Credit Card'),
-        //    'cheque'=> Yii::t('app','Cheque Numbers'),
-        //)
+
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
         $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
@@ -147,7 +144,7 @@ $url = Url::toRoute(['receipt/refresh']);
             <?php } ?>
         </div>
 
-        <div class="col-sm-6" id="bill_div" <?php if(empty($model_bill)) echo 'style="display:none;"'; ?>>
+        <div class="col-sm-6" id="bill_div">
             <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
             <?php }else{ ?>
@@ -159,15 +156,14 @@ $url = Url::toRoute(['receipt/refresh']);
             <!-- <?php  if(!empty($model_bill)){
                     if((new Bill()) -> calculateFinalFee($model_bill->bill_uid) >= 0){
         ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> calculateFinalFee($model_bill->bill_uid)]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'value' => (new Bill()) -> calculateFinalFee($model_bill->bill_uid)]) ?>
             <?php }else{ ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> getUnclaimed($model_bill->bill_uid)]) ?>
-
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))]) ?>
             <?php }
             }else{ ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'id' => 'receipt_sum']) ?>
             <?php } ?> -->
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'id' => 'receipt_sum']) ?>
         </div>
 
         <div class="col-sm-6">
@@ -211,27 +207,15 @@ $url = Url::toRoute(['receipt/refresh']);
         <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
     </div>
 
-
-    <div class="form-group" id="div_no_print">
-        <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
-            'onclick' => '(function ( $event ) {
-                 document.getElementById("serial_number").readOnly = false; 
-                 document.getElementById("serial_number").value = "";
-                 document.getElementById("serial_number").focus();
-            })();' ]) ?>
-        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
-    </div>
-
     <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
 
 <script>
+// hide bill receipt ID
+document.getElementById("bill_div").style.display = "none";
+
 function myfunctionforType(val) {
-    if (val == "bill")
-        document.getElementById("bill_div").style.display = "block";
-    else
-        document.getElementById("bill_div").style.display = "none";
 
     if (val == "refund" || val == "exception") {
         document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Document Number');?>';
@@ -242,12 +226,29 @@ function myfunctionforType(val) {
         refreshButton('<?php echo $url?>');
     }
 
-    if (val == "exception") {
-        document.getElementById("div_print").style.display = "none";
-        document.getElementById("div_no_print").style.display = "block";
+    if (val == "bill") {
+        document.getElementById("receipt_sum").value =
+            '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
+        // show bill receipt ID 
+        document.getElementById("bill_div").style.display = "block";
+        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
+    } else if (val == "refund") {
+        document.getElementById("receipt_sum").value =
+            '<?php echo (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))?>';
+        // hide bill receipt ID 
+        document.getElementById("bill_div").style.display = "none";
+        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
+    } else if (val == "deposit") {
+        document.getElementById("receipt_sum").value =
+            '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
+        // hide bill receipt ID 
+        document.getElementById("bill_div").style.display = "none";
+        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else {
-        document.getElementById("div_no_print").style.display = "none";
-        document.getElementById("div_print").style.display = "block";
+        document.getElementById("receipt_sum").value = 0;
+        // hide bill receipt ID 
+        document.getElementById("bill_div").style.display = "none";
+        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
     }
 }
 
