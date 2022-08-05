@@ -63,7 +63,7 @@ class Patient_informationController extends Controller
 
         // var_dump($model->hasValidIC());
         // exit();
-        if($model->hasValidIC() && $this->Date_validate($this->getStartDate()))
+        if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
         {
             $model->DOB = $model->getDateForDatabase();
         }
