@@ -2,6 +2,8 @@
 
 use yii\bootstrap4\Html;
 use kartik\datetime\DateTimePicker;
+use yii\bootstrap4\Modal;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
@@ -9,6 +11,12 @@ use kartik\datetime\DateTimePicker;
 ?>
 
 <div class="patient-admission-form">
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('msg')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('msg') ?>
+        </div>
+    <?php endif; ?>
 
     <?php 
     $rows_patient_admission = (new \yii\db\Query())
@@ -27,14 +35,14 @@ use kartik\datetime\DateTimePicker;
       $ward_code[$row['ward_code']] = $row['ward_code'] . " - " . $row['ward_name'];
     }  
 
-    $rows_patient_information = (new \yii\db\Query())
-    ->select('*')
-    ->from('patient_information')
-    ->all();
-    $all_Nric = array();
-    foreach( $rows_patient_information as $row){
-        $all_Nric[$row['nric']] = $row['nric'] ;
-      }  
+    // $rows_patient_information = (new \yii\db\Query())
+    // ->select('*')
+    // ->from('patient_information')
+    // ->all();
+    // $all_Nric = array();
+    // foreach( $rows_patient_information as $row){
+    //     $all_Nric[$row['nric']] = $row['nric'] ;
+    //   }  
 
     // foreach($rows_patient_admission as $row_patient_admission){
     //     if(empty($ward_code[$row_patient_admission['initial_ward_code']])){
@@ -57,29 +65,27 @@ use kartik\datetime\DateTimePicker;
     // }
 
 
-    $form = kartik\form\ActiveForm::begin([
-        'id' => 'patient-admission-form',
-        'type' => 'vertical',
-       // 'action' => ['patient_admission/transfer'],
-        'fieldConfig' => [
-            'template' => "{label}\n{input}\n{error}",
-            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-        ],
-    ]); 
-    ?>
-    <?=$form->field($modelpatient, 'nric')->widget(kartik\select2\Select2::classname(), [
-        'data' => $all_Nric,
-        'options' => ['placeholder' => Yii::t('app','Please select NRIC'), 'id' => 'nric',],
-        'pluginOptions' => [
-            'allowClear' => true,
-            // 'tags' => true,
-        ],
-    ])->label(Yii::t('app','Transfer To New Patient'));?>
-    <?= Html::submitButton(Yii::t('app','Yes'), ['class' => 'btn btn-success']) ?>
+    // $form = kartik\form\ActiveForm::begin([
+    //     'id' => 'patient-admission-form',
+    //     'type' => 'vertical',
+    //    // 'action' => ['patient_admission/transfer'],
+    //     'fieldConfig' => [
+    //         'template' => "{label}\n{input}\n{error}",
+    //         'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+    //     ],
+    // ]); 
+    // 
+    // <?=$form->field($modelpatient, 'nric')->widget(kartik\select2\Select2::classname(), [
+    //     'data' => $all_Nric,
+    //     'options' => ['placeholder' => Yii::t('app','Please select NRIC'), 'id' => 'nric',],
+    //     'pluginOptions' => [
+    //         'allowClear' => true,
+    //         // 'tags' => true,
+    //     ],
+    // ])->label(Yii::t('app','Transfer To New Patient'));
+    // <?= Html::submitButton(Yii::t('app','Yes'), ['class' => 'btn btn-success']) 
 
-    <?php kartik\form\ActiveForm::end(); 
-
-
+    // <?php kartik\form\ActiveForm::end();
 
 
     $form = kartik\form\ActiveForm::begin([
@@ -93,8 +99,10 @@ use kartik\datetime\DateTimePicker;
 
     ?>
 
+
     <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('id')])->label(false); ?>
     <div class="row">
+        
         <div class="col-sm-6">
             <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
         </div>
@@ -172,6 +180,32 @@ use kartik\datetime\DateTimePicker;
         }
         ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success']) ?>
+        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-success', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
+        <?php
+            Modal::begin([
+               // 'title'=>'<h4>Transfer</h4>',
+                'id'=>'modal',
+                'size'=>'modal-lg',
+            ]);
+            $form = kartik\form\ActiveForm::begin([
+                    'id' => 'patient-admission-form',
+                    'type' => 'vertical',
+                   // 'action' => ['patient_admission/transfer'],
+                    'fieldConfig' => [
+                        'template' => "{label}\n{input}\n{error}",
+                        'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+                    ],
+                ]); 
+                
+            ?>
+             <div id='modalContent'>
+            <?= $form->field($modelpatient, 'nric')->textInput([ 'autocomplete' =>'off', 'value' => ""])->label(Yii::t('app','Transfer To New Patient'));?>
+            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success'])?>
+            </div>
+            <?php
+            kartik\form\ActiveForm::end();
+            Modal::end();
+        ?>
         <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>
 
@@ -186,9 +220,11 @@ use kartik\datetime\DateTimePicker;
 </div>
 <br/>
 
-<!-- If the flash message existed, show it  -->
-<?php if(Yii::$app->session->hasFlash('msg')):?>
-<div id="flashError">
-    <?= Yii::$app->session->getFlash('msg') ?>
-</div>
-<?php endif; ?>
+<?php
+$this->registerJs(
+"$('#btnTransfer').on('click',function () {
+    $('#modal').modal('show')
+        .find('#modalContent')
+        .load($(this).attr('value'));
+    });"
+);
