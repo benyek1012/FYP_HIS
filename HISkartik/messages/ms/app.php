@@ -252,5 +252,8 @@ return[
     'Validation error! ' => 'Ralat pengesahan! ',
     ' is duplicated!' => ' adalah pendua!',
     'Payment Method Number' => 'Nombor Kaedah Pembayaran',
+    ' does not exist' => ' tidak wujud',
+    'Please enter patient nric' => 'Sila masukkan nric pesakit',
+    'Transfer' => 'Pemindahan',
 ];
 ?>

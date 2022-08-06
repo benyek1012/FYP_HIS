@@ -153,20 +153,32 @@ class Patient_admissionController extends Controller
         if ($this->request->isPost && $modelpatient->load($this->request->post()) ){
             $ic = $modelpatient->nric;
             $modelpatient = Patient_information::find()->where(['nric' => $modelpatient->nric])->one();
-            
             if(empty($modelpatient)){
-               // echo ' Nric does not exist.';
-                // set the flash message
-                Yii::$app->session->setFlash('msg', '
-                    <div class="alert alert-danger alert-dismissable">
-                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>Validation error! </strong> Nric : '.$ic.' does not exist !</div>'
-                );
+                    // echo ' Nric does not exist.';
+                    // set the flash message
+                    Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Validation error! ').' </strong> Nric : '.$ic.''
+                            .Yii::t('app', ' does not exist').' !</div>'
+                    );
             }
             else{
-                $model->patient_uid = $modelpatient->patient_uid;
-                $model->save();
+                    if(!empty($ic)){
+                        $model->patient_uid = $modelpatient->patient_uid;
+                        $model->save();
+                    }
+                    else{
+                        // set the flash message
+                        Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Validation error! ').' </strong> 
+                        '.Yii::t('app', 'Please enter patient nric').' !</div>'
+                );
+                    }
             }
+        
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
                     'rn' => $model->rn));  
         }
@@ -300,4 +312,3 @@ class Patient_admissionController extends Controller
 }
 
 ?>
-

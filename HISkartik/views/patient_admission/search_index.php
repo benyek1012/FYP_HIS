@@ -39,7 +39,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                 <?php 
                     if(empty(Yii::$app->request->get('Patient_admissionSearch')))
                     {
-                        echo Yii::t('app','Patient result record is not found');        
+                        echo Yii::t('app','Patient admission record is not founded');        
                     } 
                     else{
                         ?>
