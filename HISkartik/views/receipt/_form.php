@@ -5,6 +5,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
+use app\models\Receipt;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -17,16 +18,25 @@ $url = Url::toRoute(['receipt/refresh']);
 <div class="receipt-form">
 
     <?php  
-    // var_dump($userId);
-    // exit();
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+
+         // Once bill is generated, can't pay deposit. Only allow bill or refund
         if(!empty($model_bill)  && (new Bill()) -> isGenerated($model_bill->rn))
-            // Once bill is generated, can't pay deposit. Only allow bill or refund
-            $receipt = array(
+        {
+           // check receipt is refundable
+            if(Receipt::checkRefunfable())
+            {
+                $receipt = array(
+                    'bill'=> Yii::t('app','Bill'),
+                    'refund'=> Yii::t('app','Refund'),
+                    'exception' =>Yii::t('app','Exception')
+                );
+            }
+            else  $receipt = array(
                 'bill'=> Yii::t('app','Bill'),
-                'refund'=> Yii::t('app','Refund'),
                 'exception' =>Yii::t('app','Exception')
             );
+        }
         else
             $receipt = array(
                 'deposit'=> Yii::t('app','Deposit'),
@@ -171,22 +181,18 @@ $url = Url::toRoute(['receipt/refresh']);
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
-                    ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'value' => 'cash']) ?>
-        </div>
-
-        <div class="col-sm-6">
             <!-- <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, 
                         ['prompt'=> Yii::t('app','Please select payer name'),'maxlength' => true]) ?> -->
             <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $checked_name, 'custom' => true, 'inline' => true]); ?>
         </div>
 
-        <div class="col-sm-6" id="card_div" style="display:none;">
-            <?= $form->field($model, 'card_no')->textInput(['maxlength' => true]) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
+                    ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'value' => 'cash']) ?>
         </div>
 
-        <div class="col-sm-6" id="cheque_div" style="display:none;">
-            <?= $form->field($model, 'cheque_number')->textInput(['maxlength' => true]) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'payment_method_number')->textInput(['maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6">
@@ -267,18 +273,18 @@ function refreshButton(url) {
 document.getElementById("div_no_print").style.display = "none";
 
 // For onchage hide and show payment method input
-document.querySelectorAll("#radio input[type='radio']").forEach(function(element) {
-    element.addEventListener('click', function() {
-        if (this.value == "cash" || this.value == "") {
-            document.getElementById("cheque_div").style.display = "none";
-            document.getElementById('card_div').style.display = "none";
-        } else if (this.value == "card") {
-            document.getElementById("cheque_div").style.display = "none";
-            document.getElementById('card_div').style.display = "block";
-        } else if (this.value == "cheque") {
-            document.getElementById("cheque_div").style.display = "block";
-            document.getElementById('card_div').style.display = "none";
-        }
-    });
-});
+// document.querySelectorAll("#radio input[type='radio']").forEach(function(element) {
+//     element.addEventListener('click', function() {
+//         if (this.value == "cash" || this.value == "") {
+//             document.getElementById("cheque_div").style.display = "none";
+//             document.getElementById('card_div').style.display = "none";
+//         } else if (this.value == "card") {
+//             document.getElementById("cheque_div").style.display = "none";
+//             document.getElementById('card_div').style.display = "block";
+//         } else if (this.value == "cheque") {
+//             document.getElementById("cheque_div").style.display = "block";
+//             document.getElementById('card_div').style.display = "none";
+//         }
+//     });
+// });
 </script>

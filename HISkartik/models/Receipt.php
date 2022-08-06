@@ -16,12 +16,11 @@ use Yii;
  * @property string $receipt_content_datetime_paid
  * @property string $receipt_content_payer_name
  * @property string $receipt_content_payment_method
- * @property string|null $card_no
- * @property string|null $cheque_number
+ * @property string|null $payment_method_number
  * @property string $receipt_responsible
  * @property string|null $receipt_serial_number
+ * @property string $kod_akaun
  *
- * @property BillContentReceipt[] $billContentReceipts
  * @property PatientAdmission $rn0
  */
 class Receipt extends \yii\db\ActiveRecord
@@ -40,21 +39,15 @@ class Receipt extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_datetime_paid','receipt_content_sum', 'receipt_content_payment_method', 'receipt_responsible', 'receipt_serial_number'], 'required'],
-            [['receipt_content_sum'], 'double'],
+            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_sum', 'receipt_content_datetime_paid', 'receipt_content_payer_name', 'receipt_content_payment_method', 'receipt_responsible', 'kod_akaun'], 'required'],
+            [['receipt_content_sum'], 'number'],
             [['receipt_content_datetime_paid'], 'safe'],
             [['receipt_uid', 'rn', 'receipt_responsible'], 'string', 'max' => 64],
-            [['receipt_type', 'receipt_content_bill_id', 'receipt_content_payment_method', 'card_no', 'cheque_number', 'receipt_serial_number'], 'string', 'max' => 20],
+            [['receipt_type', 'receipt_content_bill_id', 'receipt_content_payment_method', 'receipt_serial_number', 'kod_akaun'], 'string', 'max' => 20],
             [['receipt_content_description'], 'string', 'max' => 100],
             [['receipt_content_payer_name'], 'string', 'max' => 200],
+            [['payment_method_number'], 'string', 'max' => 30],
             [['receipt_uid'], 'unique'],
-            [['kod_akaun'], 'string'],
-           // [['receipt_serial_number'], 'integer'],
-          //  [['receipt_serial_number'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
-            [['receipt_serial_number'], 'unique'],
-           // [['receipt_serial_number'], 'exist', 'skipOnError' => true, 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_serial_number' => 'receipt_serial_number']],
-         //    [['receipt_serial_number', 'unique', 'targetClass' => Receipt::className(), 'targetAttribute' => ['receipt_serial_number' => 'receipt_serial_number'],
-           //      'message' => 'This receipt serial number is use.']],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
@@ -74,8 +67,7 @@ class Receipt extends \yii\db\ActiveRecord
             'receipt_content_datetime_paid' => Yii::t('app','Payment Date'),
             'receipt_content_payer_name' => Yii::t('app','Payer Name'),
             'receipt_content_payment_method' => Yii::t('app','Payment Method'),
-            'card_no' => Yii::t('app','Card Number'),
-            'cheque_number' => Yii::t('app','Cheque Number'),
+            'payment_method_number' => Yii::t('app','Payment Method Number'),
             'receipt_responsible' => Yii::t('app','Receipt Responsible'),
             'receipt_serial_number' => Yii::t('app','Receipt Serial Number'),
             'kod_akaun' => Yii::t('app','Account Code'),	
@@ -90,5 +82,21 @@ class Receipt extends \yii\db\ActiveRecord
     public function getRn0()
     {
         return $this->hasOne(Patient_admission::className(), ['rn' => 'rn']);
+    }
+
+
+    // return true if Bill doesn't exist || If admission is cancelled || Bill final fee is negative
+    public static function checkRefunfable()
+    {
+        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+        if(!empty($model_bill))
+        {
+            $finalFee = (new Bill()) -> calculateFinalFee($model_bill->bill_uid);
+            if($finalFee < 0){
+                return true;
+            }
+            else return false;
+        }
+        return true;
     }
 }

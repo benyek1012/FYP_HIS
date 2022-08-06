@@ -141,7 +141,7 @@ class ReceiptController extends Controller
             {
                 $date = new \DateTime();
                 $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i');
+                $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
             }
 
             if($model->validate() && $model->save()){

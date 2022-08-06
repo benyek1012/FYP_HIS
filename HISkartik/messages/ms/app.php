@@ -251,5 +251,6 @@ return[
     'Original Password, New Password and Confirm New Password cannot be blank.' => 'Kata Laluan Asal, Kata Laluan Baru dan Sahkan Kata Laluan Baru tidak boleh kosong.',
     'Validation error! ' => 'Ralat pengesahan! ',
     ' is duplicated!' => ' adalah pendua!',
+    'Payment Method Number' => 'Nombor Kaedah Pembayaran',
 ];
 ?>
