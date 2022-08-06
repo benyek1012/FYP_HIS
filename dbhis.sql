@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2022 at 05:03 PM
--- Server version: 10.4.24-MariaDB
+-- Generation Time: Aug 06, 2022 at 10:20 AM
+-- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -78,19 +78,6 @@ CREATE TABLE `batch` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cancellation`
---
-
-CREATE TABLE `cancellation` (
-  `cancellation_uid` varchar(64) NOT NULL,
-  `table` varchar(64) NOT NULL,
-  `reason` varchar(100) NOT NULL,
-  `replacement_uid` varchar(64) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `bill`
 --
 
@@ -115,6 +102,19 @@ CREATE TABLE `bill` (
   `bill_print_datetime` datetime DEFAULT NULL,
   `bill_print_id` varchar(20) DEFAULT NULL,
   `deleted` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cancellation`
+--
+
+CREATE TABLE `cancellation` (
+  `cancellation_uid` varchar(64) NOT NULL,
+  `table` varchar(64) NOT NULL,
+  `reason` varchar(100) NOT NULL,
+  `replacement_uid` varchar(64) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -419,6 +419,7 @@ INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`,
 ('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 0, 0, '12345b'),
 ('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 0, 0, '12345a'),
 ('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0, 0, '12345c');
+
 -- --------------------------------------------------------
 
 --
@@ -461,7 +462,7 @@ CREATE TABLE `patient_information` (
   `address2` varchar(100) DEFAULT NULL,
   `address3` varchar(100) DEFAULT NULL,
   `job` varchar(20) DEFAULT NULL,
-  `DOB` DATE DEFAULT NULL
+  `DOB` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -499,8 +500,7 @@ CREATE TABLE `receipt` (
   `receipt_content_datetime_paid` datetime NOT NULL,
   `receipt_content_payer_name` varchar(200) NOT NULL,
   `receipt_content_payment_method` varchar(20) NOT NULL,
-  `card_no` varchar(20) DEFAULT NULL,
-  `cheque_number` varchar(20) DEFAULT NULL,
+  `payment_method_number` varchar(30) DEFAULT NULL,
   `receipt_responsible` varchar(64) NOT NULL,
   `receipt_serial_number` varchar(20) DEFAULT NULL,
   `kod_akaun` varchar(20) NOT NULL
@@ -575,6 +575,12 @@ ALTER TABLE `batch`
 ALTER TABLE `bill`
   ADD PRIMARY KEY (`bill_uid`),
   ADD KEY `rn` (`rn`);
+
+--
+-- Indexes for table `cancellation`
+--
+ALTER TABLE `cancellation`
+  ADD PRIMARY KEY (`cancellation_uid`);
 
 --
 -- Indexes for table `lookup_department`
