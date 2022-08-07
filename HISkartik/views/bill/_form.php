@@ -638,6 +638,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::button(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();"]) ?>
                 <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
+                <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <?= Html::a(Yii::t('app','Delete'), ['/bill/delete', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?>
                 <?php } ?>
             </div>
@@ -679,6 +680,8 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                 if( !$isPrinted ){
             ?>
                 <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
+                <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
                     'onclick' => '(function ( $event ) {
                         document.getElementById("serial_number").readOnly = false; 

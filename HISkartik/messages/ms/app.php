@@ -255,5 +255,15 @@ return[
     ' does not exist' => ' tidak wujud',
     'Please enter patient nric' => 'Sila masukkan nric pesakit',
     'Transfer' => 'Pemindahan',
+    'Print Pro-forma' => 'Cetak Pro-forma',
+    'Print Lampiran' => 'Cetak Lampiran',
+    'Print Dummy Bill' => 'Cetak Bil Dummy', 
+    "RN can't be found in database" => 'RN tidak dapat ditemui dalam pangkalan data',
+    'Printing was not enabled' => 'Pencetakan tidak didayakan',
+    'Bill has been printed for receipt' => 'Bil telah dicetak untuk penerimaan',
+    ', only 1 bill allowed' => ', hanya 1 bil dibenarkan',
+    'Bill is no longer valid' => 'Bil tidak sah lagi',
+    
+
 ];
 ?>

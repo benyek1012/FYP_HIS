@@ -196,10 +196,10 @@ class PrintForm
     {
 		$patientAdmission = Patient_admission::findOne(["rn"=>$rn]);
 		if (is_null($patientAdmission))
-			return "RN can't be found in database";
+			return Yii::t('app',"RN can't be found in database");
 		
 		if (Yii::$app->params['printerstatus'] != "true")
-			return "Printing was not enabled";
+			return Yii::t('app','Printing was not enabled');
 
 		$patientInformation = $patientAdmission->getPatient_information()->one();
 			
@@ -402,10 +402,10 @@ class PrintForm
 		
 		$patientAdmission = Patient_admission::findOne(["rn"=>$rn]);
 		if (is_null($patientAdmission))
-			return "RN can't be found in database";
+			return Yii::t('app',"RN can't be found in database");
 		
 		if (Yii::$app->params['printerstatus'] != "true")
-			return "Printing was not enabled";
+			return Yii::t('app','Printing was not enabled');
 
 		$patientInformation = $patientAdmission->getPatient_information()->one();
 			
@@ -530,10 +530,10 @@ class PrintForm
 	{
 		$patientAdmission = Patient_admission::findOne(["rn"=>$rn]);
 		if (is_null($patientAdmission))
-			return "RN can't be found in database";
+			return Yii::t('app',"RN can't be found in database");
 		
 		if (Yii::$app->params['printerstatus'] != "true")
-			return "Printing was not enabled";
+			return Yii::t('app','Printing was not enabled');
 
 		$patientInformation = $patientAdmission->getPatient_information()->one();
 			
@@ -697,10 +697,10 @@ class PrintForm
 	{
 		$patientAdmission = Patient_admission::findOne(["rn"=>$rn]);
 		if (is_null($patientAdmission))
-			return "RN can't be found in database";
+			return Yii::t('app',"RN can't be found in database");
 		
 		if (Yii::$app->params['printerstatus'] != "true")
-			return "Printing was not enabled";
+			return Yii::t('app','Printing was not enabled');
 
 		$patientInformation = $patientAdmission->getPatient_information()->one();
 			
@@ -840,10 +840,10 @@ class PrintForm
 	{
 		#$patientAdmission = Patient_admission::findOne(["rn"=>$rn]);
 		if (is_null($receipt))
-			return "Receipt can't be found in database";
+			return Yii::t('app',"Receipt can't be found in database");
 		
 		if (Yii::$app->params['printerstatus'] != "true")
-			return "Printing was not enabled";
+			return Yii::t('app','Printing was not enabled');
 
 		#$patientInformation = $patientAdmission->getPatient_information()->one();
 			
@@ -953,19 +953,19 @@ class PrintForm
     {
 		$bill = Bill::findOne(["bill_uid"=>$bill_uid]);
 		if (is_null($bill))
-			return "Bill can't be found in database";
+			return Yii::t('app',"Bill can't be found in database");
 		
 		if (Yii::$app->params['printerstatus'] != "true")
 		{
-			return "Printing was not enabled";
+			return Yii::t('app','Printing was not enabled');
 		}
 		//	throw new Exception("Printing was not enabled");
 
 		if (!is_null($bill->bill_print_id))
-			return "Bill has been printed for receipt".$bill->bill_print_id.", only 1 bill allowed";
+			return Yii::t('app','Bill has been printed for receipt').$bill->bill_print_id.Yii::t('app',', only 1 bill allowed');
 		
 		if ($bill->deleted)
-			return "Bill is no longer valid";
+			return Yii::t('app','Bill is no longer valid');
 		
 		$patientAdmission = Patient_admission::findOne(["rn"=>$bill->rn]);
 		$patientInformation = $patientAdmission->getPatient_information()->one();
