@@ -122,7 +122,7 @@ class Patient_information extends \yii\db\ActiveRecord
     {
         if($this->hasValidIC())
 		{
-            if($this->getStartDate())
+            if($this->getStartDate() && $this->Date_validate($this->getStartDate()))
             {
                 $timestamp = strtotime($this->getStartDate());
                 $date_formated = date('Y-m-d', $timestamp);
@@ -175,6 +175,15 @@ class Patient_information extends \yii\db\ActiveRecord
 			return "N/A";
 	}
 
+      // caluculate age from paramter DOB
+      public function calculateDob($dob)
+      {
+            $startDate = new \DateTime($dob);
+            $endDate = new \DateTime();
+            $difference = $endDate->diff($startDate);
+            return $difference->format("%yyrs%mmth%dday");
+      }
+
     // get age from datapicker yyyy-mm-dd
     public function getAgeFromDatePicker()
     {
@@ -183,12 +192,7 @@ class Patient_information extends \yii\db\ActiveRecord
         if(is_null($model->DOB))
             return "N/A";
         else
-        {
-            $startDate = new \DateTime($model->DOB);
-            $endDate = new \DateTime();
-            $difference = $endDate->diff($startDate);
-            return $difference->format("%yyrs%mmth%dday");
-        }
+            return $this->calculateDob($model->DOB);
     }
 	
 	public function getLatestNOK()

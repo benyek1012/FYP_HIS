@@ -106,10 +106,10 @@ class Patient_informationController extends Controller
             }
         
             if($flag == true){
-                if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
-                {
-                    $model->DOB = $model->getDateForDatabase();
-                }
+                // if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
+                // {
+                //     $model->DOB = $model->getDateForDatabase();
+                // }
 
                 if($model->save())
                 {
@@ -131,9 +131,17 @@ class Patient_informationController extends Controller
         ]);
     }
 
+    // pass DOB from datepicker, then ajax calculate age then render on Age textInput
     public function actionDob($dob, $id) {
         $model = Patient_information::findOne($id);
-        echo Json::encode($model->getAgeFromDob($dob));
+        echo Json::encode($model->calculateDob($dob));
+    }
+
+    // pass DOB from datepicker, then ajax calculate age then render on Age textInput
+    public function actionLoad_dob_from_ic($nric, $id) {
+        $model = Patient_information::findOne($id);
+        $model->nric = $nric;
+        echo Json::encode($model->getDateForDatabase());
     }
 
 

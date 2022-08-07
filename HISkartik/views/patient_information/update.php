@@ -20,6 +20,17 @@ $this->registerJs(
     });"
 );
 
+$this->registerJs(
+    "$('#btn_dob').click(function() {
+        var nric = $('#nric').val();
+        var id = '".Yii::$app->request->get('id')."';
+        $.get('". Url::toRoute(['/patient_information/load_dob_from_ic'])."', {nric : nric, id : id}, function(data){
+            var data = $.parseJSON(data);
+            $('#DOB').attr('value', data);
+        });
+    });"
+);
+
 ?>
 <div class="patient-information-update">
     <?php 
@@ -89,19 +100,23 @@ $this->registerJs(
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'value' => Yii::$app->request->get('ic')]) ?>
+            <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'id' => 'nric',
+             'value' => Yii::$app->request->get('ic')]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
-            'options' => ['id' => 'DOB', 'readonly' => $model->hasValidIC() ? true : false],
+            'options' => ['id' => 'DOB'],
             'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
             'pluginEvents' => [
                 
             ],])?>
         </div>
+        <div class="form-group col-md-2 align-self-end">
+            <?= Html::button(Yii::t('app','Load DOB'), ['class' => 'btn btn-outline-primary', 'id' => "btn_dob"]) ?>
+        </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
-                  'id' => 'age', 'value' =>  $model->hasValidIC() ? $model->getAge("%yyrs%mmth%dday") : $model->getAgeFromDatePicker()]) ?>
+                  'id' => 'age', 'value' => $model->getAgeFromDatePicker()]) ?>
         </div>
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 
@@ -134,12 +149,15 @@ $this->registerJs(
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
+
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'address2')->textInput(['maxlength' => true])->label(false)?>
             <?= $form->field($model, 'address3')->textInput(['maxlength' => true])->label(false)?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
         </div>
     </div>
 

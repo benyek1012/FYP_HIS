@@ -180,7 +180,7 @@ use yii\helpers\Url;
         }
         ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success']) ?>
-        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-success', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
+        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
         <?php
             Modal::begin([
                // 'title'=>'<h4>Transfer</h4>',
