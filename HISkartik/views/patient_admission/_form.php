@@ -200,7 +200,7 @@ use yii\helpers\Url;
             ?>
              <div id='modalContent'>
             <?= $form->field($modelpatient, 'nric')->textInput([ 'autocomplete' =>'off', 'value' => ""])->label(Yii::t('app','Transfer To New Patient'));?>
-            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success'])?>
+            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'Update', 'value' => 'Update'])?>
             </div>
             <?php
             kartik\form\ActiveForm::end();
