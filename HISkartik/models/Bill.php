@@ -258,6 +258,18 @@ class Bill extends \yii\db\ActiveRecord
 
     // Get all Payed Amount
     public function getPayedAmt($rn){
+        // $payed_amt = 0.0;
+
+        // $info_receipt = Receipt::findAll(['rn' => $rn, 'receipt_type' => 'bill']);
+        // if(!empty($info_receipt))
+        // {
+        //     foreach($info_receipt as $r)
+        //     {
+        //         $payed_amt += $r->receipt_content_sum;
+        //     }
+        // }
+        // return $payed_amt;
+
         $payed_amt = 0.0;
 
         $info_receipt = Receipt::findAll(['rn' => $rn, 'receipt_type' => 'bill']);
@@ -265,7 +277,10 @@ class Bill extends \yii\db\ActiveRecord
         {
             foreach($info_receipt as $r)
             {
-                $payed_amt += $r->receipt_content_sum;
+                $model_cancellation = Cancellation::findAll(['cancellation_uid' => $r->receipt_uid]);
+                if(empty($model_cancellation)){
+                    $payed_amt += $r->receipt_content_sum;
+                }
             }
         }
         return $payed_amt;

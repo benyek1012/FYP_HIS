@@ -263,7 +263,7 @@ return[
     'Bill has been printed for receipt' => 'Bil telah dicetak untuk penerimaan',
     ', only 1 bill allowed' => ', hanya 1 bil dibenarkan',
     'Bill is no longer valid' => 'Bil tidak sah lagi',
-    
+    'Cancellation' => 'Pembatalan',
 
 ];
 ?>
