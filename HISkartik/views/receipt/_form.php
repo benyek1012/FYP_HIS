@@ -7,19 +7,27 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Receipt;
 use yii\helpers\Url;
+use app\models\Cancellation;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Receipt */
 /* @var $form yii\widgets\ActiveForm */
 
 $url = Url::toRoute(['receipt/refresh']);
+
+if($cancellation == true){
+    $urlReceipt = Url::toRoute(['receipt/cancellation', 'rn' => Yii::$app->request->get('rn')]);
+}
+else{
+    $urlReceipt = Url::toRoute(['receipt/create', 'rn' => Yii::$app->request->get('rn')]);
+    $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+}
 ?>
 
 <div class="receipt-form">
 
     <?php  
-        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
-
          // Once bill is generated, can't pay deposit. Only allow bill or refund
         if(!empty($model_bill)  && (new Bill()) -> isGenerated($model_bill->rn))
         {
@@ -88,28 +96,35 @@ $url = Url::toRoute(['receipt/refresh']);
         $names = array_filter($names);
     
         $form = kartik\form\ActiveForm::begin([
-        'id' => 'patient-information-form',
+        'id' => 'receipt-form',
+        'action' => $urlReceipt,
         'type' => 'vertical',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback']],
     ]);      ?>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <?php 
-            if(!empty(Yii::$app->request->get('rn'))){
-        ?>
-            <?= \hail812\adminlte\widgets\Callout::widget([
-                'type' => 'info',
-               'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.(new Patient_admission())  -> get_billable_sum(Yii::$app->request->get('rn')).
-               '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))).
-               '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getUnclaimed(Yii::$app->request->get('rn')))
-            ]) ?>
-            <?php } ?>
+    <?php 
+    if($cancellation == false)
+    {
+    ?>
+        <div class="row">
+            <div class="col-lg-12">
+                <?php 
+                if(!empty(Yii::$app->request->get('rn'))){
+            ?>
+                <?= \hail812\adminlte\widgets\Callout::widget([
+                    'type' => 'info',
+                'body' => '<b>'.Yii::t('app','Billable Total').'</b>: '.(new Patient_admission())  -> get_billable_sum(Yii::$app->request->get('rn')).
+                '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))).
+                '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getUnclaimed(Yii::$app->request->get('rn')))
+                ]) ?>
+                <?php } ?>
+            </div>
         </div>
-    </div>
-
+    <?php
+    }
+    ?>
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
@@ -122,10 +137,10 @@ $url = Url::toRoute(['receipt/refresh']);
     <div class="row">
         <div class="col-sm-6">
             <?php  if(!empty($model_bill)){ ?>
-            <!-- <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?> -->
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
+            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
 
-            <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
+            <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
                 'data' => $receipt,
                 'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
                     'id' => 'receipt_type', 
@@ -135,12 +150,12 @@ $url = Url::toRoute(['receipt/refresh']);
                     'allowClear' => true,
                     'minimumResultsForSearch' => 'Infinity',
                 ],
-            ]); ?>
+            ]); ?> -->
             <?php }else{ ?>
-            <!-- <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'onchange' => 'myfunctionforType(this.value)']) ?> -->
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
+            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
 
-            <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
+            <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
                 'data' => $receipt,
                 'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
                     'id' => 'receipt_type', 
@@ -150,12 +165,14 @@ $url = Url::toRoute(['receipt/refresh']);
                     'allowClear' => true,
                     'minimumResultsForSearch' => 'Infinity',
                 ],
-            ]); ?>
+            ]); ?> -->
             <?php } ?>
         </div>
 
-        <div class="col-sm-6" id="bill_div">
-            <?php  if(!empty($model_bill)){ ?>
+        <div class="col-sm-6" id="bill_div<?php echo $index ?>">
+        <?php if($cancellation == true && !empty($model_bill)){ ?>
+            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model->receipt_content_bill_id, 'readonly' =>true]) ?>
+        <?php } else if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
             <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
@@ -183,12 +200,21 @@ $url = Url::toRoute(['receipt/refresh']);
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'receipt_content_payer_name')->dropDownList($names, 
                         ['prompt'=> Yii::t('app','Please select payer name'),'maxlength' => true]) ?> -->
-            <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $checked_name, 'custom' => true, 'inline' => true]); ?>
+            <?php if($cancellation == false) { ?>
+                <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $checked_name, 'custom' => true, 'inline' => true]); ?>
+            <?php } else { ?>
+                <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $model->receipt_content_payer_name, 'id' => 'payer_name'.$index ,'custom' => true, 'inline' => true]); ?>
+            <?php } ?>
         </div>
 
         <div class="col-sm-6">
+            <?php if($cancellation == false){ ?>
             <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
                     ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'value' => 'cash']) ?>
+            <?php } else { ?>
+                <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
+                    ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'id' => 'payment_method'.$index ,'value' => $model->receipt_content_payment_method]) ?>
+            <?php } ?>
         </div>
 
         <div class="col-sm-6">
@@ -197,20 +223,35 @@ $url = Url::toRoute(['receipt/refresh']);
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number', 
-                ['labelOptions' => [ 'id' => 'receipt_label' ]])->textInput(['maxlength' => true, 
-                    'readonly' => true, 'id' => 'serial_number']) ?>
+                ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['maxlength' => true, 
+                    'readonly' => true, 'id' => 'serial_number'.$index]) ?>
         </div>
+
+        <?php
+        if($cancellation == true)
+        {
+        ?>
+            <div class="col-sm-6">
+                <?php $model_cancellation = new Cancellation();?>
+                <?= $form->field($model_cancellation, 'cancellation_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?>
+                <?= $form->field($model_cancellation, 'table')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_type])->label(false); ?>
+                <!-- <?= $form->field($model_cancellation, 'replacement_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?> -->
+                <?= $form->field($model_cancellation, 'reason')->textarea(['rows' => '6']) ?>
+            </div>
+        <?php
+        }
+        ?>
     </div>
 
     <div class="form-group" id="div_print">
         <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?>
         <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
-            'onclick' => '(function ( $event ) {
-                 document.getElementById("serial_number").readOnly = false; 
-                 document.getElementById("serial_number").value = "";
-                 document.getElementById("serial_number").focus();
-            })();' ]) ?>
-        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
+            'onclick' => "(function () {
+                 document.getElementById('serial_number'+{$index}).readOnly = false; 
+                 document.getElementById('serial_number'+{$index}).value = '';
+                 document.getElementById('serial_number'+{$index}).focus();
+            })();" ]) ?>
+        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}', '{$index}')"]) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
@@ -219,51 +260,58 @@ $url = Url::toRoute(['receipt/refresh']);
 
 <script>
 // hide bill receipt ID
-document.getElementById("bill_div").style.display = "none";
+// document.getElementById("bill_div<?php echo $index ?>").style.display = "block";
 
-function myfunctionforType(val) {
+if(document.getElementById('receipt-receipt_type<?php echo $index?>').value == 'bill'){
+    document.getElementById("bill_div<?php echo $index ?>").style.display = "block";
+}
+else{
+    document.getElementById("bill_div<?php echo $index ?>").style.display = "none";
+}
+
+function myfunctionforType(val, index, cancellation) {
 
     if (val == "refund" || val == "exception") {
-        document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Document Number');?>';
-        document.getElementById("serial_number").value = '';
-        document.getElementById("serial_number").readOnly = false;
+        document.getElementById("receipt_label"+index).innerHTML = '<?php echo Yii::t('app','Document Number');?>';
+        document.getElementById("serial_number"+index).value = '';
+        document.getElementById("serial_number"+index).readOnly = false;
     } else {
-        document.getElementById("receipt_label").innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>';
-        refreshButton('<?php echo $url?>');
+        document.getElementById("receipt_label"+index).innerHTML = '<?php echo Yii::t('app','Receipt Serial Number')?>';
+        refreshButton('<?php echo $url?>', index);
     }
 
     if (val == "bill") {
         document.getElementById("receipt_sum").value =
             '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
         // show bill receipt ID 
-        document.getElementById("bill_div").style.display = "block";
+        document.getElementById("bill_div"+index).style.display = "block";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else if (val == "refund") {
         document.getElementById("receipt_sum").value =
             '<?php echo (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))?>';
         // hide bill receipt ID 
-        document.getElementById("bill_div").style.display = "none";
+        document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else if (val == "deposit") {
         document.getElementById("receipt_sum").value =
             '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
         // hide bill receipt ID 
-        document.getElementById("bill_div").style.display = "none";
+        document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else {
         document.getElementById("receipt_sum").value = 0;
         // hide bill receipt ID 
-        document.getElementById("bill_div").style.display = "none";
+        document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
     }
 }
 
-function refreshButton(url) {
+function refreshButton(url, index) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-            document.getElementById("serial_number").value = this.responseText;
-            document.getElementById("serial_number").readOnly = true;
+            document.getElementById("serial_number"+index).value = this.responseText;
+            document.getElementById("serial_number"+index).readOnly = true;
         }
     }
     xhttp.open("GET", url, true);

@@ -8,6 +8,9 @@ use app\models\New_user;
 use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
+use app\models\Receipt;
+use app\models\Cancellation;
+use app\models\SerialNumber;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ReceiptSearch */
@@ -61,6 +64,78 @@ $this->params['breadcrumbs'][] = $this->title;
        // 'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+                'class' => 'kartik\grid\ExpandRowColumn',
+                'expandTitle' => 'Cancellation',
+                'collapseTitle' => 'Cancellation',
+                'expandAllTitle' => 'Cancellation',
+                'collapseAllTitle' => 'Cancellation',
+                'expandIcon' => false,
+                'value' => function($model, $key, $index, $column) {
+                    return GridView::ROW_COLLAPSED;
+                },
+                'disabled' => function($data) {
+                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+
+                    if(!empty($model_receipt)){
+                        $model_receipt->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
+
+                        $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+
+                        if(!empty($model_cancellation)){
+                            return true;
+                        }
+                        else if(!empty($model_receipt->receipt_type)){
+                            return false;
+                        }
+                    }
+                    // Bill
+                    else{
+                        return true;
+                    }
+                },
+                'detail' => function($data, $index) {
+                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+                    if(!empty($model_receipt)){
+                        $model_receipt->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
+
+                        $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+
+                        if(!empty($model_cancellation)){
+                            return null;
+                        }
+                        else if(!empty($model_receipt->receipt_type)){
+                            if($model_receipt->receipt_type == 'bill'){
+                                $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+                
+                                return Yii::$app->controller->renderPartial('create', [
+                                    'model' => $model_receipt,
+                                    'cancellation' => true,
+                                    'model_bill' => $model_bill,
+                                    'index' => $index,
+                                ]);
+                            }   
+                            else{
+                                return Yii::$app->controller->renderPartial('create', [
+                                    'model' => $model_receipt,
+                                    'cancellation' => true,
+                                    'model_bill' => null,
+                                    'index' => $index,
+                                ]);
+                            }
+                        }
+                    }
+                    // Bill
+                    else{
+                        return null;
+                    }
+
+                    // return Yii::$app->controller->renderPartial('create', [
+                    //     'model' => $model_receipt,
+                    //     'cancellation' => true,
+                    // ]);
+                },
+            ],
             [
                 'attribute' => 'receipt_content_datetime_paid',
                 "format"=>"raw",
@@ -182,8 +257,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
-                    $tag = Html::tag('span', !empty($data['receipt_type']) ?  Yii::t('app','Receipt') :  Yii::t('app','Bill') , [
-                        'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')
+                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+
+                    if(!empty($model_receipt)){
+                        $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+
+                        if(!empty($model_cancellation)){
+                            $type = 'Receipt Cancelled';
+                            $class = 'badge-danger';
+                        }
+                        else if(!empty($model_receipt->receipt_type)){
+                            $type = 'Receipt';
+                            $class = 'badge-success';
+                        }
+                    }
+                    // Bill
+                    else{
+                        $type = 'Bill';
+                        $class = 'badge-primary';
+                    }
+
+                    $tag = Html::tag('span', Yii::t('app', $type) , [
+                        'class' => 'badge ' . $class
                     ]);
                     return $tag;
 

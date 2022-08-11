@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Cancellation;
 use app\models\CancellationSearch;
 use yii\web\Controller;
@@ -71,7 +72,8 @@ class CancellationController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'cancellation_uid' => $model->cancellation_uid]);
+                // return $this->redirect(['view', 'cancellation_uid' => $model->cancellation_uid]);
+                return $this->redirect(['receipt/create', 'rn' => Yii::$app->request->get('rn'), 'cancellation' => $model->cancellation_uid]);
             }
         } else {
             $model->loadDefaultValues();

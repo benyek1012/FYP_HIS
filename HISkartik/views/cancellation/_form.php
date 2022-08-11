@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use GpsLab\Component\Base64UID\Base64UID;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Cancellation */
@@ -10,20 +11,30 @@ use yii\widgets\ActiveForm;
 
 <div class="cancellation-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = kartik\form\ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'cancellation_uid')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?= $form->field($model_cancellation, 'reason')->textarea(['rows' => '6']) ?>
+        </div>
 
-    <?= $form->field($model, 'table')->textInput(['maxlength' => true]) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model_cancellation, 'cancellation_uid')->hiddenInput(['maxlength' => true, 'value' => Base64UID::generate(32)])->label(false); ?>
+        </div>
 
-    <?= $form->field($model, 'reason')->textInput(['maxlength' => true]) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model_cancellation, 'table')->hiddenInput(['maxlength' => true, 'value' => $model_receipt->receipt_type])->label(false); ?>
+        </div>
 
-    <?= $form->field($model, 'replacement_uid')->textInput(['maxlength' => true]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model_cancellation, 'replacement_uid')->hiddenInput(['maxlength' => true, 'value' => $model_receipt->receipt_uid])->label(false); ?>
+        </div> 
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <!-- <div class="form-group">
+        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    </div> -->
+
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>

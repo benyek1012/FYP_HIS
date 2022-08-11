@@ -31,6 +31,7 @@ class Cancellation extends \yii\db\ActiveRecord
             [['cancellation_uid', 'table', 'reason'], 'required'],
             [['cancellation_uid', 'table', 'replacement_uid'], 'string', 'max' => 64],
             [['reason'], 'string', 'max' => 100],
+            [['cancellation_uid'], 'unique'],
         ];
     }
 

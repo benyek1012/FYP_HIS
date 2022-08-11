@@ -5,16 +5,17 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Cancellation */
 
-$this->title = 'Create Cancellation';
-$this->params['breadcrumbs'][] = ['label' => 'Cancellations', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+// $this->title = 'Create Cancellation';
+// $this->params['breadcrumbs'][] = ['label' => 'Cancellations', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cancellation-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'model_cancellation' => $model_cancellation,
+        'model_receipt' => $model_receipt,
     ]) ?>
 
 </div>
