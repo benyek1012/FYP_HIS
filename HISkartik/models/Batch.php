@@ -28,6 +28,7 @@ class Batch extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['file'], 'file', 'extensions' => 'csv', 'checkExtensionByMimeType' => false,],
             [['batch', 'file_import'], 'required'],
             [['batch'], 'integer'],
             [['file_import'], 'string', 'max' => 255],

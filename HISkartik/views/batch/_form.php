@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 
 /* @var $this yii\web\View */
@@ -11,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="batch-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form = kartik\form\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'batch')->hiddenInput(['value' => 1])->label(false); ?>
 
@@ -23,6 +22,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>

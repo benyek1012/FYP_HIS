@@ -22,8 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-    <br/>
+    <br />
     <div id="lookup_form">
+        <!-- If the flash message existed, show it  -->
+        <?php if(Yii::$app->session->hasFlash('msg')):?>
+        <div id="flashError">
+            <?= Yii::$app->session->getFlash('msg') ?>
+        </div>
+        <?php endif; ?>
         <?php
             $model = new Batch();
             echo $this->render('_form', ['model' => $model]);

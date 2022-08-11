@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Batch;
 use app\models\BatchSearch;
+use app\models\Lookup_ward;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -52,7 +53,8 @@ class BatchController extends Controller
 
                 $model->file = UploadedFile::getInstance($model, 'file');
                 $uploadExists = 0;
-                if($model->file){
+           
+                if($model->file) {  
                     $path = 'uploads/';
                     $model->file_import = $path .rand(10, 100). '-' .str_replace('', '-', $model->file->name);
 
@@ -65,30 +67,56 @@ class BatchController extends Controller
                     $uploadExists = 1;
                 }
 
-                if($uploadExists){
+                if($uploadExists && $model->validate()){
                     $model->file->saveAs($model->file_import);
                     $handle = fopen($model->file_import, 'r');
                     if($handle){
                         $model->batch = $random;
-                        if($model->save()){
-                            while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
-                                $bulkInsertArray[] = [
-                                    'ward_uid' => Base64UID::generate(32),
-                                    'ward_code' => $line[0],
-                                    'ward_name' => $line[1],
-                                    'sex' =>   $random,
-                                    'min_age' => 'a',
-                                    'max_age' => 'a',
-                                ];
-                            }
+        
+                        while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
+                            $bulkInsertArray[] = [
+                                'ward_uid' => Base64UID::generate(32),
+                                'ward_code' => $line[0],
+                                'ward_name' => $line[1],
+                                'sex' =>   $random,
+                                'min_age' => 'a',
+                                'max_age' => 'a',
+                            ];
                         }
                     }
                     fclose($handle);
 
+                    $array_all = Lookup_ward::find()
+                                ->select(['ward_code'])
+                                ->column();
+                    
+                    $array_ward_code = array();
+                    foreach($bulkInsertArray as $i) {
+                        array_push($array_ward_code, $i['ward_code']);
+                    }
+
+                    // compare two tables
+                    $result = array_intersect($array_all, $array_ward_code);
+
                     $tableName = 'lookup_ward';
                     $col = [ 'ward_uid', 'ward_code', 'ward_name', 'sex', 'min_age', 'max_age'];
-                    Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();
+                    
+                    if(empty($result))
+                    {
+                        // insert into lookup table
+                        Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();
+                        
+                        // insert into batch table
+                        $model->save();
+                    }
+                    else
+                        Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Validation error! ').' </strong> Duplicate Values !</div>');
 
+                    // delete file folder from PC
+                    unlink(Yii::$app->basePath . '/web/' . $model->file_import);
                 }
 
                 return $this->redirect(['index']);
