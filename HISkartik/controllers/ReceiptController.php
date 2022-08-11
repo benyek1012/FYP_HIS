@@ -88,8 +88,6 @@ class ReceiptController extends Controller
                         $model_serial->running_value =  $model_serial->running_value + 1;
                         $model_serial->save();    
                     }
-                    $model->save();
-                    $model_cancellation->save();
                 }
 
                 $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
@@ -105,6 +103,9 @@ class ReceiptController extends Controller
                         <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
                     }
                 }
+
+                $model->save();
+                $model_cancellation->save();
 				
                 return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                 'rn' => $model->rn));

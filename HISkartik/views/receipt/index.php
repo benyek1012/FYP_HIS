@@ -79,12 +79,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     if(!empty($model_receipt)){
                         $model_receipt->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
-
                         $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+                        $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
 
+                        // Receipt Cancelled
                         if(!empty($model_cancellation)){
                             return true;
                         }
+                        // else if(!empty($model_bill) && $model_receipt->receipt_type != 'bill'){
+                        //     return true;
+                        // }
                         else if(!empty($model_receipt->receipt_type)){
                             return false;
                         }
@@ -93,6 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     else{
                         return true;
                     }
+
                 },
                 'detail' => function($data, $index) {
                     $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);

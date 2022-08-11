@@ -226,11 +226,22 @@ class Bill extends \yii\db\ActiveRecord
 
     // All Deposit
     public function getDeposit($rn){
+        // $sum_deposit = 0.0;
+        // $model_receipt = Receipt::findAll(['rn' => $rn]);
+        // foreach($model_receipt as $model)
+        // {
+        //     if($model->receipt_type == 'deposit')
+        //         $sum_deposit += $model->receipt_content_sum;
+        // }
+        // return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
+        
+
         $sum_deposit = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
         {
-            if($model->receipt_type == 'deposit')
+            $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
+            if($model->receipt_type == 'deposit' && empty($model_cancellation))
                 $sum_deposit += $model->receipt_content_sum;
         }
         return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
@@ -262,11 +273,24 @@ class Bill extends \yii\db\ActiveRecord
 
     // Get all Refund Amount (Negative) 
     public function getRefund($rn){
+        // $sum_refund = 0.0;
+        // $model_receipt = Receipt::findAll(['rn' => $rn]);
+        // foreach($model_receipt as $model)
+        // {
+        //     if($model->receipt_type == 'refund')
+        //         $sum_refund += $model->receipt_content_sum;
+        // }
+        // // var_dump($sum_refund);
+        // // exit();
+
+        // return 0 - $sum_refund;
+
         $sum_refund = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
         {
-            if($model->receipt_type == 'refund')
+            $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
+            if($model->receipt_type == 'refund' && empty($model_cancellation))
                 $sum_refund += $model->receipt_content_sum;
         }
         // var_dump($sum_refund);

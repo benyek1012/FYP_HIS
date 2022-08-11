@@ -269,6 +269,12 @@ else{
     document.getElementById("bill_div<?php echo $index ?>").style.display = "none";
 }
 
+if(document.getElementById('receipt-receipt_type<?php echo $index?>').value == 'refund' || document.getElementById('receipt-receipt_type<?php echo $index?>').value == 'exception'){
+    document.getElementById("receipt_label<?php echo $index?>").innerHTML = '<?php echo Yii::t('app','Document Number');?>';
+    document.getElementById("serial_number<?php echo $index?>").value = '';
+    document.getElementById("serial_number<?php echo $index?>").readOnly = false;
+}
+
 function myfunctionforType(val, index, cancellation) {
 
     if (val == "refund" || val == "exception") {
@@ -281,25 +287,33 @@ function myfunctionforType(val, index, cancellation) {
     }
 
     if (val == "bill") {
-        document.getElementById("receipt_sum").value =
-            '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
+        if(cancellation == false){
+            document.getElementById("receipt_sum").value =
+                '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
+        }
         // show bill receipt ID 
         document.getElementById("bill_div"+index).style.display = "block";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else if (val == "refund") {
-        document.getElementById("receipt_sum").value =
-            '<?php echo (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))?>';
+        if(cancellation == false){
+            document.getElementById("receipt_sum").value =
+                '<?php echo (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))?>';
+        }
         // hide bill receipt ID 
         document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else if (val == "deposit") {
-        document.getElementById("receipt_sum").value =
-            '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
+        if(cancellation == false){
+            document.getElementById("receipt_sum").value =
+                '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
+        }
         // hide bill receipt ID 
         document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else {
-        document.getElementById("receipt_sum").value = 0;
+        if(cancellation == false){
+            document.getElementById("receipt_sum").value = 0;
+        }
         // hide bill receipt ID 
         document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
