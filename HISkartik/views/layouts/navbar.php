@@ -28,6 +28,7 @@ if (Yii::$app->user->isGuest){
 ?>
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
+   
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <?php 
@@ -39,19 +40,31 @@ if (Yii::$app->user->isGuest){
                     </li>'; 
             }
         ?>
-
-        <li class="nav-item dropdown">
+        <div class="dropdown">
             <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
+                <div class="dropdown-content">
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
                 </ul>
-        </li>
-        
-        <li class="nav-item dropdown">
+                </div>
+        </div>
+
+
+        <!-- <div class="dropdown">
+            <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a>
+                <a href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a>
+            </div>
+        </div> -->
+
+        <div class="dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
+            <div class="dropdown-content">
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <li><a href="<?php echo Url::to(['/lookup_general']); ?>" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                 </li>
@@ -63,7 +76,8 @@ if (Yii::$app->user->isGuest){
                 <li><a href="<?php echo Url::to(['/lookup_department']); ?>"
                         class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
             </ul>
-        </li>
+            </div>
+        </div>
 
         <li class="nav-item dropdown">
             <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
@@ -127,31 +141,40 @@ $this->registerJs(
     });"
 );
 
-$this->registerJs('
-const $dropdown = $(".dropdown");
-const $dropdownToggle = $(".dropdown-toggle");
-const $dropdownMenu = $(".dropdown-menu");
-const showClass = "show";
- 
-$(window).on("load resize", function() {
-  if (this.matchMedia("(min-width: 768px)").matches) {
-    $dropdown.hover(
-      function() {
-        const $this = $(this);
-        $this.addClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "true");
-        $this.find($dropdownMenu).addClass(showClass);
-      },
-      function() {
-        const $this = $(this);
-        $this.removeClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "false");
-        $this.find($dropdownMenu).removeClass(showClass);
-      }
-    );
-  } else {
-    $dropdown.off("mouseenter mouseleave");
-  }
-});'
+$this->registerJs(
+    "$('.navbar .dropdown').hover(function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).slideDown(150);
+      }, function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).slideUp(105)
+      });"
 );
+
+// $this->registerJs('
+// const $dropdown = $(".dropdown");
+// const $dropdownToggle = $(".dropdown-toggle");
+// const $dropdownMenu = $(".dropdown-menu");
+// const showClass = "show";
+ 
+// $(window).on("load resize", function() {
+//   if (this.matchMedia("(min-width: 768px)").matches) {
+//     $dropdown.hover(
+//       function() {
+//         const $this = $(this);
+//         $this.addClass(showClass);
+//         $this.find($dropdownToggle).attr("aria-expanded", "true");
+//         $this.find($dropdownMenu).addClass(showClass);
+//       },
+//       function() {
+//         const $this = $(this);
+//         $this.removeClass(showClass);
+//         $this.find($dropdownToggle).attr("aria-expanded", "false");
+//         $this.find($dropdownMenu).removeClass(showClass);
+//       }
+//     );
+//   } else {
+//     $dropdown.off("mouseenter mouseleave");
+//   }
+// });'
+// );
 ?>
+
