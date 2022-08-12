@@ -22,12 +22,19 @@ if (Yii::$app->user->isGuest){
     display: none;
 }
 </style>
+<style type="text/css">
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; 
+ }
+ </style>
 <?php
 }
     
 ?>
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
+
    
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -128,6 +135,8 @@ if (Yii::$app->user->isGuest){
     </ul>
 </nav>
 
+
+
 <?php
 $this->registerJs(
     "$(document).on('click', '.language', function() {
@@ -143,12 +152,17 @@ $this->registerJs(
 
 $this->registerJs(
     "$('.navbar .dropdown').hover(function() {
-        $(this).find('.dropdown-menu').first().stop(true, true).slideDown(150);
+        $(this).find('.dropdown-menu').first().stop(true, true).slideDown(20);
       }, function() {
-        $(this).find('.dropdown-menu').first().stop(true, true).slideUp(105)
+        $(this).find('.dropdown-menu').first().stop(true, true).slideUp(20)
       });"
 );
 
+?>
+
+
+
+<?php
 // $this->registerJs('
 // const $dropdown = $(".dropdown");
 // const $dropdownToggle = $(".dropdown-toggle");
