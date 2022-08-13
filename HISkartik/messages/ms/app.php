@@ -265,6 +265,9 @@ return[
     'Bill is no longer valid' => 'Bil tidak sah lagi',
     'Cancellation' => 'Pembatalan',
     'Cancellation Fail!' => 'Pembatalan Gagal!',
-    
+    'Cancellation Uid' => 'Pembatalan Uid',
+    'Table' => 'Jadual',
+    'Reason' => 'Sebab',
+    'Replacement Uid' => 'Pengganti Uid',
 ];
 ?>

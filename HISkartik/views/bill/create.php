@@ -22,6 +22,7 @@ $this->params['breadcrumbs'][] = Yii::t('app','Create Bill');
         'model' => $model,
         'modelWard' => $modelWard,
         'modelTreatment' => $modelTreatment,
+        'model_cancellation' => $model_cancellation,
     ]) ?>
 
 </div>

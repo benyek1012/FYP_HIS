@@ -41,10 +41,10 @@ class Cancellation extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'cancellation_uid' => 'Cancellation Uid',
-            'table' => 'Table',
-            'reason' => 'Reason',
-            'replacement_uid' => 'Replacement Uid',
+            'cancellation_uid' => Yii::t('app', 'Cancellation Uid'),
+            'table' => Yii::t('app', 'Table'),
+            'reason' => Yii::t('app', 'Reason'),
+            'replacement_uid' => Yii::t('app', 'Replacement Uid'),
         ];
     }
 }
