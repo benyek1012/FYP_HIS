@@ -43,7 +43,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
-                    return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+
+                    if(!empty($model_receipt)){
+                        $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+
+                        foreach($model_cancellation as $model_cancellation){
+                            $model_new_receipt = Receipt::findOne(['receipt_uid' => $model_cancellation->replacement_uid]);
+                        }
+
+                        if(!empty($model_cancellation)){
+                            return $data['rn'];
+                        }
+                        else if(!empty($model_receipt->receipt_type)){
+                            return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                        }
+                    }
+                    // Bill
+                    else{
+                        return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                    }
                 },
                 'label' => Yii::t('app','Registration Number (R/N)')
             ],
