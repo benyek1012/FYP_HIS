@@ -57,6 +57,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <?php if(Yii::$app->session->hasFlash('cancellation_error')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('cancellation_error') ?>
+        </div>
+    <?php endif; ?>
+    
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
@@ -81,6 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function($model, $key, $index, $column) {
                     return GridView::ROW_COLLAPSED;
                 },
+                'detailRowCssClass' => GridView::TYPE_LIGHT,
                 'disabled' => function($data) {
                     $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
 
@@ -88,6 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $model_receipt->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
                         $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
                         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn'), 'deleted' => 0]);
+                        $model_bill_del = Bill::findAll(['rn' => Yii::$app->request->get('rn'), 'deleted' => 1]);
 
                         // Receipt Cancelled
                         if(!empty($model_cancellation)){
@@ -95,6 +103,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         // else if(!empty($model_bill) && $model_receipt->receipt_type != 'bill'){
                         //     return true;
+                        // }
+                        // else if(!empty($model_bill_del) && $model_receipt->receipt_type == 'bill'){
+                        //     foreach($model_bill_del as $bill){
+                        //         if($bill->bill_print_id == $model_receipt->receipt_content_bill_id){
+                        //             return true;
+                        //         }
+                        //     }
                         // }
                         else if(!empty($model_receipt->receipt_type)){
                             return false;
@@ -141,11 +156,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     else{
                         return null;
                     }
-
-                    // return Yii::$app->controller->renderPartial('create', [
-                    //     'model' => $model_receipt,
-                    //     'cancellation' => true,
-                    // ]);
                 },
             ],
             [
@@ -274,23 +284,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     if(!empty($model_receipt)){
                         $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
 
+                        foreach($model_cancellation as $model_cancellation){
+                            $model_new_receipt = Receipt::findOne(['receipt_uid' => $model_cancellation->replacement_uid]);
+                        }
+
                         if(!empty($model_cancellation)){
                             $type = 'Receipt Cancelled';
+                            $title = $model_new_receipt->receipt_serial_number;
                             $class = 'badge-danger';
                         }
                         else if(!empty($model_receipt->receipt_type)){
                             $type = 'Receipt';
+                            $title = '';
                             $class = 'badge-success';
                         }
                     }
                     // Bill
                     else{
                         $type = 'Bill';
+                        $title = '';
                         $class = 'badge-primary';
                     }
 
                     $tag = Html::tag('span', Yii::t('app', $type) , [
-                        'class' => 'badge ' . $class
+                        'class' => 'badge ' . $class,
+                        'title' => $title,
+                        'data-placement' => 'top' ,
+                        'data-toggle'=>'tooltip',
+                        'style' => 'white-space:pre;'
                     ]);
                     return $tag;
 
@@ -311,15 +332,15 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
-    $js = <<<SCRIPT
-    /* To initialize BS3 tooltips set this below */
-    $(function () { 
-       $('body').tooltip({
-        selector: '[data-toggle="tooltip"]',
-            html:true
-        });
+$js = <<<SCRIPT
+/* To initialize BS3 tooltips set this below */
+$(function () { 
+    $('body').tooltip({
+    selector: '[data-toggle="tooltip"]',
+        html:true
     });
+});
 SCRIPT;
-    // Register tooltip/popover initialization javascript
-    $this->registerJs ( $js );
+// Register tooltip/popover initialization javascript
+$this->registerJs ( $js );
 ?>

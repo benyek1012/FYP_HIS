@@ -264,6 +264,7 @@ return[
     ', only 1 bill allowed' => ', hanya 1 bil dibenarkan',
     'Bill is no longer valid' => 'Bil tidak sah lagi',
     'Cancellation' => 'Pembatalan',
-
+    'Cancellation Fail!' => 'Pembatalan Gagal!',
+    
 ];
 ?>

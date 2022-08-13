@@ -110,15 +110,23 @@ class ReceiptController extends Controller
                 return Yii::$app->getResponse()->redirect(array('/receipt/index', 
                 'rn' => $model->rn));
             }
+            else
+            {
+                Yii::$app->session->setFlash('cancellation_error', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>'.Yii::t('app', 'Cancellation Fail!').'</strong>'.'</div>'
+                );
+            }
         }
         else
         {
-            // $model->receipt_content_datetime_paid = date("Y-m-d H:i:s");
-            // $model->receipt_responsible = Yii::$app->user->identity->getId();
+            $model->receipt_content_datetime_paid = date("Y-m-d H:i:s");
+            $model->receipt_responsible = Yii::$app->user->identity->getId();
          
-            // $model->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
+            $model->receipt_serial_number = SerialNumber::getSerialNumber("receipt");
 
-            // $model->loadDefaultValues();
+            $model->loadDefaultValues();
         }
 
         return $this->render('index', [

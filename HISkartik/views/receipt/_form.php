@@ -124,6 +124,13 @@ else{
         </div>
     <?php
     }
+    else{ 
+    ?>
+        <div class="col-sm-6">
+            <h2 class="m-0"><?php echo Yii::t('app','Receipt Cancellation Form') ?></h1>
+        </div>
+    <?php
+    }
     ?>
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
@@ -136,6 +143,7 @@ else{
 
     <div class="row">
         <div class="col-sm-6">
+            <?php if($cancellation == false){ ?>
             <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
             'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
@@ -166,13 +174,14 @@ else{
                     'minimumResultsForSearch' => 'Infinity',
                 ],
             ]); ?> -->
+            <?php }
+            } else{ ?>
+                <?= $form->field($model, 'receipt_type')->textInput(['maxlength' => true, 'readonly' => true, 'id' => 'receipt-receipt_type'.$index]) ?>
             <?php } ?>
         </div>
 
         <div class="col-sm-6" id="bill_div<?php echo $index ?>">
-        <?php if($cancellation == true && !empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model->receipt_content_bill_id, 'readonly' =>true]) ?>
-        <?php } else if(!empty($model_bill)){ ?>
+        <?php if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
             <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
@@ -234,7 +243,7 @@ else{
             <div class="col-sm-6">
                 <?php $model_cancellation = new Cancellation();?>
                 <?= $form->field($model_cancellation, 'cancellation_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?>
-                <?= $form->field($model_cancellation, 'table')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_type])->label(false); ?>
+                <?= $form->field($model_cancellation, 'table')->hiddenInput(['maxlength' => true, 'value' => 'receipt - ' . $model->receipt_type])->label(false); ?>
                 <!-- <?= $form->field($model_cancellation, 'replacement_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?> -->
                 <?= $form->field($model_cancellation, 'reason')->textarea(['rows' => '6']) ?>
             </div>
@@ -260,14 +269,7 @@ else{
 
 <script>
 // hide bill receipt ID
-// document.getElementById("bill_div<?php echo $index ?>").style.display = "block";
-
-if(document.getElementById('receipt-receipt_type<?php echo $index?>').value == 'bill'){
-    document.getElementById("bill_div<?php echo $index ?>").style.display = "block";
-}
-else{
-    document.getElementById("bill_div<?php echo $index ?>").style.display = "none";
-}
+document.getElementById("bill_div<?php echo $index ?>").style.display = "block";
 
 if(document.getElementById('receipt-receipt_type<?php echo $index?>').value == 'refund' || document.getElementById('receipt-receipt_type<?php echo $index?>').value == 'exception'){
     document.getElementById("receipt_label<?php echo $index?>").innerHTML = '<?php echo Yii::t('app','Document Number');?>';
