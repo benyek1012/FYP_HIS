@@ -9,6 +9,7 @@ use app\models\Receipt;
 use app\models\Bill;
 use app\models\Patient_admission;
 use app\models\Patient_information;
+use app\models\Cancellation;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ReceiptSearch */
@@ -145,12 +146,43 @@ $this->params['breadcrumbs'][] = $this->title;
         
             [
                 'attribute' => 'Type',
+                "format"=>"raw",
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                "format"=>"raw",
                 'value'=>function ($data) {
-                    $tag = Html::tag('span', !empty($data['receipt_type']) ?  Yii::t('app','Receipt') :  Yii::t('app','Bill') , [
-                        'class' => 'badge badge-' . (!empty($data['receipt_type']) ? 'success' : 'primary')
+                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+
+                    if(!empty($model_receipt)){
+                        $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+
+                        foreach($model_cancellation as $model_cancellation){
+                            $model_new_receipt = Receipt::findOne(['receipt_uid' => $model_cancellation->replacement_uid]);
+                        }
+
+                        if(!empty($model_cancellation)){
+                            $type = 'Receipt Cancelled';
+                            $title = $model_new_receipt->receipt_serial_number;
+                            $class = 'badge-danger';
+                        }
+                        else if(!empty($model_receipt->receipt_type)){
+                            $type = 'Receipt';
+                            $title = '';
+                            $class = 'badge-success';
+                        }
+                    }
+                    // Bill
+                    else{
+                        $type = 'Bill';
+                        $title = '';
+                        $class = 'badge-primary';
+                    }
+
+                    $tag = Html::tag('span', Yii::t('app', $type) , [
+                        'class' => 'badge ' . $class,
+                        'title' => $title,
+                        'data-placement' => 'top' ,
+                        'data-toggle'=>'tooltip',
+                        'style' => 'white-space:pre;'
                     ]);
                     return $tag;
 

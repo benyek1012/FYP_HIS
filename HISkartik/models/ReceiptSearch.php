@@ -147,7 +147,7 @@ class ReceiptSearch extends Receipt
         $dataProvider = new ArrayDataProvider([
             'allModels' => $query,
             'sort' => $sort,
-            'pagination'=>['pageSize'=>5],
+            // 'pagination'=>['pageSize'=>5],
         ]);
 
          // add conditions that should always apply here
