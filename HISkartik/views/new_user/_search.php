@@ -29,6 +29,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'role_guest_print') ?>
 
+    <?= $form->field($model, 'Case_Note') ?>
+
+    <?= $form->field($model, 'Registration') ?>
+
+    <?= $form->field($model, 'Charge_Sheet') ?>
+
+    <?= $form->field($model, 'Sticker_Label') ?>
+
     <?= $form->field($model, 'retire') ?>
 
     <?php // echo $form->field($model, 'authKey') ?>

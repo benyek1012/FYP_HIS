@@ -17,7 +17,7 @@ class New_UserSearch extends New_user
     public function rules()
     {
         return [
-            [['user_uid', 'username', 'user_password', 'role_cashier', 'role_clerk', 'role_admin', 'role_guest_print', 'authKey'], 'safe'],
+            [['user_uid', 'username', 'user_password', 'role_cashier', 'role_clerk', 'role_admin', 'role_guest_print', 'Case_Note','Registration','Charge_Sheet','Sticker_Label', 'authKey'], 'safe'],
             [['retire'], 'integer'],
         ];
     }
@@ -67,6 +67,10 @@ class New_UserSearch extends New_user
             ->andFilterWhere(['like', 'role_cashier', $this->role_cashier])
             ->andFilterWhere(['like', 'role_clerk', $this->role_clerk])
             ->andFilterWhere(['like', 'role_admin', $this->role_admin])
+            ->andFilterWhere(['like', 'Case_Note', $this->Case_Note])
+            ->andFilterWhere(['like', 'Registration', $this->Registration])
+            ->andFilterWhere(['like', 'Charge_Sheet', $this->Charge_Sheet])
+            ->andFilterWhere(['like', 'Sticker_Label', $this->Sticker_Label])
             ->andFilterWhere(['like', 'authKey', $this->authKey]);
 
         return $dataProvider;
