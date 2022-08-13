@@ -40,7 +40,7 @@ class BatchSearch extends Batch
      */
     public function search($params)
     {
-        $query = Batch::find();
+        $query = Batch::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 

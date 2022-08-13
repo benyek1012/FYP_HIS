@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\models\Batch;
 use app\models\BatchSearch;
 use app\models\Lookup_ward;
+use Codeception\Step\Skip;
+use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -12,6 +14,7 @@ use yii\db\Expression;
 use yii\web\UploadedFile;
 use GpsLab\Component\Base64UID\Base64UID;
 use Yii;
+use yii\db\Query;
 
 /**
  * BatchController implements the CRUD actions for Batch model.
@@ -67,53 +70,107 @@ class BatchController extends Controller
                     $uploadExists = 1;
                 }
 
-                if($uploadExists && $model->validate()){
-                    $model->file->saveAs($model->file_import);
-                    $handle = fopen($model->file_import, 'r');
-                    if($handle){
-                        $model->batch = $random;
-        
-                        while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
-                            $bulkInsertArray[] = [
-                                'ward_uid' => Base64UID::generate(32),
-                                'ward_code' => $line[0],
-                                'ward_name' => $line[1],
-                                'sex' =>   $random,
-                                'min_age' => 'a',
-                                'max_age' => 'a',
-                            ];
-                        }
-                    }
-                    fclose($handle);
+                $table = new Lookup_ward();
+                $tableName = $table->tableName();
+                $col = $table->attributes();
 
-                    $array_all = Lookup_ward::find()
-                                ->select(['ward_code'])
-                                ->column();
+                if($uploadExists && $model->validate()){
+                    try{
+                        $transaction = Yii::$app->db->beginTransaction();
+
+                        $model->file->saveAs($model->file_import);
+                        $handle = fopen($model->file_import, 'r');
+                        if($handle){
+                            $model->batch = $random;
+                            $first_column_csv = fgetcsv($handle);
+
+                            // Check first column of CSV and database column name equal
+                            if(count(array_filter($first_column_csv)) != count($col))
+                            {
+                                Yii::$app->session->setFlash('msg', '
+                                <div class="alert alert-danger alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                <strong>'.Yii::t('app', 'Validation error! ').' </strong> Lost column name !</div>');
+        
+                                return $this->redirect(['index']);
+                            }
+
+                            $result_different_first_row = array_diff($first_column_csv, $col);
                     
-                    $array_ward_code = array();
-                    foreach($bulkInsertArray as $i) {
-                        array_push($array_ward_code, $i['ward_code']);
-                    }
+                            if(!empty($result_different_first_row))
+                            {
+                                Yii::$app->session->setFlash('msg', '
+                                <div class="alert alert-danger alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                <strong>'.Yii::t('app', 'Validation error! ').' </strong> Invalid column name !</div>');
+        
+                                return $this->redirect(['index']);
+                            }
+            
+                            $string_error = "";
+                            // read data lines 
+                            while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
+                                $model_lookup_ward = new Lookup_ward();
+                                $model_lookup_ward->ward_uid = $line[0];
+                                $model_lookup_ward->ward_code = $line[1];
+                                $model_lookup_ward->ward_name = $line[2];
+                                $model_lookup_ward->sex = $line[3];
+                                $model_lookup_ward->min_age = $line[4];
+                                $model_lookup_ward->max_age = $line[5];
+
+                                $valid = $model_lookup_ward->validate();
+                                $array_error = $model_lookup_ward->getFirstErrors();
+                             
+                                foreach($array_error as $error){
+                                    $string_error .= $error."<br/>";
+                                }
+                                
+                                if($valid) 
+                                    $bulkInsertArray[] = [
+                                        'ward_uid' => $line[0],
+                                        'ward_code' => $line[1],
+                                        'ward_name' => $line[2],
+                                        'sex' =>   $line[3],
+                                        'min_age' => $line[4],
+                                        'max_age' => $line[5]
+                                    ];
+                            }
+                        }
+                        fclose($handle);
+
+                        $transaction->commit();
+                    }catch(Exception $error){
+                        print_r($error);
+                        $transaction->rollback();
+                    }      
+                    
+                    // $array_all = Lookup_ward::find()
+                    //             ->select(['ward_code'])
+                    //             ->column();
+                    
+                    // $array_ward_code = array();
+                    // foreach($bulkInsertArray as $i) {
+                    //     array_push($array_ward_code, $i['ward_code']);
+                    // }
 
                     // compare two tables
-                    $result = array_intersect($array_all, $array_ward_code);
+                    // $result = array_intersect($array_all, $array_ward_code);
 
-                    $tableName = 'lookup_ward';
-                    $col = [ 'ward_uid', 'ward_code', 'ward_name', 'sex', 'min_age', 'max_age'];
                     
-                    if(empty($result))
+                    // insert into lookup table
+                    Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();
+                    
+                    // insert into batch table
+                    $model->save();
+
+                    if($string_error != "")
                     {
-                        // insert into lookup table
-                        Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();
-                        
-                        // insert into batch table
-                        $model->save();
-                    }
-                    else
                         Yii::$app->session->setFlash('msg', '
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                        <strong>'.Yii::t('app', 'Validation error! ').' </strong> Duplicate Values !</div>');
+                        <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>'. $string_error.'</div>');
+                    }
+                 
 
                     // delete file folder from PC
                     unlink(Yii::$app->basePath . '/web/' . $model->file_import);
