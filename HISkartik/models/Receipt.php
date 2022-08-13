@@ -47,7 +47,7 @@ class Receipt extends \yii\db\ActiveRecord
             [['receipt_content_description'], 'string', 'max' => 100],
             [['receipt_content_payer_name'], 'string', 'max' => 200],
             [['payment_method_number'], 'string', 'max' => 30],
-            [['receipt_uid'], 'unique'],
+            [['receipt_uid', 'receipt_serial_number'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
     }
