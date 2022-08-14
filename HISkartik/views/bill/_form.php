@@ -7,6 +7,7 @@ use app\models\Patient_admission;
 use app\models\Bill;
 use app\models\Ward;
 use yii\helpers\Url;
+use app\models\Cancellation;
 use yii\bootstrap4\Modal;
 
 /* @var $this yii\web\View */
@@ -363,11 +364,25 @@ if($print_readonly)
 
 $urlStatus = Url::toRoute(['/bill/status']);
 $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->request->get('bill_uid')]);
+
+$cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
+if(!empty($cancellation)){
+    $disabled = true;
+    $linkDisabled = 'disabled-link';
+}
+else{
+    $disabled = false;
+    $linkDisabled = '';
+}
 ?>
 
 <style>
 .textColor {
     color: red;
+}
+
+.disabled-link {
+    pointer-events: none;
 }
 </style>
 
@@ -407,7 +422,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                         <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
                             'data' => $status_code,
-                            'disabled' => $print_readonly,
+                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select status code'), 'id' => 'statusCode',],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -416,7 +431,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly]) ?>
+                        <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -426,6 +441,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                         <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
                                 'data' => $ward_class,
+                                'disabled' => $disabled,
                                 'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass', 'value' => $initial_ward_class],
                                 'pluginOptions' => [
                                     'allowClear' => true,
@@ -437,7 +453,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                         <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
                                 'data' => $ward_class,
-                                'disabled' => $print_readonly,
+                                'disabled' => $print_readonly == false? $disabled : $print_readonly,
                                 'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass',],
                                 'pluginOptions' => [
                                     'allowClear' => true,
@@ -449,7 +465,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost',  
-                                'readonly' => true, 'disabled' => $print_readonly]) ?>
+                                'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -458,7 +474,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                         <?= $form->field($model, 'department_code')->widget(kartik\select2\Select2::classname(), [
                             'data' => $department_code,
-                            'disabled' => $print_readonly,
+                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select department code'), 'id' => 'departmentCode',],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -468,7 +484,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName', 
-                             'readonly' => true, 'disabled' => $print_readonly]) ?>
+                             'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -476,14 +492,14 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                         <!-- <?= $form->field($model, 'is_free')->radioList($free, ['value' => 0, 'custom' => true, 'inline' => true, 'disabled' => $print_readonly]); ?> -->
 
                         <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
-                        <?= $form->field($model, 'is_free')->radioList($free, ['value' => 0, 'custom' => true, 'inline' => true, 'disabled' => $print_readonly]); ?>
+                        <?= $form->field($model, 'is_free')->radioList($free, ['value' => 0, 'custom' => true, 'inline' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]); ?>
                         <?php }else{ ?>
-                        <?= $form->field($model, 'is_free')->radioList($free, ['custom' => true, 'inline' => true, 'disabled' => $print_readonly]); ?>
+                        <?= $form->field($model, 'is_free')->radioList($free, ['custom' => true, 'inline' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]); ?>
                         <?php } ?>
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'collection_center_code')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
+                        <?= $form->field($model, 'collection_center_code')->textInput(['maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -491,7 +507,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
 
                         <?= $form->field($model, 'nurse_responsible')->widget(kartik\select2\Select2::classname(), [
                             'data' => $nurse_responsible,
-                            'disabled' => $print_readonly,
+                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select nurse responsible'), 'id' => 'nurse_responsible',],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -501,14 +517,14 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?>
+                        <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');"]) ?>
+                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');", 'disabled' => $disabled]) ?>
                 <?php }else{ ?>
-                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');"]) ?>
+                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');", 'disabled' => $disabled]) ?>
                 <?php } ?>
             </div>
             <!-- /.card-body -->
@@ -681,7 +697,7 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                 <?php 
                 if( !$isPrinted ){
             ?>
-                <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
                 <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
@@ -689,9 +705,9 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
                         document.getElementById("serial_number").readOnly = false; 
                         document.getElementById("serial_number").value = "";
                         document.getElementById("serial_number").focus();
-                    })();' ]) ?>
+                    })();' , 'disabled' => $disabled]) ?>
                 <?= Html::button(Yii::t('app', 'Refresh'), 
-                        ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')"]) ?>
+                        ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')", 'disabled' => $disabled]) ?>
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
                     <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?>
@@ -730,7 +746,11 @@ $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->reque
             </div>
             <!-- /.card-header -->
             <div class="card-body" id="cancellation-div">
-                <?= $this->render('/cancellation/_form', ['model_cancellation' => $model_cancellation]) ?>
+                <?= $this->render('/cancellation/create', [
+                    'model_admission' => null,
+                    'model_cancellation' => $model_cancellation,
+                    'type' => 'bill',
+                ]) ?>
             </div>
             <!-- /.card-body -->
         </div>

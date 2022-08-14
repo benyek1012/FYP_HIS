@@ -8,13 +8,20 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model app\models\Cancellation */
 /* @var $form yii\widgets\ActiveForm */
+
+if($type == 'bill'){
+    $url = Url::toRoute(['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')]);
+}
+else if($type == 'admission'){
+    $url = Url::toRoute(['/patient_admission/cancellation', 'rn' => $model_admission->rn, 'type' => $model_admission->type, 'id' => $model_admission->patient_uid]);
+}
 ?>
 
 <div class="cancellation-form">
 
     <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'cancellation-form',
-        'action' => Url::toRoute(['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']),
+        'action' => $url,
         'type' => 'vertical',
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",

@@ -48,10 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     if(!empty($model_receipt)){
                         $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
 
-                        foreach($model_cancellation as $model_cancellation){
-                            $model_new_receipt = Receipt::findOne(['receipt_uid' => $model_cancellation->replacement_uid]);
-                        }
-
                         if(!empty($model_cancellation)){
                             return $data['rn'];
                         }

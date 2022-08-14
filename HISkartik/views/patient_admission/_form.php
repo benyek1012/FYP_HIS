@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Cancellation;
 use yii\bootstrap4\Html;
 use kartik\datetime\DateTimePicker;
 use yii\bootstrap4\Modal;
@@ -9,6 +10,13 @@ use yii\helpers\Url;
 /* @var $model app\models\Patient_admission */
 /* @var $form yii\widgets\ActiveForm */
 ?>
+
+<style>
+.disabled-link {
+    pointer-events: none;
+}
+</style>
+
 
 <div class="patient-admission-form">
     <!-- If the flash message existed, show it  -->
@@ -87,6 +95,15 @@ use yii\helpers\Url;
 
     // <?php kartik\form\ActiveForm::end();
 
+    $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
+    if(!empty($cancellation)){
+        $disabled = true;
+        $linkDisabled = 'disabled-link';
+    }
+    else{
+        $disabled = false;
+        $linkDisabled = '';
+    }
 
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
@@ -117,7 +134,7 @@ use yii\helpers\Url;
 
             <?= $form->field($model, 'initial_ward_code')->widget(kartik\select2\Select2::classname(), [
                 'data' => $ward_code,
-                'options' => ['placeholder' => Yii::t('app','Please select ward code'), 'id' => 'initial_ward_code',],
+                'options' => ['placeholder' => Yii::t('app','Please select ward code'), 'id' => 'initial_ward_code', 'disabled' => $disabled],
                 'pluginOptions' => [
                     'allowClear' => true,
                     // 'tags' => true,
@@ -132,7 +149,7 @@ use yii\helpers\Url;
 
             <?= $form->field($model, 'initial_ward_class')->widget(kartik\select2\Select2::classname(), [
                 'data' => $ward_class,
-                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'initial_ward_class',],
+                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'initial_ward_class', 'disabled' => $disabled],
                 'pluginOptions' => [
                     'allowClear' => true,
                     // 'tags' => true,
@@ -142,7 +159,7 @@ use yii\helpers\Url;
 
         <div class="col-sm-6">
             <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(),[
-            'options' => ['class' => 'entry_datetime'],
+            'options' => ['class' => 'entry_datetime', 'disabled' => $disabled],
             'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
             'pluginEvents' => [
                 
@@ -150,25 +167,25 @@ use yii\helpers\Url;
         </div>
 
         <div class="col-sm-6">
-           <?= $form->field($model, 'reference')->textInput(['maxlength' => true]) ?> 
+           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?> 
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'medical_legal_code')->textInput() ?>
+            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'reminder_given')->textInput(['disabled' => true, ]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
     </div>
 
@@ -179,8 +196,8 @@ use yii\helpers\Url;
             echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
         }
         ?>
-        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success']) ?>
-        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
+        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
+        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update']), 'disabled' => $disabled])?>
         <?php
             Modal::begin([
                // 'title'=>'<h4>Transfer</h4>',
@@ -200,7 +217,7 @@ use yii\helpers\Url;
             ?>
              <div id='modalContent'>
             <?= $form->field($modelpatient, 'nric')->textInput([ 'autocomplete' =>'off', 'value' => ""])->label(Yii::t('app','Transfer To New Patient'));?>
-            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'Update', 'value' => 'Update'])?>
+            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'Update', 'value' => 'Update', 'disabled' => $disabled])?>
             </div>
             <?php
             kartik\form\ActiveForm::end();
@@ -213,10 +230,10 @@ use yii\helpers\Url;
 
 </div>
 <div>
-    <?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-    <?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-    <?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
-    <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
+    <?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
+    <?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
+    <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
 </div>
 <br/>
 

@@ -4,6 +4,7 @@ namespace app\controllers;
 require 'vendor/autoload.php';
 
 use Yii;
+use app\models\Cancellation;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
@@ -42,6 +43,50 @@ class Patient_admissionController extends Controller
                 ],
             ]
         );
+    }
+
+    public function actionCancellation($rn)
+    {
+        $model_cancellation = new Cancellation();
+
+        $rows = (new \yii\db\Query())
+            ->select(['rn'])
+            ->from('patient_admission')
+            ->where(['type' => Yii::$app->request->get('type')])
+            ->all();
+            $SID = "1" + count($rows);
+    
+        if(Yii::$app->request->get('type') == 'Normal')
+            $new_rn = date('Y')."/".sprintf('%06d', $SID);
+        else $new_rn = date('Y')."/9".sprintf('%05d', $SID);
+        
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+
+        $model = new Patient_admission();
+
+        $model->rn = $new_rn;
+        $model->patient_uid = Yii::$app->request->get('id');
+        $model->entry_datetime = $date->format('Y-m-d H:i:s');
+        $model->type = Yii::$app->request->get('type');
+        $model->loadDefaultValues();
+        $model->initial_ward_class = "UNKNOWN";
+        $model->initial_ward_code = "UNKNOWN";
+        $model->reminder_given = 0;
+        $model->save();
+
+        if($this->request->isPost && $model_cancellation->load($this->request->post())){
+            $model_cancellation->cancellation_uid = $rn;
+            $model_cancellation->table = 'admission';
+            $model_cancellation->replacement_uid = $new_rn;
+
+            if($model_cancellation->validate() && $model_cancellation->save()){
+                // return Yii::$app->getResponse()->redirect(array('/site/admission', 
+                //     'id' => Yii::$app->request->get('id'))); 
+                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                    'rn' => $model->rn));  
+            }
+        }
     }
 
     public function actionPatient()

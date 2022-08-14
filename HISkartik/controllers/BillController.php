@@ -175,8 +175,13 @@ class BillController extends Controller
                 }
 
                 $model_cancellation = Cancellation::findOne(['replacement_uid' => null]);
-                $model_cancellation->replacement_uid = $model->bill_uid;
-                $model_cancellation->save();
+                $model_bill_cancel = Bill::findOne(['bill_uid' => $model_cancellation->cancellation_uid]);
+                if(!empty($model_cancellation)){
+                    if($model_bill_cancel->rn == $model->rn){
+                        $model_cancellation->replacement_uid = $model->bill_uid;
+                        $model_cancellation->save();
+                    }
+                }
                 
                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
                     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'));
