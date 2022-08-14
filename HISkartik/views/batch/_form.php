@@ -16,8 +16,6 @@ use yii\helpers\Html;
 
     <?= $form->field($model, 'file')->fileInput()->label(Yii::t('app','File')); ?>
 
-   
-
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     </div>
