@@ -122,7 +122,7 @@ class SiteController extends Controller
                 $model_patient->nric = "";
                 $model_patient->first_reg_date = date("Y-m-d");
                 $model_patient->nationality = "";
-                $model_patient->name = "";
+                $model_patient->name = NULL;
                 $model_patient->sex = "";
                 $model_patient->race = "";
                 $model_patient->phone_number = "";

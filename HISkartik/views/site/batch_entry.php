@@ -25,27 +25,62 @@ $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
         </div>
     <?php endif; ?>
 
-    <?php
-     $dataProvider1 = new ActiveDataProvider([
-        'query'=> Patient_admission::find()
-        ->orderBy(['entry_datetime' => SORT_DESC,'rn' => SORT_DESC]),
-        'pagination'=>['pageSize'=>5],
-    ]);
+    <a name="admission">
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    <h3 class="card-title"><?php echo Yii::t('app','Patient Admission Summary');?></h3>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                    <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
     
-    echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+                <?php
+                 $dataProvider1 = new ActiveDataProvider([
+                        'query'=> Patient_admission::find()
+                         ->orderBy(['entry_datetime' => SORT_DESC,'rn' => SORT_DESC]),
+                         'pagination'=>['pageSize'=>5],
+                ]);
+    
+                echo $this->render('/patient_admission/index', ['dataProvider'=>$dataProvider1]);
+                ?>
+               </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+    </a>
 
-    echo "<br/>";
-    $form = kartik\form\ActiveForm::begin([
-            'id' => 'patient-admission-form',
-            'type' => 'vertical',
-            'fieldConfig' => [
+
+
+    <a name="batch_entry">
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    <h3 class="card-title"><?php echo Yii::t('app','Bath Entry');?></h3>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                    <!-- /.card-tools -->
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                <?php
+                echo "<br/>";
+                $form = kartik\form\ActiveForm::begin([
+                'id' => 'patient-admission-form',
+                'type' => 'vertical',
+                'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
-            ],
-        ]); 
-    ?>
+                ],
+                ]); 
+        ?>
       
-
         <div class="col-sm-6">
             <?= $form->field($model, 'type')->dropDownList($type, ['prompt'=>'Please select admission type','maxlength' => true]) ?>
         </div>
@@ -57,13 +92,18 @@ $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
         <div class="col-sm-6">
             <?= $form->field($model, 'endrn')->textInput(['value' => 1])->label(yii::t('app',"End RN :")) ?>
         </div>
-    </div>
 
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app','Submit'), ['class' => 'btn btn-success']) ?>
-    </div>
+        <div class="form-group">
+            <?= Html::submitButton(Yii::t('app','Submit'), ['class' => 'btn btn-success']) ?>
+        </div>
 
-    <?php kartik\form\ActiveForm::end(); ?>
+        <?php kartik\form\ActiveForm::end(); ?>
+
+        </div>
+                <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    </a>
 
 </div>
 <br/>
