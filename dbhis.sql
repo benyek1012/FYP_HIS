@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 14, 2022 at 10:18 AM
 -- Server version: 10.4.19-MariaDB
+-- Generation Time: Aug 14, 2022 at 05:24 PM
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -114,7 +114,8 @@ CREATE TABLE `cancellation` (
   `cancellation_uid` varchar(64) NOT NULL,
   `table` varchar(64) NOT NULL,
   `reason` varchar(100) NOT NULL,
-  `replacement_uid` varchar(64) DEFAULT NULL
+  `replacement_uid` varchar(64) DEFAULT NULL,
+  `responsible_uid` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
