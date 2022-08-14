@@ -135,7 +135,7 @@ class SiteController extends Controller
                 $model_patient->save();
 
                 for($i = $model->startrn; $i <= $model->endrn; $i++){
-                    if($i != 0){
+                    if($model->startrn != "" && $model->endrn != ""){
                         if($model->type == 'Normal')
                         $rn = date('Y')."/".sprintf('%06d', $i);
                         else $rn = date('Y')."/9".sprintf('%05d', $i);
@@ -159,6 +159,15 @@ class SiteController extends Controller
                             // var_dump($model->errors);
                             // exit;
                         }  
+                    }
+                    else{
+                        $flag = 1;
+                        Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Validation error! ').' </strong>'
+                            .Yii::t('app', ' This range cannot be empty').' !</div>'
+                    );
                     }
                 }
                 if($flag == 0)

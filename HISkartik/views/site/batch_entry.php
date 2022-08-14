@@ -51,11 +51,11 @@ $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'startrn')->textInput(['value' => 0])->label(yii::t('app',"Start RN :")) ?>
+            <?= $form->field($model, 'startrn')->textInput(['value' => 1])->label(yii::t('app',"Start RN :")) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'endrn')->textInput(['value' => 0])->label(yii::t('app',"End RN :")) ?>
+            <?= $form->field($model, 'endrn')->textInput(['value' => 1])->label(yii::t('app',"End RN :")) ?>
         </div>
     </div>
 

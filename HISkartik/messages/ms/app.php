@@ -274,6 +274,7 @@ return[
     'End RN :' => 'Tamat RN :',
     'Duplicate error! ' => 'Ralat pendua! ',
     ' This range is already existed' => 'Julat ini sudah wujud',
+    ' This range cannot be empty' => ' Julat ini tidak boleh kosong',
 
 ];
 ?>
