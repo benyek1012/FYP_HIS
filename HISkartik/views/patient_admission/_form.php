@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Patient_admission;
 use yii\bootstrap4\Html;
 use kartik\datetime\DateTimePicker;
 use yii\bootstrap4\Modal;
@@ -34,6 +35,21 @@ use yii\helpers\Url;
     foreach($rows as $row){
       $ward_code[$row['ward_code']] = $row['ward_code'] . " - " . $row['ward_name'];
     }  
+
+    $row_receipt = (new \yii\db\Query())
+    ->from('patient_admission')
+    ->where(['rn' => Yii::$app->request->get('rn')])
+    ->one();
+
+  
+
+    $isdeposited = false;
+
+   
+    if(!empty($row_receipt))
+    {
+        $isdeposited = (new Patient_admission()) -> isdeposited($row_receipt['rn']);
+    }
 
     // $rows_patient_information = (new \yii\db\Query())
     // ->select('*')
@@ -179,8 +195,15 @@ use yii\helpers\Url;
             echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
         }
         ?>
+          <?php 
+if($isdeposited){
+   
+                ?>
+                <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
+                <?php }else{  ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success']) ?>
         <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
+        <?php } ?>
         <?php
             Modal::begin([
                // 'title'=>'<h4>Transfer</h4>',

@@ -138,4 +138,13 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Patient_information::className(), ['patient_uid' => 'patient_uid']);
     }
+
+    // Check whether deposit is generated
+    public function isdeposited($rn){
+        $row_receipt = Receipt::findOne(['rn' => $rn, 'receipt_type' => "deposit"]);
+        if(!empty($row_receipt))
+            return !empty($row_receipt['receipt_serial_number']) ? $row_receipt['receipt_serial_number'] : false;
+    }
+
+  
 }
