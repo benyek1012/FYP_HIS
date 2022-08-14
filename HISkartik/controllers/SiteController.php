@@ -16,6 +16,8 @@ use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Json;
+use app\models\Patient_admission;
+use GpsLab\Component\Base64UID\Base64UID;
 
 class SiteController extends Controller
 {
@@ -109,6 +111,70 @@ class SiteController extends Controller
      *
      * @return string
      */
+    public function actionBatch_entry()
+    {        
+        $model = new Patient_admission();
+        $flag = 0;
+        if ($this->request->isPost){
+            if ($model->load($this->request->post())){
+                $model_patient = new Patient_information();
+                $model_patient->patient_uid = Base64UID::generate(32);
+                $model_patient->nric = "";
+                $model_patient->first_reg_date = date("Y-m-d");
+                $model_patient->nationality = "";
+                $model_patient->name = "";
+                $model_patient->sex = "";
+                $model_patient->race = "";
+                $model_patient->phone_number = "";
+                $model_patient->email = "";
+                $model_patient->address1 = "";
+                $model_patient->address2 = "";
+                $model_patient->address3 = "";
+                $model_patient->job = "";
+                $model_patient->DOB = "";
+                $model_patient->save();
+
+                for($i = $model->startrn; $i <= $model->endrn; $i++){
+                    if($i != 0){
+                        if($model->type == 'Normal')
+                        $rn = date('Y')."/".sprintf('%06d', $i);
+                        else $rn = date('Y')."/9".sprintf('%05d', $i);
+                        $model_admission = Patient_admission::findOne(['rn' => $rn]);
+                        if(empty($model_admission)){
+                            $flag = 1;
+                            // print_r($rn);
+                            $admission = new Patient_admission();
+                            $date = new \DateTime();
+                            $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                            $admission->rn = $rn;
+                            $admission->patient_uid = $model_patient->patient_uid;
+                            $admission->entry_datetime = $date->format('Y-m-d H:i:s');
+                            $admission->type = $model->type;
+    
+                            $admission->initial_ward_class = "UNKNOWN";
+                            $admission->initial_ward_code = "UNKNOWN";
+                            $admission->reminder_given = 0;
+                            $admission->save();
+                            // $model->validate();
+                            // var_dump($model->errors);
+                            // exit;
+                        }  
+                    }
+                }
+                if($flag == 0)
+                Yii::$app->session->setFlash('msg', '
+                <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                <strong>'.Yii::t('app', 'Duplicate error! ').' </strong>'
+                    .Yii::t('app', ' This range is already existed').' !</div>'
+            );
+                // exit;
+            }
+        }
+        return $this->render('batch_entry', [
+            'model' => $model,
+        ]);
+    } 
     public function actionAdmission()
     {
      //   $this->InitSQL();

@@ -269,5 +269,11 @@ return[
     'Table' => 'Jadual',
     'Reason' => 'Sebab',
     'Replacement Uid' => 'Pengganti Uid',
+    'Submit' => 'Hantar',
+    'Start RN :' => 'Mulakan RN :',
+    'End RN :' => 'Tamat RN :',
+    'Duplicate error! ' => 'Ralat pendua! ',
+    ' This range is already existed' => 'Julat ini sudah wujud',
+
 ];
 ?>
