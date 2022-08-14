@@ -276,7 +276,7 @@ return[
     ' This range is already existed' => 'Julat ini sudah wujud',
     ' This range cannot be empty' => ' Julat ini tidak boleh kosong',
     ' Start RN must be greater than end RN' => ' Mulakan RN mesti lebih besar daripada akhir RN',
-    
+    'Responsible Uid' => 'Bertanggungjawab Uid',
 
 ];
 ?>

@@ -64,7 +64,8 @@ class ReceiptController extends Controller
                 $date->setTimezone(new \DateTimeZone('+0800')); //GMT
                 $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
             }
-
+            
+            $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
             $model_cancellation->replacement_uid = $model->receipt_uid;
             
             if($model->validate() && $model_cancellation->validate()){

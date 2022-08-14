@@ -52,6 +52,7 @@ class Patient_admissionController extends Controller
         if($this->request->isPost && $model_cancellation->load($this->request->post())){
             $model_cancellation->cancellation_uid = $rn;
             $model_cancellation->table = 'admission';
+            $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
             
             if($model_cancellation->validate()){
                 $rows = (new \yii\db\Query())
@@ -80,8 +81,6 @@ class Patient_admissionController extends Controller
                 $model->reminder_given = 0;
                 $model->save();
                 
-                // $model_cancellation->cancellation_uid = $rn;
-                // $model_cancellation->table = 'admission';
                 $model_cancellation->replacement_uid = $new_rn;
 
                 $model_cancellation->save();

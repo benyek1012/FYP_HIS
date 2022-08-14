@@ -489,6 +489,7 @@ class BillController extends Controller
         if($this->request->isPost && $model_cancellation->load($this->request->post())){
             $model_cancellation->cancellation_uid = $model->bill_uid;
             $model_cancellation->table = 'bill';
+            $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
 
             if($model_cancellation->validate() && $model_cancellation->save()){
                 return Yii::$app->getResponse()->redirect(array('/bill/create', 
