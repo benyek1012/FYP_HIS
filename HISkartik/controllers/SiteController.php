@@ -134,31 +134,34 @@ class SiteController extends Controller
                 $model_patient->DOB = "";
                 $model_patient->save();
 
-                for($i = $model->startrn; $i <= $model->endrn; $i++){
-                    if($model->startrn != "" && $model->endrn != ""){
-                        if($model->type == 'Normal')
-                        $rn = date('Y')."/".sprintf('%06d', $i);
-                        else $rn = date('Y')."/9".sprintf('%05d', $i);
-                        $model_admission = Patient_admission::findOne(['rn' => $rn]);
-                        if(empty($model_admission)){
-                            $flag = 1;
-                            // print_r($rn);
-                            $admission = new Patient_admission();
-                            $date = new \DateTime();
-                            $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                            $admission->rn = $rn;
-                            $admission->patient_uid = $model_patient->patient_uid;
-                            $admission->entry_datetime = $date->format('Y-m-d H:i:s');
-                            $admission->type = $model->type;
-    
-                            $admission->initial_ward_class = "UNKNOWN";
-                            $admission->initial_ward_code = "UNKNOWN";
-                            $admission->reminder_given = 0;
-                            $admission->save();
-                            // $model->validate();
-                            // var_dump($model->errors);
-                            // exit;
-                        }  
+
+                if($model->startrn != "" && $model->endrn != ""){
+                    if($model->endrn >= $model->startrn){
+                        for($i = $model->startrn; $i <= $model->endrn; $i++){
+                            if($model->type == 'Normal')
+                            $rn = date('Y')."/".sprintf('%06d', $i);
+                            else $rn = date('Y')."/9".sprintf('%05d', $i);
+                            $model_admission = Patient_admission::findOne(['rn' => $rn]);
+                            if(empty($model_admission)){
+                                $flag = 1;
+                                // print_r($rn);
+                                $admission = new Patient_admission();
+                                $date = new \DateTime();
+                                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                                $admission->rn = $rn;
+                                $admission->patient_uid = $model_patient->patient_uid;
+                                $admission->entry_datetime = $date->format('Y-m-d H:i:s');
+                                $admission->type = $model->type;
+        
+                                $admission->initial_ward_class = "UNKNOWN";
+                                $admission->initial_ward_code = "UNKNOWN";
+                                $admission->reminder_given = 0;
+                                $admission->save();
+                                // $model->validate();
+                                // var_dump($model->errors);
+                                // exit;
+                            }
+                        }
                     }
                     else{
                         $flag = 1;
@@ -166,17 +169,25 @@ class SiteController extends Controller
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                         <strong>'.Yii::t('app', 'Validation error! ').' </strong>'
-                            .Yii::t('app', ' This range cannot be empty').' !</div>'
-                    );
+                            .Yii::t('app', ' Start RN must be greater than end RN').' !</div>'
+                        );
                     }
                 }
+                else{
+                    $flag = 1;
+                    Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>'.Yii::t('app', 'Validation error! ').' </strong>'
+                        .Yii::t('app', ' This range cannot be empty').' !</div>');
+                }
+                
                 if($flag == 0)
                 Yii::$app->session->setFlash('msg', '
                 <div class="alert alert-danger alert-dismissable">
                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                 <strong>'.Yii::t('app', 'Duplicate error! ').' </strong>'
-                    .Yii::t('app', ' This range is already existed').' !</div>'
-            );
+                    .Yii::t('app', ' This range is already existed').' !</div>');
                 // exit;
             }
         }
