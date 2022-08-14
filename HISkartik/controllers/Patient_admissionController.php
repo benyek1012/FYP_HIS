@@ -49,43 +49,68 @@ class Patient_admissionController extends Controller
     {
         $model_cancellation = new Cancellation();
 
-        $rows = (new \yii\db\Query())
-            ->select(['rn'])
-            ->from('patient_admission')
-            ->where(['type' => Yii::$app->request->get('type')])
-            ->all();
-            $SID = "1" + count($rows);
-    
-        if(Yii::$app->request->get('type') == 'Normal')
-            $new_rn = date('Y')."/".sprintf('%06d', $SID);
-        else $new_rn = date('Y')."/9".sprintf('%05d', $SID);
-        
-        $date = new \DateTime();
-        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-
-        $model = new Patient_admission();
-
-        $model->rn = $new_rn;
-        $model->patient_uid = Yii::$app->request->get('id');
-        $model->entry_datetime = $date->format('Y-m-d H:i:s');
-        $model->type = Yii::$app->request->get('type');
-        $model->loadDefaultValues();
-        $model->initial_ward_class = "UNKNOWN";
-        $model->initial_ward_code = "UNKNOWN";
-        $model->reminder_given = 0;
-        $model->save();
-
         if($this->request->isPost && $model_cancellation->load($this->request->post())){
             $model_cancellation->cancellation_uid = $rn;
             $model_cancellation->table = 'admission';
-            $model_cancellation->replacement_uid = $new_rn;
+            
+            if($model_cancellation->validate()){
+                $rows = (new \yii\db\Query())
+                    ->select(['rn'])
+                    ->from('patient_admission')
+                    ->where(['type' => Yii::$app->request->get('type')])
+                    ->all();
+                    $SID = "1" + count($rows);
+        
+                if(Yii::$app->request->get('type') == 'Normal')
+                    $new_rn = date('Y')."/".sprintf('%06d', $SID);
+                else $new_rn = date('Y')."/9".sprintf('%05d', $SID);
+                
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
 
-            if($model_cancellation->validate() && $model_cancellation->save()){
+                $model = new Patient_admission();
+
+                $model->rn = $new_rn;
+                $model->patient_uid = Yii::$app->request->get('id');
+                $model->entry_datetime = $date->format('Y-m-d H:i:s');
+                $model->type = Yii::$app->request->get('type');
+                $model->loadDefaultValues();
+                $model->initial_ward_class = "UNKNOWN";
+                $model->initial_ward_code = "UNKNOWN";
+                $model->reminder_given = 0;
+                $model->save();
+                
+                // $model_cancellation->cancellation_uid = $rn;
+                // $model_cancellation->table = 'admission';
+                $model_cancellation->replacement_uid = $new_rn;
+
+                $model_cancellation->save();
+
                 // return Yii::$app->getResponse()->redirect(array('/site/admission', 
                 //     'id' => Yii::$app->request->get('id'))); 
                 return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
                     'rn' => $model->rn));  
             }
+            else{
+                Yii::$app->session->setFlash('cancellation_error', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>'.Yii::t('app', 'Cancellation Fail!').'</strong>'.'</div>'
+                );
+
+                return Yii::$app->getResponse()->redirect(array('/site/admission', 
+                    'id' => Yii::$app->request->get('id'))); 
+            }
+        }
+        else{
+            Yii::$app->session->setFlash('cancellation_error', '
+                <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                <strong>'.Yii::t('app', 'Cancellation Fail!').'</strong>'.'</div>'
+            );
+
+            return Yii::$app->getResponse()->redirect(array('/site/admission', 
+                'id' => Yii::$app->request->get('id'))); 
         }
     }
 

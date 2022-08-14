@@ -15,6 +15,12 @@ use yii\helpers\Url;
 ?>
 <div class="patient-admission-index">
 
+    <?php if(Yii::$app->session->hasFlash('cancellation_error')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('cancellation_error') ?>
+        </div>
+    <?php endif; ?>
+
     <!-- This is the gridview that shows patient admission summary-->
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,

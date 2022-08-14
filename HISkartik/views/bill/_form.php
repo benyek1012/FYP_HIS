@@ -653,7 +653,7 @@ else{
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();"]) ?>
+                <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();", 'disabled' => $disabled]) ?>
                 <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
                 <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
