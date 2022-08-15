@@ -18,6 +18,7 @@ use yii\helpers\Url;
 use yii\helpers\Json;
 use app\models\Patient_admission;
 use GpsLab\Component\Base64UID\Base64UID;
+use app\models\New_user;
 
 class SiteController extends Controller
 {
@@ -102,8 +103,18 @@ class SiteController extends Controller
     public function actionIndex()
     {        
         if (Yii::$app->user->isGuest)
-        $this->redirect (Url::to(['/site/login']));
-        else return $this->render('index');
+            $this->redirect(Url::to(['/site/login']));
+        else 
+        {
+            if((new New_user())->isAdmin())
+                echo $this->render('admin_dashboard');
+            else if((new New_user())->isCashier())
+                $this->redirect(Url::to(['/site/admission']));
+            else if((new New_user())->isClerk())
+                echo $this->render('clerk_dashboard');
+            else if((new New_user())->isGuestPrinter())
+                echo $this->render('guest_printer_dashboard');
+        }
     }
 
     /**

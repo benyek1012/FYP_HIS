@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+-- Generation Time: Aug 15, 2022 at 06:09 AM
 -- Server version: 10.4.19-MariaDB
--- Generation Time: Aug 14, 2022 at 05:24 PM
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -425,6 +425,8 @@ INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`,
 ('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 0,NULL,NULL,NULL,NULL, 0, '12345b'),
 ('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 0,NULL,NULL,NULL,NULL, 0, '12345a'),
 ('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0,NULL,NULL,NULL,NULL, 0, '12345c');
+('iwJ4pQTEP0chTyfqzfr8KvpSo7XlMQ3S', 'guest_print1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 0, 1,NULL,NULL,NULL,NULL, 0, 'pyLoI1aXGp7sAq72FW-D5u9RxSxub71p');
+
 
 -- --------------------------------------------------------
 

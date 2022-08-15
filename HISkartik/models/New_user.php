@@ -129,6 +129,13 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
         else return false;
     }
 
+    public function isGuestPrinter(){
+        $user = New_user::findOne([Yii::$app->user->identity->getId()]);
+        if($user->role_guest_print == '1')
+            return true;
+        else return false;
+    }
+
     public function isClerkorAdmin(){
         $user = New_user::findOne([Yii::$app->user->identity->getId()]);
         if($user->role_clerk == '1' || $user->role_admin == '1')
