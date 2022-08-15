@@ -46,13 +46,17 @@ class BatchController extends Controller
      */
     public function actionIndex()
     {
+        $model = new Batch();
         $searchModel = new BatchSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $model = new Batch();
-
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
+                
+                $table = new Lookup_ward();
+                $tableName = $table->tableName();
+                $col = $table->attributes();
+                $string_error = "";
 
                 $model->file = UploadedFile::getInstance($model, 'file');
                 $uploadExists = 0;
@@ -66,13 +70,8 @@ class BatchController extends Controller
                     $random =  $random_date.rand(10, 100);
                     $userId = Yii::$app->user->identity->id;
                     $now = new Expression('NOW()');
-
                     $uploadExists = 1;
                 }
-
-                $table = new Lookup_ward();
-                $tableName = $table->tableName();
-                $col = $table->attributes();
 
                 if($uploadExists && $model->validate()){
                     try{
@@ -107,7 +106,6 @@ class BatchController extends Controller
                                 return $this->redirect(['index']);
                             }
             
-                            $string_error = "";
                             // read data lines 
                             while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
                                 $model_lookup_ward = new Lookup_ward();
@@ -132,7 +130,8 @@ class BatchController extends Controller
                                         'ward_name' => $line[2],
                                         'sex' =>   $line[3],
                                         'min_age' => $line[4],
-                                        'max_age' => $line[5]
+                                        'max_age' => $line[5],
+                                        'batch' => $random,
                                     ];
                             }
                         }
@@ -143,35 +142,31 @@ class BatchController extends Controller
                         print_r($error);
                         $transaction->rollback();
                     }      
-                    
-                    // $array_all = Lookup_ward::find()
-                    //             ->select(['ward_code'])
-                    //             ->column();
-                    
-                    // $array_ward_code = array();
-                    // foreach($bulkInsertArray as $i) {
-                    //     array_push($array_ward_code, $i['ward_code']);
-                    // }
 
-                    // compare two tables
-                    // $result = array_intersect($array_all, $array_ward_code);
+                    // var_dump(!empty($bulkInsertArray));
+                    // exit;
 
-                    
-                    // insert into lookup table
-                    Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();
-                    
-                    // insert into batch table
-                    $model->save();
-
-                    if($string_error != "")
+                    if(!empty($bulkInsertArray))
                     {
+                        // insert into lookup table
+                        Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();                           
+                        // insert into batch table
+                        $model->save();
+
+                        if($string_error != "")
+                        {
+                            Yii::$app->session->setFlash('msg', '
+                            <div class="alert alert-danger alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                            <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>'. $string_error.'</div>');
+                        }
+                    }
+                    else
                         Yii::$app->session->setFlash('msg', '
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                        <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>'. $string_error.'</div>');
-                    }
+                        <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>All data from CSV file have been inserted! </div>');
                  
-
                     // delete file folder from PC
                     unlink(Yii::$app->basePath . '/web/' . $model->file_import);
                 }

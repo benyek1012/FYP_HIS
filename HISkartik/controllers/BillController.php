@@ -6,6 +6,7 @@ require 'vendor/autoload.php';
 use Yii;
 use app\models\Bill;
 use app\models\BillSearch;
+use app\models\Cancellation;
 use app\models\Lookup_department;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -145,6 +146,7 @@ class BillController extends Controller
     public function actionCreate()
     {
         $model = new Bill();
+
         $rowsWard = (new \yii\db\Query())
             ->select('ward_uid')
             ->from('ward')
@@ -171,6 +173,17 @@ class BillController extends Controller
                     $modelTreatment->bill_uid = $model->bill_uid;
                     $modelTreatment->save();
                 }
+
+                $model_cancellation = Cancellation::findAll(['replacement_uid' => null]);
+                if(!empty($model_cancellation)){
+                    foreach($model_cancellation as $model_cancellation){
+                        $model_bill_cancel = Bill::findOne(['bill_uid' => $model_cancellation->cancellation_uid]);
+                        if($model_bill_cancel->rn == $model->rn){
+                            $model_cancellation->replacement_uid = $model->bill_uid;
+                            $model_cancellation->save();
+                        }
+                    }
+                }
                 
                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
                     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'));
@@ -180,6 +193,7 @@ class BillController extends Controller
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
             'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
+            'model_cancellation' => new Cancellation(),
         ]);
     }
 
@@ -312,12 +326,14 @@ class BillController extends Controller
 
         $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all();   
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+        $model_cancellation = new Cancellation();
 
         return $this->render('generate', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
             'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-        ]);
+            'model_cancellation' => $model_cancellation,
+        ]); 
     }
 
     public function actionGeneratebill($bill_uid)
@@ -439,6 +455,7 @@ class BillController extends Controller
             'model' => $model,
             'modelWard' => $modelWard,
             'modelTreatment' => $modelTreatment,
+            'model_cancellation' => new Cancellation(),
         ]);
     }
 
@@ -449,7 +466,7 @@ class BillController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($bill_uid)
+    public function actionCancellation($bill_uid)
     {
         // $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         // $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
@@ -468,8 +485,17 @@ class BillController extends Controller
         $model->deleted = 1;
         $model->save();
 
-        return Yii::$app->getResponse()->redirect(array('/bill/create', 
-            'rn' => Yii::$app->request->get('rn'))); 
+        $model_cancellation = new Cancellation();
+        if($this->request->isPost && $model_cancellation->load($this->request->post())){
+            $model_cancellation->cancellation_uid = $model->bill_uid;
+            $model_cancellation->table = 'bill';
+            $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
+
+            if($model_cancellation->validate() && $model_cancellation->save()){
+                return Yii::$app->getResponse()->redirect(array('/bill/create', 
+                    'rn' => Yii::$app->request->get('rn'))); 
+            }
+        }
     }
 
     /**

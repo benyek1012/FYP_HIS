@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Cancellation;
 use app\models\CancellationSearch;
+use app\models\Patient_admission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

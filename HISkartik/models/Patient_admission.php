@@ -37,6 +37,7 @@ class Patient_admission extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public  $startrn, $endrn;
     public function rules()
     {
         return [
@@ -47,7 +48,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['patient_uid'], 'string', 'max' => 64],
             [['initial_ward_code', 'initial_ward_class'], 'string', 'max' => 20],
             [['reference', 'guarantor_name'], 'string', 'max' => 200],
-            [['guarantor_phone_number'], 'integer'],
+            [['guarantor_phone_number','startrn','endrn'], 'integer'],
             [['guarantor_nric'], 'integer'],
             [['guarantor_email'], 'email'],
             [['guarantor_email'], 'string', 'max' => 100],

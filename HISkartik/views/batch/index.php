@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'file_import',
                 'format' => 'raw',
                 'value' => function($data){
-                    return Html::a($data->file_import, \yii\helpers\Url::to(['/lookup_ward/index', 'Lookup_wardSearch[sex]' => $data->batch]));
+                    return Html::a($data->file_import, \yii\helpers\Url::to(['/lookup_ward/index', 'Lookup_wardSearch[batch]' => $data->batch]));
                 }
             ],
          

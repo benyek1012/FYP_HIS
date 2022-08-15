@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 06, 2022 at 10:20 AM
 -- Server version: 10.4.19-MariaDB
+-- Generation Time: Aug 14, 2022 at 05:24 PM
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -114,7 +114,8 @@ CREATE TABLE `cancellation` (
   `cancellation_uid` varchar(64) NOT NULL,
   `table` varchar(64) NOT NULL,
   `reason` varchar(100) NOT NULL,
-  `replacement_uid` varchar(64) DEFAULT NULL
+  `replacement_uid` varchar(64) DEFAULT NULL,
+  `responsible_uid` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -339,59 +340,60 @@ CREATE TABLE `lookup_ward` (
   `ward_name` varchar(50) NOT NULL,
   `sex` varchar(20) DEFAULT NULL,
   `min_age` int(11) DEFAULT NULL,
-  `max_age` int(11) DEFAULT NULL
+  `max_age` int(11) DEFAULT NULL,
+  `batch` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `lookup_ward`
 --
 
-INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age`, `max_age`) VALUES
-('1', '01', 'FIRST CLASS WARD', 'C', 12, 150),
-('10', '14', 'LABOUR WARD', 'P', 12, 150),
-('11', '15', 'MATERNITY1', 'P', 12, 45),
-('12', '16', 'GYNAE WARD', 'P', 12, 150),
-('13', '17', 'EYE WARD', 'C', 0, 150),
-('14', '18', 'A&E UNIT', 'C', 0, 150),
-('15', '19', 'CTW', 'C', 0, 150),
-('16', '1U', 'UROLOGY WARD', NULL, 0, 100),
-('17', '1V', 'VASCULAR WARD', NULL, 0, 100),
-('18', '20', 'FEMALE RTU', 'P', 12, 100),
-('19', '21', 'MALE RTU', 'L', 12, 100),
-('2', '02', 'FEMALE 2ND CLASS', 'P', 12, 150),
-('20', '22', 'RADIOACTIVE WAD', NULL, 12, 150),
-('21', '23', 'VIP', 'C', 12, 150),
-('22', '24', 'MALE 2ND CLASS', 'L', 12, 150),
-('23', '25', 'EMT WARD', 'C', 12, 150),
-('24', '26', 'BURN UNIT', 'C', 0, 150),
-('25', '27', 'AMBULATORY (RTU)', NULL, 0, 150),
-('26', '28', 'CICU', 'C', 0, 90),
-('27', '29', 'BABY MAT 1', 'C', 0, 1),
-('28', '2A', 'PAED ONCOLOGY', NULL, 0, 100),
-('29', '2B', 'PAED MEDICAL', NULL, 0, 70),
-('3', '03', 'ICU WARD', 'C', 0, 150),
-('30', '30', 'PAED ICU', NULL, 0, 70),
-('31', '31', 'PAED MDU', 'C', 0, 12),
-('32', '32', 'WAD ISC.KHAS', NULL, 0, 60),
-('33', '33', 'INF DISEASE WAD', NULL, 12, 100),
-('34', '34', 'PCW (RTU)', NULL, 0, 100),
-('35', '35', 'MED. ISO SEMEMTARA', NULL, 0, 100),
-('36', '36', 'F/ORT. WARD', 'P', 12, 100),
-('37', '37', 'NEUROSX WD', NULL, 0, 100),
-('38', '38', 'NEURO KDU', NULL, 1, 9),
-('39', '3A', 'PAED ISO', NULL, 0, 100),
-('4', '04', 'FEMALE MEDICAL', 'P', 12, 150),
-('40', '3B', 'CTW', NULL, 12, 100),
-('41', '42', 'CSSD', NULL, 0, 0),
-('42', '45', 'FARMASI SATELLITE', NULL, 0, 0),
-('43', '46', 'FARMASI OPD', NULL, 0, 0),
-('44', '47', 'FARMASI WARD SUPPLY', NULL, 0, 0),
-('45', '48', 'FARMASI INJECTION', NULL, 0, 0),
-('5', '05', 'MALE MEDICAL', 'L', 12, 100),
-('6', '09', 'NURSERY WARD', 'C', 0, 0),
-('7', '10', 'MALE SURGICAL', 'L', 12, 150),
-('8', '11', 'FEMALE SURGICAL', 'P', 12, 150),
-('9', '13', 'M/CRT.WARD', 'L', 12, 150);
+INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age`, `max_age`, `batch`) VALUES
+('1', '01', 'FIRST CLASS WARD', 'C', 12, 150, NULL),
+('10', '14', 'LABOUR WARD', 'P', 12, 150, NULL),
+('11', '15', 'MATERNITY1', 'P', 12, 45, NULL),
+('12', '16', 'GYNAE WARD', 'P', 12, 150, NULL),
+('13', '17', 'EYE WARD', 'C', 0, 150, NULL),
+('14', '18', 'A&E UNIT', 'C', 0, 150, NULL),
+('15', '19', 'CTW', 'C', 0, 150, NULL),
+('16', '1U', 'UROLOGY WARD', NULL, 0, 100, NULL),
+('17', '1V', 'VASCULAR WARD', NULL, 0, 100, NULL),
+('18', '20', 'FEMALE RTU', 'P', 12, 100, NULL),
+('19', '21', 'MALE RTU', 'L', 12, 100, NULL),
+('2', '02', 'FEMALE 2ND CLASS', 'P', 12, 150, NULL),
+('20', '22', 'RADIOACTIVE WAD', NULL, 12, 150, NULL),
+('21', '23', 'VIP', 'C', 12, 150, NULL),
+('22', '24', 'MALE 2ND CLASS', 'L', 12, 150, NULL),
+('23', '25', 'EMT WARD', 'C', 12, 150, NULL),
+('24', '26', 'BURN UNIT', 'C', 0, 150, NULL),
+('25', '27', 'AMBULATORY (RTU)', NULL, 0, 150, NULL),
+('26', '28', 'CICU', 'C', 0, 90, NULL),
+('27', '29', 'BABY MAT 1', 'C', 0, 1, NULL),
+('28', '2A', 'PAED ONCOLOGY', NULL, 0, 100, NULL),
+('29', '2B', 'PAED MEDICAL', NULL, 0, 70, NULL),
+('3', '03', 'ICU WARD', 'C', 0, 150, NULL),
+('30', '30', 'PAED ICU', NULL, 0, 70, NULL),
+('31', '31', 'PAED MDU', 'C', 0, 12, NULL),
+('32', '32', 'WAD ISC.KHAS', NULL, 0, 60, NULL),
+('33', '33', 'INF DISEASE WAD', NULL, 12, 100, NULL),
+('34', '34', 'PCW (RTU)', NULL, 0, 100, NULL),
+('35', '35', 'MED. ISO SEMEMTARA', NULL, 0, 100, NULL),
+('36', '36', 'F/ORT. WARD', 'P', 12, 100, NULL),
+('37', '37', 'NEUROSX WD', NULL, 0, 100, NULL),
+('38', '38', 'NEURO KDU', NULL, 1, 9, NULL),
+('39', '3A', 'PAED ISO', NULL, 0, 100, NULL),
+('4', '04', 'FEMALE MEDICAL', 'P', 12, 150, NULL),
+('40', '3B', 'CTW', NULL, 12, 100, NULL),
+('41', '42', 'CSSD', NULL, 0, 0, NULL),
+('42', '45', 'FARMASI SATELLITE', NULL, 0, 0, NULL),
+('43', '46', 'FARMASI OPD', NULL, 0, 0, NULL),
+('44', '47', 'FARMASI WARD SUPPLY', NULL, 0, 0, NULL),
+('45', '48', 'FARMASI INJECTION', NULL, 0, 0, NULL),
+('5', '05', 'MALE MEDICAL', 'L', 12, 100, NULL),
+('6', '09', 'NURSERY WARD', 'C', 0, 0, NULL),
+('7', '10', 'MALE SURGICAL', 'L', 12, 150, NULL),
+('8', '11', 'FEMALE SURGICAL', 'P', 12, 150, NULL),
+('9', '13', 'M/CRT.WARD', 'L', 12, 150, NULL);
 
 -- --------------------------------------------------------
 

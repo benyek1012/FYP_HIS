@@ -265,6 +265,18 @@ return[
     'Bill is no longer valid' => 'Bil tidak sah lagi',
     'Cancellation' => 'Pembatalan',
     'Cancellation Fail!' => 'Pembatalan Gagal!',
-    
+    'Cancellation Uid' => 'Pembatalan Uid',
+    'Table' => 'Jadual',
+    'Reason' => 'Sebab',
+    'Replacement Uid' => 'Pengganti Uid',
+    'Submit' => 'Hantar',
+    'Start RN :' => 'Mulakan RN :',
+    'End RN :' => 'Tamat RN :',
+    'Duplicate error! ' => 'Ralat pendua! ',
+    ' This range is already existed' => 'Julat ini sudah wujud',
+    ' This range cannot be empty' => ' Julat ini tidak boleh kosong',
+    ' Start RN must be greater than end RN' => ' Mulakan RN mesti lebih besar daripada akhir RN',
+    'Responsible Uid' => 'Bertanggungjawab Uid',
+
 ];
 ?>

@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use app\models\Patient_admission;
+use app\models\Cancellation;
 use app\models\Bill;
 use app\models\Ward;
 use yii\helpers\Url;
@@ -108,6 +109,16 @@ if($print_readonly)
 
 $url = Url::toRoute(['/bill/treatment']);
 $urlTreatment = Url::toRoute(['/bill/treatment']);
+
+$cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
+if(!empty($cancellation)){
+    $disabled = true;
+    $linkDisabled = 'disabled-link';
+}
+else{
+    $disabled = false;
+    $linkDisabled = '';
+}
 ?>
 
 <a name="treatment">
@@ -152,7 +163,7 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
                     
                     <?= $form->field($modelTreatment, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
                         'data' => $treatment_code,
-                        'disabled' => $print_readonly,
+                        'disabled' => $print_readonly == false? $disabled : $print_readonly,
                         'options' => [
                             'placeholder' => Yii::t('app','Select treatment code'), 
                             'class' => 'treatmentCode',
@@ -166,7 +177,7 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
-                        'readonly' => true, 'disabled' => $print_readonly, 'style' => 'width: 280px'])->label(false) ?>
+                        'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly, 'style' => 'width: 280px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -215,11 +226,11 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                        'disabled' => $print_readonly, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
+                        'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
-                        'disabled' => $print_readonly, 'class' => 'item_total_cost'])->label(false) ?>
+                        'disabled' => $print_readonly == false? $disabled : $print_readonly, 'class' => 'item_total_cost'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -238,11 +249,11 @@ $urlTreatment = Url::toRoute(['/bill/treatment']);
 
         <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-        <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');"]) ?>
-        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');", 'disabled' => $disabled]) ?>
+        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?php }else{ ?>
-        <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');"]) ?>
-        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');", 'disabled' => $disabled]) ?>
+        <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?php } ?>
     <?php kartik\form\ActiveForm::end(); ?>
     <?php Pjax::end(); ?>

@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = Yii::t('app','Generate');
         'model' => $model,
         'modelWard' => $modelWard,
         'modelTreatment' => $modelTreatment,
+        'model_cancellation' => $model_cancellation,
     ]) ?>
 
 </div>

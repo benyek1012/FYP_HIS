@@ -29,7 +29,7 @@ class Batch extends \yii\db\ActiveRecord
     {
         return [
             [['file'], 'file', 'extensions' => 'csv', 'checkExtensionByMimeType' => false,],
-            [['batch', 'file_import'], 'required'],
+            [['batch', 'file_import', 'file'], 'required'],
             [['batch'], 'integer'],
             [['file_import'], 'string', 'max' => 255],
         ];

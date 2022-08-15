@@ -14,8 +14,9 @@ use yii\helpers\Html;
     <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
     <?= $this->render('_form', [
+        'model_admission' => $model_admission,
         'model_cancellation' => $model_cancellation,
-        'model_receipt' => $model_receipt,
+        'type' => $type,
     ]) ?>
 
 </div>

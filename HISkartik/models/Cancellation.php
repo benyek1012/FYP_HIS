@@ -28,8 +28,8 @@ class Cancellation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cancellation_uid', 'table', 'reason'], 'required'],
-            [['cancellation_uid', 'table', 'replacement_uid'], 'string', 'max' => 64],
+            [['cancellation_uid', 'table', 'reason', 'responsible_uid'], 'required'],
+            [['cancellation_uid', 'table', 'replacement_uid' ,'responsible_uid'], 'string', 'max' => 64],
             [['reason'], 'string', 'max' => 100],
             [['cancellation_uid'], 'unique'],
         ];
@@ -41,10 +41,11 @@ class Cancellation extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'cancellation_uid' => 'Cancellation Uid',
-            'table' => 'Table',
-            'reason' => 'Reason',
-            'replacement_uid' => 'Replacement Uid',
+            'cancellation_uid' => Yii::t('app', 'Cancellation Uid'),
+            'table' => Yii::t('app', 'Table'),
+            'reason' => Yii::t('app', 'Reason'),
+            'replacement_uid' => Yii::t('app', 'Replacement Uid'),
+            'responsible_uid' => Yii::t('app', 'Responsible Uid'),
         ];
     }
 }
