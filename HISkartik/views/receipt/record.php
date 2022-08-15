@@ -43,22 +43,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
-                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+                    // $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
 
-                    if(!empty($model_receipt)){
-                        $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
+                    // if(!empty($model_receipt)){
+                    //     $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
 
-                        if(!empty($model_cancellation)){
-                            return $data['rn'];
-                        }
-                        else if(!empty($model_receipt->receipt_type)){
-                            return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
-                        }
-                    }
-                    // Bill
-                    else{
-                        return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
-                    }
+                    //     if(!empty($model_cancellation)){
+                    //         return $data['rn'];
+                    //     }
+                    //     else if(!empty($model_receipt->receipt_type)){
+                    //         return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                    //     }
+                    // }
+                    // // Bill
+                    // else{
+                    //     return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                    // }
+
+                    return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                 },
                 'label' => Yii::t('app','Registration Number (R/N)')
             ],
