@@ -97,74 +97,131 @@ $this->registerJs(
 
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){ ?><?= $form->field($model, 'name')->textInput(['maxlength' => true,'readonly' => true]);} 
+            else { ?><?= $form->field($model, 'name')->textInput(['maxlength' => true]);}?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'id' => 'nric',
-             'value' => Yii::$app->request->get('ic')]) ?>
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?><?= $form->field($model, 'nric')->textInput(['maxlength' => true,'readonly' => true, 'id' => 'nric',
+             'value' => Yii::$app->request->get('ic')]);}
+             else { ?><?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'id' => 'nric',
+                'value' => Yii::$app->request->get('ic')]);}?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
-            'options' => ['id' => 'DOB'],
-            'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
-            'pluginEvents' => [
-                
-            ],])?>
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
+                <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+                'options' => ['id' => 'DOB', 'disabled' => 'disabled'],
+                'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+                'pluginEvents' => [
+                ],]);
+            }
+            else{?>
+                <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+                    'options' => ['id' => 'DOB'],
+                    'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+                    'pluginEvents' => [
+                        
+                    ],]);
+            }?>
         </div>
         <div class="form-group col-md-2 align-self-end">
-            <?= Html::button(Yii::t('app','Load DOB'), ['class' => 'btn btn-outline-primary', 'id' => "btn_dob"]) ?>
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
+            <?= Html::button(Yii::t('app','Load DOB'), ['class' => 'btn btn-outline-primary', 'disabled' => 'disabled','id' => "btn_dob"]);}
+            else {
+                ?> <?= Html::button(Yii::t('app','Load DOB'), ['class' => 'btn btn-outline-primary', 'id' => "btn_dob"]);
+            }?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
-                  'id' => 'age', 'value' => $model->getAgeFromDatePicker()]) ?>
+                <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
+                  'id' => 'age', 'value' => $model->getAgeFromDatePicker()]);?>
         </div>
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 
                     ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?> -->
 
-            <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
-                'data' => $countries,
-                'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality',],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'tags' => true,
-                ],
-            ]); ?>
+                <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
+                    <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
+                    'data' => $countries,
+                    'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality','disabled' => 'disabled'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'tags' => true,
+                    ],
+                    ]);
+                }
+                else{?>
+                    <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
+                        'data' => $countries,
+                        'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality',],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'tags' => true,
+                        ],
+                        ]);
+                }?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'sex')->radioList($sex, ['custom' => true, 'inline' => true]); ?>
+        <?php 
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?><?= $form->field($model, 'sex')->radioList($sex, ['custom' => true,'inline' => true,'disabled' => true]);}
+        else {?> <?= $form->field($model, 'sex')->radioList($sex, ['custom' => true, 'inline' => true]);}?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
+        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
+             <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
                 'data' => $race,
-                'options' => ['placeholder' => Yii::t('app','Please select race'), 'id' => 'race',],
+                'options' => ['placeholder' => Yii::t('app','Please select race'), 'disabled' => 'disabled','id' => 'race',],
                 'pluginOptions' => [
                     'allowClear' => true,
                     'tags' => true,
                 ],
-            ]); ?>
+            ]);
+            }
+            else{?>
+                <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
+                    'data' => $race,
+                    'options' => ['placeholder' => Yii::t('app','Please select race'), 'id' => 'race',],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'tags' => true,
+                    ],
+                ]); 
+            }?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true,'readonly' => true]);}
+         else {
+            ?> <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]);
+         }?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+        <?php 
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'email')->textInput(['maxlength' => true,'readonly' => true]);}
+        else {?> <?= $form->field($model, 'email')->textInput(['maxlength' => true]);}?>
 
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'address2')->textInput(['maxlength' => true])->label(false)?>
-            <?= $form->field($model, 'address3')->textInput(['maxlength' => true])->label(false)?>
+        <?php 
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address1')->textInput(['maxlength' => true,'readonly' => true]);}
+        else {?> <?= $form->field($model, 'address1')->textInput(['maxlength' => true]);}?>
+        <?php
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address2')->textInput(['maxlength' => true,'readonly' => true]);}
+        else {?> <?= $form->field($model, 'address2')->textInput(['maxlength' => true]);}?>
+        <?php 
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address3')->textInput(['maxlength' => true,'readonly' => true]);}
+        else {?> <?= $form->field($model, 'address3')->textInput(['maxlength' => true]);}?>
+         
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'job')->textInput(['maxlength' => true]) ?>
+        <?php 
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'job')->textInput(['maxlength' => true,'readonly' => true]);}
+        else {?> <?= $form->field($model, 'job')->textInput(['maxlength' => true]);}?>
+         
         </div>
     </div>
 
 </div>
 
 <div class="form-group">
-    <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start', 'id' => 'update']) ?>
+<?php if(Yii::$app->controller->action->id != "guest_printer_dashboard"){?><?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-outline-primary align-self-start', 'id' => 'update']);} ?>
 </div>
 
 <?php kartik\form\ActiveForm::end(); ?>

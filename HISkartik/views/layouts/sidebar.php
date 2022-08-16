@@ -109,6 +109,7 @@ if(!empty($info))
 
 $url = Url::toRoute(['site/sidebar']);
 $urlAdmission = Url::toRoute(['site/admission']);
+$urlGuestPrinter = Url::toRoute(['site/guest_printer_dashboard']);
 $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
 ?>
 
@@ -139,7 +140,13 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                     'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/RN')])->label(false)?>
 
                 <div class="input-group-append">
-                    <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]) ?>
+                <?php 
+                    if(Yii::$app->controller->action->id == "guest_printer_dashboard"){
+                        ?><?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlGuestPrinter}', '{$urlPatientAdmission}')"]);
+                    }
+                    else{?>
+                        <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]);
+                    }?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
@@ -150,11 +157,17 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
 
             <!-- Sidebar Menu which the patient is loaded -->
             <?php
+           
                 if(!empty($info)){
                     if($info->name == "") $temp_name = "Unknown";
                     else $temp_name = $info->name;
-                        echo \hail812\adminlte\widgets\Menu::widget([
-                         'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
+                    if(Yii::$app->controller->action->id == "guest_printer_dashboard")
+                     echo \hail812\adminlte\widgets\Menu::widget([
+                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/guest_printer_dashboard', 'id' => $info->patient_uid]]]]);
+                    else  echo \hail812\adminlte\widgets\Menu::widget([
+                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
+                    
+                      
              ?>
             <div class="mt-1 ml-1 d-flex">
                 <div class="info">
@@ -179,6 +192,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
         <?php 
             if(!empty($info)){
                 if(!empty($model_rn)){
+                    if(Yii::$app->controller->action->id != "guest_printer_dashboard"){
                     echo '<div class="mt-2"></div><div class="user-panel">'.
                         \hail812\adminlte\widgets\Menu::widget(['items' => 
                             [   
@@ -186,13 +200,15 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                                 'url' => ['receipt/record', 'rn' =>  Yii::$app->request->get('rn'), 'id' => Yii::$app->request->get('id')]]
                             ]
                         ]). '</div><div class="mt-2"></div>';
+                    }
                 }
-
-                foreach ($rows as $row) {
-                    echo '<div class="mt-2"></div><div class="user-panel">'
-                            .\hail812\adminlte\widgets\Menu::widget(['items' => items($row['rn'])]).
-                        '</div><div class="mt-2"></div>';
-                  //  echo '<div class="mt-2"></div><div class="user-panel "></div><div class="mt-2"></div>';
+                if(Yii::$app->controller->action->id != "guest_printer_dashboard"){
+                    foreach ($rows as $row) {
+                        echo '<div class="mt-2"></div><div class="user-panel">'
+                                .\hail812\adminlte\widgets\Menu::widget(['items' => items($row['rn'])]).
+                            '</div><div class="mt-2"></div>';
+                    //  echo '<div class="mt-2"></div><div class="user-panel "></div><div class="mt-2"></div>';
+                    }
                 }
             }
         ?>

@@ -80,17 +80,13 @@ $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
                 ],
                 ]); 
         ?>
-      
+
         <div class="col-sm-6">
-            <?= $form->field($model, 'type')->dropDownList($type, ['prompt'=>'Please select admission type','maxlength' => true]) ?>
+            <?= $form->field($model, 'startrn')->textInput(['autocomplete' =>'off'])->label(yii::t('app',"Start RN :")) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'startrn')->textInput(['value' => 1])->label(yii::t('app',"Start RN :")) ?>
-        </div>
-
-        <div class="col-sm-6">
-            <?= $form->field($model, 'endrn')->textInput(['value' => 1])->label(yii::t('app',"End RN :")) ?>
+            <?= $form->field($model, 'endrn')->textInput(['autocomplete' =>'off'])->label(yii::t('app',"End RN :")) ?>
         </div>
 
         <div class="form-group">

@@ -352,6 +352,12 @@ class Patient_admissionController extends Controller
 		]);
 	}
 
+    public function actionPrint($rn)
+    {
+        var_dump("Print");
+        exit;
+	}
+
     /**
      * Deletes an existing Patient_admission model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -381,6 +387,7 @@ class Patient_admissionController extends Controller
         else return 0;
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
    
 }
 

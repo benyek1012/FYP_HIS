@@ -277,6 +277,8 @@ return[
     ' This range cannot be empty' => ' Julat ini tidak boleh kosong',
     ' Start RN must be greater than end RN' => ' Mulakan RN mesti lebih besar daripada akhir RN',
     'Responsible Uid' => 'Bertanggungjawab Uid',
+    ' This rn format is wrong' =>'Format rn ini salah',
+    ' This rn format must be same' => 'Format rn ini mestilah sama',
 
 ];
 ?>

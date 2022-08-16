@@ -113,7 +113,7 @@ class SiteController extends Controller
             else if((new New_user())->isClerk())
                 echo $this->render('clerk_dashboard');
             else if((new New_user())->isGuestPrinter())
-                echo $this->render('guest_printer_dashboard');
+                $this->redirect(Url::to(['/site/guest_printer_dashboard']));
         }
     }
 
@@ -145,34 +145,68 @@ class SiteController extends Controller
                 $model_patient->DOB = "";
                 $model_patient->save();
 
-
+                //check empty
                 if($model->startrn != "" && $model->endrn != ""){
-                    if($model->endrn >= $model->startrn){
-                        for($i = $model->startrn; $i <= $model->endrn; $i++){
-                            if($model->type == 'Normal')
-                            $rn = date('Y')."/".sprintf('%06d', $i);
-                            else $rn = date('Y')."/9".sprintf('%05d', $i);
-                            $model_admission = Patient_admission::findOne(['rn' => $rn]);
-                            if(empty($model_admission)){
-                                $flag = 1;
-                                // print_r($rn);
-                                $admission = new Patient_admission();
-                                $date = new \DateTime();
-                                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                                $admission->rn = $rn;
-                                $admission->patient_uid = $model_patient->patient_uid;
-                                $admission->entry_datetime = $date->format('Y-m-d H:i:s');
-                                $admission->type = $model->type;
-        
-                                $admission->initial_ward_class = "UNKNOWN";
-                                $admission->initial_ward_code = "UNKNOWN";
-                                $admission->reminder_given = 0;
-                                $admission->save();
-                                // $model->validate();
-                                // var_dump($model->errors);
-                                // exit;
-                            }
-                        }
+                    // var_dump(substr($model->startrn,-7,1));
+                    // exit;
+                    //check rn format
+                    if((substr($model->startrn,-7,1) == '/' && substr($model->endrn,-7,1)  == '/')
+                        && (substr($model->startrn,-6,1) == '0' ||  substr($model->startrn,-6,1) == '9') &&
+                        (substr($model->endrn,-6,1) == '0' ||  substr($model->endrn,-6,1) == '9')){
+                                //check format same
+                                if(substr($model->startrn, 0, 6) == substr($model->endrn, 0, 6)){
+                                    //convert to integer
+                                    $startrn  = preg_replace('/\D/', '', $model->startrn);
+                                    $endrn  = preg_replace('/\D/', '', $model->endrn);
+                                    if($endrn >= $startrn){
+                                        for($i = $startrn; $i <= $endrn; $i++){
+                                            $rn = substr($i, 0, 4)."/". substr($i, 4,9);
+                                            // var_dump($rn);
+                                            // exit;
+                                            $model_admission = Patient_admission::findOne(['rn' => $rn]);
+                                            if(empty($model_admission)){
+                                                $flag = 1;
+                                               // print_r($rn);
+                                                $admission = new Patient_admission();
+                                                $date = new \DateTime();
+                                                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                                                $admission->rn = $rn;
+                                                $admission->patient_uid = $model_patient->patient_uid;
+                                                $admission->entry_datetime = $date->format('Y-m-d H:i:s');
+                                                if(substr($rn,-6,1) == '0')     $admission->type = "Normal";
+                                                else if(substr($rn,-6,1) == '9') $admission->type = "Labor";
+                        
+                                                $admission->initial_ward_class = "UNKNOWN";
+                                                $admission->initial_ward_code = "UNKNOWN";
+                                                $admission->reminder_given = 0;
+                                                $admission->save();
+                                                // $model->validate();
+                                                // var_dump($model->errors);
+                                                // exit;
+                                            }
+                                            else $flag = 0;
+                                        }
+                                        
+                                    }
+                                    else{
+                                        $flag = 1;
+                                        Yii::$app->session->setFlash('msg', '
+                                        <div class="alert alert-danger alert-dismissable">
+                                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                        <strong>'.Yii::t('app', 'Validation error! ').' </strong>'
+                                            .Yii::t('app', ' Start RN must be greater than end RN').' !</div>'
+                                        );
+                                    }
+                                }
+                                else{
+                                    $flag = 1;
+                                    Yii::$app->session->setFlash('msg', '
+                                    <div class="alert alert-danger alert-dismissable">
+                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                    <strong>'.Yii::t('app', 'Validation error! ').' </strong>'
+                                        .Yii::t('app', ' This rn format must be same').' !</div>');
+                                }
+                        
                     }
                     else{
                         $flag = 1;
@@ -180,10 +214,10 @@ class SiteController extends Controller
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                         <strong>'.Yii::t('app', 'Validation error! ').' </strong>'
-                            .Yii::t('app', ' Start RN must be greater than end RN').' !</div>'
-                        );
+                            .Yii::t('app', ' This rn format is wrong').' !</div>');
                     }
                 }
+                //empty
                 else{
                     $flag = 1;
                     Yii::$app->session->setFlash('msg', '
@@ -237,6 +271,39 @@ class SiteController extends Controller
         
         return $this->render('admission');
     }
+
+    public function actionGuest_printer_dashboard()
+    {
+     //   $this->InitSQL();
+
+        $model_Patient = new Patient_information();
+        $model_NOK = new Patient_next_of_kin();
+
+        if ($this->request->isPost)
+        {
+            // if($model_Patient->load($this->request->post())) $this->actionSidebar($model_Patient);
+            // else $model_Patient->loadDefaultValues();
+            
+            try{
+                if ($model_NOK->load($this->request->post())) {
+                    $date = new \DateTime();
+                    $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                    $model_NOK->nok_datetime_updated = $date->format('Y-m-d H:i');
+                    $model_NOK->save();
+                    $this->actionNOK($model_NOK);
+                }
+                else $model_NOK->loadDefaultValues();
+            }
+            catch(Exception $e){
+                $this->errorMessage($e->getMessage());
+            }
+        }
+
+        // if(!empty(Yii::$app->request->get('type'))) (new Patient_admissionController(null, null)) -> actionCreate();
+        
+        return $this->render('guest_printer_dashboard');
+    }
+
     
     /**
      * Login action.
@@ -381,7 +448,7 @@ class SiteController extends Controller
         $flag = false;
         $actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");
         foreach ($actions_sidebar as $action) {
-            if(Yii::$app->controller->id == "site" && Yii::$app->controller->action->id == "admission")
+            if(Yii::$app->controller->id == "site" && (Yii::$app->controller->action->id == "admission" || Yii::$app->controller->action->id == "guest_printer_dashboard"))
             {
                 $flag = true;
                 break;
