@@ -25,9 +25,9 @@ if (Yii::$app->user->isGuest){
 <style type="text/css">
 .dropdown:hover .dropdown-menu {
     display: block;
-    margin-top: 0; 
- }
- </style>
+    margin-top: 0;
+}
+</style>
 <?php
 }
     
@@ -35,7 +35,7 @@ if (Yii::$app->user->isGuest){
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
 
-   
+
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <?php 
@@ -46,43 +46,52 @@ if (Yii::$app->user->isGuest){
                         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                     </li>'; 
             }
-        ?>
+            if(Yii::$app->controller->action->id != "guest_printer_dashboard"){
+                ?>
         <div class="dropdown">
-            <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
-                <div class="dropdown-content">
+            <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false"
+                class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
+            <div class="dropdown-content">
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                    <li><a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/site/admission']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
                 </ul>
-                </div>
+            </div>
         </div>
 
 
         <!-- <div class="dropdown">
-            <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a>
-                <a href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a>
-            </div>
-        </div> -->
+                    <a id="admission"  href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a href="<?php echo Url::to(['/patient_admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a>
+                        <a href="<?php echo Url::to(['/site/admission']); ?>" class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a>
+                    </div>
+                </div> -->
 
         <div class="dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
             <div class="dropdown-content">
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="<?php echo Url::to(['/lookup_general']); ?>" class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
-                </li>
-                <li><a href="<?php echo Url::to(['/new_user']); ?>" class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/lookup_ward']); ?>" class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/lookup_status']); ?>" class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/lookup_treatment']); ?>" class="dropdown-item"><?php echo Yii::t('app','Treatment Codes'); ?></a>
-                </li>
-                <li><a href="<?php echo Url::to(['/lookup_department']); ?>"
-                        class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
-            </ul>
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                    <li><a href="<?php echo Url::to(['/lookup_general']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
+                    </li>
+                    <li><a href="<?php echo Url::to(['/new_user']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/lookup_ward']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/lookup_status']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Status Lookup'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/lookup_treatment']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Treatment Codes'); ?></a>
+                    </li>
+                    <li><a href="<?php echo Url::to(['/lookup_department']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
+                </ul>
             </div>
         </div>
 
@@ -95,30 +104,23 @@ if (Yii::$app->user->isGuest){
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app', "Others"); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <li><a href="#" class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/site/batch_entry']);?>" class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/batch']); ?>" class="dropdown-item"><?php echo Yii::t('app','Testing Csv Upload'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
+                        class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/batch']); ?>"
+                        class="dropdown-item"><?php echo Yii::t('app','Testing Csv Upload'); ?></a></li>
             </ul>
         </li>
-
     </ul>
-
+    <?php
+            
+            }
+            ?>
+    </ul>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-
-        <?php 
-        if(!(new New_user()) -> isAdmin())
-        {
-        ?>
-        <li class="nav-item dropdown">
-            <a id="password" href="<?php echo Url::to(['/new_user/change_password']); ?>" class="nav-link"><?php echo Yii::t('app', 'Change Password') ?></a>
-        </li>
-        <?php
-        }
-        ?>
-
         <li class="nav-item dropdown">
             <a id="admission" href="<?php echo Url::to(['/site/logout']); ?>" class="nav-link"><?php echo  Yii::t('app','Logout'). 
-                ' (' . Yii::$app->user->identity->username . ')'; ?></a>
+                        ' (' . Yii::$app->user->identity->username . ')'; ?></a>
         </li>
 
         <li class="nav-item dropdown">
@@ -126,10 +128,10 @@ if (Yii::$app->user->isGuest){
                 class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                 <?php
-                    foreach(Yii::$app->params['languages'] as $key => $language){
-                        echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
-                    }
-                ?>
+                            foreach(Yii::$app->params['languages'] as $key => $language){
+                                echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
+                            }
+                        ?>
             </ul>
         </li>
     </ul>
@@ -191,4 +193,3 @@ $this->registerJs(
 // });'
 // );
 ?>
-
