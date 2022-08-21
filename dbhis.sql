@@ -536,7 +536,19 @@ INSERT INTO `serial_number` (`serial_name`, `prepend`, `digit_length`, `running_
 ('receipt', 'R', 6, 0);
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `reminder_letter`
+--
+CREATE TABLE `reminder_letter` (
+  `batch_uid` varchar(64) NOT NULL,
+  `batch_datetime` datetime NOT NULL,
+  `reminder1` datetime DEFAULT NULL,
+  `reminder2` datetime DEFAULT NULL,
+  `reminder3` datetime DEFAULT NULL,
+  `responsible` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 --
 -- Table structure for table `treatment_details`
 --
@@ -658,6 +670,13 @@ ALTER TABLE `patient_next_of_kin`
 ALTER TABLE `receipt`
   ADD PRIMARY KEY (`receipt_uid`),
   ADD KEY `rn` (`rn`);
+
+--
+-- Indexes for table `reminder_letter`
+--
+ALTER TABLE `reminder_letter`
+  ADD PRIMARY KEY (`batch_uid`);
+
 
 --
 -- Indexes for table `serial_number`
