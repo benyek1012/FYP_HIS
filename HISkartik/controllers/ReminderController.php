@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Reminder;
 use app\models\ReminderSearch;
+use app\models\Patient_admission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
