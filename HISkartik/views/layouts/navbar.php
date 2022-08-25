@@ -109,8 +109,6 @@ if (Yii::$app->user->isGuest){
                     class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/batch']); ?>"
                     class="dropdown-item"><?php echo Yii::t('app','Testing Csv Upload'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Testing database update'); ?></a></li>    
             </ul>
         </li>
     </ul>
