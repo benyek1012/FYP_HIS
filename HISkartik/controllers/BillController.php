@@ -341,6 +341,8 @@ class BillController extends Controller
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model = Bill::findOne(['bill_uid' => $bill_uid]);
+        $modelWards = Ward::find(['bill_uid' => $bill_uid]);
+
 
         // // Popup Generation
         if(Yii::$app->request->get('confirm') != 'true'){
@@ -353,10 +355,16 @@ class BillController extends Controller
             if(empty($model->bill_generation_datetime))
             {
                 $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
+
+                if($modelWards->count() > 0)
+                    $model->final_ward_datetime =  $modelWards->max('ward_end_datetime');
+                else
+                    $model->final_ward_datetime =  $date->format('Y-m-d H:i:s');
             }
 
             $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
             $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
+
 
             if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
             if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');

@@ -100,6 +100,7 @@ CREATE TABLE `bill` (
   `description` varchar(200) DEFAULT NULL,
   `bill_print_responsible_uid` varchar(64) DEFAULT NULL,
   `bill_print_datetime` datetime DEFAULT NULL,
+   `final_ward_datetime` datetime DEFAULT NULL,
   `bill_print_id` varchar(20) DEFAULT NULL,
   `deleted` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -6482,7 +6483,6 @@ INSERT INTO `serial_number` (`serial_name`, `prepend`, `digit_length`, `running_
 -- Table structure for table `reminder_letter`
 --
 CREATE TABLE `reminder_letter` (
-  `batch_uid` varchar(64) NOT NULL,
   `batch_datetime` datetime NOT NULL,
   `reminder1` datetime DEFAULT NULL,
   `reminder2` datetime DEFAULT NULL,
@@ -6617,7 +6617,8 @@ ALTER TABLE `receipt`
 -- Indexes for table `reminder_letter`
 --
 ALTER TABLE `reminder_letter`
-  ADD PRIMARY KEY (`batch_uid`);
+  ADD PRIMARY KEY (`batch_datetime`);
+  
 
 
 --
