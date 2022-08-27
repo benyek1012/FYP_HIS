@@ -1,15 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 15, 2022 at 06:09 AM
--- Server version: 10.4.19-MariaDB
+-- Generation Time: Aug 27, 2022 at 04:14 PM
+-- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
-SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = '+00:00';
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -100,7 +100,7 @@ CREATE TABLE `bill` (
   `description` varchar(200) DEFAULT NULL,
   `bill_print_responsible_uid` varchar(64) DEFAULT NULL,
   `bill_print_datetime` datetime DEFAULT NULL,
-   `final_ward_datetime` datetime DEFAULT NULL,
+  `final_ward_datetime` datetime DEFAULT NULL,
   `bill_print_id` varchar(20) DEFAULT NULL,
   `deleted` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -117,6 +117,22 @@ CREATE TABLE `cancellation` (
   `reason` varchar(100) NOT NULL,
   `replacement_uid` varchar(64) DEFAULT NULL,
   `responsible_uid` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fpp`
+--
+
+CREATE TABLE `fpp` (
+  `kod` varchar(64) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `additional_details` varchar(200) NOT NULL,
+  `min_cost_per_unit` decimal(10,2) NOT NULL,
+  `max_cost_per_unit` decimal(10,2) NOT NULL,
+  `number_of_units` int(11) NOT NULL,
+  `total_cost` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -410,6 +426,19 @@ INSERT INTO `lookup_department` (`department_uid`, `department_code`, `departmen
 ('439a4367-23b3-11ed-ae0b-00ffce6a0abf', 'US', 'UNISEL UNIVERSITI SELANGOR', '03-32805052', 'PEJABAT KEWANGAN UNIVERSITI SELANGOR, JLN ZIKRON A7/A SEKSYEN 7, 40000 SHAH ALAM.', NULL, NULL),
 ('439a938a-23b3-11ed-ae0b-00ffce6a0abf', 'UT', 'UNIVERSITI TUN HUSSEIN ONN MALAYSIA', '', '', NULL, NULL),
 ('439adc61-23b3-11ed-ae0b-00ffce6a0abf', 'YS', 'YAYASAN SARAWAK', '', '', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lookup_fpp`
+--
+
+CREATE TABLE `lookup_fpp` (
+  `kod` varchar(64) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `min_cost_per_unit` decimal(10,2) NOT NULL,
+  `max_cost_per_unit` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -6249,7 +6278,6 @@ INSERT INTO `lookup_treatment` (`treatment_uid`, `treatment_code`, `treatment_na
 ('2123a9b6-23b2-11ed-ae0b-00ffce6a0abf', 'J712', 'Laporan ringkas/pendapat disediakan oleh Pegawai Perubatan', '120.00', '120.00', '120.00', '120.00'),
 ('2123f5ac-23b2-11ed-ae0b-00ffce6a0abf', 'J713', 'Laporan ringkas/pendapat disediakan oleh Pakar', '240.00', '240.00', '240.00', '240.00');
 
-
 -- --------------------------------------------------------
 
 --
@@ -6364,12 +6392,11 @@ CREATE TABLE `new_user` (
 -- Dumping data for table `new_user`
 --
 
-INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`, `role_clerk`, `role_admin`, `role_guest_print`,`Case_Note`,`Registration`,`Charge_Sheet`,`Sticker_Label`, `retire`, `authKey`) VALUES
-('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 0,NULL,NULL,NULL,NULL, 0, '12345b'),
-('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 0,NULL,NULL,NULL,NULL, 0, '12345a'),
-('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0,NULL,NULL,NULL,NULL, 0, '12345c'),
-('iwJ4pQTEP0chTyfqzfr8KvpSo7XlMQ3S', 'guest_print1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 0, 1,NULL,NULL,NULL,NULL, 0, 'pyLoI1aXGp7sAq72FW-D5u9RxSxub71p');
-
+INSERT INTO `new_user` (`user_uid`, `username`, `user_password`, `role_cashier`, `role_clerk`, `role_admin`, `role_guest_print`, `Case_Note`, `Registration`, `Charge_Sheet`, `Sticker_Label`, `retire`, `authKey`) VALUES
+('011BJIjHHpoDWrsDWRyk_dkHc2GUwDBG', 'administrator1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 1, 0, NULL, NULL, NULL, NULL, 0, '12345b'),
+('2wHPf777EC532SCrMDSR47dTw4nRqx2V', 'cashier1', '7b9efcfad5bc24b82b5acbe6175842f2', 1, 0, 0, 0, NULL, NULL, NULL, NULL, 0, '12345a'),
+('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0, NULL, NULL, NULL, NULL, 0, '12345c'),
+('iwJ4pQTEP0chTyfqzfr8KvpSo7XlMQ3S', 'guest_print1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 0, 1, NULL, NULL, NULL, NULL, 0, 'pyLoI1aXGp7sAq72FW-D5u9RxSxub71p');
 
 -- --------------------------------------------------------
 
@@ -6460,6 +6487,20 @@ CREATE TABLE `receipt` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `reminder_letter`
+--
+
+CREATE TABLE `reminder_letter` (
+  `batch_datetime` datetime NOT NULL,
+  `reminder1` datetime DEFAULT NULL,
+  `reminder2` datetime DEFAULT NULL,
+  `reminder3` datetime DEFAULT NULL,
+  `responsible` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `serial_number`
 --
 
@@ -6479,18 +6520,7 @@ INSERT INTO `serial_number` (`serial_name`, `prepend`, `digit_length`, `running_
 ('receipt', 'R', 6, 0);
 
 -- --------------------------------------------------------
---
--- Table structure for table `reminder_letter`
---
-CREATE TABLE `reminder_letter` (
-  `batch_datetime` datetime NOT NULL,
-  `reminder1` datetime DEFAULT NULL,
-  `reminder2` datetime DEFAULT NULL,
-  `reminder3` datetime DEFAULT NULL,
-  `responsible` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
 --
 -- Table structure for table `treatment_details`
 --
@@ -6545,11 +6575,23 @@ ALTER TABLE `cancellation`
   ADD PRIMARY KEY (`cancellation_uid`);
 
 --
+-- Indexes for table `fpp`
+--
+ALTER TABLE `fpp`
+  ADD PRIMARY KEY (`kod`);
+
+--
 -- Indexes for table `lookup_department`
 --
 ALTER TABLE `lookup_department`
   ADD PRIMARY KEY (`department_uid`),
   ADD UNIQUE KEY `department_code` (`department_code`);
+
+--
+-- Indexes for table `lookup_fpp`
+--
+ALTER TABLE `lookup_fpp`
+  ADD PRIMARY KEY (`kod`);
 
 --
 -- Indexes for table `lookup_general`
@@ -6618,8 +6660,6 @@ ALTER TABLE `receipt`
 --
 ALTER TABLE `reminder_letter`
   ADD PRIMARY KEY (`batch_datetime`);
-  
-
 
 --
 -- Indexes for table `serial_number`
