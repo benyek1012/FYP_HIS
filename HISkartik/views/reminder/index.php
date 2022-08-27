@@ -18,11 +18,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="reminder-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
+    <!-- <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    </p> -->
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -94,12 +94,28 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => ActionColumn::className(),
-                'template' => '{Recalculate}', 
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'lookup_general_uid' => $model->lookup_general_uid]);
-                 }
+                'class' => kartik\grid\ActionColumn::className(),
+                'template' => '{Recalculate}',
+                'header' => ' ',
+                'buttons' => [
+                'Recalculate' => function ($url, $model, $key) {
+                    return HTML::a('Recalculate', ['recalculate', 'id' => $model->batch_uid]);
+                 },
+                ],
             ],
+
+            [
+                'class' => kartik\grid\ActionColumn::className(),
+                'template' => '{batch_create}',
+                'header' => ' ',
+                'buttons' => [
+                'batch_create' => function ($url, $model, $key) {
+                    return HTML::a('Create Batch', ['batch_create', 'id' => $model->batch_uid]);
+                 },
+                ],
+            ],
+
+            
 
             //'batch_datetime',
             //'reminder1',
@@ -109,9 +125,6 @@ $this->params['breadcrumbs'][] = $this->title;
             
         ],
 
-        'toolbar'=>[
-            '{export}',
-        ]
     ]); ?>
 
 
