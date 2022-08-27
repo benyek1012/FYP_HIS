@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use app\models\Reminder;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
@@ -19,31 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="reminder-index">
 
-    <?php if(Yii::$app->session->hasFlash('msg')):?>
-        <div id = "flashError">
-            <?= Yii::$app->session->getFlash('msg') ?>
-        </div>
-    <?php endif; ?>
-
-    <div class="form-group">
-        <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="showForm();"><?php echo Yii::t('app','Create');?></button>
-        <button type="button" class="btn btn-outline-primary align-self-start" style="width: 8rem;"
-            onclick="hiddenForm();"><?php echo Yii::t('app','Cancel');?></button>
-    </div>
-
-    <div id="lookup_form">
-        <?php
-            $model = new reminder();
-            echo $this->render('_form', ['model' => $model, 'value' => $model->batch_uid]);
-        ?>
-    </div>
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1> 
+    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
     <p>
-        <?= Html::a('Create Batch', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
+        <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Recalculate', ['recalculate'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Print', ['print'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Export CSV', ['csv'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Export PDF', ['pdf'], ['class' => 'btn btn-success']) ?>
+    </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -130,17 +113,3 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 </div>
-
-<script>
-
-function showForm() {
-    document.getElementById("RM_div").style.display = "block";
-}
-
-function hiddenForm() {
-    document.getElementById("RM_div").style.display = "none";
-}
-    // Fade the flash message by 5 sec
-window.setTimeout("document.getElementById('flashError').style.display='none';", 5000); 
-
-</script>
