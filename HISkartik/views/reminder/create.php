@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Reminder */
 
-$this->title = 'Create Reminder';
+$this->title = 'Create Batch';
 $this->params['breadcrumbs'][] = ['label' => 'Reminders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
