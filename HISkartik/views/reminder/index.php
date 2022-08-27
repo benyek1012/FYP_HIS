@@ -22,10 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Recalculate', ['recalculate'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Print', ['print'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Export CSV', ['csv'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Export PDF', ['pdf'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -97,18 +93,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
             ],
 
+            [
+                'class' => ActionColumn::className(),
+                'template' => '{Recalculate}', 
+                'urlCreator' => function ($action, $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'lookup_general_uid' => $model->lookup_general_uid]);
+                 }
+            ],
+
             //'batch_datetime',
             //'reminder1',
             //'reminder2',
             //'reminder3',
             //'responsible',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Reminder $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'batch_uid' => $model->batch_uid]);
-                 }
-            ],
+            
         ],
+
+        'toolbar'=>[
+            '{export}',
+        ]
     ]); ?>
 
 

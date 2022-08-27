@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="reminder-form" id="RM_div" style="display:none;">
+<div class="reminder-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
