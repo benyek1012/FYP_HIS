@@ -15,7 +15,6 @@ use Yii;
  * @property float $class_1c_ward_cost
  * @property float $class_2_ward_cost
  * @property float $class_3_ward_cost
- * @property float $class_Daycare_FPP_ward_cost
  */
 class Lookup_status extends \yii\db\ActiveRecord
 {
@@ -33,8 +32,8 @@ class Lookup_status extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status_uid', 'status_code', 'status_description', 'class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost', 'class_Daycare_FPP_ward_cost'], 'required'],
-            [['class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost', 'class_Daycare_FPP_ward_cost'], 'number'],
+            [['status_uid', 'status_code', 'status_description', 'class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost'], 'required'],
+            [['class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost'], 'number'],
             [['status_uid'], 'string', 'max' => 64],
             [['status_code'], 'string', 'max' => 20],
             [['status_description'], 'string', 'max' => 100],
@@ -57,7 +56,6 @@ class Lookup_status extends \yii\db\ActiveRecord
             'class_1c_ward_cost' => Yii::t('app','Class 1c Ward Cost'),
             'class_2_ward_cost' => Yii::t('app','Class 2 Ward Cost'),
             'class_3_ward_cost' => Yii::t('app','Class 3 Ward Cost'),
-            'class_Daycare_FPP_ward_cost' => Yii::t('app', 'Class Daycare FPP ward cost'),
         ];
     }
 }

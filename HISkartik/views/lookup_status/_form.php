@@ -47,9 +47,6 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'class_3_ward_cost')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_Daycare_FPP_ward_cost')->textInput(['maxlength' => true]) ?>
-    </div>
-    <div class="col-sm-6">
         <?= $form->field($model, 'status_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $status_uid])->label(false)?>
     </div>
 </div>
