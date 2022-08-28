@@ -7,7 +7,9 @@ use Yii;
 use app\models\Bill;
 use app\models\BillSearch;
 use app\models\Cancellation;
+use app\models\Fpp;
 use app\models\Lookup_department;
+use app\models\Lookup_fpp;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -92,6 +94,11 @@ class BillController extends Controller
         echo Json::encode($model);
     }
 
+    public function actionFpp($fpp) {
+        $model = Lookup_fpp::findOne( ['kod' => $fpp]);
+        echo Json::encode($model);
+    }
+
     public function actionWard($ward) {
         $model = Lookup_ward::findOne( ['ward_code' => $ward]);
         echo Json::encode($model);
@@ -159,6 +166,12 @@ class BillController extends Controller
             ->where(['bill_uid' => null])
             ->all();
 
+        $rowsFPP = (new \yii\db\Query())
+            ->select('kod')
+            ->from('fpp')
+            ->where(['bill_uid' => null])
+            ->all();
+
         if ($this->request->isPost) {
             // Inseart Bill
             if($model->load($this->request->post()) && $model->save()) {
@@ -172,6 +185,12 @@ class BillController extends Controller
                     $modelTreatment = $this->findModel_Treatment($rowTreatment['treatment_details_uid']);
                     $modelTreatment->bill_uid = $model->bill_uid;
                     $modelTreatment->save();
+                }
+
+                foreach($rowsFPP as $rowFPP){
+                    $modelFPP = $this->findModel_FPP($rowFPP['kod']);
+                    $modelFPP->bill_uid = $model->bill_uid;
+                    $modelFPP->save();
                 }
 
                 $model_cancellation = Cancellation::findAll(['replacement_uid' => null]);
@@ -193,6 +212,7 @@ class BillController extends Controller
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
             'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
+            'modelFPP' =>(empty($modelFPP)) ? [new Fpp] : $modelFPP,
             'model_cancellation' => new Cancellation(),
         ]);
     }
@@ -253,6 +273,7 @@ class BillController extends Controller
         $model = $this->findModel($bill_uid);
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+        $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
         
         // Update Bill
         if(Yii::$app->request->post('updateBill') == 'true') {
@@ -270,15 +291,15 @@ class BillController extends Controller
         }
 
         // Remove Ward Row
-        if (Yii::$app->request->post('removeWardRow') == 'true') {
-            // $modelWard = array_pop($modelWard);
+        // if (Yii::$app->request->post('removeWardRow') == 'true') {
+        //     // $modelWard = array_pop($modelWard);
 
-            return $this->render('generate', [
-                'model' => $model,
-                'modelWard' => $modelWard,
-                'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-            ]);
-        }
+        //     return $this->render('generate', [
+        //         'model' => $model,
+        //         'modelWard' => $modelWard,
+        //         'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
+        //     ]);
+        // }
 
         // Insert and Update Treatment
         if(Yii::$app->request->post('saveTreatment') == 'true') {
@@ -308,30 +329,69 @@ class BillController extends Controller
             return $this->render('generate', [
                 'model' => $model,
                 'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-                'modelTreatment' => $modelTreatment
+                'modelTreatment' => $modelTreatment,
+                'model_cancellation' => (empty($model_cancellation)) ? [new Cancellation] : $model_cancellation,
+                'modelFPP' => (empty($modelFPP)) ? [new Fpp] : $modelFPP,
             ]);
             // (new Treatment_detailsController(null, null))->actionTreatmentrow();
         }
 
         // Remove Treatment Row
-        if (Yii::$app->request->post('removeTreatmentRow') == 'true') {
-            // $modelTreatment = array_pop($modelTreatment);
+        // if (Yii::$app->request->post('removeTreatmentRow') == 'true') {
+        //     // $modelTreatment = array_pop($modelTreatment);
+
+        //     return $this->render('generate', [
+        //         'model' => $model,
+        //         'modelWard' => $modelWard,
+        //         'modelTreatment' => $modelTreatment,
+        //     ]);
+        // }
+
+        // Insert and Update Fpp
+        if(Yii::$app->request->post('saveFpp') == 'true') {
+            (new FppController(null, null))->actionUpdate();
+        }
+
+        // Add Fpp Row
+        if (Yii::$app->request->post('addFppRow') == 'true') {
+            $dbFpp = Fpp::findAll(['bill_uid' => $bill_uid]);
+
+            if(empty($dbFpp)) {
+                $count = count(Yii::$app->request->post('Fpp', []));
+                for($i = 0; $i < $count; $i++) {
+                    $modelFPP[] = new Fpp();
+                }
+                $modelFPP[] = new Fpp();
+            }
+            else {
+                $modelFPP = $dbFpp;
+                $count = count(Yii::$app->request->post('Fpp', [])) - count($dbFpp);
+                for($i = 0; $i < $count; $i++) {
+                    $modelFPP[] = new Fpp();
+                }
+                $modelFPP[] = new Fpp();
+            }
 
             return $this->render('generate', [
                 'model' => $model,
-                'modelWard' => $modelWard,
-                'modelTreatment' => $modelTreatment,
+                'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
+                'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
+                'model_cancellation' => (empty($model_cancellation)) ? [new Cancellation] : $model_cancellation,
+                'modelFPP' => $modelFPP,
             ]);
+            // (new FppController(null, null))->actionFpprow();
         }
 
         $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all();   
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
         $model_cancellation = new Cancellation();
+        $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
 
         return $this->render('generate', [
             'model' => $model,
             'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
             'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
+            'modelFPP' =>(empty($modelFPP)) ? [new Fpp] : $modelFPP,
             'model_cancellation' => $model_cancellation,
         ]); 
     }
@@ -534,6 +594,15 @@ class BillController extends Controller
     protected function findModel_Treatment($treatment_details_uid)
     {
         if (($model = Treatment_details::findOne(['treatment_details_uid' => $treatment_details_uid])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findModel_FPP($kod)
+    {
+        if (($model = Fpp::findOne(['kod' => $kod])) !== null) {
             return $model;
         }
 

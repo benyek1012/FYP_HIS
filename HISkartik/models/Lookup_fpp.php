@@ -42,9 +42,9 @@ class Lookup_fpp extends \yii\db\ActiveRecord
     {
         return [
             'kod' => 'Kod',
-            'name' => 'Name',
-            'min_cost_per_unit' => 'Min Cost Per Unit',
-            'max_cost_per_unit' => 'Max Cost Per Unit',
+            'name' => Yii::t('app', 'Name'),
+            'min_cost_per_unit' => Yii::t('app', 'Min Cost Per Unit'),
+            'max_cost_per_unit' => Yii::t('app', 'Max Cost Per Unit'),
         ];
     }
 }

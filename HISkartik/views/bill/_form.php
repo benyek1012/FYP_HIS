@@ -357,8 +357,13 @@ if($print_readonly)
     $this->registerJs(
         "$('#bill_details').CardWidget('collapse');
         $('#ward_div').CardWidget('collapse');
-        $('#treatment_div').CardWidget('collapse');"
-        
+        $('#treatment_div').CardWidget('collapse');
+        $('#fpp_div').CardWidget('collapse');"
+    );
+}
+else{
+    $this->registerJs(
+        "$('#fpp_div').CardWidget('collapse');"
     );
 }
 
@@ -585,6 +590,32 @@ else{
     </a>
     <!-- /.card -->
 
+    <a name="fpp">
+        <div class="card" id="fpp_div" style="display:none;">
+            <div class="card-header text-white bg-primary">
+                <h3 class="card-title"><?php echo Yii::t('app','Full Paying Patient Details');?></h3>
+                <div class="d-flex justify-content-end">
+                    <?php
+                    if(!empty($model))
+                        echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalFPPCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                    ?>
+                    <div class="card-tools">
+                        <!-- Collapse Button -->
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body" id="fpp-div">
+                <?= $this->render('/fpp/_form', ['modelFPP' => $modelFPP]) ?>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </a>
+    <!-- /.card -->
+
     <a name="billGeneration">
         <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'bill-generation-form',
@@ -765,6 +796,7 @@ else{
 document.getElementById("bill_div").style.display = "block";
 document.getElementById("ward_div").style.display = "block";
 document.getElementById("treatment_div").style.display = "block";
+document.getElementById("fpp_div").style.display = "block";
 document.getElementById('print_div').style.display = "none";
 <?php } if( $isGenerated && Yii::$app->request->get('bill_uid') &&  $isFree != 1){ ?>
 document.getElementById("print_div").style.display = "block";

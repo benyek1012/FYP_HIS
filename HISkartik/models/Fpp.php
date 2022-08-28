@@ -31,12 +31,13 @@ class Fpp extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['kod', 'name', 'additional_details', 'min_cost_per_unit', 'max_cost_per_unit', 'number_of_units', 'total_cost'], 'required'],
-            [['min_cost_per_unit', 'max_cost_per_unit', 'total_cost'], 'number'],
+            // [['kod', 'name', 'additional_details', 'min_cost_per_unit', 'max_cost_per_unit', 'number_of_units', 'total_cost', 'cost_per_unit'], 'required'],
+            [['min_cost_per_unit', 'max_cost_per_unit', 'total_cost', 'cost_per_unit'], 'number'],
             [['number_of_units'], 'integer'],
-            [['kod', 'name'], 'string', 'max' => 64],
+            [['kod', 'name', 'bill_uid', 'fpp_uid'], 'string', 'max' => 64],
             [['additional_details'], 'string', 'max' => 200],
-            [['kod'], 'unique'],
+            [['fpp_uid'], 'unique'],
+            [['bill_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_uid' => 'bill_uid']],
         ];
     }
 
@@ -46,13 +47,16 @@ class Fpp extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'fpp_uid' => Yii::t('app', 'FPP Uid'),
             'kod' => 'Kod',
-            'name' => 'Name',
-            'additional_details' => 'Additional Details',
-            'min_cost_per_unit' => 'Min Cost Per Unit',
-            'max_cost_per_unit' => 'Max Cost Per Unit',
-            'number_of_units' => 'Number Of Units',
-            'total_cost' => 'Total Cost',
+            'bill_uid' => Yii::t('app','Bill Uid'),
+            'name' => Yii::t('app', 'Name'),
+            'additional_details' => Yii::t('app', 'Additional Details'),
+            'min_cost_per_unit' => Yii::t('app', 'Min Cost Per Unit'),
+            'cost_per_unit' => Yii::t('app', 'Cost Per Unit'),
+            'max_cost_per_unit' => Yii::t('app', 'Max Cost Per Unit'),
+            'number_of_units' => Yii::t('app', 'Number Of Units'),
+            'total_cost' => Yii::t('app', 'Total Cost'),
         ];
     }
 }

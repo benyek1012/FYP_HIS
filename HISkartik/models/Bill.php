@@ -162,6 +162,21 @@ class Bill extends \yii\db\ActiveRecord
         return number_format((float)$totalItemCost, 2, '.', '');            
     }
 
+    // Get Fpp Total Cost
+    public function getTotalFPPCost($bill_uid) {
+        $totalCost = 0.0;
+
+        $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
+        $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
+        
+        foreach ($modelFPP as $index => $modelFPP){            
+            $totalCost += $modelFPP->total_cost;
+        }
+
+        // return Yii::$app->formatter->asCurrency($totalItemCost);     
+        return number_format((float)$totalCost, 2, '.', '');            
+    }
+
     // Calculate Billable
     public function calculateBillable($bill_uid) {
         $totalWardDays = 0;

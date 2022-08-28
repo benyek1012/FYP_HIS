@@ -279,6 +279,19 @@ return[
     'Responsible Uid' => 'Bertanggungjawab Uid',
     ' This rn format is wrong' =>'Format rn ini salah',
     ' This rn format must be same' => 'Format rn ini mestilah sama',
-
+    'FPP Lookup' => 'Kod FPP',
+    'Name' => 'Nama',
+    'Min Cost Per Unit' => 'Kos Min Seunit',
+    'Max Cost Per Unit' => 'Kos Maks Seunit',
+    'Min Cost Per Unit (RM)' => 'Kos Min Seunit (RM)',
+    'Max Cost Per Unit (RM)' => 'Kos Maks Seunit (RM)',
+    'Full Paying Patient Details' => 'Butiran Pesakit Membayar Penuh',
+    'Additional Details' => 'Maklumat Tambahan',
+    'Number of Units' => 'Bilangan Unit',
+    'Total Cost' => 'Jumlah Kos',
+    'Total Cost (RM)' => 'Jumlah Kos (RM)',
+    'Select FPP Kod' => 'Pilih Kod FPP',
+    'Cost Per Unit' => 'Kos Seunit',
+    'Cost Per Unit (RM)' => 'Kos Seunit (RM)',
 ];
 ?>

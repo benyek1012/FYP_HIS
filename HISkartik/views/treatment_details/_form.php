@@ -102,8 +102,13 @@ if($print_readonly)
     $this->registerJs(
         "$('#bill_details').CardWidget('collapse');
         $('#ward_div').CardWidget('collapse');
-        $('#treatment_div').CardWidget('collapse');"
-        
+        $('#treatment_div').CardWidget('collapse');
+        $('#fpp_div').CardWidget('collapse');"
+    );
+}
+else{
+    $this->registerJs(
+        "$('#fpp_div').CardWidget('collapse');"
     );
 }
 

@@ -91,6 +91,8 @@ if (Yii::$app->user->isGuest){
                     </li>
                     <li><a href="<?php echo Url::to(['/lookup_department']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/lookup_fpp']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','FPP Lookup'); ?></a></li>
                 </ul>
             </div>
         </div>

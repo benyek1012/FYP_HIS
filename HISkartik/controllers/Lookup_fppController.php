@@ -2,11 +2,15 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Lookup_fpp;
 use app\models\Lookup_fppSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\grid\EditableColumnAction;
+use yii\helpers\ArrayHelper;
+use app\models\New_user;
 
 /**
  * Lookup_fppController implements the CRUD actions for Lookup_fpp model.
@@ -31,6 +35,19 @@ class Lookup_fppController extends Controller
         );
     }
 
+    public function actions()
+    {
+        return ArrayHelper::merge(parent::actions(), [
+            'fpp' => [                                                              // identifier for your editable action
+                'class' => EditableColumnAction::className(),                       // action class name
+                'modelClass' => Lookup_fpp::className(),                   // the update model class
+                'outputValue' => function ($model, $attribute, $key, $index) {
+                    $value = $model->$attribute;  
+                }
+            ]
+        ]);
+    }
+
     /**
      * Lists all Lookup_fpp models.
      *
@@ -38,8 +55,39 @@ class Lookup_fppController extends Controller
      */
     public function actionIndex()
     {
+        $model = new Lookup_fpp();
         $searchModel = new Lookup_fppSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
+        if ($this->request->isPost && $model->load($this->request->post()))
+        {
+            $checkDuplicatedCode = Lookup_fpp::findOne((['kod' => $model->kod]));
+
+            if($model->validate() &&  empty( $checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'kod' => $model->kod]);
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error_fpp', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>Validation error! </strong> Kod '.$model->kod.' is duplicated. !</div>'
+                );
+                //$message = 'Code should not be duplicated.';
+                //$model->addError('ward_code', $message);
+            }
+        }
+        else
+        {
+            $model->loadDefaultValues();
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -68,17 +116,38 @@ class Lookup_fppController extends Controller
     public function actionCreate()
     {
         $model = new Lookup_fpp();
+        $searchModel = new Lookup_fppSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'kod' => $model->kod]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $checkDuplicatedCode = Lookup_fpp::findOne((['kod' => $model->kod]));
+
+            if (empty($checkDuplicatedCode))
+            {
+                try{
+                    $model->save();
+                }catch(\yii\db\Exception $e){
+                    var_dump($e->getMessage()); //Get the error messages accordingly.
+                }
+                return $this->redirect(['index', 'kod' => $model->kod]);
             }
-        } else {
-            $model->loadDefaultValues();
-        }
+            else
+            {
+                Yii::$app->session->setFlash('error_fpp', '
+                <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                <strong>Validation error! </strong> Kod '.$model->kod.' is duplicated. !</div>'
+                );
+                return $this->redirect(['index', 'kod' => $model->kod]);
+            }
+        } 
 
-        return $this->render('create', [
+        $model->loadDefaultValues();
+
+        return $this->render('index', [
             'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

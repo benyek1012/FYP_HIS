@@ -8,22 +8,42 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="lookup-fpp-form">
+<div class="lookup-fpp-form" id="LOF_div" style="display:none;">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = kartik\form\ActiveForm::begin([
+        'action' => ['lookup_fpp/create', 'kod' => $model['kod']],
+        'id' => 'lookup-fpp-form',
+        'type' => 'vertical',
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+        ],
+        
+    ]);
+    ?>
 
-    <?= $form->field($model, 'kod')->textInput(['maxlength' => true]) ?>
+    <div class ="row">
+        <div class="col-sm-6">
+            <?= $form->field($model, 'kod')->textInput(['maxlength' => true]) ?>
+        </div>
+            
+        <div class="col-sm-6">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        </div>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'min_cost_per_unit')->textInput(['maxlength' => true]) ?>
+        </div>
 
-    <?= $form->field($model, 'min_cost_per_unit')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'max_cost_per_unit')->textInput(['maxlength' => true]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'max_cost_per_unit')->textInput(['maxlength' => true]) ?>
+        </div>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <div class="form-group">
+        <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+    </div>
+
+    <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
