@@ -184,7 +184,10 @@ class SiteController extends Controller
                                                 // var_dump($model->errors);
                                                 // exit;
                                             }
-                                            else $flag = 0;
+                                            else {
+                                                $flag = 0;
+                                                break;
+                                            }
                                         }
                                         
                                     }
