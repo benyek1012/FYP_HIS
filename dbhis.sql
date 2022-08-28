@@ -126,10 +126,13 @@ CREATE TABLE `cancellation` (
 --
 
 CREATE TABLE `fpp` (
+  `fpp_uid` varchar(64) NOT NULL,
   `kod` varchar(64) NOT NULL,
+  `bill_uid` varchar(64) NOT NULL,
   `name` varchar(64) NOT NULL,
   `additional_details` varchar(200) NOT NULL,
   `min_cost_per_unit` decimal(10,2) NOT NULL,
+  `cost_per_unit` decimal(10,2) NOT NULL,
   `max_cost_per_unit` decimal(10,2) NOT NULL,
   `number_of_units` int(11) NOT NULL,
   `total_cost` decimal(10,2) NOT NULL
@@ -6598,7 +6601,8 @@ ALTER TABLE `cancellation`
 -- Indexes for table `fpp`
 --
 ALTER TABLE `fpp`
-  ADD PRIMARY KEY (`kod`);
+  ADD PRIMARY KEY (`fpp_uid`) USING BTREE,
+  ADD KEY `bill_uid` (`bill_uid`);
 
 --
 -- Indexes for table `lookup_department`
@@ -6720,6 +6724,12 @@ ALTER TABLE `batch`
 --
 ALTER TABLE `bill`
   ADD CONSTRAINT `bill_ibfk_1` FOREIGN KEY (`rn`) REFERENCES `patient_admission` (`rn`);
+
+--
+-- Constraints for table `fpp`
+--
+ALTER TABLE `fpp`
+  ADD CONSTRAINT `fpp_ibfk_1` FOREIGN KEY (`bill_uid`) REFERENCES `bill` (`bill_uid`);
 
 --
 -- Constraints for table `patient_admission`
