@@ -455,6 +455,7 @@ class BillController extends Controller
         $modelreceipt = Receipt::findAll(['rn'=> $model->rn, 'receipt_type' => 'deposit']);
         $modelrefund = Receipt::findAll(['rn'=> $model->rn, 'receipt_type' => 'refund']);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+        $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
         
         if ($this->request->isPost && $model->load($this->request->post())) {
             if($model->validate() && $model->bill_print_id != "")
@@ -509,6 +510,8 @@ class BillController extends Controller
                     'modelWard' => $modelWard,
                     'modelTreatment' => $modelTreatment,
                     'print_empty' => true,
+                    'model_cancellation' => new Cancellation(),
+                    'modelFPP' => $modelFPP,
                 ]);
             }
         }
@@ -524,6 +527,7 @@ class BillController extends Controller
             'modelWard' => $modelWard,
             'modelTreatment' => $modelTreatment,
             'model_cancellation' => new Cancellation(),
+            'modelFPP' => $modelFPP,
         ]);
     }
 

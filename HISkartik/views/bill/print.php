@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] =  Yii::t('app','Print');
         'modelTreatment' => $modelTreatment,
         'print_readonly' => true,
         'model_cancellation' => $model_cancellation,
+        'modelFPP' => $modelFPP,
     ]) ?>
 
 </div>
