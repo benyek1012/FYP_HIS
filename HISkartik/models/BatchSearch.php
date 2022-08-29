@@ -17,8 +17,9 @@ class BatchSearch extends Batch
     public function rules()
     {
         return [
-            [['id', 'batch'], 'integer'],
-            [['file_import'], 'safe'],
+            [['id'], 'integer'],
+            [['upload_datetime', 'scheduled_datetime', 'executed_datetime', 'file_import', 'lookup_type', 'update_type', 'error', 
+                'approval1_responsible_uid', 'approval2_responsible_uid', 'execute_responsible_uid'], 'safe'],
         ];
     }
 
@@ -40,12 +41,13 @@ class BatchSearch extends Batch
      */
     public function search($params)
     {
-        $query = Batch::find()->orderBy(['id' => SORT_DESC]);
+        $query = Batch::find()->orderBy(['upload_datetime' => SORT_DESC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>['pageSize'=>10],
         ]);
 
         $this->load($params);
@@ -59,10 +61,19 @@ class BatchSearch extends Batch
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'batch' => $this->batch,
+            // 'batch' => $this->batch,
         ]);
 
-        $query->andFilterWhere(['like', 'file_import', $this->file_import]);
+        $query->andFilterWhere(['like', 'file_import', $this->file_import])
+        ->andFilterWhere(['like', 'upload_datetime', $this->upload_datetime])
+        ->andFilterWhere(['like', 'approval1_responsible_uid', $this->approval1_responsible_uid])
+        ->andFilterWhere(['like', 'approval2_responsible_uid', $this->approval2_responsible_uid])
+        ->andFilterWhere(['like', 'lookup_type', $this->lookup_type])
+        ->andFilterWhere(['like', 'error', $this->error])
+        ->andFilterWhere(['like', 'scheduled_datetime', $this->scheduled_datetime])
+        ->andFilterWhere(['like', 'executed_datetime', $this->executed_datetime])
+        ->andFilterWhere(['like', 'execute_responsible_uid', $this->execute_responsible_uid])
+        ->andFilterWhere(['like', 'update_type', $this->update_type]);
 
         return $dataProvider;
     }
