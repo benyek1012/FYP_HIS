@@ -6,6 +6,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 use app\models\Patient_admission;
 use app\models\Bill;
 use app\models\Ward;
+use app\models\Fpp;
 use yii\helpers\Url;
 use app\models\Cancellation;
 use yii\bootstrap4\Modal;
@@ -361,7 +362,9 @@ if($print_readonly)
         $('#fpp_div').CardWidget('collapse');"
     );
 }
-else{
+
+$checkFPP = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+if(empty($checkFPP)){
     $this->registerJs(
         "$('#fpp_div').CardWidget('collapse');"
     );

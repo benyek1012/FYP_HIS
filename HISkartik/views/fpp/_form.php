@@ -4,6 +4,7 @@ use app\models\Patient_admission;
 use app\models\Cancellation;
 use app\models\Bill;
 use app\models\Ward;
+use app\models\Fpp;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -96,13 +97,16 @@ if($print_readonly)
         $('#fpp_div').CardWidget('collapse');"
     );
 }
-else{
+
+$checkFPP = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+if(empty($checkFPP)){
     $this->registerJs(
         "$('#fpp_div').CardWidget('collapse');"
     );
 }
 
 $url = Url::toRoute(['/bill/fpp']);
+$urlCost = Url::toRoute(['/bill/cost']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -128,6 +132,8 @@ else{
         ],
     ]);
     ?>
+        <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
+        <input type="hidden" id="costURL" name="dateUcostURLRL" value="<?php echo $urlCost ?>">
         <table id="fpp-table">
             <tr>
                 <td><?php echo Yii::t('app','Kod');?></td>
@@ -288,13 +294,6 @@ else{
                         $('#fpp-'+index+'-min_cost_per_unit').removeClass('textColor');
                         $('#fpp-'+index+'-max_cost_per_unit').removeClass('textColor');
                     }
-                    
-                    if($('.minCostPerUnit').hasClass('textColor') || $('.maxCostPerUnit').hasClass('textColor')){
-                        document.getElementById("saveFpp").disabled = true;
-                    }
-                    else{
-                        document.getElementById("saveFpp").disabled = false;
-                    }
                 });
             });
         });
@@ -334,6 +333,24 @@ $(document).on('click', '#fppDelete', function(e){
         }
     });
 })
+
+var billUid = $('#ward-bill-uid').val();
+var url = document.getElementById("costURL").value;
+
+$.get(url, {bill_uid : billUid}, function(data){
+    var data = $.parseJSON(data);
+
+    for(var i = 0; i < data.length; i++){
+        if(data[i].cost_per_unit <= data[i].min_cost_per_unit || data[i].cost_per_unit > data[i].max_cost_per_unit){
+            $('#fpp-'+i+'-min_cost_per_unit').addClass('textColor');
+            $('#fpp-'+i+'-max_cost_per_unit').addClass('textColor');
+        }
+        else{
+            $('#fpp-'+i+'-min_cost_per_unit').removeClass('textColor');
+            $('#fpp-'+i+'-max_cost_per_unit').removeClass('textColor');
+        }
+    }
+});
 JS;
 $this->registerJS($script);
 ?>

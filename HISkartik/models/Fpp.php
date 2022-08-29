@@ -34,8 +34,8 @@ class Fpp extends \yii\db\ActiveRecord
             // [['kod', 'name', 'additional_details', 'min_cost_per_unit', 'max_cost_per_unit', 'number_of_units', 'total_cost', 'cost_per_unit'], 'required'],
             [['min_cost_per_unit', 'max_cost_per_unit', 'total_cost', 'cost_per_unit'], 'number'],
             [['number_of_units'], 'integer'],
-            [['kod', 'name', 'bill_uid', 'fpp_uid'], 'string', 'max' => 64],
-            [['additional_details'], 'string', 'max' => 200],
+            [['kod', 'bill_uid', 'fpp_uid'], 'string', 'max' => 64],
+            [['additional_details', 'name'], 'string', 'max' => 200],
             [['fpp_uid'], 'unique'],
             [['bill_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_uid' => 'bill_uid']],
         ];

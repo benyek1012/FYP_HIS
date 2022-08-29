@@ -182,11 +182,13 @@ class Bill extends \yii\db\ActiveRecord
         $totalWardDays = 0;
         $dailyWardCost = 0.0;
         $totalTreatmentCost = 0.0;
+        $totalFPPCost = 0.0;
         $billable = 0.0;
 
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
+        $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
 
         if($modelBill != ""){
             $dailyWardCost = $modelBill->daily_ward_cost;
@@ -199,8 +201,12 @@ class Bill extends \yii\db\ActiveRecord
         foreach($modelTreatment as $index => $modelTreatment){
             $totalTreatmentCost += $modelTreatment->item_total_unit_cost_rm;
         }
+
+        foreach($modelFPP as $index => $modelFPP){
+            $totalFPPCost += $modelFPP->total_cost;
+        }
         
-        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost;
+        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost;
 
         if(!empty($modelBill) && $modelBill->is_free == 1)
             $billable = 0;

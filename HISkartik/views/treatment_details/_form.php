@@ -4,6 +4,7 @@ use app\models\Patient_admission;
 use app\models\Cancellation;
 use app\models\Bill;
 use app\models\Ward;
+use app\models\Fpp;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -106,7 +107,9 @@ if($print_readonly)
         $('#fpp_div').CardWidget('collapse');"
     );
 }
-else{
+
+$checkFPP = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+if(empty($checkFPP)){
     $this->registerJs(
         "$('#fpp_div').CardWidget('collapse');"
     );
@@ -231,7 +234,7 @@ else{
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
+                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost(); submitForm()'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
@@ -327,6 +330,23 @@ else{
                     // calculateItemCost();
                 });
             });
+        });
+    }
+
+    function submitForm(){
+        var form = $('#treatment-form');
+        var formData = form.serialize();
+        
+        $.ajax({
+            url: form.attr("action"),
+            type: form.attr("method"),
+            data: formData,
+
+            success: function (data) {
+                // $(wardForm).trigger('reset');
+                // console.log(wardForm.attr("method"));
+                // location.reload();
+            },
         });
     }
 </script>

@@ -30,7 +30,8 @@ class Lookup_fpp extends \yii\db\ActiveRecord
         return [
             [['kod', 'name', 'min_cost_per_unit', 'max_cost_per_unit'], 'required'],
             [['min_cost_per_unit', 'max_cost_per_unit'], 'number'],
-            [['kod', 'name'], 'string', 'max' => 64],
+            [['kod'], 'string', 'max' => 64],
+            [['name'], 'string', 'max' => 200],
             [['kod'], 'unique'],
         ];
     }

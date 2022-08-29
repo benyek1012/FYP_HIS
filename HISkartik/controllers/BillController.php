@@ -130,7 +130,17 @@ class BillController extends Controller
         //     $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
         // }
         echo Json::encode($modelWard);
-    }    
+    }   
+    
+    // Check FPP Cost Range
+    public function actionCost($bill_uid){
+        $modelFPP = Fpp::find()->where(['bill_uid' => $bill_uid])->all(); 
+         
+        // if($modelWard != null){
+        //     $modelDate = Ward::find()->where(['between', 'ward_start_datetime', $modelWard[0]->ward_start_datetime, $modelWard[0]->ward_end_datetime])->all();
+        // }
+        echo Json::encode($modelFPP);
+    }  
 
     /**
      * Displays a single Bill model.

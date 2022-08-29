@@ -121,6 +121,8 @@ use yii\helpers\Url;
         $linkDisabled = '';
     }
 
+    $url = Url::toRoute(['/patient_admission/update', 'rn'=> Yii::$app->request->get('rn')]);
+
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
@@ -183,7 +185,7 @@ use yii\helpers\Url;
         </div>
 
         <div class="col-sm-6">
-           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?> 
+           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?> 
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
@@ -269,3 +271,22 @@ $this->registerJs(
         .load($(this).attr('value'));
     });"
 );
+?>
+
+<script>
+    function testing(url){
+        var wardForm = $('#patient-admission-form');
+        var formData = wardForm.serialize();
+        
+        $.ajax({
+            url: wardForm.attr("action"),
+            type: wardForm.attr("method"),
+            data: formData,
+
+            success: function (data) {
+                // $(wardForm).trigger('reset');
+                // console.log(wardForm.attr("method"));
+            },
+        });
+    }
+</script>

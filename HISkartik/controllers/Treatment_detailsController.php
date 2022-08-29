@@ -120,6 +120,7 @@ class Treatment_detailsController extends Controller
     public function actionUpdate()
     {
          // Insert and Update Treatment
+         // Yii::$app->request->post('saveTreatment') == 'true' && 
          if(Yii::$app->request->post('saveTreatment') == 'true' && Yii::$app->request->post('Treatment_details', [])) {
             $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
             $modelTreatment = Model::createMultiple(Treatment_details::className());
