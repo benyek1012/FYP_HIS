@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Batch;
+use app\models\New_user;
 use app\models\BatchSearch;
 use app\models\Lookup_ward;
 use Codeception\Step\Skip;
@@ -50,16 +51,23 @@ class BatchController extends Controller
         $searchModel = new BatchSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $flag_delete = true;
+
+        if(!(new New_user()) -> isAdmin()) echo $this->render('/site/no_access');
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                
-                $table = new Lookup_ward();
+                $table = $model::chooseLookupType($model->lookup_type);
                 $tableName = $table->tableName();
-                $col = $table->attributes();
+                $column = $table->attributes();
                 $string_error = "";
 
                 $model->file = UploadedFile::getInstance($model, 'file');
                 $uploadExists = 0;
+
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model->upload_datetime = $date->format('Y-m-d H:i:s');
            
                 if($model->file) {  
                     $path = 'uploads/';
@@ -69,9 +77,9 @@ class BatchController extends Controller
                     $random_date = Yii::$app->formatter->asDatetime(date("dmyyhis"), "php:dmYHis");
                     $random =  $random_date.rand(10, 100);
                     $userId = Yii::$app->user->identity->id;
-                    $now = new Expression('NOW()');
                     $uploadExists = 1;
                 }
+
 
                 if($uploadExists && $model->validate()){
                     try{
@@ -80,20 +88,29 @@ class BatchController extends Controller
                         $model->file->saveAs($model->file_import);
                         $handle = fopen($model->file_import, 'r');
                         if($handle){
-                            $model->batch = $random;
                             $first_column_csv = fgetcsv($handle);
+                            // filter empty column
+                            $first_column_csv = array_filter($first_column_csv);
+
+                            // remove first element
+                            $col = $column;
+                            array_shift($col);
+                            // var_dump($col);
+                            // exit;
 
                             // Check first column of CSV and database column name equal
-                            if(count(array_filter($first_column_csv)) != count($col))
+                            if(count($first_column_csv) != count($col))
                             {
                                 Yii::$app->session->setFlash('msg', '
                                 <div class="alert alert-danger alert-dismissable">
                                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                                 <strong>'.Yii::t('app', 'Validation error! ').' </strong> Lost column name !</div>');
-        
+                                
+                                unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+
                                 return $this->redirect(['index']);
                             }
-
+                            
                             $result_different_first_row = array_diff($first_column_csv, $col);
                     
                             if(!empty($result_different_first_row))
@@ -102,37 +119,44 @@ class BatchController extends Controller
                                 <div class="alert alert-danger alert-dismissable">
                                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                                 <strong>'.Yii::t('app', 'Validation error! ').' </strong> Invalid column name !</div>');
+
+                                unlink(Yii::$app->basePath . '/web/' . $model->file_import);
         
                                 return $this->redirect(['index']);
                             }
-            
-                            // read data lines 
-                            while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
-                                $model_lookup_ward = new Lookup_ward();
-                                $model_lookup_ward->ward_uid = $line[0];
-                                $model_lookup_ward->ward_code = $line[1];
-                                $model_lookup_ward->ward_name = $line[2];
-                                $model_lookup_ward->sex = $line[3];
-                                $model_lookup_ward->min_age = $line[4];
-                                $model_lookup_ward->max_age = $line[5];
 
-                                $valid = $model_lookup_ward->validate();
-                                $array_error = $model_lookup_ward->getFirstErrors();
-                             
-                                foreach($array_error as $error){
-                                    $string_error .= $error."<br/>";
+                            $str = "";
+                            $row = 2;
+                            // read data lines 
+                            for ($i = 0; $line = fgetcsv($handle ); ++$i) {
+                                if(!empty($line[0]))
+                                {
+                                    $model_lookup_ward = new Lookup_ward();
+                                    $model_lookup_ward->ward_uid =  Base64UID::generate(32);
+                                    $model_lookup_ward->ward_code = $line[0];
+                                    $model_lookup_ward->ward_name = $line[1];
+                                    $model_lookup_ward->sex = $line[2];
+                                    $model_lookup_ward->min_age = $line[3];
+                                    $model_lookup_ward->max_age = $line[4];
+    
+                                    $valid = $model_lookup_ward->validate();
+                                    $array_error = $model_lookup_ward->getFirstErrors();
+                                 
+                                    foreach($array_error as $error){
+                                        $string_error .= "Row ".$row." : ".$error."<br/>";
+                                    }
+                                    
+                                    if($valid) 
+                                        $bulkInsertArray[] = [
+                                            'ward_uid' =>  Base64UID::generate(32),
+                                            'ward_code' => $line[0],
+                                            'ward_name' => $line[1],
+                                            'sex' =>   $line[2],
+                                            'min_age' => $line[3],
+                                            'max_age' => $line[4],
+                                        ];
                                 }
-                                
-                                if($valid) 
-                                    $bulkInsertArray[] = [
-                                        'ward_uid' => $line[0],
-                                        'ward_code' => $line[1],
-                                        'ward_name' => $line[2],
-                                        'sex' =>   $line[3],
-                                        'min_age' => $line[4],
-                                        'max_age' => $line[5],
-                                        'batch' => $random,
-                                    ];
+                                $row++;
                             }
                         }
                         fclose($handle);
@@ -143,14 +167,13 @@ class BatchController extends Controller
                         $transaction->rollback();
                     }      
 
-                    // var_dump(!empty($bulkInsertArray));
-                    // exit;
-
                     if(!empty($bulkInsertArray))
                     {
                         // insert into lookup table
-                        Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();                           
+                       // Yii::$app->db->createCommand()->batchInsert($tableName, $column, $bulkInsertArray)->execute();    
+                                              
                         // insert into batch table
+                        $model->error = $string_error;
                         $model->save();
 
                         if($string_error != "")
@@ -160,6 +183,7 @@ class BatchController extends Controller
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
                             <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>'. $string_error.'</div>');
                         }
+                        else $flag_delete = false;
                     }
                     else
                         Yii::$app->session->setFlash('msg', '
@@ -168,7 +192,8 @@ class BatchController extends Controller
                         <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>All data from CSV file have been inserted! </div>');
                  
                     // delete file folder from PC
-                    unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                    if($flag_delete == true)
+                        unlink(Yii::$app->basePath . '/web/' . $model->file_import);
                 }
 
                 return $this->redirect(['index']);
@@ -182,6 +207,76 @@ class BatchController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    public function actionExecute($id)
+    {
+        $model =  $this->findModel($id);
+
+        $table = $model::chooseLookupType($model->lookup_type);
+        $tableName = $table->tableName();
+        $column = $table->attributes();
+
+        $handle = fopen($model->file_import, 'r');
+        // remove first row
+        fgetcsv($handle);
+
+        $row = 0;
+
+        if($handle){
+            // read data lines 
+            for ($i = 0; $line = fgetcsv($handle ); ++$i) {
+                if(!empty($line[0]))
+                {
+                    $model_lookup_ward = new Lookup_ward();
+                    $model_lookup_ward->ward_uid =  Base64UID::generate(32);
+                    $model_lookup_ward->ward_code = $line[0];
+                    $model_lookup_ward->ward_name = $line[1];
+                    $model_lookup_ward->sex = $line[2];
+                    $model_lookup_ward->min_age = $line[3];
+                    $model_lookup_ward->max_age = $line[4];
+                    $model_lookup_ward->save();
+                }
+            }
+        }
+        fclose($handle);
+
+    
+        // delete file folder from PC
+        unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+
+        $model->execute_responsible_uid = Yii::$app->user->identity->id;
+
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+        $model->executed_datetime = $date->format('Y-m-d H:i:s');
+
+        $model->save();
+
+        Yii::$app->session->setFlash('msg', '
+            <div class="alert alert-success alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+            '.Yii::t('app', 'You have successfully import file '.$model->file_import.'.'). '</div>'
+        );
+    
+
+        return $this->redirect(['index']);
+
+    }
+
+    public function actionApprove($id)
+    {
+       
+        $model = $this->findModel($id);
+
+        if(empty($model->approval1_responsible_uid))
+            $model->approval1_responsible_uid = Yii::$app->user->identity->id;
+        else $model->approval2_responsible_uid = Yii::$app->user->identity->id;
+
+        $model->save();
+
+        return $this->redirect(['index']);
+    }
+
 
     /**
      * Displays a single Batch model.
@@ -227,7 +322,6 @@ class BatchController extends Controller
                     $model->file->saveAs($model->file_import);
                     $handle = fopen($model->file_import, 'r');
                     if($handle){
-                        $model->batch = $random;
                         if($model->save()){
                             while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
                                 $bulkInsertArray[] = [
