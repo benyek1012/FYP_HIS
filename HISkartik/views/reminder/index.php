@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => ' ',
                 'buttons' => [
                 'Recalculate' => function ($url, $model, $key) {
-                    return HTML::a('Recalculate', ['recalculate', 'id' => $model->batch_uid]);
+                    return HTML::a('Recalculate', ['recalculate', 'id' => $model->batch_datetime]);
                  },
                 ],
             ],
@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => ' ',
                 'buttons' => [
                 'batch_create' => function ($url, $model, $key) {
-                    return HTML::a('Create Batch', ['batch_create', 'id' => $model->batch_uid]);
+                    return HTML::a('Create Batch', ['batch_create', 'id' => $model->batch_datetime]);
                  },
                 ],
             ],
