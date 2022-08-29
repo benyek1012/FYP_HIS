@@ -183,7 +183,7 @@ CREATE TABLE `fpp` (
   `fpp_uid` varchar(64) NOT NULL,
   `kod` varchar(64) NOT NULL,
   `bill_uid` varchar(64) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `additional_details` varchar(200) NOT NULL,
   `min_cost_per_unit` decimal(10,2) NOT NULL,
   `cost_per_unit` decimal(10,2) NOT NULL,
@@ -492,7 +492,7 @@ INSERT INTO `lookup_department` (`department_uid`, `department_code`, `departmen
 
 CREATE TABLE `lookup_fpp` (
   `kod` varchar(64) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `min_cost_per_unit` decimal(10,2) NOT NULL,
   `max_cost_per_unit` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
