@@ -189,9 +189,6 @@ use yii\helpers\Url;
             <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reminder_given')->textInput(['disabled' => true, ]) ?>
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6">

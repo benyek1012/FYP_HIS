@@ -23,7 +23,7 @@ class Patient_admissionSearch extends Patient_admission
     {
         return [
             [['name','nric','race','sex','rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type'], 'safe'],
-            [['medical_legal_code', 'reminder_given'], 'integer'],
+            [['medical_legal_code' ], 'integer'],
         ];
     }
 

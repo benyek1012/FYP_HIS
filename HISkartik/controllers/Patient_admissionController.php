@@ -78,7 +78,6 @@ class Patient_admissionController extends Controller
                 $model->loadDefaultValues();
                 $model->initial_ward_class = "UNKNOWN";
                 $model->initial_ward_code = "UNKNOWN";
-                $model->reminder_given = 0;
                 $model->save();
                 
                 $model_cancellation->replacement_uid = $new_rn;
@@ -190,7 +189,6 @@ class Patient_admissionController extends Controller
             $model->loadDefaultValues();
             $model->initial_ward_class = "UNKNOWN";
             $model->initial_ward_code = "UNKNOWN";
-            $model->reminder_given = 0;
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
