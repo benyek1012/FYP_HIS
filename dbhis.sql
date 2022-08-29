@@ -61,6 +61,96 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `transaction_records` (IN `pid` VARC
  
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder_batch_select`(IN `MIN_DATE` DATE, IN `MAX_DATE` DATE, IN `responsible_uid` VARCHAR(64))
+BEGIN
+
+SET @r1MIN_DATE = DATEADD(day, 14, @MIN_DATE);
+SET @r2MIN_DATE = DATEADD(day, 28, @MIN_DATE);
+SET @r3MIN_DATE = DATEADD(day, 42, @MIN_DATE);
+SET @r1MAX_DATE = DATEADD(day, 14, @MAX_DATE);
+SET @r2MAX_DATE = DATEADD(day, 28, @MAX_DATE);
+SET @r3MAX_DATE = DATEADD(day, 42, @MAX_DATE);
+
+
+UPDATE patient_admission SET reminder1 = CAST('9999-12-31' AS DATE);
+SELECT patient_admission WHERE patient_admission.rn IN (
+	SELECT _relevantBills.rn
+		FROM 
+			((SELECT rn, CONVERT(bill.final_ward_datetime,DATE) AS discharge_date, bill_generation_billable_sum_rm 						
+				FROM bill 
+				WHERE (bill.is_deleted = 0 AND !ISNULL(bill.bill_generation_datetime)) 
+				AND (CONVERT(bill.final_ward_datetime,DATE) >= @r1MIN_DATE AND CONVERT(bill.final_ward_datetime,DATE) <= @r1MAX_DATE)   	
+				)AS _relevantBills)
+			LEFT OUTER JOIN
+			((SELECT rn, SUM(CASE WHEN refund = 'refund' THEN - receipt_content_sum ELSE receipt_content_sum END) AS receipt_sum 
+				FROM receipt 
+				WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) 
+					AND (CONVERT(receipt_content_datetime_paid,DATE) <= @r1MAX_DATE)													
+				GROUP BY rn)
+   				 AS _payments)
+    	ON _relevantBills.rn = _payments.rn
+		WHERE _relevantBills.discharge_date(-_relevantBills.bill_generation_billable_sum_rm + COALESCE(_payments.receipt_content_sum,0)) <0
+	);
+    
+UPDATE patient_admission SET reminder2 = CAST('9999-12-31' AS DATE);
+SELECT patient_admission WHERE patient_admission.rn IN (
+	SELECT _relevantBills.rn
+		FROM 
+			((SELECT rn, CONVERT(bill.final_ward_datetime,DATE) AS discharge_date, bill_generation_billable_sum_rm 						
+				FROM bill 
+				WHERE (bill.is_deleted = 0 AND !ISNULL(bill.bill_generation_datetime)) 
+				AND (CONVERT(bill.final_ward_datetime,DATE) >= @r2MIN_DATE AND CONVERT(bill.final_ward_datetime,DATE) <= @r2MAX_DATE)   	
+				)AS _relevantBills)
+			LEFT OUTER JOIN
+			((SELECT rn, SUM(CASE WHEN refund = 'refund' THEN - receipt_content_sum ELSE receipt_content_sum END) AS receipt_sum 
+				FROM receipt 
+				WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) 
+					AND (CONVERT(receipt_content_datetime_paid,DATE) <= @r2MAX_DATE)													
+				GROUP BY rn)
+   				 AS _payments)
+    	ON _relevantBills.rn = _payments.rn
+		WHERE _relevantBills.discharge_date(-_relevantBills.bill_generation_billable_sum_rm + COALESCE(_payments.receipt_content_sum,0)) <0
+	);
+    
+UPDATE patient_admission SET reminder3 = CAST('9999-12-31' AS DATE);
+SELECT patient_admission WHERE patient_admission.rn IN (
+	SELECT _relevantBills.rn
+		FROM 
+			((SELECT rn, CONVERT(bill.final_ward_datetime,DATE) AS discharge_date, bill_generation_billable_sum_rm 						
+				FROM bill 
+				WHERE (bill.is_deleted = 0 AND !ISNULL(bill.bill_generation_datetime)) 
+				AND (CONVERT(bill.final_ward_datetime,DATE) >= @r3MIN_DATE AND CONVERT(bill.final_ward_datetime,DATE) <= @r3MAX_DATE)   	
+				)AS _relevantBills)
+			LEFT OUTER JOIN
+			((SELECT rn, SUM(CASE WHEN refund = 'refund' THEN - receipt_content_sum ELSE receipt_content_sum END) AS receipt_sum 
+				FROM receipt 
+				WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) 
+					AND (CONVERT(receipt_content_datetime_paid,DATE) <= @r3MAX_DATE)													
+				GROUP BY rn)
+   				 AS _payments)
+    	ON _relevantBills.rn = _payments.rn
+		WHERE _relevantBills.discharge_date(-_relevantBills.bill_generation_billable_sum_rm + COALESCE(_payments.receipt_content_sum,0)) <0
+	);
+    
+    
+set @count1 = (SELECT COUNT(reminder1) FROM patient_admission WHERE reminder1 = CAST('9999-12-31' AS DATE));
+SET @count2 = (SELECT COUNT(reminder2) FROM patient_admission WHERE reminder2 = CAST('9999-12-31' AS DATE));
+SET @count3 = (SELECT COUNT(reminder3) FROM patient_admission WHERE reminder3 = CAST('9999-12-31' AS DATE));
+
+
+UPDATE reminder_batch SET batch_date = CONVERT(NOW(), DATE), reminder1count = @count1, reminder2count = @count2, reminder3count = @count3, responsible = @responsible_uid WHERE batch_date = CAST('9999-12-31' AS DATE);
+
+
+
+
+
+
+
+
+END$$
+    
+ 
+
 DELIMITER ;
 
 -- --------------------------------------------------------
