@@ -177,7 +177,7 @@ else{
                         
                         <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
                             'data' => $wardcode,
-                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                            'disabled' => empty($isGenerated) ? false : true,
                             'options' => [
                                 'placeholder' => Yii::t('app','Select ward code'), 
                                 'class' => 'wardCode',
@@ -199,7 +199,7 @@ else{
 
                         <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
                             'data' => $wardcode,
-                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                            'disabled' => empty($isGenerated) ? false : true,
                             'options' => [
                                 'placeholder' => Yii::t('app','Select ward code'), 
                                 'class' => 'wardCode',
@@ -217,7 +217,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['maxlength' => true, 'class' => 'wardName',
-                    'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly, 'style' => 'width: 180px'])->label(false) ?>
+                    'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => empty($isGenerated) ? false : true, 'style' => 'width: 180px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -225,7 +225,7 @@ else{
                     if($admission_model->initial_ward_code != "UNKNOWN" && empty($modelWard->ward_code) && $index == 0){
                     ?>
                         <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'start_date', 'disabled' => $print_readonly == false? $disabled : $print_readonly, 'value' => $admission_model->entry_datetime],
+                        'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true, 'value' => $admission_model->entry_datetime],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         'pluginEvents' => [
                             'change' => 'function () {
@@ -237,7 +237,7 @@ else{
                     else{
                     ?>
                         <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'start_date', 'disabled' => $print_readonly == false? $disabled : $print_readonly,],
+                        'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true,],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         'pluginEvents' => [
                             'change' => 'function () {
@@ -250,7 +250,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'end_date', 'disabled' => $print_readonly == false? $disabled : $print_readonly,], 
+                        'options' => ['class' => 'end_date', 'disabled' => empty($isGenerated) ? false : true,], 
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
                         'pluginEvents' => [
                             'change' => 'function () {
@@ -260,7 +260,7 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
                 <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true,
-                        'class' => 'day', 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,])->label(false) ?>
+                        'class' => 'day', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>

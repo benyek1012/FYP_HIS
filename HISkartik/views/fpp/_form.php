@@ -153,7 +153,8 @@ else{
                 <td>                    
                     <?= $form->field($modelFPP, "[$index]kod")->widget(kartik\select2\Select2::classname(), [
                         'data' => $fpp_kod,
-                        'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                        // 'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                        'disabled' => empty($isGenerated) ? false : true,
                         'options' => [
                             'placeholder' => Yii::t('app','Select FPP Kod'), 
                             'class' => 'fppKod',
@@ -167,31 +168,31 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP ,"[$index]name")->textInput(['maxlength' => true, 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly])->label(false) ?>
+                    <?= $form->field($modelFPP ,"[$index]name")->textInput(['maxlength' => true, 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => $print_readonly == false? $disabled : $print_readonly])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]min_cost_per_unit")->textInput(['readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]min_cost_per_unit")->textInput(['class' => 'minCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onchange' => "checkCostRange('{$url}');"])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}');"])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]max_cost_per_unit")->textInput(['readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]max_cost_per_unit")->textInput(['class' => 'maxCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['disabled' => $print_readonly == false? $disabled : $print_readonly, 'onchange' => 'calculateFPPTotalCost();'])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]total_cost")->textInput(['readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]total_cost")->textInput(['readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>
                     <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
@@ -273,19 +274,25 @@ else{
             $(document).on('change', '#fpp-'+index+'-cost_per_unit', function() {
                 var costPerUnit = this.value;
                 var kod = document.getElementById('fpp-'+index+'-kod').value;
+
                 $.get(url, {fpp : kod}, function(data){
                     var data = $.parseJSON(data);
                     $('#fpp-'+index+'-min_cost_per_unit').attr('value', data.min_cost_per_unit);
                     $('#fpp-'+index+'-max_cost_per_unit').attr('value', data.max_cost_per_unit);
 
-                    if(costPerUnit < document.getElementById('fpp-'+index+'-min_cost_per_unit').value || costPerUnit > document.getElementById('fpp-'+index+'-max_cost_per_unit').value){
+                    if(costPerUnit <= data.min_cost_per_unit || costPerUnit > data.max_cost_per_unit){
                         $('#fpp-'+index+'-min_cost_per_unit').addClass('textColor');
                         $('#fpp-'+index+'-max_cost_per_unit').addClass('textColor');
-                        document.getElementById("saveFpp").disabled = true;
                     }
                     else{
                         $('#fpp-'+index+'-min_cost_per_unit').removeClass('textColor');
                         $('#fpp-'+index+'-max_cost_per_unit').removeClass('textColor');
+                    }
+                    
+                    if($('.minCostPerUnit').hasClass('textColor') || $('.maxCostPerUnit').hasClass('textColor')){
+                        document.getElementById("saveFpp").disabled = true;
+                    }
+                    else{
                         document.getElementById("saveFpp").disabled = false;
                     }
                 });

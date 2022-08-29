@@ -168,7 +168,7 @@ else{
                     
                     <?= $form->field($modelTreatment, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
                         'data' => $treatment_code,
-                        'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                        'disabled' => empty($isGenerated) ? false : true,
                         'options' => [
                             'placeholder' => Yii::t('app','Select treatment code'), 
                             'class' => 'treatmentCode',
@@ -182,7 +182,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
-                        'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly, 'style' => 'width: 280px'])->label(false) ?>
+                        'readonly' => true, 'disabled' => empty($isGenerated) ? false : true, 'style' => 'width: 280px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -222,7 +222,7 @@ else{
                             }
                             else{ ?>
                                 <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(
-                                    [ 'readonly' => true, 'disabled' => $print_readonly])->label(false) ?>
+                                    [ 'readonly' => true, 'disabled' => empty($isGenerated) || empty($isPrinted) ? false : true,])->label(false) ?>
                                 <?php    
                             }
                         ?>
@@ -231,11 +231,11 @@ else{
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                        'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
+                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
-                        'disabled' => $print_readonly == false? $disabled : $print_readonly, 'class' => 'item_total_cost'])->label(false) ?>
+                        'disabled' => empty($isGenerated) ? false : true, 'class' => 'item_total_cost'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
