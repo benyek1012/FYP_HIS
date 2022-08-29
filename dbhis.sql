@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 28, 2022 at 03:11 PM
--- Server version: 10.4.24-MariaDB
+-- Generation Time: Aug 29, 2022 at 05:24 PM
+-- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -36,33 +36,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `receipt_bill_procedure` (IN `rn` VA
     
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `transaction_records` (IN `pid` VARCHAR(64))   BEGIN
-
-	SELECT receipt.rn, receipt.receipt_content_datetime_paid, receipt.receipt_content_sum, receipt.receipt_type, 	receipt.receipt_content_payment_method, receipt.receipt_content_payer_name, receipt.receipt_serial_number, receipt.receipt_content_description, receipt.receipt_responsible
-	FROM receipt
-	INNER JOIN patient_admission 
-    ON patient_admission.rn = receipt.rn
-    INNER JOIN patient_information
-    ON patient_information.patient_uid = patient_admission.patient_uid
-    WHERE patient_information.patient_uid = pid
-    
-    UNION
-     
-    SELECT bill.rn, bill.bill_generation_datetime, bill.bill_generation_billable_sum_rm, null, null, null, bill.bill_print_id, null, bill.generation_responsible_uid 
-    FROM bill 
-    INNER JOIN patient_admission 
-    ON patient_admission.rn = bill.rn
-    INNER JOIN patient_information
-    ON patient_information.patient_uid = patient_admission.patient_uid
-    WHERE patient_information.patient_uid = pid 
-    AND bill.deleted = 0 AND bill.bill_generation_datetime != NULL;
-
-    
- 
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder_batch_select`(IN `MIN_DATE` DATE, IN `MAX_DATE` DATE, IN `responsible_uid` VARCHAR(64))
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder_batch_select` (IN `MIN_DATE` DATE, IN `MAX_DATE` DATE, IN `responsible_uid` VARCHAR(64))   BEGIN
 
 SET @r1MIN_DATE = DATEADD(day, -14, @MIN_DATE);
 SET @r2MIN_DATE = DATEADD(day, -28, @MIN_DATE);
@@ -107,8 +81,31 @@ UPDATE reminder_batch SET batch_date = CONVERT(NOW(), DATE), reminder1count = @c
 
 
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `transaction_records` (IN `pid` VARCHAR(64))   BEGIN
+
+	SELECT receipt.rn, receipt.receipt_content_datetime_paid, receipt.receipt_content_sum, receipt.receipt_type, 	receipt.receipt_content_payment_method, receipt.receipt_content_payer_name, receipt.receipt_serial_number, receipt.receipt_content_description, receipt.receipt_responsible
+	FROM receipt
+	INNER JOIN patient_admission 
+    ON patient_admission.rn = receipt.rn
+    INNER JOIN patient_information
+    ON patient_information.patient_uid = patient_admission.patient_uid
+    WHERE patient_information.patient_uid = pid
+    
+    UNION
+     
+    SELECT bill.rn, bill.bill_generation_datetime, bill.bill_generation_billable_sum_rm, null, null, null, bill.bill_print_id, null, bill.generation_responsible_uid 
+    FROM bill 
+    INNER JOIN patient_admission 
+    ON patient_admission.rn = bill.rn
+    INNER JOIN patient_information
+    ON patient_information.patient_uid = patient_admission.patient_uid
+    WHERE patient_information.patient_uid = pid 
+    AND bill.deleted = 0 AND bill.bill_generation_datetime != NULL;
+
     
  
+END$$
 
 DELIMITER ;
 
@@ -120,8 +117,16 @@ DELIMITER ;
 
 CREATE TABLE `batch` (
   `id` int(11) NOT NULL,
-  `batch` bigint(20) NOT NULL,
-  `file_import` varchar(255) NOT NULL
+  `upload_datetime` datetime NOT NULL,
+  `approval1_responsible_uid` varchar(64) DEFAULT NULL,
+  `approval2_responsible_uid` varchar(64) DEFAULT NULL,
+  `file_import` varchar(100) NOT NULL,
+  `lookup_type` varchar(32) NOT NULL,
+  `error` varchar(2000) DEFAULT NULL,
+  `scheduled_datetime` datetime DEFAULT NULL,
+  `executed_datetime` datetime DEFAULT NULL,
+  `execute_responsible_uid` varchar(64) DEFAULT NULL,
+  `update_type` varchar(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -178,7 +183,7 @@ CREATE TABLE `fpp` (
   `fpp_uid` varchar(64) NOT NULL,
   `kod` varchar(64) NOT NULL,
   `bill_uid` varchar(64) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `additional_details` varchar(200) NOT NULL,
   `min_cost_per_unit` decimal(10,2) NOT NULL,
   `cost_per_unit` decimal(10,2) NOT NULL,
@@ -487,7 +492,7 @@ INSERT INTO `lookup_department` (`department_uid`, `department_code`, `departmen
 
 CREATE TABLE `lookup_fpp` (
   `kod` varchar(64) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `min_cost_per_unit` decimal(10,2) NOT NULL,
   `max_cost_per_unit` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -6341,81 +6346,80 @@ CREATE TABLE `lookup_ward` (
   `ward_name` varchar(50) NOT NULL,
   `sex` varchar(20) DEFAULT NULL,
   `min_age` int(11) DEFAULT NULL,
-  `max_age` int(11) DEFAULT NULL,
-  `batch` bigint(20) DEFAULT NULL
+  `max_age` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `lookup_ward`
 --
 
-INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age`, `max_age`, `batch`) VALUES
-('25bf1103-23ac-11ed-bb94-00ffce6a0abf', '01', 'FISRT CLASS WARD', 'C', 12, 150, NULL),
-('25bf7e57-23ac-11ed-bb94-00ffce6a0abf', '02', 'FEMALE 2ND CLASS', 'P', 12, 150, NULL),
-('25bfd1e1-23ac-11ed-bb94-00ffce6a0abf', '03', 'ICU WARD', 'C', 0, 150, NULL),
-('25c01be3-23ac-11ed-bb94-00ffce6a0abf', '04', 'FEMALE MEDICAL', 'P', 12, 150, NULL),
-('25c067d5-23ac-11ed-bb94-00ffce6a0abf', '05', 'MALE MEDICAL', 'L', 12, 100, NULL),
-('25c0b315-23ac-11ed-bb94-00ffce6a0abf', '09', 'NURSERY WARD', 'C', 0, 0, NULL),
-('25c0fb25-23ac-11ed-bb94-00ffce6a0abf', '10', 'MALE SURGICAL', 'L', 12, 150, NULL),
-('25c14b96-23ac-11ed-bb94-00ffce6a0abf', '11', 'FEMALE SURGICAL', 'P', 12, 150, NULL),
-('25c194d9-23ac-11ed-bb94-00ffce6a0abf', '13', 'M/ORT. WARD', 'L', 12, 150, NULL),
-('25c1e29c-23ac-11ed-bb94-00ffce6a0abf', '14', 'LABOUR WARD', 'P', 12, 150, NULL),
-('25c22ae0-23ac-11ed-bb94-00ffce6a0abf', '15', 'MATERNITY 1', 'P', 12, 45, NULL),
-('25c27abb-23ac-11ed-bb94-00ffce6a0abf', '16', 'GYNAE WARD', 'P', 12, 150, NULL),
-('25c2c8b1-23ac-11ed-bb94-00ffce6a0abf', '17', 'EYE WARD', 'C', 0, 150, NULL),
-('25c3165c-23ac-11ed-bb94-00ffce6a0abf', '18', 'A & E UNIT', 'C', 0, 150, NULL),
-('25c362b5-23ac-11ed-bb94-00ffce6a0abf', '19', 'CTW', 'C', 0, 150, NULL),
-('25c3b0bf-23ac-11ed-bb94-00ffce6a0abf', '1U', 'UROLOGY WARD', '', 0, 100, NULL),
-('25c3f8e1-23ac-11ed-bb94-00ffce6a0abf', '1V', 'VASCULAR WARD', '', 0, 100, NULL),
-('25c44476-23ac-11ed-bb94-00ffce6a0abf', '20', 'FEMALE RTU', 'P', 12, 100, NULL),
-('25c49268-23ac-11ed-bb94-00ffce6a0abf', '21', 'MALE RTU', 'L', 12, 100, NULL),
-('25c4e406-23ac-11ed-bb94-00ffce6a0abf', '22', 'RADIOACTIVE WAD', '', 12, 150, NULL),
-('25c5303d-23ac-11ed-bb94-00ffce6a0abf', '23', 'VIP', 'C', 12, 150, NULL),
-('25c57c5a-23ac-11ed-bb94-00ffce6a0abf', '24', 'MALE 2ND CLASS', 'L', 12, 150, NULL),
-('25c5cb9e-23ac-11ed-bb94-00ffce6a0abf', '25', 'ENT WARD', 'C', 12, 150, NULL),
-('25c61b35-23ac-11ed-bb94-00ffce6a0abf', '26', 'BURN UNIT', 'C', 0, 150, NULL),
-('25c669bc-23ac-11ed-bb94-00ffce6a0abf', '27', 'AMBULATORY ( RTU )', '', 0, 100, NULL),
-('25c6b37a-23ac-11ed-bb94-00ffce6a0abf', '28', 'CICU', 'C', 0, 90, NULL),
-('25c6fe8f-23ac-11ed-bb94-00ffce6a0abf', '29', 'BABY MAT 1', 'C', 0, 1, NULL),
-('25c74703-23ac-11ed-bb94-00ffce6a0abf', '2A', 'PAED ONCOLOGY', '', 0, 100, NULL),
-('25c79985-23ac-11ed-bb94-00ffce6a0abf', '2B', 'PAED MEDICAL', '', 0, 70, NULL),
-('25c7eb4e-23ac-11ed-bb94-00ffce6a0abf', '30', 'PAED ICU', '', 0, 70, NULL),
-('25c83a82-23ac-11ed-bb94-00ffce6a0abf', '31', 'PAED HDU', 'C', 0, 12, NULL),
-('25c8838c-23ac-11ed-bb94-00ffce6a0abf', '32', 'WAD ISO. KHAS', '', 0, 60, NULL),
-('25c8d214-23ac-11ed-bb94-00ffce6a0abf', '33', 'INF DISEASE WAD', '', 12, 100, NULL),
-('25c91b6c-23ac-11ed-bb94-00ffce6a0abf', '34', 'PCW ( RTU )', '', 0, 100, NULL),
-('25c96c14-23ac-11ed-bb94-00ffce6a0abf', '35', 'MED. ISO SEMENTARA', '', 0, 100, NULL),
-('25c9b738-23ac-11ed-bb94-00ffce6a0abf', '36', 'F / ORT. WARD', 'P', 12, 100, NULL),
-('25ca0422-23ac-11ed-bb94-00ffce6a0abf', '37', 'NEUROSX WD', '', 0, 100, NULL),
-('25ca4d85-23ac-11ed-bb94-00ffce6a0abf', '38', 'NEURO HDU', '', 1, 99, NULL),
-('25ca9ff8-23ac-11ed-bb94-00ffce6a0abf', '3A', 'PAED ISO', '', 0, 100, NULL),
-('25caeb85-23ac-11ed-bb94-00ffce6a0abf', '3B', 'CTW', '', 12, 100, NULL),
-('25cb3a3b-23ac-11ed-bb94-00ffce6a0abf', '42', 'CSSD', '', 0, 0, NULL),
-('25cb8506-23ac-11ed-bb94-00ffce6a0abf', '45', 'FARMASI SATELITE', '', 0, 0, NULL),
-('25cbd1f1-23ac-11ed-bb94-00ffce6a0abf', '46', 'FARMASI OPD', '', 0, 0, NULL),
-('25cc257e-23ac-11ed-bb94-00ffce6a0abf', '47', 'FARMASI WARD SUPPLY', '', 0, 0, NULL),
-('25cc6dc6-23ac-11ed-bb94-00ffce6a0abf', '48', 'FARMASI INJECTION', '', 0, 0, NULL),
-('25ccb6a0-23ac-11ed-bb94-00ffce6a0abf', '49', 'FARMASI CORRESPONDING', '', 0, 0, NULL),
-('25ccff88-23ac-11ed-bb94-00ffce6a0abf', '4A', 'PAED SURGICAL', '', 0, 20, NULL),
-('25cd4614-23ac-11ed-bb94-00ffce6a0abf', '4B', 'PAED ORTH.', '', 0, 70, NULL),
-('25cd8ad0-23ac-11ed-bb94-00ffce6a0abf', '50', 'FARMASI PRE PACKING', '', 0, 0, NULL),
-('25cdd4f1-23ac-11ed-bb94-00ffce6a0abf', '51', 'FARMASI RTU', '', 0, 0, NULL),
-('25ce1cf7-23ac-11ed-bb94-00ffce6a0abf', '52', 'MAT. KELAS 1&2', 'P', 0, 0, NULL),
-('25ce6645-23ac-11ed-bb94-00ffce6a0abf', '5F', 'GERIATRICK', '', 12, 100, NULL),
-('25ceb087-23ac-11ed-bb94-00ffce6a0abf', '5G', 'RHEUMATOLOGY', '', 12, 100, NULL),
-('25cefdaf-23ac-11ed-bb94-00ffce6a0abf', '5H', 'HAEMATO WAD', '', 0, 100, NULL),
-('25cf4454-23ac-11ed-bb94-00ffce6a0abf', '5R', 'WAD REHABILITASI', '', 1, 100, NULL),
-('25cf8b36-23ac-11ed-bb94-00ffce6a0abf', '60', 'MATERNITY 2', 'P', 12, 45, NULL),
-('25cfd1f9-23ac-11ed-bb94-00ffce6a0abf', '61', 'WAD PSY', '', 0, 100, NULL),
-('25d01745-23ac-11ed-bb94-00ffce6a0abf', '62', 'BABY MATE 3', '', 0, 0, NULL),
-('25d05c78-23ac-11ed-bb94-00ffce6a0abf', 'AE', 'A & E DEPT', '', 0, 100, NULL),
-('25d0a570-23ac-11ed-bb94-00ffce6a0abf', 'IU', 'UROLOGY WARD', '', 0, 0, NULL),
-('25d0ee4d-23ac-11ed-bb94-00ffce6a0abf', 'LI', 'WAD PSIKITRI', '', 0, 0, NULL),
-('25d134b8-23ac-11ed-bb94-00ffce6a0abf', 'M3', 'MEDICAL 3', '', 0, 150, NULL),
-('25d17cba-23ac-11ed-bb94-00ffce6a0abf', 'M4', 'MEDICAL 4', '', 0, 150, NULL),
-('25d1c456-23ac-11ed-bb94-00ffce6a0abf', 'M5', 'MEDICAL 5', '', 1, 100, NULL),
-('25d20d7f-23ac-11ed-bb94-00ffce6a0abf', 'RC', 'CRC ICU/HDU WARD', 'C', 0, 100, NULL),
-('25d25128-23ac-11ed-bb94-00ffce6a0abf', 'SD', 'SURGICAL DAYCREAM', '', 0, 0, NULL);
+INSERT INTO `lookup_ward` (`ward_uid`, `ward_code`, `ward_name`, `sex`, `min_age`, `max_age`) VALUES
+('25bf1103-23ac-11ed-bb94-00ffce6a0abf', '01', 'FISRT CLASS WARD', 'C', 12, 150),
+('25bf7e57-23ac-11ed-bb94-00ffce6a0abf', '02', 'FEMALE 2ND CLASS', 'P', 12, 150),
+('25bfd1e1-23ac-11ed-bb94-00ffce6a0abf', '03', 'ICU WARD', 'C', 0, 150),
+('25c01be3-23ac-11ed-bb94-00ffce6a0abf', '04', 'FEMALE MEDICAL', 'P', 12, 150),
+('25c067d5-23ac-11ed-bb94-00ffce6a0abf', '05', 'MALE MEDICAL', 'L', 12, 100),
+('25c0b315-23ac-11ed-bb94-00ffce6a0abf', '09', 'NURSERY WARD', 'C', 0, 0),
+('25c0fb25-23ac-11ed-bb94-00ffce6a0abf', '10', 'MALE SURGICAL', 'L', 12, 150),
+('25c14b96-23ac-11ed-bb94-00ffce6a0abf', '11', 'FEMALE SURGICAL', 'P', 12, 150),
+('25c194d9-23ac-11ed-bb94-00ffce6a0abf', '13', 'M/ORT. WARD', 'L', 12, 150),
+('25c1e29c-23ac-11ed-bb94-00ffce6a0abf', '14', 'LABOUR WARD', 'P', 12, 150),
+('25c22ae0-23ac-11ed-bb94-00ffce6a0abf', '15', 'MATERNITY 1', 'P', 12, 45),
+('25c27abb-23ac-11ed-bb94-00ffce6a0abf', '16', 'GYNAE WARD', 'P', 12, 150),
+('25c2c8b1-23ac-11ed-bb94-00ffce6a0abf', '17', 'EYE WARD', 'C', 0, 150),
+('25c3165c-23ac-11ed-bb94-00ffce6a0abf', '18', 'A & E UNIT', 'C', 0, 150),
+('25c362b5-23ac-11ed-bb94-00ffce6a0abf', '19', 'CTW', 'C', 0, 150),
+('25c3b0bf-23ac-11ed-bb94-00ffce6a0abf', '1U', 'UROLOGY WARD', '', 0, 100),
+('25c3f8e1-23ac-11ed-bb94-00ffce6a0abf', '1V', 'VASCULAR WARD', '', 0, 100),
+('25c44476-23ac-11ed-bb94-00ffce6a0abf', '20', 'FEMALE RTU', 'P', 12, 100),
+('25c49268-23ac-11ed-bb94-00ffce6a0abf', '21', 'MALE RTU', 'L', 12, 100),
+('25c4e406-23ac-11ed-bb94-00ffce6a0abf', '22', 'RADIOACTIVE WAD', '', 12, 150),
+('25c5303d-23ac-11ed-bb94-00ffce6a0abf', '23', 'VIP', 'C', 12, 150),
+('25c57c5a-23ac-11ed-bb94-00ffce6a0abf', '24', 'MALE 2ND CLASS', 'L', 12, 150),
+('25c5cb9e-23ac-11ed-bb94-00ffce6a0abf', '25', 'ENT WARD', 'C', 12, 150),
+('25c61b35-23ac-11ed-bb94-00ffce6a0abf', '26', 'BURN UNIT', 'C', 0, 150),
+('25c669bc-23ac-11ed-bb94-00ffce6a0abf', '27', 'AMBULATORY ( RTU )', '', 0, 100),
+('25c6b37a-23ac-11ed-bb94-00ffce6a0abf', '28', 'CICU', 'C', 0, 90),
+('25c6fe8f-23ac-11ed-bb94-00ffce6a0abf', '29', 'BABY MAT 1', 'C', 0, 1),
+('25c74703-23ac-11ed-bb94-00ffce6a0abf', '2A', 'PAED ONCOLOGY', '', 0, 100),
+('25c79985-23ac-11ed-bb94-00ffce6a0abf', '2B', 'PAED MEDICAL', '', 0, 70),
+('25c7eb4e-23ac-11ed-bb94-00ffce6a0abf', '30', 'PAED ICU', '', 0, 70),
+('25c83a82-23ac-11ed-bb94-00ffce6a0abf', '31', 'PAED HDU', 'C', 0, 12),
+('25c8838c-23ac-11ed-bb94-00ffce6a0abf', '32', 'WAD ISO. KHAS', '', 0, 60),
+('25c8d214-23ac-11ed-bb94-00ffce6a0abf', '33', 'INF DISEASE WAD', '', 12, 100),
+('25c91b6c-23ac-11ed-bb94-00ffce6a0abf', '34', 'PCW ( RTU )', '', 0, 100),
+('25c96c14-23ac-11ed-bb94-00ffce6a0abf', '35', 'MED. ISO SEMENTARA', '', 0, 100),
+('25c9b738-23ac-11ed-bb94-00ffce6a0abf', '36', 'F / ORT. WARD', 'P', 12, 100),
+('25ca0422-23ac-11ed-bb94-00ffce6a0abf', '37', 'NEUROSX WD', '', 0, 100),
+('25ca4d85-23ac-11ed-bb94-00ffce6a0abf', '38', 'NEURO HDU', '', 1, 99),
+('25ca9ff8-23ac-11ed-bb94-00ffce6a0abf', '3A', 'PAED ISO', '', 0, 100),
+('25caeb85-23ac-11ed-bb94-00ffce6a0abf', '3B', 'CTW', '', 12, 100),
+('25cb3a3b-23ac-11ed-bb94-00ffce6a0abf', '42', 'CSSD', '', 0, 0),
+('25cb8506-23ac-11ed-bb94-00ffce6a0abf', '45', 'FARMASI SATELITE', '', 0, 0),
+('25cbd1f1-23ac-11ed-bb94-00ffce6a0abf', '46', 'FARMASI OPD', '', 0, 0),
+('25cc257e-23ac-11ed-bb94-00ffce6a0abf', '47', 'FARMASI WARD SUPPLY', '', 0, 0),
+('25cc6dc6-23ac-11ed-bb94-00ffce6a0abf', '48', 'FARMASI INJECTION', '', 0, 0),
+('25ccb6a0-23ac-11ed-bb94-00ffce6a0abf', '49', 'FARMASI CORRESPONDING', '', 0, 0),
+('25ccff88-23ac-11ed-bb94-00ffce6a0abf', '4A', 'PAED SURGICAL', '', 0, 20),
+('25cd4614-23ac-11ed-bb94-00ffce6a0abf', '4B', 'PAED ORTH.', '', 0, 70),
+('25cd8ad0-23ac-11ed-bb94-00ffce6a0abf', '50', 'FARMASI PRE PACKING', '', 0, 0),
+('25cdd4f1-23ac-11ed-bb94-00ffce6a0abf', '51', 'FARMASI RTU', '', 0, 0),
+('25ce1cf7-23ac-11ed-bb94-00ffce6a0abf', '52', 'MAT. KELAS 1&2', 'P', 0, 0),
+('25ce6645-23ac-11ed-bb94-00ffce6a0abf', '5F', 'GERIATRICK', '', 12, 100),
+('25ceb087-23ac-11ed-bb94-00ffce6a0abf', '5G', 'RHEUMATOLOGY', '', 12, 100),
+('25cefdaf-23ac-11ed-bb94-00ffce6a0abf', '5H', 'HAEMATO WAD', '', 0, 100),
+('25cf4454-23ac-11ed-bb94-00ffce6a0abf', '5R', 'WAD REHABILITASI', '', 1, 100),
+('25cf8b36-23ac-11ed-bb94-00ffce6a0abf', '60', 'MATERNITY 2', 'P', 12, 45),
+('25cfd1f9-23ac-11ed-bb94-00ffce6a0abf', '61', 'WAD PSY', '', 0, 100),
+('25d01745-23ac-11ed-bb94-00ffce6a0abf', '62', 'BABY MATE 3', '', 0, 0),
+('25d05c78-23ac-11ed-bb94-00ffce6a0abf', 'AE', 'A & E DEPT', '', 0, 100),
+('25d0a570-23ac-11ed-bb94-00ffce6a0abf', 'IU', 'UROLOGY WARD', '', 0, 0),
+('25d0ee4d-23ac-11ed-bb94-00ffce6a0abf', 'LI', 'WAD PSIKITRI', '', 0, 0),
+('25d134b8-23ac-11ed-bb94-00ffce6a0abf', 'M3', 'MEDICAL 3', '', 0, 150),
+('25d17cba-23ac-11ed-bb94-00ffce6a0abf', 'M4', 'MEDICAL 4', '', 0, 150),
+('25d1c456-23ac-11ed-bb94-00ffce6a0abf', 'M5', 'MEDICAL 5', '', 1, 100),
+('25d20d7f-23ac-11ed-bb94-00ffce6a0abf', 'RC', 'CRC ICU/HDU WARD', 'C', 0, 100),
+('25d25128-23ac-11ed-bb94-00ffce6a0abf', 'SD', 'SURGICAL DAYCREAM', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -6471,19 +6475,7 @@ CREATE TABLE `patient_admission` (
   `reminder1` date DEFAULT NULL,
   `reminder2` date DEFAULT NULL,
   `reminder3` date DEFAULT NULL
-
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `patient_admission`
---
-
-INSERT INTO `patient_admission` (`rn`, `entry_datetime`, `patient_uid`, `initial_ward_code`, `initial_ward_class`, `reference`, `medical_legal_code`, `guarantor_name`, `guarantor_nric`, `guarantor_phone_number`, `guarantor_email`, `type`, `reminder1`, `reminder2`, `reminder3`) VALUES
-('2022/000001', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
-('2022/000002', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
-('2022/000003', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
-('2022/000004', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
-('2022/000005', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -6507,16 +6499,6 @@ CREATE TABLE `patient_information` (
   `job` varchar(20) DEFAULT NULL,
   `DOB` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `patient_information`
---
-
-INSERT INTO `patient_information` (`patient_uid`, `first_reg_date`, `nric`, `nationality`, `name`, `sex`, `race`, `phone_number`, `email`, `address1`, `address2`, `address3`, `job`, `DOB`) VALUES
-('ch6I3ywm1LJHIK3-WJZAvEwmrifaEZOU', '2022-08-28', '', '', NULL, '', '', '', '', '', '', '', '', NULL),
-('PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', '2022-08-28', '', '', NULL, '', '', '', '', '', '', '', '', NULL),
-('V7d1bUQNcgu1WqPQACJdxWtY27N5xhWh', '2022-08-28', '', '', NULL, '', '', '', '', '', '', '', '', NULL),
-('y5J4xYwoTlRv0czzi8i7nRYH8dGS-A6P', '2022-08-28', '', '', NULL, '', '', '', '', '', '', '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -6765,7 +6747,7 @@ ALTER TABLE `ward`
 -- AUTO_INCREMENT for table `batch`
 --
 ALTER TABLE `batch`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Constraints for dumped tables

@@ -13,7 +13,6 @@ use Yii;
  * @property string|null $sex
  * @property int|null $min_age
  * @property int|null $max_age
- * @property int|null $batch
  */
 class Lookup_ward extends \yii\db\ActiveRecord
 {
@@ -32,7 +31,7 @@ class Lookup_ward extends \yii\db\ActiveRecord
     {
         return [
             [['ward_uid', 'ward_code', 'ward_name'], 'required'],
-            [['min_age', 'max_age', 'batch'], 'integer'],
+            [['min_age', 'max_age'], 'integer'],
             [['ward_uid'], 'string', 'max' => 64],
             [['ward_code', 'sex'], 'string', 'max' => 20],
             [['ward_name'], 'string', 'max' => 50],
@@ -52,8 +51,7 @@ class Lookup_ward extends \yii\db\ActiveRecord
             'ward_name' => Yii::t('app','Ward Name'),
             'sex' => Yii::t('app','Sex'),
             'min_age' => Yii::t('app','Min Age'),
-            'max_age' => Yii::t('app','Max Age'),
-            'batch' => Yii::t('app','Batch'),
+            'max_age' => Yii::t('app','Max Age')
         ];
     }
 }
