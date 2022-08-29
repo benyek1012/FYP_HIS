@@ -39,58 +39,41 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'batch_datetime',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/reminder/remind']],
-                ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'reminder1',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/reminder/remind']],
-                ]
             ],
             
             [
-                'class' => '\kartik\grid\EditableColumn',
+                'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'reminder2',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/reminder/remind']],
-                ]
+                
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'reminder3',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/reminder/remind']],
-                ]
+                
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'responsible',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/reminder/remind']],
-                ]
+                
             ],
 
             [
@@ -99,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => ' ',
                 'buttons' => [
                 'Recalculate' => function ($url, $model, $key) {
-                    return HTML::a('Recalculate', ['recalculate', 'id' => $model->batch_datetime]);
+                    return HTML::a('Recalculate', ['index', 'function' => 'recalculate', 'id' => $model->batch_datetime]);
                  },
                 ],
             ],
@@ -110,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => ' ',
                 'buttons' => [
                 'batch_create' => function ($url, $model, $key) {
-                    return HTML::a('Create Batch', ['batch_create', 'id' => $model->batch_datetime]);
+                    return HTML::a('Create Batch', ['index', 'function' => 'create_batch', 'id' => $model->batch_datetime]);
                  },
                 ],
             ],
