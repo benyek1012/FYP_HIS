@@ -64,16 +64,15 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder_batch_select`(IN `MIN_DATE` DATE, IN `MAX_DATE` DATE, IN `responsible_uid` VARCHAR(64))
 BEGIN
 
-SET @r1MIN_DATE = DATEADD(day, 14, @MIN_DATE);
-SET @r2MIN_DATE = DATEADD(day, 28, @MIN_DATE);
-SET @r3MIN_DATE = DATEADD(day, 42, @MIN_DATE);
-SET @r1MAX_DATE = DATEADD(day, 14, @MAX_DATE);
-SET @r2MAX_DATE = DATEADD(day, 28, @MAX_DATE);
-SET @r3MAX_DATE = DATEADD(day, 42, @MAX_DATE);
+SET @r1MIN_DATE = DATEADD(day, -14, @MIN_DATE);
+SET @r2MIN_DATE = DATEADD(day, -28, @MIN_DATE);
+SET @r3MIN_DATE = DATEADD(day, -42, @MIN_DATE);
+SET @r1MAX_DATE = DATEADD(day, -14, @MAX_DATE);
+SET @r2MAX_DATE = DATEADD(day, -28, @MAX_DATE);
+SET @r3MAX_DATE = DATEADD(day, -42, @MAX_DATE);
 
 
-UPDATE patient_admission SET reminder1 = CAST('9999-12-31' AS DATE);
-SELECT patient_admission WHERE patient_admission.rn IN (
+UPDATE patient_admission SET reminder1 = CAST('9999-12-31' AS DATE) WHERE patient_admission.rn IN (
 	SELECT _relevantBills.rn
 		FROM 
 			((SELECT rn, CONVERT(bill.final_ward_datetime,DATE) AS discharge_date, bill_generation_billable_sum_rm 						
@@ -86,46 +85,6 @@ SELECT patient_admission WHERE patient_admission.rn IN (
 				FROM receipt 
 				WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) 
 					AND (CONVERT(receipt_content_datetime_paid,DATE) <= @r1MAX_DATE)													
-				GROUP BY rn)
-   				 AS _payments)
-    	ON _relevantBills.rn = _payments.rn
-		WHERE _relevantBills.discharge_date(-_relevantBills.bill_generation_billable_sum_rm + COALESCE(_payments.receipt_content_sum,0)) <0
-	);
-    
-UPDATE patient_admission SET reminder2 = CAST('9999-12-31' AS DATE);
-SELECT patient_admission WHERE patient_admission.rn IN (
-	SELECT _relevantBills.rn
-		FROM 
-			((SELECT rn, CONVERT(bill.final_ward_datetime,DATE) AS discharge_date, bill_generation_billable_sum_rm 						
-				FROM bill 
-				WHERE (bill.is_deleted = 0 AND !ISNULL(bill.bill_generation_datetime)) 
-				AND (CONVERT(bill.final_ward_datetime,DATE) >= @r2MIN_DATE AND CONVERT(bill.final_ward_datetime,DATE) <= @r2MAX_DATE)   	
-				)AS _relevantBills)
-			LEFT OUTER JOIN
-			((SELECT rn, SUM(CASE WHEN refund = 'refund' THEN - receipt_content_sum ELSE receipt_content_sum END) AS receipt_sum 
-				FROM receipt 
-				WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) 
-					AND (CONVERT(receipt_content_datetime_paid,DATE) <= @r2MAX_DATE)													
-				GROUP BY rn)
-   				 AS _payments)
-    	ON _relevantBills.rn = _payments.rn
-		WHERE _relevantBills.discharge_date(-_relevantBills.bill_generation_billable_sum_rm + COALESCE(_payments.receipt_content_sum,0)) <0
-	);
-    
-UPDATE patient_admission SET reminder3 = CAST('9999-12-31' AS DATE);
-SELECT patient_admission WHERE patient_admission.rn IN (
-	SELECT _relevantBills.rn
-		FROM 
-			((SELECT rn, CONVERT(bill.final_ward_datetime,DATE) AS discharge_date, bill_generation_billable_sum_rm 						
-				FROM bill 
-				WHERE (bill.is_deleted = 0 AND !ISNULL(bill.bill_generation_datetime)) 
-				AND (CONVERT(bill.final_ward_datetime,DATE) >= @r3MIN_DATE AND CONVERT(bill.final_ward_datetime,DATE) <= @r3MAX_DATE)   	
-				)AS _relevantBills)
-			LEFT OUTER JOIN
-			((SELECT rn, SUM(CASE WHEN refund = 'refund' THEN - receipt_content_sum ELSE receipt_content_sum END) AS receipt_sum 
-				FROM receipt 
-				WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) 
-					AND (CONVERT(receipt_content_datetime_paid,DATE) <= @r3MAX_DATE)													
 				GROUP BY rn)
    				 AS _payments)
     	ON _relevantBills.rn = _payments.rn
@@ -6504,24 +6463,27 @@ CREATE TABLE `patient_admission` (
   `initial_ward_class` varchar(20) NOT NULL,
   `reference` varchar(200) DEFAULT NULL,
   `medical_legal_code` tinyint(1) DEFAULT 0,
-  `reminder_given` int(11) NOT NULL DEFAULT 0,
   `guarantor_name` varchar(200) DEFAULT NULL,
   `guarantor_nric` varchar(20) DEFAULT NULL,
   `guarantor_phone_number` varchar(100) DEFAULT NULL,
   `guarantor_email` varchar(100) DEFAULT NULL,
-  `type` varchar(20) NOT NULL
+  `type` varchar(20) NOT NULL,
+  `reminder1` date DEFAULT NULL,
+  `reminder2` date DEFAULT NULL,
+  `reminder3` date DEFAULT NULL
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `patient_admission`
 --
 
-INSERT INTO `patient_admission` (`rn`, `entry_datetime`, `patient_uid`, `initial_ward_code`, `initial_ward_class`, `reference`, `medical_legal_code`, `reminder_given`, `guarantor_name`, `guarantor_nric`, `guarantor_phone_number`, `guarantor_email`, `type`) VALUES
-('2022/000001', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, 0, NULL, NULL, NULL, NULL, 'Normal'),
-('2022/000002', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, 0, NULL, NULL, NULL, NULL, 'Normal'),
-('2022/000003', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, 0, NULL, NULL, NULL, NULL, 'Normal'),
-('2022/000004', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, 0, NULL, NULL, NULL, NULL, 'Normal'),
-('2022/000005', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, 0, NULL, NULL, NULL, NULL, 'Normal');
+INSERT INTO `patient_admission` (`rn`, `entry_datetime`, `patient_uid`, `initial_ward_code`, `initial_ward_class`, `reference`, `medical_legal_code`, `guarantor_name`, `guarantor_nric`, `guarantor_phone_number`, `guarantor_email`, `type`, `reminder1`, `reminder2`, `reminder3`) VALUES
+('2022/000001', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
+('2022/000002', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
+('2022/000003', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
+('2022/000004', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL),
+('2022/000005', '2022-08-28 20:42:35', 'PcG4TWw-5XYMAoEAwQInoTdIaTILmbgo', 'UNKNOWN', 'UNKNOWN', NULL, 0, NULL, NULL, NULL, NULL, 'Normal', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -6604,11 +6566,11 @@ CREATE TABLE `receipt` (
 --
 
 CREATE TABLE `reminder_letter` (
-  `batch_datetime` datetime NOT NULL,
-  `reminder1` datetime DEFAULT NULL,
-  `reminder2` datetime DEFAULT NULL,
-  `reminder3` datetime DEFAULT NULL,
-  `responsible` varchar(64) NOT NULL
+  `batch_date` date NOT NULL,
+  `reminder1` int NOT NULL,
+  `reminder2` int NOT NULL,
+  `reminder3` int NOT NULL,
+  `responsible` varchar(64) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -6773,7 +6735,7 @@ ALTER TABLE `receipt`
 -- Indexes for table `reminder_letter`
 --
 ALTER TABLE `reminder_letter`
-  ADD PRIMARY KEY (`batch_datetime`);
+  ADD PRIMARY KEY (`batch_date`);
 
 --
 -- Indexes for table `serial_number`
