@@ -17,7 +17,7 @@ class ReminderSearch extends Reminder
     public function rules()
     {
         return [
-            [['batch_uid', 'batch_datetime', 'reminder1', 'reminder2', 'reminder3', 'responsible'], 'safe'],
+            [['batch_datetime', 'reminder1', 'reminder2', 'reminder3', 'responsible'], 'safe'],
         ];
     }
 
@@ -63,7 +63,7 @@ class ReminderSearch extends Reminder
             'reminder3' => $this->reminder3,
         ]);
 
-        $query->andFilterWhere(['like', 'batch_uid', $this->batch_uid])
+        $query->andFilterWhere(['like', 'batch_datetime', $this->batch_datetime])
             ->andFilterWhere(['like', 'responsible', $this->responsible]);
 
         return $dataProvider;
