@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'batch_datetime',
+                'attribute' => 'batch_date',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
             ],
@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => ' ',
                 'buttons' => [
                 'Recalculate' => function ($url, $model, $key) {
-                    return HTML::a('Recalculate', ['index', 'function' => 'recalculate', 'id' => $model->batch_datetime]);
+                    return HTML::a('Recalculate', ['index', 'function' => 'recalculate', 'id' => $model->batch_date]);
                  },
                 ],
             ],
@@ -93,14 +93,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => ' ',
                 'buttons' => [
                 'batch_create' => function ($url, $model, $key) {
-                    return HTML::a('Create Batch', ['index', 'function' => 'create_batch', 'id' => $model->batch_datetime]);
+                    return HTML::a('Create Batch', ['index', 'function' => 'create_batch', 'id' => $model->batch_date]);
                  },
                 ],
             ],
 
             
 
-            //'batch_datetime',
+            //'batch_date',
             //'reminder1',
             //'reminder2',
             //'reminder3',
