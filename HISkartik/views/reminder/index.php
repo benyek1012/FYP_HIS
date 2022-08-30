@@ -47,14 +47,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'reminder1',
+                'attribute' => 'reminder1count',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
             ],
             
             [
                 'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'reminder2',
+                'attribute' => 'reminder2count',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'reminder3',
+                'attribute' => 'reminder3count',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => '\kartik\grid\DataColumn',
-                'attribute' => 'responsible',
+                'attribute' => 'responsible_uid',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 

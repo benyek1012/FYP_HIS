@@ -8,10 +8,10 @@ use Yii;
  * This is the model class for table "reminder_letter".
  *
  * @property string $batch_date
- * @property string|null $reminder1
- * @property string|null $reminder2
- * @property string|null $reminder3
- * @property string $responsible
+ * @property string|null $reminder1count
+ * @property string|null $reminder2count
+ * @property string|null $reminder3count
+ * @property string $responsible_uid
  */
 class Reminder extends \yii\db\ActiveRecord
 {
@@ -29,9 +29,9 @@ class Reminder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['batch_date', 'responsible'], 'required'],
-            [['batch_date', 'reminder1', 'reminder2', 'reminder3'], 'safe'],
-            [['responsible'], 'string', 'max' => 64],
+            [['batch_date', 'responsible_uid'], 'required'],
+            [['batch_date', 'reminder1count', 'reminder2count', 'reminder3count'], 'safe'],
+            [['responsible_uid'], 'string', 'max' => 64],
             [['batch_date'], 'unique'],
         ];
     }
@@ -43,10 +43,10 @@ class Reminder extends \yii\db\ActiveRecord
     {
         return [
             'batch_date' => 'Batch Date',
-            'reminder1' => 'Reminder 1',
-            'reminder2' => 'Reminder 2',
-            'reminder3' => 'Reminder 3',
-            'responsible' => 'Responsible',
+            'reminder1count' => 'Reminder 1',
+            'reminder2count' => 'Reminder 2',
+            'reminder3count' => 'Reminder 3',
+            'responsible_uid' => 'Responsible',
         ];
     }
 

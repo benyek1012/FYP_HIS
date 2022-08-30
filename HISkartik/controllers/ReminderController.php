@@ -55,14 +55,14 @@ class ReminderController extends Controller
 
     /**
      * Displays a single Reminder model.
-     * @param string $batch_uid Batch Uid
+     * @param string $batch_date Batch Date
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($batch_uid)
+    public function actionView($batch_date)
     {
         return $this->render('view', [
-            'model' => $this->findModel($batch_uid),
+            'model' => $this->findModel($batch_date),
         ]);
     }
 
@@ -77,7 +77,7 @@ class ReminderController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'batch_uid' => $model->batch_uid]);
+                return $this->redirect(['view', 'batch_date' => $model->batch_date]);
             }
         } else {
             $model->loadDefaultValues();
@@ -91,16 +91,16 @@ class ReminderController extends Controller
     /**
      * Updates an existing Reminder model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $batch_uid Batch Uid
+     * @param string $batch_date Batch Date
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($batch_uid)
+    public function actionUpdate($batch_date)
     {
-        $model = $this->findModel($batch_uid);
+        $model = $this->findModel($batch_date);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'batch_uid' => $model->batch_uid]);
+            return $this->redirect(['view', 'batch_date' => $model->batch_date]);
         }
 
         return $this->render('update', [
@@ -111,13 +111,13 @@ class ReminderController extends Controller
     /**
      * Deletes an existing Reminder model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $batch_uid Batch Uid
+     * @param string $batch_date Batch Date
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($batch_uid)
+    public function actionDelete($batch_date)
     {
-        $this->findModel($batch_uid)->delete();
+        $this->findModel($batch_date)->delete();
 
         return $this->redirect(['index']);
     }
@@ -125,13 +125,13 @@ class ReminderController extends Controller
     /**
      * Finds the Reminder model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $batch_uid Batch Uid
+     * @param string $batch_date Batch Date
      * @return Reminder the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($batch_uid)
     {
-        if (($model = Reminder::findOne(['batch_uid' => $batch_uid])) !== null) {
+        if (($model = Reminder::findOne(['batch_date' => $batch_date])) !== null) {
             return $model;
         }
 
