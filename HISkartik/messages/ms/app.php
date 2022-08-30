@@ -51,7 +51,6 @@ return[
     'Initial Ward Class' => 'Kelas Wad Permulaan',
     'Reference' => 'Rujukan',
     'Medical Legal Code' => 'Kod Perundangan Perubatan',
-    'Reminder Given' => 'Peringatan Diberi',
     'Guarantor Name' => 'Nama Penjamin',
     'Guarantor NRIC' => 'NRIC Penjamin',
     'Guarantor Phone Number' => 'Nombor Telefon Penjamin',

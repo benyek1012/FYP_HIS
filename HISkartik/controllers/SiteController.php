@@ -178,7 +178,6 @@ class SiteController extends Controller
                         
                                                 $admission->initial_ward_class = "UNKNOWN";
                                                 $admission->initial_ward_code = "UNKNOWN";
-                                                $admission->reminder_given = 0;
                                                 $admission->save();
                                                 // $model->validate();
                                                 // var_dump($model->errors);
