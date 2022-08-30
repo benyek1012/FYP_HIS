@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'batch_datetime')->textInput() ?>
+    <?= $form->field($model, 'batch_date')->textInput() ?>
     
     <?= $form->field($model, 'reminder1')->textInput() ?>
     

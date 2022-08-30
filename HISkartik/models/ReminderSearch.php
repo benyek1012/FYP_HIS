@@ -17,7 +17,7 @@ class ReminderSearch extends Reminder
     public function rules()
     {
         return [
-            [['batch_datetime', 'reminder1', 'reminder2', 'reminder3', 'responsible'], 'safe'],
+            [['batch_date', 'reminder1count', 'reminder2count', 'reminder3count', 'responsible_uid'], 'safe'],
         ];
     }
 
@@ -57,14 +57,14 @@ class ReminderSearch extends Reminder
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'batch_datetime' => $this->batch_datetime,
-            'reminder1' => $this->reminder1,
-            'reminder2' => $this->reminder2,
-            'reminder3' => $this->reminder3,
+            'batch_date' => $this->batch_date,
+            'reminder1count' => $this->reminder1count,
+            'reminder2count' => $this->reminder2count,
+            'reminder3count' => $this->reminder3count,
         ]);
 
-        $query->andFilterWhere(['like', 'batch_datetime', $this->batch_datetime])
-            ->andFilterWhere(['like', 'responsible', $this->responsible]);
+        $query->andFilterWhere(['like', 'batch_date', $this->batch_date])
+            ->andFilterWhere(['like', 'responsible_uid', $this->responsible_uid]);
 
         return $dataProvider;
     }

@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
 
 
 
-    <?= $form->field($model, 'batch_datetime') ?>
+    <?= $form->field($model, 'batch_date') ?>
 
     <?= $form->field($model, 'reminder1') ?>
 

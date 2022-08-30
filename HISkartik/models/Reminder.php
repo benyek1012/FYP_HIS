@@ -9,7 +9,6 @@ use Yii;
 /**
  * This is the model class for table "reminder_letter".
  *
- * @property string $batch_uid
  * @property string $batch_date
  * @property string|null $reminder1count
  * @property string|null $reminder2count
