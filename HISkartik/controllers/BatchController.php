@@ -125,13 +125,27 @@ class BatchController extends Controller
                                 return $this->redirect(['index']);
                             }
 
+                            if($model->update_type == 'delete')
+                            {
+                                // retrieve all data from particular table for batch insert later
+                                $array_from_database = $table::find()->asArray()->all();
+
+                                // delete all the rows 
+                                $table->deleteAll();
+                            }
+                               
                             $str = "";
                             $row = 2;
                             // read data lines 
                             for ($i = 0; $line = fgetcsv($handle ); ++$i) {
                                 if(!empty($line[0]))
                                 {
-                                    $model_lookup_ward = new Lookup_ward();
+                                    $model_lookup_ward = Lookup_ward::findOne(['ward_code' =>  $line[0]]);
+
+                                    if(!$model_lookup_ward):
+                                        $model_lookup_ward = new Lookup_ward();
+                                    endif;
+
                                     $model_lookup_ward->ward_uid =  Base64UID::generate(32);
                                     $model_lookup_ward->ward_code = $line[0];
                                     $model_lookup_ward->ward_name = $line[1];
@@ -169,11 +183,13 @@ class BatchController extends Controller
 
                     if(!empty($bulkInsertArray))
                     {
-                        // insert into lookup table
-                       // Yii::$app->db->createCommand()->batchInsert($tableName, $column, $bulkInsertArray)->execute();    
+                        // insert back to table
+                        if($model->update_type == 'delete')
+                            Yii::$app->db->createCommand()->batchInsert($tableName, $column, $array_from_database)->execute();    
                                               
                         // insert into batch table
                         $model->error = $string_error;
+                        $model->approval1_responsible_uid = Yii::$app->user->identity->id;
                         $model->save();
 
                         if($string_error != "")
@@ -192,8 +208,8 @@ class BatchController extends Controller
                         <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>All data from CSV file have been inserted! </div>');
                  
                     // delete file folder from PC
-                    if($flag_delete == true)
-                        unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                    // if($flag_delete == true)
+                    //     unlink(Yii::$app->basePath . '/web/' . $model->file_import);
                 }
 
                 return $this->redirect(['index']);
@@ -220,14 +236,21 @@ class BatchController extends Controller
         // remove first row
         fgetcsv($handle);
 
-        $row = 0;
+        $model_lookup_ward = new Lookup_ward();
+        if($model->update_type == 'delete')
+            $model_lookup_ward->deleteAll();
 
         if($handle){
             // read data lines 
             for ($i = 0; $line = fgetcsv($handle ); ++$i) {
                 if(!empty($line[0]))
                 {
-                    $model_lookup_ward = new Lookup_ward();
+                    $model_lookup_ward = Lookup_ward::findOne(['ward_code' =>  $line[0]]);
+
+                    if(!$model_lookup_ward):
+                        $model_lookup_ward = new Lookup_ward();
+                    endif;
+
                     $model_lookup_ward->ward_uid =  Base64UID::generate(32);
                     $model_lookup_ward->ward_code = $line[0];
                     $model_lookup_ward->ward_name = $line[1];
@@ -242,7 +265,7 @@ class BatchController extends Controller
 
     
         // delete file folder from PC
-        unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+        // unlink(Yii::$app->basePath . '/web/' . $model->file_import);
 
         $model->execute_responsible_uid = Yii::$app->user->identity->id;
 
@@ -277,6 +300,27 @@ class BatchController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionDownload($id)
+    {
+       
+        $model = $this->findModel($id);
+
+        $path = Yii::$app->basePath . '/web/' . $model->file_import;
+
+        $array = explode("/", $model->file_import);
+
+        if (file_exists($path)) 
+            return Yii::$app->response->sendFile($path, $array[1]);
+        else 
+        {
+            Yii::$app->session->setFlash('msg', '
+            <div class="alert alert-danger alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+            '.$array[1].' is not found !</div>');
+
+            return $this->redirect(['index']);
+        }
+    }
 
     /**
      * Displays a single Batch model.

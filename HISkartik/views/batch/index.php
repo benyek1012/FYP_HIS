@@ -84,6 +84,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'file_import',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'format' => 'raw',
+                'value'=>function ($data){ 
+                    $array = explode("/", $data['file_import']);
+                    return Html::a($array[1], \yii\helpers\Url::to(['batch/download', 'id'=>$data->id]));
+                },
             ],
             [
                 'attribute' => 'error',
@@ -215,7 +220,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $flag = false;
 
                         return ( empty($model['error']) && empty($model->execute_responsible_uid) && $flag)
-                        ?  Html::a('Approve', ['batch/approve', 'id'=>$model->id], ['class' => 'btn btn-info btn-xs'])
+                        ?  Html::a('Approve', ['batch/approve', 'id'=>$model->id], ['class' => 'btn btn-success btn-xs'])
                         : Html::a('Approve', ['batch/approve', 'id'=>$model->id], ['class' => 'btn btn-danger btn-xs disabled']);
                     },
                 ]
