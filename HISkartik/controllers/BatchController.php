@@ -16,6 +16,8 @@ use yii\web\UploadedFile;
 use GpsLab\Component\Base64UID\Base64UID;
 use Yii;
 use yii\db\Query;
+use yii\data\ActiveDataProvider;
+use kartik\mpdf\Pdf;
 
 /**
  * BatchController implements the CRUD actions for Batch model.
@@ -224,6 +226,32 @@ class BatchController extends Controller
         ]);
     }
 
+    public function actionUpload()
+    { 
+        $model = Batch::findOne(Yii::$app->request->get('id'));
+
+        return $this->renderPartial('/batch/view', ['model' => $model]);
+    }
+
+    public function actionExport()
+    {
+        $model = Batch::findOne(Yii::$app->request->get('id'));
+        $content = preg_replace("<<br/>>","\r\n", $model->error);
+        $filename = $model->id.'_ErrorMsg'. '.txt'; 
+       
+        $myfile = fopen($filename, "w") or die("Unable to open file!");
+        fwrite($myfile, $content);
+        fclose($myfile);
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Length: ". filesize("$filename").";");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Type: application/octet-stream; "); 
+        header("Content-Transfer-Encoding: binary");
+        readfile($filename);
+       
+
+    }
     public function actionExecute($id)
     {
         $model =  $this->findModel($id);
