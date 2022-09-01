@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 29, 2022 at 05:24 PM
+-- Generation Time: Sep 01, 2022 at 11:50 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
@@ -139,26 +139,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `transaction_records` (IN `pid` VARC
 END$$
 
 DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `batch`
---
-
-CREATE TABLE `batch` (
-  `id` int(11) NOT NULL,
-  `upload_datetime` datetime NOT NULL,
-  `approval1_responsible_uid` varchar(64) DEFAULT NULL,
-  `approval2_responsible_uid` varchar(64) DEFAULT NULL,
-  `file_import` varchar(100) NOT NULL,
-  `lookup_type` varchar(32) NOT NULL,
-  `error` varchar(2000) DEFAULT NULL,
-  `scheduled_datetime` datetime DEFAULT NULL,
-  `executed_datetime` datetime DEFAULT NULL,
-  `execute_responsible_uid` varchar(64) DEFAULT NULL,
-  `update_type` varchar(12) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -6553,6 +6533,26 @@ CREATE TABLE `patient_next_of_kin` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pekeliling_import`
+--
+
+CREATE TABLE `pekeliling_import` (
+  `pekeliling_uid` varchar(64) NOT NULL,
+  `upload_datetime` datetime NOT NULL,
+  `approval1_responsible_uid` varchar(64) DEFAULT NULL,
+  `approval2_responsible_uid` varchar(64) DEFAULT NULL,
+  `file_import` varchar(100) NOT NULL,
+  `lookup_type` varchar(32) NOT NULL,
+  `error` varchar(2000) DEFAULT NULL,
+  `scheduled_datetime` datetime DEFAULT NULL,
+  `executed_datetime` datetime DEFAULT NULL,
+  `execute_responsible_uid` varchar(64) DEFAULT NULL,
+  `update_type` varchar(12) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `receipt`
 --
 
@@ -6644,12 +6644,6 @@ CREATE TABLE `ward` (
 --
 
 --
--- Indexes for table `batch`
---
-ALTER TABLE `batch`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `bill`
 --
 ALTER TABLE `bill`
@@ -6738,6 +6732,12 @@ ALTER TABLE `patient_next_of_kin`
   ADD KEY `patient_uid` (`patient_uid`);
 
 --
+-- Indexes for table `pekeliling_import`
+--
+ALTER TABLE `pekeliling_import`
+  ADD PRIMARY KEY (`pekeliling_uid`);
+
+--
 -- Indexes for table `receipt`
 --
 ALTER TABLE `receipt`
@@ -6769,16 +6769,6 @@ ALTER TABLE `treatment_details`
 ALTER TABLE `ward`
   ADD PRIMARY KEY (`ward_uid`),
   ADD KEY `bill_uid` (`bill_uid`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `batch`
---
-ALTER TABLE `batch`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Constraints for dumped tables
