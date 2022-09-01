@@ -33,7 +33,7 @@ body {
 
 
     Left navbar links -->
-    <nav class="navbar navbar-expand-md navbar-white navbar-light">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
     <ul class="navbar-nav">
         <?php 
             if((new SiteController(null,null)) -> accessControl() == true
@@ -107,9 +107,9 @@ body {
                     class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                     class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/batch']); ?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Testing Csv Upload'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
+                <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
+                    class="dropdown-item"><?php echo Yii::t('app','Pekeliling Upload'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?php echo Yii::t('app','Testing database update'); ?></a></li>    
             </ul>
             </div>
