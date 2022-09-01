@@ -338,6 +338,7 @@ else{
     function submitTreatmentForm(count, url){
         var form = $('#treatment-form');
         var formData = form.serialize();
+        var countTreatment = document.getElementById('countTreatment').value;
 
         $.ajax({
             url: url,
@@ -345,6 +346,7 @@ else{
             data: formData,
 
             success: function (data) {
+                flag = 0;
                 counted = parseInt(count) + 1;
 
                 if(document.getElementById('treatment_details-'+count+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').value == ''){
@@ -352,11 +354,25 @@ else{
                 }
 
                 // update
-                if($('.item_num').length == document.getElementById('countTreatment').value){
-                    location.reload();
+                if($('.item_num').length == countTreatment || $('.treatmentCode').length == countTreatment){
+                    for(var i = 0; i < countTreatment; i++){
+                        if(document.getElementById('treatment_details-'+i+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').i == ''){
+                            continue;
+                        }
+                        else{
+                            flag++;
+                        }
+                    }
+
+                    if(flag == countTreatment){
+                        location.reload();
+                    }
+                    else{
+                        return false;
+                    }
                 }
                 // insert
-                else if(counted == $('.item_num').length || counted == $('.treatmentCode').length){
+                else if(counted == countTreatment){
                     location.reload();
                 }
             },

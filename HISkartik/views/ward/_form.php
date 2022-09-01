@@ -354,6 +354,7 @@ else{
     function submitWardForm(count, url){
         var form = $('#ward-form');
         var formData = form.serialize();
+        var countWard = document.getElementById('countWard').value;
 
         $.ajax({
             url: url,
@@ -361,6 +362,7 @@ else{
             data: formData,
 
             success: function (data) {
+                flag = 0;
                 counted = parseInt(count) + 1;
 
                 if(document.getElementById('ward-'+count+'-ward_code').value == '' || 
@@ -369,10 +371,26 @@ else{
                     return false;
                 }
 
-                // if($('.end_date').length == document.getElementById('countWard').value){
-                //     location.reload();
-                // }
-                if(counted == $('.end_date').length || counted == $('.start_date').length || counted == $('.wardCode').length){
+                //update
+                if($('.end_date').length ==  countWard|| $('.start_date').length == countWard || $('.wardCode').length == countWard){
+                    for(var i = 0; i < countWard; i++){
+                        if(document.getElementById('ward-'+i+'-ward_code').value == '' || document.getElementById('ward-'+i+'-ward_start_datetime').value == '' || document.getElementById('ward-'+i+'-ward_end_datetime').value == ''){
+                            continue;
+                        }
+                        else{
+                            flag++;
+                        }
+                    }
+
+                    if(flag == countWard){
+                        location.reload();
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                // insert
+                else if(counted == countWard){
                     location.reload();  
                 }
             },

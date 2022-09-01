@@ -133,6 +133,7 @@ else{
         ],
     ]);
     ?>
+        <input type="hidden" id="countFPP" name="countFPP" value="<?php echo count($modelFPP); ?>">
         <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
         <input type="hidden" id="costURL" name="dateUcostURLRL" value="<?php echo $urlCost ?>">
         <table id="fpp-table">
@@ -304,6 +305,7 @@ else{
     function submitFPPForm(count, url){
         var form = $('#fpp-form');
         var formData = form.serialize();
+        var countFPP = document.getElementById('countFPP').value;
 
         $.ajax({
             url: url,
@@ -311,6 +313,7 @@ else{
             data: formData,
 
             success: function (data) {
+                flag = 0;
                 counted = parseInt(count) + 1;
 
                 if(document.getElementById('fpp-'+count+'-kod').value == '' || 
@@ -319,10 +322,28 @@ else{
                     return false;
                 }
 
-                // if($('.end_date').length == document.getElementById('countWard').value){
-                //     location.reload();
-                // }
-                if(counted == $('.fppKod').length || counted == $('.costPerUnit').length || counted == $('.numberOfUnits').length){
+                // update
+                if($('.fppKod').length == countFPP|| $('.costPerUnit').length == countFPP || $('.numberOfUnits').length == countFPP){
+                    for(var i = 0; i < countFPP; i++){
+                        if(document.getElementById('fpp-'+i+'-kod').value == '' || 
+                            document.getElementById('fpp-'+i+'-cost_per_unit').value == '' || 
+                            document.getElementById('fpp-'+i+'-number_of_units').value == ''){
+                            continue;
+                        }
+                        else{
+                            flag++;
+                        }
+                    }
+
+                    if(flag == countFPP){
+                        location.reload();
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                // insert
+                else if(counted == countFPP){
                     location.reload();  
                 }
             },
