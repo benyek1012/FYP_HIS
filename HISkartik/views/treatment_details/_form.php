@@ -117,6 +117,7 @@ if(empty($checkFPP)){
 
 $url = Url::toRoute(['/bill/treatment']);
 $urlTreatment = Url::toRoute(['/bill/treatment']);
+$urlSubmit = Url::toRoute(['/treatment_details/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'treatment']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -175,7 +176,8 @@ else{
                         'options' => [
                             'placeholder' => Yii::t('app','Select treatment code'), 
                             'class' => 'treatmentCode',
-                            'onchange' => "treatmentCode('{$url}');"
+                            'onchange' => "treatmentCode('{$url}');",
+                            'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')"
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -234,7 +236,7 @@ else{
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost(); submitForm()'])->label(false) ?>
+                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();', 'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')"])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
@@ -333,19 +335,30 @@ else{
         });
     }
 
-    function submitForm(){
+    function submitTreatmentForm(count, url){
         var form = $('#treatment-form');
         var formData = form.serialize();
-        
+
         $.ajax({
-            url: form.attr("action"),
+            url: url,
             type: form.attr("method"),
             data: formData,
 
             success: function (data) {
-                // $(wardForm).trigger('reset');
-                // console.log(wardForm.attr("method"));
-                // location.reload();
+                counted = parseInt(count) + 1;
+
+                if(document.getElementById('treatment_details-'+count+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').value == ''){
+                    return false;
+                }
+
+                // update
+                if($('.item_num').length == document.getElementById('countTreatment').value){
+                    location.reload();
+                }
+                // insert
+                else if(counted == $('.item_num').length || counted == $('.treatmentCode').length){
+                    location.reload();
+                }
             },
         });
     }

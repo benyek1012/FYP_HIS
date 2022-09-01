@@ -124,7 +124,8 @@ class FppController extends Controller
     public function actionUpdate()
     {
         // Insert and Update Treatment
-        if(Yii::$app->request->post('saveFpp') == 'true' && Yii::$app->request->post('Fpp', [])) {
+        // Yii::$app->request->post('saveFpp') == 'true' && 
+        if(Yii::$app->request->post('Fpp', [])) {
             $dbFpp = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
             $modelFPP = Model::createMultiple(Fpp::className());
 

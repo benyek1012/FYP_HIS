@@ -107,6 +107,7 @@ if(empty($checkFPP)){
 
 $url = Url::toRoute(['/bill/fpp']);
 $urlCost = Url::toRoute(['/bill/cost']);
+$urlSubmit = Url::toRoute(['/fpp/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'fpp']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -164,7 +165,8 @@ else{
                         'options' => [
                             'placeholder' => Yii::t('app','Select FPP Kod'), 
                             'class' => 'fppKod',
-                            'onchange' => "fppKod('{$url}');"
+                            'onchange' => "fppKod('{$url}'); calculateFPPTotalCost()",
+                            'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -178,7 +180,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -186,7 +188,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}');"])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}'); calculateFPPTotalCost()", 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -194,7 +196,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();'])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();', 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -296,6 +298,34 @@ else{
                     }
                 });
             });
+        });
+    }
+
+    function submitFPPForm(count, url){
+        var form = $('#fpp-form');
+        var formData = form.serialize();
+
+        $.ajax({
+            url: url,
+            type: form.attr("method"),
+            data: formData,
+
+            success: function (data) {
+                counted = parseInt(count) + 1;
+
+                if(document.getElementById('fpp-'+count+'-kod').value == '' || 
+                    document.getElementById('fpp-'+count+'-cost_per_unit').value == '' || 
+                    document.getElementById('fpp-'+count+'-number_of_units').value == ''){
+                    return false;
+                }
+
+                // if($('.end_date').length == document.getElementById('countWard').value){
+                //     location.reload();
+                // }
+                if(counted == $('.fppKod').length || counted == $('.costPerUnit').length || counted == $('.numberOfUnits').length){
+                    location.reload();  
+                }
+            },
         });
     }
 </script>
