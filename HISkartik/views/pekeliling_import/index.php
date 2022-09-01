@@ -44,6 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'rowOptions' => function($model) {
+            $urlError = Url::toRoute(['pekeliling_import/upload', 'id' => $model['pekeliling_uid']]);
+            return [
+                'onclick' => "showErrorMsg('{$urlError}');",
+                'style' => "cursor:pointer"
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -247,6 +254,32 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 
 
+<div class="card">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Error Message');?></h3>
+            <div class="d-flex justify-content-end">
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body" id="patient-admission-summary">
+            <?php 
+                    if(empty($model))
+                    {
+                        echo Yii::t('app','Error is not found');        
+                    }
+                   
+                ?>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
 </div>
 
 <?php
@@ -262,3 +295,17 @@ SCRIPT;
 // Register tooltip/popover initialization javascript
 $this->registerJs ( $js );
 ?>
+
+<script>
+function showErrorMsg(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            document.getElementById("patient-admission-summary").innerHTML = this.responseText;
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+    
+}
+</script>

@@ -305,6 +305,38 @@ class Pekeliling_importController extends Controller
             return $this->redirect(['index']);
         }
     }
+
+    public function actionUpload($id)
+    { 
+        $model = $this->findModel($id);
+
+        return $this->renderPartial('/pekeliling_import/view', ['model' => $model]);
+    }
+
+    public function actionExport($id)
+    {
+        $model = $this->findModel($id);
+        $content = preg_replace("<<br/>>","\r\n", $model->error);
+
+        $array = explode("/", $model['file_import']);
+        $array = explode(".csv", $array[1]);
+        
+
+        $filename = $array[0].'_ErrorMsg'. '.txt'; 
+       
+        $myfile = fopen($filename, "w") or die("Unable to open file!");
+        fwrite($myfile, $content);
+        fclose($myfile);
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Length: ". filesize("$filename").";");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Type: application/octet-stream; "); 
+        header("Content-Transfer-Encoding: binary");
+        readfile($filename);
+       
+
+    }
     
     /**
      * Displays a single Pekeliling_import model.

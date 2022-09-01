@@ -13,34 +13,16 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pekeliling-import-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<?=$model->error;?>
 
+<?php if(!empty($model->error)){
+    ?>
     <p>
-        <?= Html::a('Update', ['update', 'pekeliling_uid' => $model->pekeliling_uid], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'pekeliling_uid' => $model->pekeliling_uid], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'pekeliling_uid',
-            'upload_datetime',
-            'approval1_responsible_uid',
-            'approval2_responsible_uid',
-            'file_import',
-            'lookup_type',
-            'error',
-            'scheduled_datetime',
-            'executed_datetime',
-            'execute_responsible_uid',
-            'update_type',
-        ],
-    ]) ?>
+    <br/>
+    <?= Html::a('Download', ['pekeliling_import/export', 'id' => $model->pekeliling_uid], ['class' => 'btn btn-info']) ?>
+     </p>
+    <?php
+}
+?>
 
 </div>
