@@ -147,9 +147,12 @@ class Pekeliling_importController extends Controller
                                 {
                                     if(!empty($line[0]))
                                     {
+                                        $special_character_error = $model::validateSpecialCharacter($line);
                                         $model_after_validate = $model::validateModel($model->lookup_type, $line);
                                         $valid = $model_after_validate->validate();
                                         $array_error = $model_after_validate->getFirstErrors();
+                                        if($special_character_error != "")
+                                            $string_error .= "Row ".$row." : ".$special_character_error."<br/>";
                                         foreach($array_error as $error){
                                             $string_error .= "Row ".$row." : ".$error."<br/>";
                                         }     

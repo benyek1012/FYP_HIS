@@ -86,15 +86,30 @@ class Pekeliling_import extends \yii\db\ActiveRecord
         }
     }
 
+    public static function validateSpecialCharacter($line)
+    {
+        $string_special_char = "";
+        foreach ($line as $key => $val) {
+            // loop over array and check all special characters found in string, only allow ' () - / \ ,'
+            if(preg_match('/[\'^£$%&*};"{@#~?!><>|=_+¬]/', $val)) {
+                if($string_special_char == "")
+                    $string_special_char = $val;
+                else $string_special_char .= "  ,  ".$val;
+            } 
+        }
+        if($string_special_char != "")
+            $string_special_char .= " contains special characters.";
+        return $string_special_char;
+    }
+
     public static function validateModel($type, $line)
     {
-
         foreach ($line as $key => $val) {
-            // replace all special characters found in string, only allow ' () - / \ ,'
-            $line[$key] = trim(preg_replace('/[\'^£$%&*};"{@#~?!><>|=_+¬]/', ' ', $val));
-
-            // replaces all tabs, new lines, double spaces, comma to simple 1 space
-            $line[$key] = trim(preg_replace('/[\t\n\r\s]+/', ' ', $val));
+            if(!empty($line[$key]))
+            {
+                // replaces all tabs, new lines, double spaces to simple 1 space
+                $line[$key] = trim(preg_replace('/[\t\n\r\s]+/', ' ', $val));
+            }
         }
 
         switch ($type) {
