@@ -2,11 +2,10 @@
 
 namespace app\controllers;
 
-use app\models\Batch;
+use app\models\Pekeliling_import;
+use app\models\Pekeliling_importSearch;
 use app\models\New_user;
-use app\models\BatchSearch;
 use app\models\Lookup_ward;
-use Codeception\Step\Skip;
 use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -15,12 +14,11 @@ use yii\db\Expression;
 use yii\web\UploadedFile;
 use GpsLab\Component\Base64UID\Base64UID;
 use Yii;
-use yii\db\Query;
 
 /**
- * BatchController implements the CRUD actions for Batch model.
+ * Pekeliling_importController implements the CRUD actions for Pekeliling_import model.
  */
-class BatchController extends Controller
+class Pekeliling_importController extends Controller
 {
     /**
      * @inheritDoc
@@ -41,20 +39,20 @@ class BatchController extends Controller
     }
 
     /**
-     * Lists all Batch models.
+     * Lists all Pekeliling_import models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $model = new Batch();
-        $searchModel = new BatchSearch();
+        $model = new Pekeliling_import();
+        $searchModel = new Pekeliling_importSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         $flag_delete = true;
 
         if(!(new New_user()) -> isAdmin()) echo $this->render('/site/no_access');
-
+        
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 $table = $model::chooseLookupType($model->lookup_type);
@@ -68,6 +66,8 @@ class BatchController extends Controller
                 $date = new \DateTime();
                 $date->setTimezone(new \DateTimeZone('+0800')); //GMT
                 $model->upload_datetime = $date->format('Y-m-d H:i:s');
+
+                $model->pekeliling_uid = Base64UID::generate(32);
 
                 if($model->update_type == 'delete')
                 {
@@ -100,7 +100,7 @@ class BatchController extends Controller
                         if($handle){
                             $first_column_csv = fgetcsv($handle);
 
-                            $validate_header = Batch::validateHeader($first_column_csv, $column);
+                            $validate_header = Pekeliling_import::validateHeader($first_column_csv, $column);
 
                             if(!$validate_header)
                             {
@@ -220,32 +220,6 @@ class BatchController extends Controller
         ]);
     }
 
-    public function actionUpload()
-    { 
-        $model = Batch::findOne(Yii::$app->request->get('id'));
-
-        return $this->renderPartial('/batch/view', ['model' => $model]);
-    }
-
-    public function actionExport()
-    {
-        $model = Batch::findOne(Yii::$app->request->get('id'));
-        $content = preg_replace("<<br/>>","\r\n", $model->error);
-        $filename = $model->id.'_ErrorMsg'. '.txt'; 
-       
-        $myfile = fopen($filename, "w") or die("Unable to open file!");
-        fwrite($myfile, $content);
-        fclose($myfile);
-        header("Cache-Control: public");
-        header("Content-Description: File Transfer");
-        header("Content-Length: ". filesize("$filename").";");
-        header("Content-Disposition: attachment; filename=$filename");
-        header("Content-Type: application/octet-stream; "); 
-        header("Content-Transfer-Encoding: binary");
-        readfile($filename);
-       
-
-    }
     public function actionExecute($id)
     {
         $model =  $this->findModel($id);
@@ -331,73 +305,32 @@ class BatchController extends Controller
             return $this->redirect(['index']);
         }
     }
-
+    
     /**
-     * Displays a single Batch model.
-     * @param int $id ID
+     * Displays a single Pekeliling_import model.
+     * @param string $pekeliling_uid Pekeliling Uid
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($pekeliling_uid)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($pekeliling_uid),
         ]);
     }
 
     /**
-     * Creates a new Batch model.
+     * Creates a new Pekeliling_import model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Batch();
+        $model = new Pekeliling_import();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
-
-                $model->file = UploadedFile::getInstance($model, 'file');
-                $uploadExists = 0;
-                if($model->file){
-                    $path = 'uploads/';
-                    $model->file_import = $path .rand(10, 100). '-' .str_replace('', '-', $model->file->name);
-
-                    $bulkInsertArray = array();
-                    $random_date = Yii::$app->formatter->asDatetime(date("dmyyhis"), "php:dmYHis");
-                    $random =  $random_date.rand(10, 100);
-                    $userId = Yii::$app->user->identity->id;
-                    $now = new Expression('NOW()');
-
-                    $uploadExists = 1;
-                }
-
-                if($uploadExists){
-                    $model->file->saveAs($model->file_import);
-                    $handle = fopen($model->file_import, 'r');
-                    if($handle){
-                        if($model->save()){
-                            while(($line = fgetcsv($handle, 1000, ",")) != FALSE){
-                                $bulkInsertArray[] = [
-                                    'ward_uid' => Base64UID::generate(32),
-                                    'ward_code' => $line[0],
-                                    'ward_name' => $line[1],
-                                    'sex' =>   $random,
-                                    'min_age' => 'a',
-                                    'max_age' => 'a',
-                                ];
-                            }
-                        }
-                    }
-                    fclose($handle);
-
-                    $tableName = 'lookup_ward';
-                    $col = [ 'ward_uid', 'ward_code', 'ward_name', 'sex', 'min_age', 'max_age'];
-                    Yii::$app->db->createCommand()->batchInsert($tableName, $col, $bulkInsertArray)->execute();
-
-                }
-
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'pekeliling_uid' => $model->pekeliling_uid]);
             }
         } else {
             $model->loadDefaultValues();
@@ -409,18 +342,18 @@ class BatchController extends Controller
     }
 
     /**
-     * Updates an existing Batch model.
+     * Updates an existing Pekeliling_import model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
+     * @param string $pekeliling_uid Pekeliling Uid
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($pekeliling_uid)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($pekeliling_uid);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'pekeliling_uid' => $model->pekeliling_uid]);
         }
 
         return $this->render('update', [
@@ -429,29 +362,29 @@ class BatchController extends Controller
     }
 
     /**
-     * Deletes an existing Batch model.
+     * Deletes an existing Pekeliling_import model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
+     * @param string $pekeliling_uid Pekeliling Uid
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($pekeliling_uid)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($pekeliling_uid)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Batch model based on its primary key value.
+     * Finds the Pekeliling_import model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Batch the loaded model
+     * @param string $pekeliling_uid Pekeliling Uid
+     * @return Pekeliling_import the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($pekeliling_uid)
     {
-        if (($model = Batch::findOne(['id' => $id])) !== null) {
+        if (($model = Pekeliling_import::findOne(['pekeliling_uid' => $pekeliling_uid])) !== null) {
             return $model;
         }
 

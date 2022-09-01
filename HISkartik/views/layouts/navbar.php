@@ -109,8 +109,8 @@ if (Yii::$app->user->isGuest){
                     class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                     class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/batch']); ?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Testing Csv Upload'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
+                    class="dropdown-item"><?php echo Yii::t('app','Pekeliling Import'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?php echo Yii::t('app','Testing database update'); ?></a></li>    
             </ul>

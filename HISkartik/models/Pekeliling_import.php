@@ -6,9 +6,9 @@ use Yii;
 use GpsLab\Component\Base64UID\Base64UID;
 
 /**
- * This is the model class for table "batch".
+ * This is the model class for table "pekeliling_import".
  *
- * @property int $id
+ * @property string $pekeliling_uid
  * @property string $upload_datetime
  * @property string|null $approval1_responsible_uid
  * @property string|null $approval2_responsible_uid
@@ -18,18 +18,18 @@ use GpsLab\Component\Base64UID\Base64UID;
  * @property string|null $scheduled_datetime
  * @property string|null $executed_datetime
  * @property string|null $execute_responsible_uid
- * @property string|null $update_type
+ * @property string $update_type
  */
-class Batch extends \yii\db\ActiveRecord
+class Pekeliling_import extends \yii\db\ActiveRecord
 {
     public $file;
-    
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'batch';
+        return 'pekeliling_import';
     }
 
     /**
@@ -39,13 +39,14 @@ class Batch extends \yii\db\ActiveRecord
     {
         return [
             [['file'], 'file', 'extensions' => 'csv', 'checkExtensionByMimeType' => false],
-            [['upload_datetime', 'file_import', 'lookup_type', 'update_type'], 'required'],
+            [['pekeliling_uid', 'upload_datetime', 'file_import', 'lookup_type', 'update_type'], 'required'],
             [['upload_datetime', 'scheduled_datetime', 'executed_datetime'], 'safe'],
-            [['approval1_responsible_uid', 'approval2_responsible_uid', 'execute_responsible_uid'], 'string', 'max' => 64],
+            [['pekeliling_uid', 'approval1_responsible_uid', 'approval2_responsible_uid', 'execute_responsible_uid'], 'string', 'max' => 64],
             [['file_import'], 'string', 'max' => 100],
             [['lookup_type'], 'string', 'max' => 32],
             [['error'], 'string', 'max' => 2000],
             [['update_type'], 'string', 'max' => 12],
+            [['pekeliling_uid'], 'unique'],
         ];
     }
 
@@ -55,16 +56,16 @@ class Batch extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'pekeliling_uid' => 'Pekeliling Uid',
             'upload_datetime' => 'Upload Datetime',
-            'approval1_responsible_uid' => 'Approval 1 Responsible',
-            'approval2_responsible_uid' => 'Approval 2 Responsible',
+            'approval1_responsible_uid' => 'Approval 1 Responsible Uid',
+            'approval2_responsible_uid' => 'Approval 2 Responsible Uid',
             'file_import' => 'File Import',
             'lookup_type' => 'Lookup Type',
             'error' => 'Error',
             'scheduled_datetime' => 'Scheduled Datetime',
             'executed_datetime' => 'Executed Datetime',
-            'execute_responsible_uid' => 'Execute Responsible',
+            'execute_responsible_uid' => 'Execute Responsible Uid',
             'update_type' => 'Update Type',
         ];
     }
@@ -162,10 +163,12 @@ class Batch extends \yii\db\ActiveRecord
     public static function validateHeader($first_column_csv, $col)
     {
         foreach ($first_column_csv as $key => $val) {
-            // replaces all tabs, new lines, double spaces, comma to simple 1 space
-            $first_column_csv[$key] = trim(preg_replace('/[\t\n\r\s]+/', ' ', $val));
+            if(!empty($first_column_csv[$key]))
+            {
+                // replaces all tabs, new lines, double spaces, comma to simple 1 space
+                $first_column_csv[$key] = trim(preg_replace('/[\t\n\r\s]+/', ' ', $val));
+            }
         }
-
 
         // remove first element from database header
         array_shift($col);
