@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+use app\models\New_user;
 
 use yii\db\Transaction;
 
@@ -69,7 +70,7 @@ class Reminder extends \yii\db\ActiveRecord
     // functions require
     // -update patient_admission and reminder_letter
   
-    public function batchCreate($responsible_uid)
+    public static function batchCreate($responsible_uid)
     {
     
         $currentdate = date("Y-m-d");
@@ -104,4 +105,17 @@ class Reminder extends \yii\db\ActiveRecord
             throw $e;
         }
     }
+
+/*    public function getId() {
+        return $this->username;
+    }
+
+    public function checkName($user){
+        $user = New_user::findOne([Yii::$app->user->identity->getId($user)]);
+        return $user->name;
+        //return $user;    
+    } */
+
+   
 }
+

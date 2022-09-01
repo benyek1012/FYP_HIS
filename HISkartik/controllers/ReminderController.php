@@ -44,10 +44,13 @@ class ReminderController extends Controller
         if ($this->request->get() && !empty($_GET['function'])) {
 
             $model = new Reminder();
-            $responsible_uid = Yii::$app->user->identity->id;
-            $model::batchCreate($responsible_uid);
+            $userid = Yii::$app->user->identity->name;
+            $table = $model::batchCreate($userid);
+            echo $table;
+            //$this->$username::getId($table);
+            //return $username->_toString($table);
             //return $_GET['function'];
-            return $this->redirect(['index']);
+            //return $this->$table->redirect(['index']);
         }
 
         $searchModel = new ReminderSearch();
