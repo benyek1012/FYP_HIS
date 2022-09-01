@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 01, 2022 at 06:40 PM
+-- Generation Time: Sep 01, 2022 at 06:55 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
@@ -6779,6 +6779,12 @@ ALTER TABLE `serial_number`
 ALTER TABLE `treatment_details`
   ADD PRIMARY KEY (`treatment_details_uid`),
   ADD KEY `bill_uid` (`bill_uid`);
+
+--
+-- Indexes for table `variable`
+--
+ALTER TABLE `variable`
+  ADD PRIMARY KEY (`read_only`);
 
 --
 -- Indexes for table `ward`
