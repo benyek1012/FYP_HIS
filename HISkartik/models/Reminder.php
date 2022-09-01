@@ -73,7 +73,7 @@ class Reminder extends \yii\db\ActiveRecord
     {
     
         $currentdate = date("Y-m-d");
-        $placeholder = date("Y-m-d", '9999-12-31');
+        $placeholder = date('9999-12-31');
         
 
         $transaction = Patient_admission::getDb()->beginTransaction();
@@ -88,9 +88,9 @@ class Reminder extends \yii\db\ActiveRecord
 
             // -create new row with placeholder set reminder1,2,3 value as 0, and batch_date = placeholder
             $batchcreate = new Reminder();
-            $batchcreate->reminder1 = 0;
-            $batchcreate->reminder2 = 0;
-            $batchcreate->reminder3 = 0;
+            $batchcreate->reminder1count = 0;
+            $batchcreate->reminder2count = 0;
+            $batchcreate->reminder3count = 0;
             $batchcreate->batch_date = $placeholder;
             $batchcreate->save();
 
