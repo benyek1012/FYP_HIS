@@ -6,6 +6,7 @@ use app\models\Pekeliling_import;
 use app\models\Pekeliling_importSearch;
 use app\models\New_user;
 use app\models\Lookup_ward;
+use app\models\Variable;
 use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -227,6 +228,10 @@ class Pekeliling_importController extends Controller
     {
         $model =  $this->findModel($id);
 
+        $model_read_only = Variable::find()->one();
+        $model_read_only->read_only = 1;
+        $model_read_only->save();
+
         $table = $model::chooseLookupType($model->lookup_type);
         $tableName = $table->tableName();
         $column = $table->attributes();
@@ -261,15 +266,19 @@ class Pekeliling_importController extends Controller
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model->executed_datetime = $date->format('Y-m-d H:i:s');
 
-        $model->save();
+        if($model->save())
+        {
+            $model_read_only->read_only = 0;
+            $model_read_only->save();
 
-        Yii::$app->session->setFlash('msg', '
-            <div class="alert alert-success alert-dismissable">
-            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-            '.Yii::t('app', 'You have successfully import file '.$model->file_import.'.'). '</div>'
-        );
-    
-        return $this->redirect(['index']);
+            Yii::$app->session->setFlash('msg', '
+                <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                '.Yii::t('app', 'You have successfully import file '.$model->file_import.'.'). '</div>'
+            );
+        
+            return $this->redirect(['index']);
+        }
 
     }
 

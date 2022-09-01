@@ -108,7 +108,7 @@ body {
                 <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                     class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Pekeliling Upload'); ?></a></li>
+                    class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?php echo Yii::t('app','Testing database update'); ?></a></li>    
             </ul>
