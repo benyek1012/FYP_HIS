@@ -57,16 +57,16 @@ class Pekeliling_import extends \yii\db\ActiveRecord
     {
         return [
             'pekeliling_uid' => 'Pekeliling Uid',
-            'upload_datetime' => 'Upload Datetime',
-            'approval1_responsible_uid' => 'Approval 1 Responsible Uid',
-            'approval2_responsible_uid' => 'Approval 2 Responsible Uid',
-            'file_import' => 'File Import',
-            'lookup_type' => 'Lookup Type',
-            'error' => 'Error',
-            'scheduled_datetime' => 'Scheduled Datetime',
-            'executed_datetime' => 'Executed Datetime',
-            'execute_responsible_uid' => 'Execute Responsible Uid',
-            'update_type' => 'Update Type',
+            'upload_datetime' => Yii::t('app','Upload Datetime'),
+            'approval1_responsible_uid' => Yii::t('app','Approval 1 Responsible Uid'),
+            'approval2_responsible_uid' => Yii::t('app','Approval 2 Responsible Uid'),
+            'file_import' => Yii::t('app','File Import'),
+            'lookup_type' => Yii::t('app','Lookup Type'),
+            'error' => Yii::t('app','Error'),
+            'scheduled_datetime' => Yii::t('app','Scheduled Datetime'),
+            'executed_datetime' => Yii::t('app','Executed Datetime'),
+            'execute_responsible_uid' => Yii::t('app','Execute Responsible Uid'),
+            'update_type' => Yii::t('app','Update Type'),
         ];
     }
 

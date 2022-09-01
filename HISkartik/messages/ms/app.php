@@ -292,5 +292,22 @@ return[
     'Select FPP Kod' => 'Pilih Kod FPP',
     'Cost Per Unit' => 'Kos Seunit',
     'Cost Per Unit (RM)' => 'Kos Seunit (RM)',
+    'Upload Datetime' => 'Tarikh Muat Naik',
+    'Approval 1 Responsible Uid' => 'Kelulusan 1 Uid Bertanggungjawab',
+    'Approval 2 Responsible Uid' => 'Kelulusan 2 Uid Bertanggungjawab',
+    'Lookup Type' => 'Jenis Carian',
+    'Error' => 'Ralat',
+    'Scheduled Datetime' => 'Tarikh yang Dijadualkan',
+    'Executed Datetime' => 'Tarikh Dilaksanakan',
+    'Execute Responsible Uid' => 'Melaksanakan Uid Bertanggungjawab',
+    'Update Type' => 'Jenis Kemas Kini',
+    'Full Paying Patient' => 'Pesakit Bergaji Penuh',
+    'Insert / Update' => 'Sisipkan / Kemas Kini',
+    'Delete old codes' => 'Padam kod lama',
+    'Execute' => 'Laksanakan',
+    'Approve' => 'Terima',
+    'Error Message' => 'Mesej Ralat',
+    'Download' => 'Muat Turun',
+
 ];
 ?>

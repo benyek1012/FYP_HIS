@@ -227,8 +227,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         return ( empty($model['error']) && empty($model->execute_responsible_uid) && 
                                     !empty($model->approval1_responsible_uid) && 
                                     !empty($model->approval2_responsible_uid) && $check_file_existed)
-                        ?  Html::a('Execute', ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
-                        : Html::a('Execute', ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
+                        ?  Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
+                        : Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
                     },
                     'my_button2' => function ($url, $model, $key) {
                         $check_file_existed = false;
@@ -245,8 +245,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $flag = false;
 
                         return ( empty($model['error']) && empty($model->execute_responsible_uid) && $flag && $check_file_existed)
-                        ?  Html::a('Approve', ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
-                        : Html::a('Approve', ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
+                        ?  Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
+                        : Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
                     },
                 ]
             ],

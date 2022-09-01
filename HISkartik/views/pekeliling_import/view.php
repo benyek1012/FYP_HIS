@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
     <p>
     <br/>
-    <?= Html::a('Download', ['pekeliling_import/export', 'id' => $model->pekeliling_uid], ['class' => 'btn btn-info']) ?>
+    <?= Html::a(Yii::t('app','Download'), ['pekeliling_import/export', 'id' => $model->pekeliling_uid], ['class' => 'btn btn-info']) ?>
      </p>
     <?php
 }
