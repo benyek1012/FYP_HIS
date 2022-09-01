@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 01, 2022 at 11:50 AM
+-- Generation Time: Sep 01, 2022 at 06:40 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.1.6
 
@@ -6622,6 +6622,23 @@ CREATE TABLE `treatment_details` (
   `item_count` int(11) NOT NULL,
   `item_total_unit_cost_rm` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `variable`
+--
+
+CREATE TABLE `variable` (
+  `read_only` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `variable`
+--
+
+INSERT INTO `variable` (`read_only`) VALUES
+(0);
 
 -- --------------------------------------------------------
 
