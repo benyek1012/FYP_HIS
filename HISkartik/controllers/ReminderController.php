@@ -10,6 +10,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii2tech\csvgrid\CsvGrid;
+use yii\data\ActiveDataProvider;
 use Yii;
 
 /**
@@ -61,7 +62,7 @@ class ReminderController extends Controller
             }
             if ($_GET['function'] == 'downloadcsv')
             {
-                exportCSV($_GET['batch_date']);
+                $this->exportCSV($_GET['batch_date']);
             }
                 
             //echo $userid;
@@ -179,9 +180,9 @@ class ReminderController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public static function exportCSV($batch_date) //Teo fill export CSV code here
+    public function exportCSV($batch_date) //Teo fill export CSV code here
     {
-        $model = $this->findModel($rn);
+        $model = $this->findModel($batch_date);
         $batch_date = '9999-12-31';
         
         $exporter = new CsvGrid([
