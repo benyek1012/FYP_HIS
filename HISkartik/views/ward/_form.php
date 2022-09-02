@@ -340,7 +340,7 @@ else{
                 if (date2.getHours() >= 12)
                     days += 1;
 
-                if (date1.getDate() == date2.getDate())
+                if (date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth())
                     days = 1;
 
                 $("#ward-" + i + "-ward_number_of_days").val(days);
