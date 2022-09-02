@@ -99,6 +99,16 @@ foreach($rows_ward as $row_ward){
   $wardcode[$row_ward['ward_code']] = $row_ward['ward_code'] . ' - ' . $row_ward['ward_name'];
 } 
 
+$lockedWardCode = array();
+$rows_ward = (new \yii\db\Query())
+->from('ward')
+->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
+->all();
+
+foreach($rows_ward as $row_ward){
+    $lockedWardCode[$row_ward['ward_code']] = $row_ward['ward_code'] . ' - ' . $row_ward['ward_name'];
+}
+
 if(empty($print_readonly)) $print_readonly = false;
 
 if($print_readonly)
@@ -181,14 +191,14 @@ else{
                         'disabled' => $print_readonly, 'onchange' => "wardCode('{$url}');"])->label(false) ?> -->
                         
                         <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
-                            'data' => $wardcode,
+                            'data' => empty($isGenerated) ? $wardcode : $lockedWardCode,
                             'disabled' => empty($isGenerated) ? false : true,
                             'options' => [
                                 'placeholder' => Yii::t('app','Select ward code'), 
                                 'class' => 'wardCode',
                                 'value' => $admission_model->initial_ward_code,
                                 'onchange' => "wardCode('{$url}');",
-                                'onfocusout' => "submitWardForm('{$index}', '{$urlSubmit}')",
+                                // 'onfocusout' => "submitWardForm('{$index}', '{$urlSubmit}')",
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -204,14 +214,14 @@ else{
                         'disabled' => $print_readonly, 'onchange' => "wardCode('{$url}');"])->label(false) ?> -->
 
                         <?= $form->field($modelWard, "[$index]ward_code")->widget(kartik\select2\Select2::classname(), [
-                            'data' => $wardcode,
+                            'data' => empty($isGenerated) ? $wardcode : $lockedWardCode,
                             'disabled' => empty($isGenerated) ? false : true,
                             'options' => [
                                 'placeholder' => Yii::t('app','Select ward code'), 
                                 'class' => 'wardCode',
                                 'value' => $modelWard->ward_code,
                                 'onchange' => "wardCode('{$url}');",
-                                'onfocusout' => "submitWardForm('{$index}', '{$urlSubmit}')",
+                                // 'onfocusout' => "submitWardForm('{$index}', '{$urlSubmit}')",
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -237,9 +247,9 @@ else{
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
-                                submitWardForm('{$index}', '{$urlSubmit}')
                             }",
                         ],])->label(false)?>
+                        <!-- submitWardForm('{$index}', '{$urlSubmit}') -->
                     <?php 
                     }
                     else{
@@ -250,9 +260,9 @@ else{
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
-                                submitWardForm('{$index}', '{$urlSubmit}')
                             }",
                         ],])->label(false)?>
+                        <!-- submitWardForm('{$index}', '{$urlSubmit}') -->
                     <?php
                     }
                     ?>
@@ -264,9 +274,9 @@ else{
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
-                                submitWardForm('{$index}', '{$urlSubmit}')
                             }",
                         ],])->label(false)?></td>
+                        <!-- submitWardForm('{$index}', '{$urlSubmit}') -->
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
                 <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['maxlength' => true,
@@ -351,51 +361,51 @@ else{
         });
     }
 
-    function submitWardForm(count, url){
-        var form = $('#ward-form');
-        var formData = form.serialize();
-        var countWard = document.getElementById('countWard').value;
+    // function submitWardForm(count, url){
+    //     var form = $('#ward-form');
+    //     var formData = form.serialize();
+    //     var countWard = document.getElementById('countWard').value;
 
-        $.ajax({
-            url: url,
-            type: form.attr("method"),
-            data: formData,
+    //     $.ajax({
+    //         url: url,
+    //         type: form.attr("method"),
+    //         data: formData,
 
-            success: function (data) {
-                flag = 0;
-                counted = parseInt(count) + 1;
+    //         success: function (data) {
+    //             flag = 0;
+    //             counted = parseInt(count) + 1;
 
-                if(document.getElementById('ward-'+count+'-ward_code').value == '' || 
-                    document.getElementById('ward-'+count+'-ward_start_datetime').value == '' || 
-                    document.getElementById('ward-'+count+'-ward_end_datetime').value == ''){
-                    return false;
-                }
+    //             if(document.getElementById('ward-'+count+'-ward_code').value == '' || 
+    //                 document.getElementById('ward-'+count+'-ward_start_datetime').value == '' || 
+    //                 document.getElementById('ward-'+count+'-ward_end_datetime').value == ''){
+    //                 return false;
+    //             }
 
-                //update
-                if($('.end_date').length ==  countWard|| $('.start_date').length == countWard || $('.wardCode').length == countWard){
-                    for(var i = 0; i < countWard; i++){
-                        if(document.getElementById('ward-'+i+'-ward_code').value == '' || document.getElementById('ward-'+i+'-ward_start_datetime').value == '' || document.getElementById('ward-'+i+'-ward_end_datetime').value == ''){
-                            continue;
-                        }
-                        else{
-                            flag++;
-                        }
-                    }
+    //             //update
+    //             if($('.end_date').length ==  countWard|| $('.start_date').length == countWard || $('.wardCode').length == countWard){
+    //                 for(var i = 0; i < countWard; i++){
+    //                     if(document.getElementById('ward-'+i+'-ward_code').value == '' || document.getElementById('ward-'+i+'-ward_start_datetime').value == '' || document.getElementById('ward-'+i+'-ward_end_datetime').value == ''){
+    //                         continue;
+    //                     }
+    //                     else{
+    //                         flag++;
+    //                     }
+    //                 }
 
-                    if(flag == countWard){
-                        location.reload();
-                    }
-                    else{
-                        return false;
-                    }
-                }
-                // insert
-                else if(counted == countWard){
-                    location.reload();  
-                }
-            },
-        });
-    }
+    //                 if(flag == countWard){
+    //                     location.reload();
+    //                 }
+    //                 else{
+    //                     return false;
+    //                 }
+    //             }
+    //             // insert
+    //             else if(counted == countWard){
+    //                 location.reload();  
+    //             }
+    //         },
+    //     });
+    // }
 </script>
 
 <?php 

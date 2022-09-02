@@ -86,6 +86,16 @@ foreach($rows as $row){
     $fpp_kod[$row['kod']] = $row['kod'] . ' - ' . $row['name'];
 } 
 
+$lockedFPPKod = array();
+$rows_fpp = (new \yii\db\Query())
+->from('fpp')
+->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
+->all();
+
+foreach($rows_fpp as $row_fpp){
+    $lockedFPPKod[$row_fpp['kod']] = $row_fpp['kod'] . ' - ' . $row_fpp['name'];
+}
+
 if(empty($print_readonly)) $print_readonly = false;
 
 if($print_readonly)
@@ -160,14 +170,14 @@ else{
             <tr>
                 <td>                    
                     <?= $form->field($modelFPP, "[$index]kod")->widget(kartik\select2\Select2::classname(), [
-                        'data' => $fpp_kod,
+                        'data' => empty($isGenerated) ? $fpp_kod : $lockedFPPKod,
                         // 'disabled' => $print_readonly == false? $disabled : $print_readonly,
                         'disabled' => empty($isGenerated) ? false : true,
                         'options' => [
                             'placeholder' => Yii::t('app','Select FPP Kod'), 
                             'class' => 'fppKod',
                             'onchange' => "fppKod('{$url}'); calculateFPPTotalCost()",
-                            'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",
+                            // 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -181,7 +191,8 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?>
+                    <!-- <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?> -->
+                    <?= $form->field($modelFPP, "[$index]additional_details")->textarea(['class' => 'expand', 'title' => $modelFPP->additional_details, 'rows' => '1', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -189,7 +200,8 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}'); calculateFPPTotalCost()", 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}'); calculateFPPTotalCost()",])->label(false) ?>
+                    <!-- 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')" -->
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -197,7 +209,8 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();', 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();',])->label(false) ?>
+                    <!-- 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')" -->
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -302,53 +315,53 @@ else{
         });
     }
 
-    function submitFPPForm(count, url){
-        var form = $('#fpp-form');
-        var formData = form.serialize();
-        var countFPP = document.getElementById('countFPP').value;
+    // function submitFPPForm(count, url){
+    //     var form = $('#fpp-form');
+    //     var formData = form.serialize();
+    //     var countFPP = document.getElementById('countFPP').value;
 
-        $.ajax({
-            url: url,
-            type: form.attr("method"),
-            data: formData,
+    //     $.ajax({
+    //         url: url,
+    //         type: form.attr("method"),
+    //         data: formData,
 
-            success: function (data) {
-                flag = 0;
-                counted = parseInt(count) + 1;
+    //         success: function (data) {
+    //             flag = 0;
+    //             counted = parseInt(count) + 1;
 
-                if(document.getElementById('fpp-'+count+'-kod').value == '' || 
-                    document.getElementById('fpp-'+count+'-cost_per_unit').value == '' || 
-                    document.getElementById('fpp-'+count+'-number_of_units').value == ''){
-                    return false;
-                }
+    //             if(document.getElementById('fpp-'+count+'-kod').value == '' || 
+    //                 document.getElementById('fpp-'+count+'-cost_per_unit').value == '' || 
+    //                 document.getElementById('fpp-'+count+'-number_of_units').value == ''){
+    //                 return false;
+    //             }
 
-                // update
-                if($('.fppKod').length == countFPP|| $('.costPerUnit').length == countFPP || $('.numberOfUnits').length == countFPP){
-                    for(var i = 0; i < countFPP; i++){
-                        if(document.getElementById('fpp-'+i+'-kod').value == '' || 
-                            document.getElementById('fpp-'+i+'-cost_per_unit').value == '' || 
-                            document.getElementById('fpp-'+i+'-number_of_units').value == ''){
-                            continue;
-                        }
-                        else{
-                            flag++;
-                        }
-                    }
+    //             // update
+    //             if($('.fppKod').length == countFPP|| $('.costPerUnit').length == countFPP || $('.numberOfUnits').length == countFPP){
+    //                 for(var i = 0; i < countFPP; i++){
+    //                     if(document.getElementById('fpp-'+i+'-kod').value == '' || 
+    //                         document.getElementById('fpp-'+i+'-cost_per_unit').value == '' || 
+    //                         document.getElementById('fpp-'+i+'-number_of_units').value == ''){
+    //                         continue;
+    //                     }
+    //                     else{
+    //                         flag++;
+    //                     }
+    //                 }
 
-                    if(flag == countFPP){
-                        location.reload();
-                    }
-                    else{
-                        return false;
-                    }
-                }
-                // insert
-                else if(counted == countFPP){
-                    location.reload();  
-                }
-            },
-        });
-    }
+    //                 if(flag == countFPP){
+    //                     location.reload();
+    //                 }
+    //                 else{
+    //                     return false;
+    //                 }
+    //             }
+    //             // insert
+    //             else if(counted == countFPP){
+    //                 location.reload();  
+    //             }
+    //         },
+    //     });
+    // }
 </script>
 
 <?php 

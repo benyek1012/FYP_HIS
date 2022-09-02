@@ -309,5 +309,11 @@ return[
     'Error Message' => 'Mesej Ralat',
     'Download' => 'Muat Turun',
 
+    'Treatment Pekeliling Kod no longer exist' => 'Rawatan Pekeliling Kod tidak lagi wujud',
+    'Ward Pekeliling Kod no longer exist' => 'Wad Pekeliling Kod tidak lagi wujud',
+    'FPP Pekeliling Kod no longer exist' => 'FPP Pekeliling Kod tidak lagi wujud',
+    'Department Pekeliling Kod no longer exist' => 'Jabatan Pekeliling Kod tidak lagi wujud',
+    'Status Pekeliling Kod no longer exist' => 'Taraf Pekeliling Kod tidak lagi wujud',
+    'Generate error! ' => 'Hasilkan ralat! ',
 ];
 ?>

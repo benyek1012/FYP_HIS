@@ -382,5 +382,110 @@ class Bill extends \yii\db\ActiveRecord
         if(!empty($row_bill))
             return !empty($row_bill['bill_generation_final_fee_rm']) ? $row_bill['bill_generation_final_fee_rm'] : number_format((float) 0, 2, '.', '');
     }
+
+    // Check Treatment Pekeliling before bill is generated
+    public function checkTreatmentPekeliling($bill_uid){
+        $checkTreatmentModel = Treatment_details::findAll((['bill_uid' => $bill_uid]));
+
+        foreach($checkTreatmentModel as $checkModel){
+            $treatmentLookUp = Lookup_treatment::findAll(['treatment_code' => $checkModel->treatment_code]);
+        }
+
+        if(empty($checkTreatmentModel)){
+            return true;
+        }
+        else{
+            if(empty($treatmentLookUp)){
+                return false;  
+            }
+            else{
+                return true;
+            }
+        }
+    }
+
+    // Check Ward Pekeliling before bill is generated
+    public function checkWardPekeliling($bill_uid){
+        $checkWardModel = Ward::findAll((['bill_uid' => $bill_uid]));
+
+        foreach($checkWardModel as $checkModel){
+            $wardLookUp = Lookup_ward::findAll(['ward_code' => $checkModel->ward_code]);
+        }
+
+        if(empty($checkWardModel)){
+            return true;
+        }
+        else{
+            if(empty($wardLookUp)){
+                return false;  
+            }
+            else{
+                return true;
+            }
+        }
+    }
+
+    // Check Fpp Pekeliling before bill is generated
+    public function checkFppPekeliling($bill_uid){
+        $checkFPPModel = Fpp::findAll(['bill_uid' => $bill_uid]);
+
+        foreach($checkFPPModel as $checkModel){
+            $fppLookUp = Lookup_fpp::findAll(['kod' => $checkModel->kod]);
+        }
+
+        if(empty($checkFPPModel)){
+            return true;
+        }
+        else{
+            if(empty($fppLookUp)){
+                return false;  
+            }
+            else{
+                return true;
+            }
+        }
+    }
+
+    // Check Department Pekeliling before bill is generated
+    public function checkDepartmentPekeliling($bill_uid){
+        $checkDepartmentModel = Bill::findAll(['bill_uid' => $bill_uid]);
+
+        foreach($checkDepartmentModel as $checkModel){
+            $departmentLookUp = Lookup_department::findAll(['department_code' => $checkModel->department_code]);
+            $checkBillDepartmentCode = $checkModel->department_code;
+        }
+
+        if(empty($checkBillDepartmentCode)){
+            return true;
+        }
+        else{
+            if(empty($departmentLookUp)){
+                return false;  
+            }
+            else{
+                return true;
+            }
+        }
+    }
     
+    // Check Status Pekeliling before bill is generated
+    public function checkStatusPekeliling($bill_uid){
+        $checkStatusModel = Bill::findAll(['bill_uid' => $bill_uid]);
+
+        foreach($checkStatusModel as $checkModel){
+            $statusLookup = Lookup_status::findAll(['status_code' => $checkModel->status_code]);
+        }
+
+        if(empty($checkStatusModel)){
+            return true;
+        }
+        else{
+            if(empty($statusLookup)){
+                return false;  
+            }
+            else{
+                return true;
+            }
+        }
+    }
 }

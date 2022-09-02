@@ -33,6 +33,7 @@ else{
     }  
 }
 
+$lockedTreatmentCode = '';
 $row_bill = (new \yii\db\Query())
 ->from('bill')
 ->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
@@ -95,6 +96,16 @@ foreach($rows as $row){
         $unit_cost = $row['class_3_cost_per_unit'];
     }
 } 
+
+$lockedTreatmentCode = array();
+$rows_treatment = (new \yii\db\Query())
+->from('treatment_details')
+->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
+->all();
+
+foreach($rows_treatment as $row_treatment){
+    $lockedTreatmentCode[$row_treatment['treatment_code']] = $row_treatment['treatment_code'] . ' - ' . $row_treatment['treatment_name'];
+}
 
 if(empty($print_readonly)) $print_readonly = false;
 
@@ -171,13 +182,13 @@ else{
                         'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?> -->
                     
                     <?= $form->field($modelTreatment, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
-                        'data' => $treatment_code,
+                        'data' => empty($isGenerated) ? $treatment_code : $lockedTreatmentCode,
                         'disabled' => empty($isGenerated) ? false : true,
                         'options' => [
                             'placeholder' => Yii::t('app','Select treatment code'), 
                             'class' => 'treatmentCode',
                             'onchange' => "treatmentCode('{$url}');",
-                            'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')"
+                            // 'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')",
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
@@ -236,7 +247,8 @@ else{
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();', 'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')"])->label(false) ?>
+                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();',])->label(false) ?>
+                        <!-- 'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')" -->
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
@@ -335,49 +347,49 @@ else{
         });
     }
 
-    function submitTreatmentForm(count, url){
-        var form = $('#treatment-form');
-        var formData = form.serialize();
-        var countTreatment = document.getElementById('countTreatment').value;
+    // function submitTreatmentForm(count, url){
+    //     var form = $('#treatment-form');
+    //     var formData = form.serialize();
+    //     var countTreatment = document.getElementById('countTreatment').value;
 
-        $.ajax({
-            url: url,
-            type: form.attr("method"),
-            data: formData,
+    //     $.ajax({
+    //         url: url,
+    //         type: form.attr("method"),
+    //         data: formData,
 
-            success: function (data) {
-                flag = 0;
-                counted = parseInt(count) + 1;
+    //         success: function (data) {
+    //             flag = 0;
+    //             counted = parseInt(count) + 1;
 
-                if(document.getElementById('treatment_details-'+count+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').value == ''){
-                    return false;
-                }
+    //             if(document.getElementById('treatment_details-'+count+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').value == ''){
+    //                 return false;
+    //             }
 
-                // update
-                if($('.item_num').length == countTreatment || $('.treatmentCode').length == countTreatment){
-                    for(var i = 0; i < countTreatment; i++){
-                        if(document.getElementById('treatment_details-'+i+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').i == ''){
-                            continue;
-                        }
-                        else{
-                            flag++;
-                        }
-                    }
+    //             // update
+    //             if($('.item_num').length == countTreatment || $('.treatmentCode').length == countTreatment){
+    //                 for(var i = 0; i < countTreatment; i++){
+    //                     if(document.getElementById('treatment_details-'+i+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').i == ''){
+    //                         continue;
+    //                     }
+    //                     else{
+    //                         flag++;
+    //                     }
+    //                 }
 
-                    if(flag == countTreatment){
-                        location.reload();
-                    }
-                    else{
-                        return false;
-                    }
-                }
-                // insert
-                else if(counted == countTreatment){
-                    location.reload();
-                }
-            },
-        });
-    }
+    //                 if(flag == countTreatment){
+    //                     location.reload();
+    //                 }
+    //                 else{
+    //                     return false;
+    //                 }
+    //             }
+    //             // insert
+    //             else if(counted == countTreatment){
+    //                 location.reload();
+    //             }
+    //         },
+    //     });
+    // }
 </script>
 
 <?php 

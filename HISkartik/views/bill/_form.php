@@ -194,6 +194,18 @@ foreach($rows as $row){
     }
 } 
 
+$lockedStatusCode = array();
+$lockedDepartmentCode = array();
+$rows_bill = (new \yii\db\Query())
+->from('bill')
+->where(['bill_uid' => Yii::$app->request->get('bill_uid')])
+->all();
+
+foreach($rows_bill as $row_bill){
+    $lockedStatusCode[$row_bill['status_code']] = $row_bill['status_code'] . ' - ' . $row_bill['status_description'];
+    $lockedDepartmentCode[$row_bill['department_code']] = $row_bill['department_code'] . ' - ' . $row_bill['department_name'];
+}
+
 $billuid = Base64UID::generate(32);
 
 $free = array(
@@ -257,7 +269,12 @@ $this->registerJs(
         var departmentCode = $(this).val();
         $.get('". Url::toRoute(['/bill/department'])."', {department : departmentCode}, function(data){
             var data = $.parseJSON(data);
-            $('#departmentName').attr('value', data.department_name);
+            if($('#departmentCode').val() == ''){
+                $('#departmentName').attr('value', '');
+            }
+            else{
+                $('#departmentName').attr('value', data.department_name);
+            }
         });
     });"
 );
@@ -396,6 +413,17 @@ else{
 .disabled-link {
     pointer-events: none;
 }
+
+textarea {
+    height: 1em;
+    width: 50%;
+    padding: 3px;
+    transition: all 0.5s ease;
+}
+
+textarea:focus {
+    height: 5em;
+}
 </style>
 
 <div class="bill-form">
@@ -433,7 +461,7 @@ else{
                     'prompt'=> Yii::t('app','Please select status code'),'maxlength' => true, 'disabled' => $print_readonly]) ?> -->
 
                         <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
-                            'data' => $status_code,
+                            'data' => $print_readonly == false? $status_code : $lockedStatusCode,
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select status code'), 'id' => 'statusCode',],
                             'pluginOptions' => [
@@ -485,7 +513,7 @@ else{
                     'prompt'=> Yii::t('app','Please select department code'),'maxlength' => true, 'disabled' => $print_readonly]) ?> -->
 
                         <?= $form->field($model, 'department_code')->widget(kartik\select2\Select2::classname(), [
-                            'data' => $department_code,
+                            'data' => $print_readonly == false? $department_code : $lockedDepartmentCode,
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select department code'), 'id' => 'departmentCode',],
                             'pluginOptions' => [
@@ -695,13 +723,18 @@ else{
                 <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
                 <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-                <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?>
+                <!-- <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?> -->
                 <?php } ?>
             </div>
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
         <?php kartik\form\ActiveForm::end(); ?>
+        <?php if(Yii::$app->session->hasFlash('error_generate')):?>
+            <div id = "flashError">
+                <?= Yii::$app->session->getFlash('error_generate') ?>
+            </div>
+        <?php endif; ?>
     </a>
 
     <a name="printing">

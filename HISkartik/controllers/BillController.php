@@ -412,6 +412,7 @@ class BillController extends Controller
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model = Bill::findOne(['bill_uid' => $bill_uid]);
         $modelWards = Ward::find(['bill_uid' => $bill_uid]);
+        $error_generate = '';
 
 
         // // Popup Generation
@@ -422,29 +423,68 @@ class BillController extends Controller
         }
 
         if (Yii::$app->request->get('confirm') == 'true'){
-            if(empty($model->bill_generation_datetime))
-            {
-                $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
+            $checkTreatment = (new Bill()) -> checkTreatmentPekeliling($bill_uid);
+            $checkWard = (new Bill()) -> checkWardPekeliling($bill_uid);
+            $checkFPP = (new Bill()) -> checkFppPekeliling($bill_uid);
+            $checkDepartment = (new Bill()) -> checkDepartmentPekeliling($bill_uid);
+            $checkStatus = (new Bill()) -> checkStatusPekeliling($bill_uid);
 
-                if($modelWards->count() > 0)
-                    $model->final_ward_datetime =  $modelWards->max('ward_end_datetime');
-                else
-                    $model->final_ward_datetime =  $date->format('Y-m-d H:i:s');
+            if($checkTreatment && $checkWard && $checkFPP && $checkDepartment && $checkStatus){
+                if(empty($model->bill_generation_datetime))
+                {
+                    $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
+
+                    if($modelWards->count() > 0)
+                        $model->final_ward_datetime =  $modelWards->max('ward_end_datetime');
+                    else
+                        $model->final_ward_datetime =  $date->format('Y-m-d H:i:s');
+                }
+
+                $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
+                $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
+
+
+                if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
+                if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+
+                $model->bill_uid = Yii::$app->request->get('bill_uid');
+                $model->generation_responsible_uid = Yii::$app->user->identity->getId();
+                $model->save();
+
+                return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));    
             }
+            else{
+                if(!$checkTreatment){
+                    $error_generate .= 'Treatment Pekeliling Kod no longer exist'."<br/>";
+                }
 
-            $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
-            $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
+                if(!$checkWard){
+                    $error_generate .= 'Ward Pekeliling Kod no longer exist'."<br/>";
+                }
 
+                if(!$checkFPP){
+                    $error_generate .= 'FPP Pekeliling Kod no longer exist'."<br/>";
+                }
 
-            if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
-            if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');
+                if(!$checkDepartment){
+                    $error_generate .= 'Department Pekeliling Kod no longer exist'."<br/>";
+                }
 
-            $model->bill_uid = Yii::$app->request->get('bill_uid');
-            $model->generation_responsible_uid = Yii::$app->user->identity->getId();
-            $model->save();
+                if(!$checkStatus){
+                    $error_generate .= 'Status Pekeliling Kod no longer exist'."<br/>";
+                }
 
-            return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));        
+                    Yii::$app->session->setFlash('error_generate', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    <strong>'.Yii::t('app', 'Generate error! ').' <br/></strong> 
+                    '.Yii::t('app', $error_generate).'</div>'
+                );
+
+                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'billGeneration'));   
+            }
         }
     }
 

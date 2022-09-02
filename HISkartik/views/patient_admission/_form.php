@@ -185,7 +185,7 @@ use yii\helpers\Url;
         </div>
 
         <div class="col-sm-6">
-           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?> 
+           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?> 
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
@@ -202,7 +202,6 @@ use yii\helpers\Url;
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
-
     </div>
 
     <div class="form-group">
@@ -291,4 +290,4 @@ $this->registerJs(
             },
         });
     }
-</script>
+</script>?>
