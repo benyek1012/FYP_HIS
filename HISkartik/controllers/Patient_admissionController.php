@@ -16,12 +16,16 @@ use yii\helpers\ArrayHelper;
 use app\models\Patient_admissionSearch;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Json;
+use yii2tech\csvgrid\CsvGrid;
+
 
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use app\models\PrintForm;
+use app\models\Reminder;
+
 /**
  * Patient_admissionController implements the CRUD actions for Patient_admission model.
  */
@@ -276,6 +280,7 @@ class Patient_admissionController extends Controller
 	public function actionPrint1($rn)
     {
 		$model = $this->findModel($rn);  
+
 		if($model->validate()) {
             $error = PrintForm::printAdmissionForm($rn);
             if(!empty($error))
@@ -334,6 +339,7 @@ class Patient_admissionController extends Controller
     public function actionPrint4($rn)
     {
 		$model = $this->findModel($rn);  
+        
 		if($model->validate()) {
             $error = PrintForm::printStickerLabels($rn);
             if(!empty($error))
@@ -350,6 +356,75 @@ class Patient_admissionController extends Controller
 		]);
 	}
 
+    public function actionPrint5($rn)
+    {
+        $model = $this->findModel($rn);
+        $batchdate = '9999-12-31';
+        
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Patient_admission::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'rn',
+                    'label' => 'RN',
+                ],
+                [
+                    'attribute' => 'nric',
+                    'label' => 'IC',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->nric;
+
+                    },
+                ],
+                [
+                    'attribute' => 'entry_datetime',
+                    'label' => 'Entry Datetime',
+                    'format' => 'datetime',
+                ],
+                [
+                    'attribute' => 'reminder1',
+                    'label' => 'Reminder 1',
+                ],
+                [
+                    'attribute' => 'name',
+
+                    'label' => 'patient Name',
+
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->name;
+
+                    },
+                ],
+                [
+                    'attribute' => 'batch_date',
+
+                    'label' => 'Batch Date',
+
+                    'value' => function($model, $index, $dataColumn) use ($batchdate) {
+
+                        return $batchdate;
+
+                    },
+                ],
+
+            ],
+        ]);
+        //$exporter->export()->saveAs('G:/Download/file.csv');
+        return $exporter->export()->send('items.csv');
+
+        return $this->render('update', [
+			'model' => $model,
+		]);
+		
+    }
+    
     public function actionPrint($rn)
     {
         var_dump("Print");
