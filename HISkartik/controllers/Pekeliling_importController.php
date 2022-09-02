@@ -2,6 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Lookup_department;
+use app\models\Lookup_fpp;
+use app\models\Lookup_status;
+use app\models\Lookup_treatment;
 use app\models\Pekeliling_import;
 use app\models\Pekeliling_importSearch;
 use app\models\New_user;
@@ -374,7 +378,163 @@ class Pekeliling_importController extends Controller
             ],
         ]);
         
-        return $exporter->export()->send('Lookup_ward_from_db.csv');		
+        return $exporter->export()->send('Lookup_ward_from_db.csv');
+    }
+
+    public function actionExport3()
+    {   
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Lookup_status::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'status_code',
+                    'label' => Yii::t('app','Status Code'),
+                ],
+                [
+                    'attribute' => 'status_description',
+                    'label' => Yii::t('app','Status Description'),
+                ],
+                [
+                    'attribute' => 'class_1a_ward_cost',
+                    'label' =>  Yii::t('app','Class 1a Ward Cost'),
+                ],
+                [
+                    'attribute' => 'class_1b_ward_cost',
+                    'label' => Yii::t('app','Class 1b Ward Cost'),
+                ],
+                [
+                    'attribute' => 'class_1c_ward_cost',
+                    'label' => Yii::t('app','Class 1c Ward Cost'),
+                ],
+                [
+                    'attribute' => 'class_2_ward_cost',
+                    'label' => Yii::t('app','Class 2 Ward Cost'),
+                ],
+                [
+                    'attribute' => 'class_3_ward_cost',
+                    'label' => Yii::t('app','Class 3 Ward Cost'),
+                ],
+            ],
+        ]);
+        
+        return $exporter->export()->send('Lookup_status_from_db.csv');		
+    }
+
+    public function actionExport4()
+    {   
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Lookup_treatment::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'treatment_code',
+                    'label' => Yii::t('app','Treatment Code'),
+                ],
+                [
+                    'attribute' => 'treatment_name',
+                    'label' => Yii::t('app','Treatment Name'),
+                ],
+                [
+                    'attribute' => 'class_1_cost_per_unit',
+                    'label' => Yii::t('app','Class  1 Cost Per Unit'),
+                ],
+                [
+                    'attribute' => 'class_2_cost_per_unit',
+                    'label' =>  Yii::t('app','Class  2 Cost Per Unit'),
+                ],
+                [
+                    'attribute' => 'class_3_cost_per_unit',
+                    'label' => Yii::t('app','Class  3 Cost Per Unit'),
+                ],
+                [
+                    'attribute' => 'class_Daycare_FPP_per_unit',
+                    'label' => Yii::t('app','Class DayCare FPP Cost Per Unit'),
+                ],
+            ],
+        ]);
+        
+        return $exporter->export()->send('Lookup_treatment_from_db.csv');		
+    }
+
+    public function actionExport5()
+    {   
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Lookup_department::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'department_code',
+                    'label' => Yii::t('app','Department Code'),
+                ],
+                [
+                    'attribute' => 'department_name',
+                    'label' => Yii::t('app','Department Name'),
+                ],
+                [
+                    'attribute' => 'phone_number',
+                    'label' => Yii::t('app','Phone Number'),
+                ],
+                [
+                    'attribute' => 'address1',
+                    'label' =>Yii::t('app','Address 1'),
+                ],
+                [
+                    'attribute' => 'address2',
+                    'label' => Yii::t('app','Address 2'),
+                ],
+                [
+                    'attribute' => 'address3',
+                    'label' => Yii::t('app','Address 3'),
+                ],
+            ],
+        ]);
+        
+        return $exporter->export()->send('Lookup_department_from_db.csv');		
+    }
+
+    public function actionExport6()
+    {   
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Lookup_fpp::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'kod',
+                    'label' =>'Kod',
+                ],
+                [
+                    'attribute' => 'name',
+                    'label' => Yii::t('app', 'Name'),
+                ],
+                [
+                    'attribute' => 'min_cost_per_unit',
+                    'label' =>Yii::t('app', 'Min Cost Per Unit'),
+                ],
+                [
+                    'attribute' => 'max_cost_per_unit',
+                    'label' => Yii::t('app', 'Max Cost Per Unit'),
+                ],
+            ],
+        ]);
+        
+        return $exporter->export()->send('Lookup_fpp_from_db.csv');		
     }
 
     /**

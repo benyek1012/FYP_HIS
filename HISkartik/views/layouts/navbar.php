@@ -14,15 +14,21 @@ if (Yii::$app->user->isGuest){
 </style>
 <style type="text/css">
 body {
-  background: #f2f2f2;
+    background: #f2f2f2;
 }
 </style>
 <style type="text/css">
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
 
-.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
 </style>
 <?php
 }
@@ -33,7 +39,7 @@ body {
 
 
     Left navbar links -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light ">
     <ul class="navbar-nav">
         <?php 
             if((new SiteController(null,null)) -> accessControl() == true
@@ -50,11 +56,14 @@ body {
                 aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
             <div class="dropdown-content">
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                    style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/site/admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
                 </ul>
             </div>
         </div>
@@ -73,7 +82,8 @@ body {
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
             <div class="dropdown-content">
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                    style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/lookup_general']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                     </li>
@@ -102,16 +112,15 @@ body {
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app', "Others"); ?></a>
             <div class="dropdown-content">
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
-                <li><a href="<?php echo Url::to(['/reminder']);?>" 
-                    class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
-                <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
-                    class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->   
-            </ul>
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                    style="margin-top: 0px; margin-right: 20px ;">
+                    <li><a href="<?php echo Url::to(['/reminder']);?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
+                    <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
+                    class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
+                </ul>
             </div>
         </li>
     </ul>
@@ -131,13 +140,14 @@ body {
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
             <div class="dropdown-content">
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
-                <?php
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                    style="margin-top: 0px; margin-right: 20px ;">
+                    <?php
                             foreach(Yii::$app->params['languages'] as $key => $language){
                                 echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
                             }
                         ?>
-            </ul>
+                </ul>
             </div>
         </li>
     </ul>

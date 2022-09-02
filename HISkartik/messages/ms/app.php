@@ -330,6 +330,7 @@ return[
     => 'Memerlukan 2 admins untuk meluluskan fail bebas ralat dan boleh melaksanakan pelaksanaan pekeliling.',
     'Below is a button with which users can export data from the lookup ward database to a CSV file.'
     => 'Di bawah ialah butang yang pengguna boleh mengeksport data daripada pangkalan data kod wad ke fail CSV.',
+    'Pekeliling Imports' => 'Import Kod Pekeliling',
     
 ];
 ?>
