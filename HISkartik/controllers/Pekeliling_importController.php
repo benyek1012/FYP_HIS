@@ -55,7 +55,7 @@ class Pekeliling_importController extends Controller
 
         $flag_delete = true;
 
-        if(!(new New_user()) -> isAdmin()) echo $this->render('/site/no_access');
+        if(!(new New_user()) -> isAdmin()) return $this->render('/site/no_access');
         
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {

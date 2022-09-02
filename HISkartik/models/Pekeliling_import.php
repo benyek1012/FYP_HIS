@@ -170,8 +170,15 @@ class Pekeliling_import extends \yii\db\ActiveRecord
                 return $model_lookup;
 
             case "fpp":
-                return new Lookup_fpp();
-                break;
+                $model_lookup = Lookup_fpp::findOne(['kod' =>  $line[0]]);
+                if(!$model_lookup):
+                    $model_lookup = new Lookup_fpp();
+                endif;
+                $model_lookup->kod = $line[0];
+                $model_lookup->name = $line[1];
+                $model_lookup->min_cost_per_unit = $line[2];
+                $model_lookup->max_cost_per_unit = $line[3];
+                return $model_lookup;
         }
     }
 
