@@ -3,6 +3,8 @@
 namespace app\models;
 
 use yii\db\Transaction;
+use yii2tech\csvgrid\CsvGrid;
+use yii\data\ActiveDataProvider;
 
 use Yii;
 
@@ -52,6 +54,8 @@ class Reminder extends \yii\db\ActiveRecord
         ];
     }
 
+  
+
     public function getReminderBatchSelect($MIN_DATE, $MAX_DATE, $responsible_uid_)
     {
         $result = \yii::$app->db->createCommand("CALL reminder_batch_select(:MIN_DATE, :MAX_DATE, :responsible_uid_)")
@@ -75,7 +79,7 @@ class Reminder extends \yii\db\ActiveRecord
         $currentdate = date("Y-m-d");
         $placeholder = date("Y-m-d", '9999-12-31');
         
-
+        //transaction used to prevent any of the update goes wrong
         $transaction = Patient_admission::getDb()->beginTransaction();
         try {
             // -update reminder 1,2,3 date to current date in patient_admission where date = placeholder 
@@ -104,4 +108,7 @@ class Reminder extends \yii\db\ActiveRecord
             throw $e;
         }
     }
+
+
+   
 }
