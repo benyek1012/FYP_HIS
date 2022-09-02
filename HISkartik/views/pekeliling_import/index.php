@@ -29,12 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <br />
 
     <div id="lookup_form">
-        <!-- If the flash message existed, show it  -->
-        <?php if(Yii::$app->session->hasFlash('msg')):?>
-        <div id="flashError">
-            <?= Yii::$app->session->getFlash('msg') ?>
-        </div>
-        <?php endif; ?>
         <?php
             $model = new Pekeliling_import();
             echo $this->render('_form', ['model' => $model]);
@@ -111,13 +105,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 "format"=>"raw",
                 'value'=>function ($data) {
                     return empty($data['error'])
-                    ? $data['error'] :  
+                    ?  Yii::t('app', 'No Error') :  
                         Html::tag ( 'span' , StringHelper::truncateWords($data['error'], 2) , [
                         // title
-                        'title' => $data['error'] ,
+                        'title' => Yii::t('app', 'Click row to show whole error'),
                         'data-placement' => 'top' ,
                         'data-toggle'=>'tooltip',
-                        'style' => 'white-space:pre;'
+                        'style' => 'white-space:pre;',
+                        'class' => "text-danger font-weight-bold"
                     ] );
                 },
             ],
@@ -157,7 +152,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'title' => $date->format('Y-m-d H:i A') ,
                             'data-placement' => 'top' ,
                             'data-toggle'=>'tooltip',
-                            'style' => 'white-space:pre;'
+                            'style' => 'white-space:pre;',
+                            'class' => "text-success"
                         ] );
                         return $tag;
                     }
@@ -228,7 +224,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     !empty($model->approval1_responsible_uid) && 
                                     !empty($model->approval2_responsible_uid) && $check_file_existed)
                         ?  Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
-                        : Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
+                        : Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-secondary btn-xs disabled']);
                     },
                     'my_button2' => function ($url, $model, $key) {
                         $check_file_existed = false;
@@ -246,7 +242,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         return ( empty($model['error']) && empty($model->execute_responsible_uid) && $flag && $check_file_existed)
                         ?  Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
-                        : Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
+                        : Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-xs btn-secondary disabled']);
                     },
                 ]
             ],

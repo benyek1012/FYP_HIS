@@ -15,6 +15,7 @@ use yii\db\Expression;
 use yii\web\UploadedFile;
 use GpsLab\Component\Base64UID\Base64UID;
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Pekeliling_importController implements the CRUD actions for Pekeliling_import model.
@@ -76,6 +77,7 @@ class Pekeliling_importController extends Controller
                     $array_from_database = $table::find()->asArray()->all();
                     // delete all the rows 
                     $table->deleteAll();
+
                 }
            
                 if($model->file) {  
@@ -121,14 +123,14 @@ class Pekeliling_importController extends Controller
                             $arrdup = "";
 
                             // file validation, check duplicated codes in whole csv file
-                            for($i=0; $line = fgetcsv($handle );$i++)
+                            while (($line = fgetcsv($handle)) !== false) 
                             {
                                 if(!empty($line[0]))
                                 {
                                     $key = $line[0];
                                     if (isset($duplicateInfo[$key])) {
-                                        $arrdup .=  $first_column_csv[0].' '.$key.' is duplicated with the row '.$duplicateInfo[$key].
-                                                ' and the row '.$row."<br/>";
+                                        $arrdup .=  '<strong>'.$first_column_csv[0].' '.$key.'</strong> '.Yii::t("app", " is duplicated with the row ").$duplicateInfo[$key].
+                                        Yii::t("app", " and the row ").$row.". <br/>";
                                     }
                                     $duplicateInfo[$key] = $row;
                                 }
@@ -137,40 +139,33 @@ class Pekeliling_importController extends Controller
                         }
                         fclose($handle);
 
+                        if(!empty($arrdup))
+                            $string_error .= $arrdup."<br/>";
+
                         // database model validation
                         $handle = fopen($model->file_import, 'r');
                         fgetcsv($handle);
                         if($handle){
                             $row = 2;
-                            if(empty($arrdup))
-                            {
-                                for($i=0; $line = fgetcsv($handle );$i++)
+                            while (($line = fgetcsv($handle)) !== false) 
+                            {   
+                                // ignore blank lines
+                                if ($line[0] == NULL && $line[1] == NULL)  
                                 {
-                                    if(!empty($line[0]))
-                                    {
-                                        $special_character_error = $model::validateSpecialCharacter($line);
-                                        $model_after_validate = $model::validateModel($model->lookup_type, $line);
-                                        $valid = $model_after_validate->validate();
-                                        $array_error = $model_after_validate->getFirstErrors();
-                                        if($special_character_error != "")
-                                            $string_error .= "Row ".$row." : ".$special_character_error."<br/>";
-                                        foreach($array_error as $error){
-                                            $string_error .= "Row ".$row." : ".$error."<br/>";
-                                        }     
-                                    }
-                                   $row++;
-                                }
-                            }
-                            else
-                            {
-                                Yii::$app->session->setFlash('msg', '
-                                <div class="alert alert-danger alert-dismissable">
-                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                                <strong>'.Yii::t('app', 'Validation error! ').' </strong><br/> '.$arrdup.' </div>');
-        
-                                unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                                    $row++;
+                                    continue;
+                                } 
+                                $special_character_error = $model::validateSpecialCharacter($line, $first_column_csv);
+                                $model_after_validate = $model::validateModel($model->lookup_type, $line);
+                                $valid = $model_after_validate->validate();
+                                $array_error = $model_after_validate->getFirstErrors();
 
-                                return $this->redirect(['index']);
+                                if($special_character_error != "")
+                                    $string_error .= Yii::t("app", "Row ").$row." : ".$special_character_error."<br/>";
+                                foreach($array_error as $error){
+                                    $string_error .= Yii::t("app", "Row ").$row." : ".$error."<br/>";
+                                }     
+                                $row++;
                             }
                         }
                         fclose($handle);
@@ -197,7 +192,7 @@ class Pekeliling_importController extends Controller
                             Yii::$app->session->setFlash('msg', '
                             <div class="alert alert-danger alert-dismissable">
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                            <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>'. $string_error.'</div>');
+                            <strong>'.Yii::t('app', 'Validation error!').' </strong><br/>'.  StringHelper::truncateWords($string_error, 50).'</div>');
                         }
                         else $flag_delete = false;
                     }
@@ -240,9 +235,8 @@ class Pekeliling_importController extends Controller
         // remove first row
         fgetcsv($handle);
 
-        $model_lookup_ward = new Lookup_ward();
         if($model->update_type == 'delete')
-            $model_lookup_ward->deleteAll();
+            $table->deleteAll();
 
         if($handle){
             // read data lines 

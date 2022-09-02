@@ -58,14 +58,14 @@ class Pekeliling_import extends \yii\db\ActiveRecord
         return [
             'pekeliling_uid' => 'Pekeliling Uid',
             'upload_datetime' => Yii::t('app','Upload Datetime'),
-            'approval1_responsible_uid' => Yii::t('app','Approval 1 Responsible Uid'),
-            'approval2_responsible_uid' => Yii::t('app','Approval 2 Responsible Uid'),
+            'approval1_responsible_uid' => Yii::t('app','Approval 1 Responsible'),
+            'approval2_responsible_uid' => Yii::t('app','Approval 2 Responsible'),
             'file_import' => Yii::t('app','File Import'),
             'lookup_type' => Yii::t('app','Lookup Type'),
             'error' => Yii::t('app','Error'),
             'scheduled_datetime' => Yii::t('app','Scheduled Datetime'),
             'executed_datetime' => Yii::t('app','Executed Datetime'),
-            'execute_responsible_uid' => Yii::t('app','Execute Responsible Uid'),
+            'execute_responsible_uid' => Yii::t('app','Execute Responsible'),
             'update_type' => Yii::t('app','Update Type'),
         ];
     }
@@ -86,19 +86,19 @@ class Pekeliling_import extends \yii\db\ActiveRecord
         }
     }
 
-    public static function validateSpecialCharacter($line)
+    public static function validateSpecialCharacter($line, $header)
     {
         $string_special_char = "";
         foreach ($line as $key => $val) {
-            // loop over array and check all special characters found in string, only allow ' () - / \ ,'
+            // loop over array and check all special characters found in string, only    allow ' () - / \ ,'
             if(preg_match('/[\'^£$%&*};"{@#~?!><>|=_+¬]/', $val)) {
                 if($string_special_char == "")
-                    $string_special_char = $val;
-                else $string_special_char .= "  ,  ".$val;
+                    $string_special_char = '<strong>'.$header[$key].' '.$val.'</strong>';
+                else $string_special_char .= "  ,  ".'<strong>'.$header[$key].' '.$val.'</strong>';
             } 
         }
         if($string_special_char != "")
-            $string_special_char .= " contains special characters.";
+            $string_special_char .=  Yii::t('app', ' contains special characters').".";
         return $string_special_char;
     }
 

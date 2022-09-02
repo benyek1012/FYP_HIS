@@ -53,6 +53,13 @@ $method_lookup = array(
         <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
+    <!-- If the flash message existed, show it  -->
+    <?php if(Yii::$app->session->hasFlash('msg')):?>
+    <div id="flashError">
+        <?= Yii::$app->session->getFlash('msg') ?>
+    </div>
+    <?php endif; ?>
+
     <?php kartik\form\ActiveForm::end(); ?>
 
 </div>
