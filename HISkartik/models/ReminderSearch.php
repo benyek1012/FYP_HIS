@@ -45,6 +45,7 @@ class ReminderSearch extends Reminder
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['batch_date' => SORT_DESC,]],
         ]);
 
         $this->load($params);

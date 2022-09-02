@@ -9,6 +9,7 @@ use app\models\Patient_admission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii2tech\csvgrid\CsvGrid;
 use Yii;
 
 /**
@@ -41,22 +42,42 @@ class ReminderController extends Controller
      */
     public function actionIndex()
     {
+        Reminder::createPlaceholderIfNotExists();
+        $error = NULL;
+
         if ($this->request->get() && !empty($_GET['function'])) {
 
-            $model = new Reminder();
-            $userid = Yii::$app->user->identity->name;
-            $table = $model::batchCreate($userid);
-            echo $table;
+            //$model = new Reminder();
+            $userid = Yii::$app->user->identity->id;
+            if ($_GET['function'] == 'getReminderCalculate')
+                Reminder::getReminderCalculate($userid);
+            if ($_GET['function'] == 'batchCreate')
+            {
+                try{
+                    Reminder::batchCreate($userid);
+                } catch(Exception $e){
+                    $error = $e->getMessage();
+                }
+            }
+            if ($_GET['function'] == 'downloadcsv')
+            {
+                exportCSV($_GET['batch_date']);
+            }
+                
+            //echo $userid;
+            //echo $table;
             //$this->$username::getId($table);
             //return $username->_toString($table);
             //return $_GET['function'];
             //return $this->$table->redirect(['index']);
         }
 
+        
         $searchModel = new ReminderSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
+            'error' => $error,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -156,6 +177,74 @@ class ReminderController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public static function exportCSV($batch_date) //Teo fill export CSV code here
+    {
+        $model = $this->findModel($rn);
+        $batch_date = '9999-12-31';
+        
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Patient_admission::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'rn',
+                    'label' => 'RN',
+                ],
+                [
+                    'attribute' => 'nric',
+                    'label' => 'IC',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->nric;
+
+                    },
+                ],
+                [
+                    'attribute' => 'entry_datetime',
+                    'label' => 'Entry Datetime',
+                    'format' => 'datetime',
+                ],
+                [
+                    'attribute' => 'reminder1',
+                    'label' => 'Reminder 1',
+                ],
+                [
+                    'attribute' => 'name',
+
+                    'label' => 'patient Name',
+
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->name;
+
+                    },
+                ],
+                [
+                    'attribute' => 'batch_date',
+
+                    'label' => 'Batch Date',
+
+                    'value' => function($model, $index, $dataColumn) use ($batch_date) {
+
+                        return $batch_date;
+
+                    },
+                ],
+
+            ],
+        ]);
+        //$exporter->export()->saveAs('G:/Download/file.csv');
+        return $exporter->export()->send('items.csv');
+
+        return $this->render('update', [
+			'model' => $model,
+		]);
     }
 
 }

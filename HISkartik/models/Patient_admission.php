@@ -109,7 +109,7 @@ class Patient_admission extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBill()
+    public function getBills()
     {
         return $this->hasOne(Bill::className(), ['rn' => 'rn', 'deleted' => 0]);
     }
@@ -124,8 +124,6 @@ class Patient_admission extends \yii\db\ActiveRecord
         return $this->hasOne(Patient_information::className(), ['patient_uid' => 'patient_uid']);
     }
 
-    
-
     /**
      * Gets query for [[Receipts]].
      *
@@ -139,7 +137,6 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Patient_information::className(), ['patient_uid' => 'patient_uid']);
     }
-    
 
     // Check whether deposit is generated
     public function isdeposited($rn){

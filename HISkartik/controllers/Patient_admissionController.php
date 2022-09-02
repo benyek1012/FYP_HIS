@@ -280,7 +280,6 @@ class Patient_admissionController extends Controller
 	public function actionPrint1($rn)
     {
 		$model = $this->findModel($rn);  
-
 		if($model->validate()) {
             $error = PrintForm::printAdmissionForm($rn);
             if(!empty($error))
@@ -339,7 +338,6 @@ class Patient_admissionController extends Controller
     public function actionPrint4($rn)
     {
 		$model = $this->findModel($rn);  
-        
 		if($model->validate()) {
             $error = PrintForm::printStickerLabels($rn);
             if(!empty($error))
@@ -424,7 +422,7 @@ class Patient_admissionController extends Controller
 		]);
 		
     }
-    
+
     public function actionPrint($rn)
     {
         var_dump("Print");

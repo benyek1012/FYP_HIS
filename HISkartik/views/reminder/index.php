@@ -24,12 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app','Create Batch'), ['index'], ['class' => 'btn btn-success']) ?>
     </p>-->
 
+    <?= $error ?>
+
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'emptyCell' => HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'btn btn-success']),
+        //'emptyCell' => HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'btn btn-success']),
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -71,16 +73,38 @@ $this->params['breadcrumbs'][] = $this->title;
                 
             ],
 
-            /*[
+            [
+                'class' => kartik\grid\ActionColumn::className(),
+                'template' => '{getReminderCalculate}',
+                'header' => 'Recalculate',
+                'buttons' => [
+                'getReminderCalculate' => function ($url, $model, $key) {
+                    return HTML::a('Recalculate', ['index', 'function' => 'getReminderCalculate']);
+                 },
+                ],
+            ],
+
+            [
                 'class' => kartik\grid\ActionColumn::className(),
                 'template' => '{batchCreate}',
                 'header' => 'Create Batch',
                 'buttons' => [
                 'batchCreate' => function ($url, $model, $key) {
-                    return HTML::a('Create Batch', ['index', 'function' => 'batchCreate', 'id' => $model->batch_date], ['class' => 'btn btn-success']);
+                    return HTML::a('Create Batch', ['index', 'function' => 'batchCreate']);
                  },
                 ],
-            ],*/
+            ],
+
+            [
+                'class' => kartik\grid\ActionColumn::className(),
+                'template' => '{downloadcsv}',
+                'header' => 'Download CSV',
+                'buttons' => [
+                'downloadcsv' => function ($url, $model, $key) {
+                    return HTML::a('Download CSV', ['index', 'function' => 'downloadcsv', 'batch_date' => $model->batch_date]);
+                 },
+                ],
+            ],
 
             
 
