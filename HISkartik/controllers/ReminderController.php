@@ -3,11 +3,13 @@
 namespace app\controllers;
 
 use app\models\Reminder;
+use app\models\New_user;
 use app\models\ReminderSearch;
 use app\models\Patient_admission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Yii;
 
 /**
  * ReminderController implements the CRUD actions for Reminder model.
@@ -39,9 +41,16 @@ class ReminderController extends Controller
      */
     public function actionIndex()
     {
-        if ($this->request->getisGet() && !empty($_GET['id'])) {
-            
-            return $_GET['id'];
+        if ($this->request->get() && !empty($_GET['function'])) {
+
+            $model = new Reminder();
+            $userid = Yii::$app->user->identity->name;
+            $table = $model::batchCreate($userid);
+            echo $table;
+            //$this->$username::getId($table);
+            //return $username->_toString($table);
+            //return $_GET['function'];
+            //return $this->$table->redirect(['index']);
         }
 
         $searchModel = new ReminderSearch();
@@ -52,6 +61,17 @@ class ReminderController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    /*public function actionBatch($responsible_uid)
+    {
+        $model = $this->findModel($responsible_uid);
+
+        $model->responsible_uid = Yii::$app->user->identity->responsible_uid;
+         
+        $model::batchCreate($responsible_uid);
+
+        return $this->redirect(['index']);
+    }*/
 
     /**
      * Displays a single Reminder model.
@@ -129,7 +149,7 @@ class ReminderController extends Controller
      * @return Reminder the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($batch_uid)
+    protected function findModel($batch_date)
     {
         if (($model = Reminder::findOne(['batch_date' => $batch_date])) !== null) {
             return $model;

@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Batch */
+/* @var $model app\models\Pekeliling_import */
 
-$this->title = Yii::t('app','Create Batch');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app','Batches'), 'url' => ['index']];
+$this->title = 'Create Pekeliling Import';
+$this->params['breadcrumbs'][] = ['label' => 'Pekeliling Imports', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="batch-create">
+<div class="pekeliling-import-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

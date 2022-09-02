@@ -126,7 +126,8 @@ class WardController extends Controller
     public function actionUpdate()
     {
         // Insert and Update Ward
-        if(Yii::$app->request->post('saveWard') == 'true' && Yii::$app->request->post('Ward', [])) {
+        // Yii::$app->request->post('saveWard') == 'true' &&
+        if(Yii::$app->request->post('Ward', [])) {
             $dbWard = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
             $modelWard = Model::createMultiple(Ward::className());
 

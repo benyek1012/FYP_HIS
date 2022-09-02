@@ -29,13 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false"
                             class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
-                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                            <div class="dropdown-content">
+                            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
                             <?php
                                     foreach(Yii::$app->params['languages'] as $key => $language){
                                         echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
                                     }
                                 ?>
                         </ul>
+                        </div>
                     </li>
                 </ul>
             </nav>

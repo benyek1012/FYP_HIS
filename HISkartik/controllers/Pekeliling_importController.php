@@ -1,0 +1,437 @@
+<?php
+
+namespace app\controllers;
+
+use app\models\Pekeliling_import;
+use app\models\Pekeliling_importSearch;
+use app\models\New_user;
+use app\models\Lookup_ward;
+use app\models\Variable;
+use Exception;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\db\Expression;
+use yii\web\UploadedFile;
+use GpsLab\Component\Base64UID\Base64UID;
+use Yii;
+
+/**
+ * Pekeliling_importController implements the CRUD actions for Pekeliling_import model.
+ */
+class Pekeliling_importController extends Controller
+{
+    /**
+     * @inheritDoc
+     */
+    public function behaviors()
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'verbs' => [
+                    'class' => VerbFilter::className(),
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Lists all Pekeliling_import models.
+     *
+     * @return string
+     */
+    public function actionIndex()
+    {
+        $model = new Pekeliling_import();
+        $searchModel = new Pekeliling_importSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        $flag_delete = true;
+
+        if(!(new New_user()) -> isAdmin()) echo $this->render('/site/no_access');
+        
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $table = $model::chooseLookupType($model->lookup_type);
+                $tableName = $table->tableName();
+                $column = $table->attributes();
+                $string_error = "";
+
+                $model->file = UploadedFile::getInstance($model, 'file');
+                $uploadExists = 0;
+
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model->upload_datetime = $date->format('Y-m-d H:i:s');
+
+                $model->pekeliling_uid = Base64UID::generate(32);
+
+                if($model->update_type == 'delete')
+                {
+                    // retrieve all data from particular table for batch insert later
+                    $array_from_database = $table::find()->asArray()->all();
+                    // delete all the rows 
+                    $table->deleteAll();
+                }
+           
+                if($model->file) {  
+                    $path = 'uploads/';
+                    $model->file_import = $path .rand(10, 100). '-' .str_replace('', '-', $model->file->name);
+
+                    $random_date = Yii::$app->formatter->asDatetime(date("dmyyhis"), "php:dmYHis");
+                    $uploadExists = 1;
+                }
+
+                if($uploadExists && $model->validate()){
+                    try{
+                        $transaction = Yii::$app->db->beginTransaction();
+
+                        // create the folder if folder does not existed, then save the file 
+                        $path = Yii::$app->basePath . '/web/uploads';
+                        if (\yii\helpers\FileHelper::createDirectory($path, $mode = 0775, $recursive = true)) {
+                            $model->file->saveAs($model->file_import);
+                        }
+                     
+                        // file validation
+                        $handle = fopen($model->file_import, 'r');
+                        if($handle){
+                            $first_column_csv = fgetcsv($handle);
+
+                            $validate_header = Pekeliling_import::validateHeader($first_column_csv, $column);
+
+                            if(!$validate_header)
+                            {
+                                Yii::$app->session->setFlash('msg', '
+                                <div class="alert alert-danger alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                <strong>'.Yii::t('app', 'Validation error! ').' </strong> Invalid column name ! <br/> 
+                                    Column name must matched with database header name</div>');
+                                
+                                unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                   
+                                return $this->redirect(['index']);
+                            }
+                               
+                            $row = 2;
+                            $duplicateInfo = array();
+                            $arrdup = "";
+
+                            // file validation, check duplicated codes in whole csv file
+                            for($i=0; $line = fgetcsv($handle );$i++)
+                            {
+                                if(!empty($line[0]))
+                                {
+                                    $key = $line[0];
+                                    if (isset($duplicateInfo[$key])) {
+                                        $arrdup .=  $first_column_csv[0].' '.$key.' is duplicated with the row '.$duplicateInfo[$key].
+                                                ' and the row '.$row."<br/>";
+                                    }
+                                    $duplicateInfo[$key] = $row;
+                                }
+                               $row++;
+                            }   
+                        }
+                        fclose($handle);
+
+                        // database model validation
+                        $handle = fopen($model->file_import, 'r');
+                        fgetcsv($handle);
+                        if($handle){
+                            $row = 2;
+                            if(empty($arrdup))
+                            {
+                                for($i=0; $line = fgetcsv($handle );$i++)
+                                {
+                                    if(!empty($line[0]))
+                                    {
+                                        $special_character_error = $model::validateSpecialCharacter($line);
+                                        $model_after_validate = $model::validateModel($model->lookup_type, $line);
+                                        $valid = $model_after_validate->validate();
+                                        $array_error = $model_after_validate->getFirstErrors();
+                                        if($special_character_error != "")
+                                            $string_error .= "Row ".$row." : ".$special_character_error."<br/>";
+                                        foreach($array_error as $error){
+                                            $string_error .= "Row ".$row." : ".$error."<br/>";
+                                        }     
+                                    }
+                                   $row++;
+                                }
+                            }
+                            else
+                            {
+                                Yii::$app->session->setFlash('msg', '
+                                <div class="alert alert-danger alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                <strong>'.Yii::t('app', 'Validation error! ').' </strong><br/> '.$arrdup.' </div>');
+        
+                                unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+
+                                return $this->redirect(['index']);
+                            }
+                        }
+                        fclose($handle);
+
+                        $transaction->commit();
+                    }catch(Exception $error){
+                        print_r($error);
+                        $transaction->rollback();
+                    }      
+
+                    if(!empty($model_after_validate))
+                    {
+                        // insert back to table
+                        if($model->update_type == 'delete')
+                            Yii::$app->db->createCommand()->batchInsert($tableName, $column, $array_from_database)->execute();    
+                                              
+                        // insert into batch table
+                        $model->error = $string_error;
+                        $model->approval1_responsible_uid = Yii::$app->user->identity->id;
+                        $model->save();
+
+                        if($string_error != "")
+                        {
+                            Yii::$app->session->setFlash('msg', '
+                            <div class="alert alert-danger alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                            <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>'. $string_error.'</div>');
+                        }
+                        else $flag_delete = false;
+                    }
+                    else
+                        Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>All data from CSV file have been inserted! </div>');
+                 
+                    // delete file folder from PC
+                    // if($flag_delete == true)
+                    //     unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                }
+
+                return $this->redirect(['index']);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionExecute($id)
+    {
+        $model =  $this->findModel($id);
+
+        $model_read_only = Variable::find()->one();
+        $model_read_only->read_only = 1;
+        $model_read_only->save();
+
+        $table = $model::chooseLookupType($model->lookup_type);
+        $tableName = $table->tableName();
+        $column = $table->attributes();
+
+        $handle = fopen($model->file_import, 'r');
+        // remove first row
+        fgetcsv($handle);
+
+        $model_lookup_ward = new Lookup_ward();
+        if($model->update_type == 'delete')
+            $model_lookup_ward->deleteAll();
+
+        if($handle){
+            // read data lines 
+            for ($i = 0; $line = fgetcsv($handle ); ++$i) {
+                if(!empty($line[0]))
+                {
+                    $model_after_validate = $model::validateModel($model->lookup_type, $line);
+                    $model_after_validate->save();
+                }
+            }
+        }
+        fclose($handle);
+
+    
+        // delete file folder from PC
+        // unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+
+        $model->execute_responsible_uid = Yii::$app->user->identity->id;
+
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+        $model->executed_datetime = $date->format('Y-m-d H:i:s');
+
+        if($model->save())
+        {
+            $model_read_only->read_only = 0;
+            $model_read_only->save();
+
+            Yii::$app->session->setFlash('msg', '
+                <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                '.Yii::t('app', 'You have successfully import file '.$model->file_import.'.'). '</div>'
+            );
+        
+            return $this->redirect(['index']);
+        }
+
+    }
+
+    public function actionApprove($id)
+    {
+       
+        $model = $this->findModel($id);
+
+        if(empty($model->approval1_responsible_uid))
+            $model->approval1_responsible_uid = Yii::$app->user->identity->id;
+        else $model->approval2_responsible_uid = Yii::$app->user->identity->id;
+
+        $model->save();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionDownload($id)
+    {
+       
+        $model = $this->findModel($id);
+
+        $path = Yii::$app->basePath . '/web/' . $model->file_import;
+
+        $array = explode("/", $model->file_import);
+
+        if (file_exists($path)) 
+            return Yii::$app->response->sendFile($path, $array[1]);
+        else 
+        {
+            Yii::$app->session->setFlash('msg', '
+            <div class="alert alert-danger alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+            '.$array[1].' is not found !</div>');
+
+            return $this->redirect(['index']);
+        }
+    }
+
+    public function actionUpload($id)
+    { 
+        $model = $this->findModel($id);
+
+        return $this->renderPartial('/pekeliling_import/view', ['model' => $model]);
+    }
+
+    public function actionExport($id)
+    {
+        $model = $this->findModel($id);
+        $content = preg_replace("<<br/>>","\r\n", $model->error);
+
+        $array = explode("/", $model['file_import']);
+        $array = explode(".csv", $array[1]);
+        
+
+        $filename = $array[0].'_ErrorMsg'. '.txt'; 
+       
+        $myfile = fopen($filename, "w") or die("Unable to open file!");
+        fwrite($myfile, $content);
+        fclose($myfile);
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Length: ". filesize("$filename").";");
+        header("Content-Disposition: attachment; filename=$filename");
+        header("Content-Type: application/octet-stream; "); 
+        header("Content-Transfer-Encoding: binary");
+        readfile($filename);
+       
+
+    }
+    
+    /**
+     * Displays a single Pekeliling_import model.
+     * @param string $pekeliling_uid Pekeliling Uid
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($pekeliling_uid)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($pekeliling_uid),
+        ]);
+    }
+
+    /**
+     * Creates a new Pekeliling_import model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionCreate()
+    {
+        $model = new Pekeliling_import();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'pekeliling_uid' => $model->pekeliling_uid]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Updates an existing Pekeliling_import model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param string $pekeliling_uid Pekeliling Uid
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($pekeliling_uid)
+    {
+        $model = $this->findModel($pekeliling_uid);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'pekeliling_uid' => $model->pekeliling_uid]);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Deletes an existing Pekeliling_import model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param string $pekeliling_uid Pekeliling Uid
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($pekeliling_uid)
+    {
+        $this->findModel($pekeliling_uid)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Pekeliling_import model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param string $pekeliling_uid Pekeliling Uid
+     * @return Pekeliling_import the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($pekeliling_uid)
+    {
+        if (($model = Pekeliling_import::findOne(['pekeliling_uid' => $pekeliling_uid])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+}

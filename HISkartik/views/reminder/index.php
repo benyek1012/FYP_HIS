@@ -18,23 +18,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="reminder-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1>
+    <!-- <h1><?= Html::encode($this->title) ?></h1> 
 
     <p>
-        <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> -->
+        <?= Html::a(Yii::t('app','Create Batch'), ['index'], ['class' => 'btn btn-success']) ?>
+    </p>-->
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'rowOptions' => function ($model, $key, $index, $grid) {
-            return [
-                // data-key in gridview
-                'data' => ['key' => $index],
-            ];
-        },
+        'emptyCell' => HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'btn btn-success']),
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -76,27 +71,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 
             ],
 
-            [
+            /*[
                 'class' => kartik\grid\ActionColumn::className(),
-                'template' => '{Recalculate}',
-                'header' => ' ',
+                'template' => '{batchCreate}',
+                'header' => 'Create Batch',
                 'buttons' => [
-                'Recalculate' => function ($url, $model, $key) {
-                    return HTML::a('Recalculate', ['index', 'function' => 'recalculate', 'id' => $model->batch_date]);
+                'batchCreate' => function ($url, $model, $key) {
+                    return HTML::a('Create Batch', ['index', 'function' => 'batchCreate', 'id' => $model->batch_date], ['class' => 'btn btn-success']);
                  },
                 ],
-            ],
-
-            [
-                'class' => kartik\grid\ActionColumn::className(),
-                'template' => '{batch_create}',
-                'header' => ' ',
-                'buttons' => [
-                'batch_create' => function ($url, $model, $key) {
-                    return HTML::a('Create Batch', ['index', 'function' => 'create_batch', 'id' => $model->batch_date]);
-                 },
-                ],
-            ],
+            ],*/
 
             
 

@@ -185,7 +185,7 @@ use yii\helpers\Url;
         </div>
 
         <div class="col-sm-6">
-           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?> 
+           <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?> 
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
@@ -272,21 +272,3 @@ $this->registerJs(
     });"
 );
 ?>
-
-<script>
-    function testing(url){
-        var wardForm = $('#patient-admission-form');
-        var formData = wardForm.serialize();
-        
-        $.ajax({
-            url: wardForm.attr("action"),
-            type: wardForm.attr("method"),
-            data: formData,
-
-            success: function (data) {
-                // $(wardForm).trigger('reset');
-                // console.log(wardForm.attr("method"));
-            },
-        });
-    }
-</script>

@@ -9,6 +9,7 @@ use app\models\Ward;
 use app\models\Fpp;
 use yii\helpers\Url;
 use app\models\Cancellation;
+use app\models\Variable;
 use yii\bootstrap4\Modal;
 
 /* @var $this yii\web\View */
@@ -374,7 +375,10 @@ $urlStatus = Url::toRoute(['/bill/status']);
 $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->request->get('bill_uid')]);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
-if(!empty($cancellation)){
+
+$model_read_only = Variable::find()->one();
+
+if(!empty($cancellation) || $model_read_only->read_only == 1){
     $disabled = true;
     $linkDisabled = 'disabled-link';
 }

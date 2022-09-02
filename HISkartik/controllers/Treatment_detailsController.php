@@ -121,7 +121,7 @@ class Treatment_detailsController extends Controller
     {
          // Insert and Update Treatment
          // Yii::$app->request->post('saveTreatment') == 'true' && 
-         if(Yii::$app->request->post('saveTreatment') == 'true' && Yii::$app->request->post('Treatment_details', [])) {
+         if(Yii::$app->request->post('Treatment_details', [])) {
             $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
             $modelTreatment = Model::createMultiple(Treatment_details::className());
 

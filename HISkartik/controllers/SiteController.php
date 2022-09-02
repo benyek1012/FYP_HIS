@@ -107,11 +107,11 @@ class SiteController extends Controller
         else 
         {
             if((new New_user())->isAdmin())
-                echo $this->render('admin_dashboard');
+                return $this->render('admin_dashboard');
             else if((new New_user())->isCashier())
                 $this->redirect(Url::to(['/site/admission']));
             else if((new New_user())->isClerk())
-                echo $this->render('clerk_dashboard');
+                return $this->render('clerk_dashboard');
             else if((new New_user())->isGuestPrinter())
                 $this->redirect(Url::to(['/site/guest_printer_dashboard']));
         }

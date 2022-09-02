@@ -120,6 +120,8 @@ if(empty($checkFPP)){
 
 $url = Url::toRoute(['/bill/ward']);
 $urlDate = Url::toRoute(['/bill/date']);
+$urlSubmit = Url::toRoute(['/ward/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'ward']);
+
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -185,7 +187,8 @@ else{
                                 'placeholder' => Yii::t('app','Select ward code'), 
                                 'class' => 'wardCode',
                                 'value' => $admission_model->initial_ward_code,
-                                'onchange' => "wardCode('{$url}');"
+                                'onchange' => "wardCode('{$url}');",
+                                'onfocusout' => "submitWardForm('{$index}', '{$urlSubmit}')",
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -207,7 +210,8 @@ else{
                                 'placeholder' => Yii::t('app','Select ward code'), 
                                 'class' => 'wardCode',
                                 'value' => $modelWard->ward_code,
-                                'onchange' => "wardCode('{$url}');"
+                                'onchange' => "wardCode('{$url}');",
+                                'onfocusout' => "submitWardForm('{$index}', '{$urlSubmit}')",
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
@@ -231,9 +235,10 @@ else{
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true, 'value' => $admission_model->entry_datetime],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         'pluginEvents' => [
-                            'change' => 'function () {
+                            'change' => "function () {
                                 calculateDays();
-                                }',
+                                submitWardForm('{$index}', '{$urlSubmit}')
+                            }",
                         ],])->label(false)?>
                     <?php 
                     }
@@ -243,9 +248,10 @@ else{
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true,],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         'pluginEvents' => [
-                            'change' => 'function () {
+                            'change' => "function () {
                                 calculateDays();
-                                }',
+                                submitWardForm('{$index}', '{$urlSubmit}')
+                            }",
                         ],])->label(false)?>
                     <?php
                     }
@@ -256,9 +262,10 @@ else{
                         'options' => ['class' => 'end_date', 'disabled' => empty($isGenerated) ? false : true,], 
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
                         'pluginEvents' => [
-                            'change' => 'function () {
+                            'change' => "function () {
                                 calculateDays();
-                                }',
+                                submitWardForm('{$index}', '{$urlSubmit}')
+                            }",
                         ],])->label(false)?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
@@ -327,6 +334,7 @@ else{
                     days = 1;
 
                 $("#ward-" + i + "-ward_number_of_days").val(days);
+
             }
         }
     }
@@ -340,6 +348,52 @@ else{
                     $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
                 });
             });
+        });
+    }
+
+    function submitWardForm(count, url){
+        var form = $('#ward-form');
+        var formData = form.serialize();
+        var countWard = document.getElementById('countWard').value;
+
+        $.ajax({
+            url: url,
+            type: form.attr("method"),
+            data: formData,
+
+            success: function (data) {
+                flag = 0;
+                counted = parseInt(count) + 1;
+
+                if(document.getElementById('ward-'+count+'-ward_code').value == '' || 
+                    document.getElementById('ward-'+count+'-ward_start_datetime').value == '' || 
+                    document.getElementById('ward-'+count+'-ward_end_datetime').value == ''){
+                    return false;
+                }
+
+                //update
+                if($('.end_date').length ==  countWard|| $('.start_date').length == countWard || $('.wardCode').length == countWard){
+                    for(var i = 0; i < countWard; i++){
+                        if(document.getElementById('ward-'+i+'-ward_code').value == '' || document.getElementById('ward-'+i+'-ward_start_datetime').value == '' || document.getElementById('ward-'+i+'-ward_end_datetime').value == ''){
+                            continue;
+                        }
+                        else{
+                            flag++;
+                        }
+                    }
+
+                    if(flag == countWard){
+                        location.reload();
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                // insert
+                else if(counted == countWard){
+                    location.reload();  
+                }
+            },
         });
     }
 </script>

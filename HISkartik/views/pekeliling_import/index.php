@@ -3,18 +3,20 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
-use app\models\Batch;
+use yii\grid\GridView;
+use app\models\Pekeliling_import;
 use yii\helpers\StringHelper;
 use app\models\New_user;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\BatchSearch */
+/* @var $searchModel app\models\Pekeliling_importSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Batches');
+$this->title = 'Pekeliling Imports';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="batch-index">
+<div class="pekeliling-import-index">
+
     <div class="card card-outline card-info">
         <!-- /.card-header -->
         <div class="card-body">
@@ -25,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <!-- /.card -->
     <br />
+
     <div id="lookup_form">
         <!-- If the flash message existed, show it  -->
         <?php if(Yii::$app->session->hasFlash('msg')):?>
@@ -33,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?php endif; ?>
         <?php
-            $model = new Batch();
+            $model = new Pekeliling_import();
             echo $this->render('_form', ['model' => $model]);
         ?>
     </div>
@@ -41,6 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'rowOptions' => function($model) {
+            $urlError = Url::toRoute(['pekeliling_import/upload', 'id' => $model['pekeliling_uid']]);
+            return [
+                'onclick' => "showErrorMsg('{$urlError}');",
+                'style' => "cursor:pointer"
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -84,6 +94,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'file_import',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'format' => 'raw',
+                'value'=>function ($data){ 
+                    $path = Yii::$app->basePath . '/web/' . $data->file_import;
+                    $array = explode("/", $data['file_import']);
+                    if (file_exists($path)) 
+                        return Html::a($array[1], \yii\helpers\Url::to(['pekeliling_import/download', 
+                            'id'=>$data['pekeliling_uid']]));
+                    else return $array[1];
+                },
             ],
             [
                 'attribute' => 'error',
@@ -200,12 +219,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{my_button}{my_button2}', 
                 'buttons' => [
                     'my_button' => function ($url, $model, $key) {
+                        $check_file_existed = false;
+                        $path = Yii::$app->basePath . '/web/' . $model->file_import;
+                        if (file_exists($path)) 
+                            $check_file_existed = true;
+
                         return ( empty($model['error']) && empty($model->execute_responsible_uid) && 
-                                    !empty($model->approval1_responsible_uid) && !empty($model->approval2_responsible_uid))
-                        ?  Html::a('Execute', ['batch/execute', 'id'=>$model->id], ['class' => 'btn btn-success btn-xs'])
-                        : Html::a('Execute', ['batch/execute', 'id'=>$model->id], ['class' => 'btn btn-danger btn-xs disabled']);
+                                    !empty($model->approval1_responsible_uid) && 
+                                    !empty($model->approval2_responsible_uid) && $check_file_existed)
+                        ?  Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
+                        : Html::a(Yii::t('app','Execute'), ['pekeliling_import/execute', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
                     },
                     'my_button2' => function ($url, $model, $key) {
+                        $check_file_existed = false;
+                        $path = Yii::$app->basePath . '/web/' . $model->file_import;
+                        if (file_exists($path)) 
+                            $check_file_existed = true;
+
                         $flag = true;
                         if($model['approval1_responsible_uid'] == Yii::$app->user->identity->id 
                             || $model['approval2_responsible_uid'] == Yii::$app->user->identity->id ) 
@@ -214,15 +244,41 @@ $this->params['breadcrumbs'][] = $this->title;
                         if(!empty($model['approval1_responsible_uid']) && !empty($model['approval2_responsible_uid']))
                         $flag = false;
 
-                        return ( empty($model['error']) && empty($model->execute_responsible_uid) && $flag)
-                        ?  Html::a('Approve', ['batch/approve', 'id'=>$model->id], ['class' => 'btn btn-info btn-xs'])
-                        : Html::a('Approve', ['batch/approve', 'id'=>$model->id], ['class' => 'btn btn-danger btn-xs disabled']);
+                        return ( empty($model['error']) && empty($model->execute_responsible_uid) && $flag && $check_file_existed)
+                        ?  Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-success btn-xs'])
+                        : Html::a(Yii::t('app','Approve'), ['pekeliling_import/approve', 'id'=>$model->pekeliling_uid], ['class' => 'btn btn-danger btn-xs disabled']);
                     },
                 ]
             ],
         ],
     ]); ?>
 
+
+<div class="card">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Error Message');?></h3>
+            <div class="d-flex justify-content-end">
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body" id="patient-admission-summary">
+            <?php 
+                    if(empty($model))
+                    {
+                        echo Yii::t('app','Error is not found');        
+                    }
+                   
+                ?>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
 
 </div>
 
@@ -239,3 +295,17 @@ SCRIPT;
 // Register tooltip/popover initialization javascript
 $this->registerJs ( $js );
 ?>
+
+<script>
+function showErrorMsg(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange  = function() {
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+            document.getElementById("patient-admission-summary").innerHTML = this.responseText;
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+    
+}
+</script>

@@ -1,28 +1,28 @@
 <?php
 
 use yii\helpers\Html;
-
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Batch */
+/* @var $model app\models\Pekeliling_import */
 /* @var $form yii\widgets\ActiveForm */
 
+
 $method_lookup = array(
-   'status' =>  Yii::t('app','Status Lookup'),
-   'treatment' => Yii::t('app','Treatment Codes'), 
-   'ward' => Yii::t('app','Ward Codes'),
-   'department' => Yii::t('app','Department Codes'),
-   'fpp' => Yii::t('app','Full Paying Patient'),
-);
-
-$method_type = array(
-    'insert' =>  Yii::t('app','Insert / Update'),
-    'delete' => Yii::t('app','Delete old codes'), 
-);
-
+    'status' =>  Yii::t('app','Status Lookup'),
+    'treatment' => Yii::t('app','Treatment Codes'), 
+    'ward' => Yii::t('app','Ward Codes'),
+    'department' => Yii::t('app','Department Codes'),
+    'fpp' => Yii::t('app','Full Paying Patient'),
+ );
+ 
+ $method_type = array(
+     'insert' =>  Yii::t('app','Insert / Update'),
+     'delete' => Yii::t('app','Delete old codes'), 
+ );
 ?>
 
-<div class="batch-form">
+<div class="pekeliling-import-form">
 
     <?php $form = kartik\form\ActiveForm::begin([
         'options' => ['enctype' => 'multipart/form-data'],

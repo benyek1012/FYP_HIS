@@ -8,35 +8,32 @@ use app\models\New_user;
 if (Yii::$app->user->isGuest){ 
 ?>
 <style type="text/css">
-#dropdownSubMenu1 {
-    display: none;
-}
-</style>
-<style type="text/css">
-#dropdownSubMenu2 {
-    display: none;
-}
-</style>
-<style type="text/css">
 #report {
     display: none;
 }
 </style>
 <style type="text/css">
-.dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0;
+body {
+  background: #f2f2f2;
 }
+</style>
+<style type="text/css">
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
 </style>
 <?php
 }
     
 ?>
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light ">
+<!-- <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
 
 
-    <!-- Left navbar links -->
+    Left navbar links -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
     <ul class="navbar-nav">
         <?php 
             if((new SiteController(null,null)) -> accessControl() == true
@@ -53,7 +50,7 @@ if (Yii::$app->user->isGuest){
                 aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
             <div class="dropdown-content">
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/site/admission']); ?>"
@@ -76,7 +73,7 @@ if (Yii::$app->user->isGuest){
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Maintenance'); ?></a>
             <div class="dropdown-content">
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/lookup_general']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                     </li>
@@ -104,16 +101,18 @@ if (Yii::$app->user->isGuest){
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app', "Others"); ?></a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <div class="dropdown-content">
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
                 <li><a href="<?php echo Url::to(['/reminder']);?>" 
                     class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                 <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                     class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
-                <li><a href="<?php echo Url::to(['/batch']); ?>"
-                    class="dropdown-item"><?php echo Yii::t('app','Testing Csv Upload'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
+                <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
+                    class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
+                <li><a href="<?php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?php echo Yii::t('app','Testing database update'); ?></a></li>    
             </ul>
+            </div>
         </li>
     </ul>
     <?php
@@ -131,18 +130,18 @@ if (Yii::$app->user->isGuest){
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo  Yii::t('app','Languages'); ?></a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <div class="dropdown-content">
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow" style="margin-top: 0px; margin-right: 20px ;">
                 <?php
                             foreach(Yii::$app->params['languages'] as $key => $language){
                                 echo '<li><a href="#" class="dropdown-item language" id="'.$key.'">'.$language.'</a></li>';
                             }
                         ?>
             </ul>
+            </div>
         </li>
     </ul>
 </nav>
-
-
 
 <?php
 $this->registerJs(
@@ -157,18 +156,18 @@ $this->registerJs(
     });"
 );
 
-// $this->registerJs(
-//     "$('.navbar .dropdown').hover(function() {
-//         $(this).find('.dropdown-menu').first().stop(true, true).slideDown(20);
-//       }, function() {
-//         $(this).find('.dropdown-menu').first().stop(true, true).slideUp(20)
-//       });"
-// );
+$this->registerJs(
+    "$('.navbar .dropdown').hover(function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).slideDown(20);
+      }, function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).slideUp(20)
+      });"
+);
 
 ?>
+<script>
 
-
-
+</script>
 <?php
 // $this->registerJs('
 // const $dropdown = $(".dropdown");
