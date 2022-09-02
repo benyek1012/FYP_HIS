@@ -308,7 +308,6 @@ return[
     'Approve' => 'Terima',
     'Error Message' => 'Mesej Ralat',
     'Download' => 'Muat Turun',
-
     'Treatment Pekeliling Kod no longer exist' => 'Rawatan Pekeliling Kod tidak lagi wujud',
     'Ward Pekeliling Kod no longer exist' => 'Wad Pekeliling Kod tidak lagi wujud',
     'FPP Pekeliling Kod no longer exist' => 'FPP Pekeliling Kod tidak lagi wujud',

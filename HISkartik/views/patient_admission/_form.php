@@ -290,4 +290,4 @@ $this->registerJs(
             },
         });
     }
-</script>?>
+</script>
