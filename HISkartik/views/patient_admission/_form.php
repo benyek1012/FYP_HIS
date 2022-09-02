@@ -260,7 +260,6 @@ if($isdeposited){
     <?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
     <?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
     <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
-    <?= Html::a(Yii::t('app', 'Export'), ['/patient_admission/print5', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
 </div>
 <br/>
 
