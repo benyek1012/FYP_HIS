@@ -20,8 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card card-outline card-info">
         <!-- /.card-header -->
         <div class="card-body">
-            <?php echo Yii::t('app','This is the testing page that user can upload CSV file and insert into database table directly.')."<br/>".
-            Yii::t('app','Currently, the CSV file can be traced with batch # and insert into lookup ward table.');?>
+            <?php echo Yii::t('app','This is a page which user can upload CSV file that could insert into database table directly.')."<br/>".
+            Yii::t('app','There are five lookup tables available for users to perform pekeliling imports.')."<br/>".
+            Yii::t('app','There are two types of updates: insert or replace existing row / delete all existing data and reinsert.')."<br/>".
+            Yii::t('app','Requires 2 admins to approve an error free file and can perform pekeliling execution.')."<br/><br/>",
+            Yii::t('app','Below is a button with which users can export data from the lookup ward database to a CSV file.')."<br/>"
+            ;?>
+             <?= Html::a(Yii::t('app', 'Export'), ['/pekeliling_import/export2'], ['class'=>"btn btn-xs btn-success"]) ?>
         </div>
         <!-- /.card-body -->
     </div>

@@ -29,7 +29,8 @@
         "kartik-v/yii2-detail-view": "dev-master",
         "wbraganca/yii2-dynamicform": "*",
         "mike42/escpos-php": "^2.2",
-        "kartik-v/yii2-widget-select2": "dev-master"
+        "kartik-v/yii2-widget-select2": "dev-master",
+        "yii2tech/csv-grid": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

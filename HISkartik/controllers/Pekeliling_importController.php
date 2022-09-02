@@ -15,6 +15,8 @@ use yii\db\Expression;
 use yii\web\UploadedFile;
 use GpsLab\Component\Base64UID\Base64UID;
 use Yii;
+use yii2tech\csvgrid\CsvGrid;
+use yii\data\ActiveDataProvider;
 use yii\helpers\StringHelper;
 
 /**
@@ -296,7 +298,6 @@ class Pekeliling_importController extends Controller
         $model = $this->findModel($id);
 
         $path = Yii::$app->basePath . '/web/' . $model->file_import;
-
         $array = explode("/", $model->file_import);
 
         if (file_exists($path)) 
@@ -315,7 +316,6 @@ class Pekeliling_importController extends Controller
     public function actionUpload($id)
     { 
         $model = $this->findModel($id);
-
         return $this->renderPartial('/pekeliling_import/view', ['model' => $model]);
     }
 
@@ -327,8 +327,7 @@ class Pekeliling_importController extends Controller
         $array = explode("/", $model['file_import']);
         $array = explode(".csv", $array[1]);
         
-
-        $filename = $array[0].'_ErrorMsg'. '.txt'; 
+        $filename = $array[0].'_Error'. '.txt'; 
        
         $myfile = fopen($filename, "w") or die("Unable to open file!");
         fwrite($myfile, $content);
@@ -340,10 +339,44 @@ class Pekeliling_importController extends Controller
         header("Content-Type: application/octet-stream; "); 
         header("Content-Transfer-Encoding: binary");
         readfile($filename);
-       
-
     }
     
+    public function actionExport2()
+    {   
+        $exporter = new CsvGrid([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => Lookup_ward::find(),
+                'pagination' => [
+                    'pageSize' => 100, // export batch size
+                ],
+            ]),
+            'columns' => [
+                [
+                    'attribute' => 'ward_code',
+                    'label' => Yii::t('app','Ward Code'),
+                ],
+                [
+                    'attribute' => 'ward_name',
+                    'label' => Yii::t('app','Ward Name'),
+                ],
+                [
+                    'attribute' => 'sex',
+                    'label' => Yii::t('app','Sex'),
+                ],
+                [
+                    'attribute' => 'min_age',
+                    'label' => Yii::t('app','Min Age'),
+                ],
+                [
+                    'attribute' => 'max_age',
+                    'label' => Yii::t('app','Max Age'),
+                ],
+            ],
+        ]);
+        
+        return $exporter->export()->send('Lookup_ward_from_db.csv');		
+    }
+
     /**
      * Displays a single Pekeliling_import model.
      * @param string $pekeliling_uid Pekeliling Uid

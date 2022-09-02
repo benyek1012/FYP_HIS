@@ -233,8 +233,6 @@ return[
     'Testing Csv Upload' => 'Menguji Muat Naik Csv',
     'Batches' => 'Kelompok',
     'Create Batch' => 'Buat Kelompok',
-    'This is the testing page that user can upload CSV file and insert into database table directly.' => 'Ini ialah halaman ujian yang pengguna boleh memuat naik fail CSV dan masukkan ke dalam jadual pangkalan data secara terus.',
-    'Currently, the CSV file can be traced with batch # and insert into lookup ward table.' => 'Pada masa ini, fail CSV boleh dikesan dengan kelompok # dan dimasukkan ke dalam jadual wad carian.',
     'Batch' => 'Kumpulan',
     'File Import' => 'Import Fail',
     'File' => 'Fail',
@@ -321,5 +319,17 @@ return[
     ' and the row ' => ' dan baris ',
     ' is required. ' => ' adalah diperlukan. ',
     'Row ' => 'Baris ',
+    'Export' => 'Eksport',
+    'This is a page which user can upload CSV file that could insert into database table directly.'
+    => 'Ini ialah halaman yang pengguna boleh memuat naik fail CSV yang boleh dimasukkan ke dalam jadual pangkalan data secara langsung.',
+    'There are five lookup tables available for users to perform pekeliling imports.'
+    => 'Terdapat lima jadual carian yang tersedia untuk pengguna melaksanakan import pekeliling.',
+    'There are two types of updates: insert or replace existing row / delete all existing data and reinsert.'
+    => 'Terdapat dua jenis kemas kini: masukkan atau gantikan baris sedia ada / padam semua data sedia ada dan masukkan semula.',
+    'Requires 2 admins to approve an error free file and can perform pekeliling execution.'
+    => 'Memerlukan 2 admins untuk meluluskan fail bebas ralat dan boleh melaksanakan pelaksanaan pekeliling.',
+    'Below is a button with which users can export data from the lookup ward database to a CSV file.'
+    => 'Di bawah ialah butang yang pengguna boleh mengeksport data daripada pangkalan data kod wad ke fail CSV.',
+    
 ];
 ?>
