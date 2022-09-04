@@ -354,74 +354,74 @@ class Patient_admissionController extends Controller
 		]);
 	}
 
-    public function actionPrint5($rn)
-    {
-        $model = $this->findModel($rn);
-        $batchdate = '9999-12-31';
+    // public function actionPrint5($rn)
+    // {
+    //     $model = $this->findModel($rn);
+    //     $batchdate = '9999-12-31';
         
-        $exporter = new CsvGrid([
-            'dataProvider' => new ActiveDataProvider([
-                'query' => Patient_admission::find(),
-                'pagination' => [
-                    'pageSize' => 100, // export batch size
-                ],
-            ]),
-            'columns' => [
-                [
-                    'attribute' => 'rn',
-                    'label' => 'RN',
-                ],
-                [
-                    'attribute' => 'nric',
-                    'label' => 'IC',
-                    'value' => function($model, $index, $dataColumn) {
+    //     $exporter = new CsvGrid([
+    //         'dataProvider' => new ActiveDataProvider([
+    //             'query' => Patient_admission::find(),
+    //             'pagination' => [
+    //                 'pageSize' => 100, // export batch size
+    //             ],
+    //         ]),
+    //         'columns' => [
+    //             [
+    //                 'attribute' => 'rn',
+    //                 'label' => 'RN',
+    //             ],
+    //             [
+    //                 'attribute' => 'nric',
+    //                 'label' => 'IC',
+    //                 'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->nric;
+    //                     return $model->patientU->nric;
 
-                    },
-                ],
-                [
-                    'attribute' => 'entry_datetime',
-                    'label' => 'Entry Datetime',
-                    'format' => 'datetime',
-                ],
-                [
-                    'attribute' => 'reminder1',
-                    'label' => 'Reminder 1',
-                ],
-                [
-                    'attribute' => 'name',
+    //                 },
+    //             ],
+    //             [
+    //                 'attribute' => 'entry_datetime',
+    //                 'label' => 'Entry Datetime',
+    //                 'format' => 'datetime',
+    //             ],
+    //             [
+    //                 'attribute' => 'reminder1',
+    //                 'label' => 'Reminder 1',
+    //             ],
+    //             [
+    //                 'attribute' => 'name',
 
-                    'label' => 'patient Name',
+    //                 'label' => 'patient Name',
 
-                    'value' => function($model, $index, $dataColumn) {
+    //                 'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->name;
+    //                     return $model->patientU->name;
 
-                    },
-                ],
-                [
-                    'attribute' => 'batch_date',
+    //                 },
+    //             ],
+    //             [
+    //                 'attribute' => 'batch_date',
 
-                    'label' => 'Batch Date',
+    //                 'label' => 'Batch Date',
 
-                    'value' => function($model, $index, $dataColumn) use ($batchdate) {
+    //                 'value' => function($model, $index, $dataColumn) use ($batchdate) {
 
-                        return $batchdate;
+    //                     return $batchdate;
 
-                    },
-                ],
+    //                 },
+    //             ],
 
-            ],
-        ]);
-        //$exporter->export()->saveAs('G:/Download/file.csv');
-        return $exporter->export()->send('items.csv');
+    //         ],
+    //     ]);
+    //     //$exporter->export()->saveAs('G:/Download/file.csv');
+    //     return $exporter->export()->send('items.csv');
 
-        return $this->render('update', [
-			'model' => $model,
-		]);
+    //     return $this->render('update', [
+	// 		'model' => $model,
+	// 	]);
 		
-    }
+    // }
 
     public function actionPrint($rn)
     {

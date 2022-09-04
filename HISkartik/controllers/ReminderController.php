@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Bill;
 use app\models\Reminder;
 use app\models\New_user;
 use app\models\ReminderSearch;
@@ -181,13 +182,34 @@ class ReminderController extends Controller
     }
 
     public function exportCSV($batch_date) //Teo fill export CSV code here
+    
     {
+        // to be filled in RN, 
+	// IC, 
+	// RACE, 
+	// ADDRESS,
+	// GUARANTOR IC,
+	// GUARANTOR ADDRESS,
+	// ENTRY DATE, 
+	// Reminder Number,
+	// Reminder Batch Date, 
+	// Bill.Final Ward Date as 'Discharge Date', 
+	// Discharge Date + 14/28/42 as Reminder Date,  
+	// Bill.payable_fee, 
+	// Bill.payable_fee 
+	// 	- SUM(Receipt Amount where receipt_type <> Refund && receipt_date < Reminder Date) 
+	// 	+ SUM(Receipt Amount where receipt_type <> Refund && receipt_date < Reminder Date)
+	// 	as AMOUNT PAYABLE
+    
+    //To be filtered rn that has value on reminder1,2,3; exist in batch_date
         $model = $this->findModel($batch_date);
+        //$modelbill = Bill::find()->where(['generation_responsible_uid' => $model->responsible_uid]);
+       // $modeladmission = Patient_admission::find()->where(['rn'=> $modelbill->rn]);
         $batch_date = '9999-12-31';
         
         $exporter = new CsvGrid([
             'dataProvider' => new ActiveDataProvider([
-                'query' => Patient_admission::find(),
+                'query' => Patient_admission::find()->where([]),
                 'pagination' => [
                     'pageSize' => 100, // export batch size
                 ],
@@ -207,6 +229,52 @@ class ReminderController extends Controller
                     },
                 ],
                 [
+                    'attribute' => 'race',
+                    'label' => 'Race',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->race;
+
+                    },
+                ],
+                [
+                    'attribute' => 'address1',
+                    'label' => 'address1',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->address1;
+
+                    },
+                ],
+                [
+                    'attribute' => 'address2',
+                    'label' => 'address2',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->address2;
+
+                    },
+                ],
+                [
+                    'attribute' => 'address3',
+                    'label' => 'address3',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->patientU->address3;
+
+                    },
+                ],
+                [
+                    'attribute' => 'guarantor_nric',
+                    'label' => 'Guarantor Ic',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->guarantor_nric;
+
+                    },
+                ],
+               //guarantor address?
+                [
                     'attribute' => 'entry_datetime',
                     'label' => 'Entry Datetime',
                     'format' => 'datetime',
@@ -214,6 +282,14 @@ class ReminderController extends Controller
                 [
                     'attribute' => 'reminder1',
                     'label' => 'Reminder 1',
+                ],
+                [
+                    'attribute' => 'reminder2',
+                    'label' => 'Reminder 2',
+                ],
+                [
+                    'attribute' => 'reminder3',
+                    'label' => 'Reminder 3',
                 ],
                 [
                     'attribute' => 'name',
