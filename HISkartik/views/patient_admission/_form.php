@@ -183,7 +183,30 @@ use yii\helpers\Url;
                 
             ],])?>
         </div>
+        <?php 
+if($isdeposited){
+   
+                ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'readonly' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?>  
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled, 'readonly' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
+        </div>
 
+        <?php }else{  ?>
         <div class="col-sm-6">
             <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?>  
         </div>
@@ -202,6 +225,7 @@ use yii\helpers\Url;
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
+        <?php } ?>
     </div>
 
     <div class="form-group">
