@@ -35,7 +35,7 @@ class Lookup_treatment extends \yii\db\ActiveRecord
             [['class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit', 'class_Daycare_FPP_per_unit'], 'number'],
             [['treatment_uid'], 'string', 'max' => 64],
             [['treatment_code'], 'string', 'max' => 20],
-            [['treatment_name'], 'string', 'max' => 50],
+            [['treatment_name'], 'string', 'max' => 200],
             [['treatment_code'], 'unique'],
             [['treatment_uid'], 'unique'],
         ];

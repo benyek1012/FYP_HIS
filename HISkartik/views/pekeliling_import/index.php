@@ -23,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php echo Yii::t('app','This is a page which user can upload CSV file that could insert into database table directly.')."<br/>".
             Yii::t('app','There are five lookup tables available for users to perform pekeliling imports.')."<br/>".
             Yii::t('app','There are two types of updates: insert or replace existing row / delete all existing data and reinsert.')."<br/>".
-            Yii::t('app','Requires 2 admins to approve an error free file and can perform pekeliling execution.')."<br/><br/>",
-            Yii::t('app','Below is a button with which users can export data from the lookup ward database to a CSV file.')."<br/>"
+            Yii::t('app','Requires 2 admins to approve an error free file and can perform pekeliling execution which takes some time.')."<br/><br/>",
+            Yii::t('app','Below is a button with which users can export data from five lookup tables from database to a CSV file.')."<br/>"
             ;?>
              <?= Html::a(Yii::t('app', 'Ward Codes'), ['/pekeliling_import/export2'], ['class'=>"btn btn-xs btn-success"]) ?>
              <?= Html::a(Yii::t('app', 'Status Lookup'), ['/pekeliling_import/export3'], ['class'=>"btn btn-xs btn-success"]) ?>
@@ -115,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>function ($data) {
                     return empty($data['error'])
                     ?  Yii::t('app', 'No Error') :  
-                        Html::tag ( 'span' , StringHelper::truncateWords($data['error'], 2) , [
+                        Html::tag ( 'span' , StringHelper::truncateWords($data['error'], 1) , [
                         // title
                         'title' => Yii::t('app', 'Click row to show whole error'),
                         'data-placement' => 'top' ,

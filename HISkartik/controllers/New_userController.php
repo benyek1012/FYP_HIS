@@ -141,6 +141,9 @@ class New_userController extends Controller
         if ($this->request->isPost && $model->load($this->request->post())){
 
             $checkDuplicatedUser = New_user::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
+            // $model->validate();
+            // var_dump($model->getFirstErrors());
+            // exit;
             if($model->validate() && empty($checkDuplicatedUser))
             {
                 $model->user_password = New_user::hashPassword($model->user_password); // Hash the password before you save it.

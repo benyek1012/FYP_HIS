@@ -326,11 +326,13 @@ return[
     => 'Terdapat lima jadual carian yang tersedia untuk pengguna melaksanakan import pekeliling.',
     'There are two types of updates: insert or replace existing row / delete all existing data and reinsert.'
     => 'Terdapat dua jenis kemas kini: masukkan atau gantikan baris sedia ada / padam semua data sedia ada dan masukkan semula.',
-    'Requires 2 admins to approve an error free file and can perform pekeliling execution.'
-    => 'Memerlukan 2 admins untuk meluluskan fail bebas ralat dan boleh melaksanakan pelaksanaan pekeliling.',
-    'Below is a button with which users can export data from the lookup ward database to a CSV file.'
-    => 'Di bawah ialah butang yang pengguna boleh mengeksport data daripada pangkalan data kod wad ke fail CSV.',
+    'Requires 2 admins to approve an error free file and can perform pekeliling execution which takes some time.'
+    => 'Memerlukan 2 pentadbir untuk meluluskan fail bebas ralat dan boleh melaksanakan pelaksanaan pekeliling yang mengambil sedikit masa.',
+    'Below is a button with which users can export data from five lookup tables from database to a CSV file.'
+    => 'Di bawah ialah butang yang digunakan oleh pengguna untuk mengeksport data daripada lima jadual carian daripada pangkalan data ke fail CSV.',
     'Pekeliling Imports' => 'Import Kod Pekeliling',
+    'You have successfully import file ' => 'Anda telah berjaya mengimport fail ',
+    'You have successfully execute file ' => 'Anda telah berjaya melaksanakan fail ',
     
 ];
 ?>
