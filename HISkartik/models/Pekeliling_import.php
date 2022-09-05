@@ -44,7 +44,7 @@ class Pekeliling_import extends \yii\db\ActiveRecord
             [['pekeliling_uid', 'approval1_responsible_uid', 'approval2_responsible_uid', 'execute_responsible_uid'], 'string', 'max' => 64],
             [['file_import'], 'string', 'max' => 100],
             [['lookup_type'], 'string', 'max' => 32],
-            [['error'], 'string', 'max' => 2000],
+            [['error'], 'string', 'max' => 500000],
             [['update_type'], 'string', 'max' => 12],
             [['pekeliling_uid'], 'unique'],
         ];
@@ -93,8 +93,8 @@ class Pekeliling_import extends \yii\db\ActiveRecord
             // loop over array and check all special characters found in string, only    allow ' () - / \ ,'
             if(preg_match('/[\'^£$%&*};"{@#~?!><>|=_+¬]/', $val)) {
                 if($string_special_char == "")
-                    $string_special_char = '<strong>'.$header[$key].' '.$val.'</strong>';
-                else $string_special_char .= "  ,  ".'<strong>'.$header[$key].' '.$val.'</strong>';
+                    $string_special_char = $header[$key].' '.$val;
+                else $string_special_char .= "  ,  ".$header[$key].' '.$val;
             } 
         }
         if($string_special_char != "")

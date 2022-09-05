@@ -95,124 +95,111 @@ class Pekeliling_importController extends Controller
                 }
 
                 if($uploadExists && $model->validate()){
-                    try{
-                        $transaction = Yii::$app->db->beginTransaction();
+                    // create the folder if folder does not existed, then save the file 
+                    $path = Yii::$app->basePath . '/web/uploads';
+                    if (\yii\helpers\FileHelper::createDirectory($path, $mode = 0775, $recursive = true)) {
+                        $model->file->saveAs($model->file_import);
+                    }
+                    
+                    // file validation
+                    $handle = fopen($model->file_import, 'r');
+                    if($handle){
+                        $first_column_csv = fgetcsv($handle);
 
-                        // create the folder if folder does not existed, then save the file 
-                        $path = Yii::$app->basePath . '/web/uploads';
-                        if (\yii\helpers\FileHelper::createDirectory($path, $mode = 0775, $recursive = true)) {
-                            $model->file->saveAs($model->file_import);
-                        }
-                     
-                        // file validation
-                        $handle = fopen($model->file_import, 'r');
-                        if($handle){
-                            $first_column_csv = fgetcsv($handle);
+                        $validate_header = Pekeliling_import::validateHeader($first_column_csv, $column);
 
-                            $validate_header = Pekeliling_import::validateHeader($first_column_csv, $column);
-
-                            if(!$validate_header)
-                            {
-                                Yii::$app->session->setFlash('msg', '
-                                <div class="alert alert-danger alert-dismissable">
-                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                                <strong>'.Yii::t('app', 'Validation error! ').' </strong> Invalid column name ! <br/> 
-                                    Column name must matched with database header name</div>');
-                                
-                                unlink(Yii::$app->basePath . '/web/' . $model->file_import);
-                   
-                                return $this->redirect(['index']);
-                            }
-                               
-                            $row = 2;
-                            $duplicateInfo = array();
-                            $arrdup = "";
-
-                            // file validation, check duplicated codes in whole csv file
-                            while (($line = fgetcsv($handle)) !== false) 
-                            {
-                                if(!empty($line[0]))
-                                {
-                                    $key = $line[0];
-                                    if (isset($duplicateInfo[$key])) {
-                                        $arrdup .=  '<strong>'.$first_column_csv[0].' '.$key.'</strong> '.Yii::t("app", " is duplicated with the row ").$duplicateInfo[$key].
-                                        Yii::t("app", " and the row ").$row.". <br/>";
-                                    }
-                                    $duplicateInfo[$key] = $row;
-                                }
-                               $row++;
-                            }   
-                        }
-                        fclose($handle);
-
-                        if(!empty($arrdup))
-                            $string_error .= $arrdup."<br/>";
-
-                        // database model validation
-                        $handle = fopen($model->file_import, 'r');
-                        fgetcsv($handle);
-                        if($handle){
-                            $row = 2;
-                            while (($line = fgetcsv($handle)) !== false) 
-                            {   
-                                // ignore blank lines
-                                if ($line[0] == NULL && $line[1] == NULL)  
-                                {
-                                    $row++;
-                                    continue;
-                                } 
-                                $special_character_error = $model::validateSpecialCharacter($line, $first_column_csv);
-                                $model_after_validate = $model::validateModel($model->lookup_type, $line);
-                                $valid = $model_after_validate->validate();
-                                $array_error = $model_after_validate->getFirstErrors();
-
-                                if($special_character_error != "")
-                                    $string_error .= Yii::t("app", "Row ").$row." : ".$special_character_error."<br/>";
-                                foreach($array_error as $error){
-                                    $string_error .= Yii::t("app", "Row ").$row." : ".$error."<br/>";
-                                }     
-                                $row++;
-                            }
-                        }
-                        fclose($handle);
-
-                        $transaction->commit();
-                    }catch(Exception $error){
-                        print_r($error);
-                        $transaction->rollback();
-                    }      
-
-                    if(!empty($model_after_validate))
-                    {
-                        // insert back to table
-                        if($model->update_type == 'delete')
-                            Yii::$app->db->createCommand()->batchInsert($tableName, $column, $array_from_database)->execute();    
-                                              
-                        // insert into batch table
-                        $model->error = $string_error;
-                        $model->approval1_responsible_uid = Yii::$app->user->identity->id;
-                        $model->save();
-
-                        if($string_error != "")
+                        if(!$validate_header)
                         {
                             Yii::$app->session->setFlash('msg', '
                             <div class="alert alert-danger alert-dismissable">
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                            <strong>'.Yii::t('app', 'Validation error!').' </strong><br/>'.  StringHelper::truncateWords($string_error, 50).'</div>');
+                            <strong>'.Yii::t('app', 'Validation error! ').' </strong> Invalid column name ! <br/> 
+                                Column name must matched with database header name</div>');
+                            
+                            unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                
+                            return $this->redirect(['index']);
                         }
-                        else $flag_delete = false;
+                            
+                        $row = 2;
+                        $duplicateInfo = array();
+                        $arrdup = "";
+
+                        // file validation, check duplicated codes in whole csv file
+                        while (($line = fgetcsv($handle)) !== false) 
+                        {
+                            if(!empty($line[0]))
+                            {
+                                $key = $line[0];
+                                if (isset($duplicateInfo[$key])) {
+                                    $arrdup .=  $first_column_csv[0].' '.$key.Yii::t("app", " is duplicated with the row ").$duplicateInfo[$key].
+                                    Yii::t("app", " and the row ").$row.". <br/>";
+                                }
+                                $duplicateInfo[$key] = $row;
+                            }
+                            $row++;
+                        }   
                     }
-                    else
+                    fclose($handle);
+
+                    if(!empty($arrdup))
+                        $string_error .= $arrdup."<br/>";
+
+                    // database model validation
+                    $handle = fopen($model->file_import, 'r');
+                    fgetcsv($handle);
+                    if($handle){
+                        $row = 2;
+                        while (($line = fgetcsv($handle)) !== false) 
+                        {   
+                            // ignore blank lines
+                            if ($line[0] == NULL && $line[1] == NULL)  
+                            {
+                                $row++;
+                                continue;
+                            } 
+                        //    $special_character_error = $model::validateSpecialCharacter($line, $first_column_csv);
+                            $model_after_validate = $model::validateModel($model->lookup_type, $line);
+                            $valid = $model_after_validate->validate();
+                            $array_error = $model_after_validate->getFirstErrors();
+
+                            // if($special_character_error != "")
+                            //     $string_error .= Yii::t("app", "Row ").$row." : ".$special_character_error."<br/>";
+                            foreach($array_error as $error){
+                                $string_error .= Yii::t("app", "Row ").$row." : ".$error."<br/>";
+                            }     
+                            $row++;
+                        }
+                    }
+                    fclose($handle);
+
+                    // insert back to table
+                    if($model->update_type == 'delete')
+                        Yii::$app->db->createCommand()->batchInsert($tableName, $column, $array_from_database)->execute();    
+
+                    $array = explode("/", $model->file_import);
+                                            
+                    // insert into batch table
+                    $model->error = $string_error;
+                    $model->approval1_responsible_uid = Yii::$app->user->identity->id;
+
+                    if($model->save())
+                        Yii::$app->session->setFlash('msg', '
+                            <div class="alert alert-success alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                            '.Yii::t('app', 'You have successfully import file ').$array[1].' . </div>'
+                        );
+                    // var_dump($model->getFirstErrors());
+                    // exit;
+
+                    if($string_error != "")
+                    {
                         Yii::$app->session->setFlash('msg', '
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                        <strong>'.Yii::t('app', 'Validation error!<br/> ').' </strong>All data from CSV file have been inserted! </div>');
-                 
-                    // delete file folder from PC
-                    // if($flag_delete == true)
-                    //     unlink(Yii::$app->basePath . '/web/' . $model->file_import);
+                        <strong>'.Yii::t('app', 'Validation error!').' </strong><br/>'.  StringHelper::truncateWords($string_error, 50).'</div>');
+                    }
                 }
-
                 return $this->redirect(['index']);
             }
         } else {
@@ -241,50 +228,58 @@ class Pekeliling_importController extends Controller
         // remove first row
         fgetcsv($handle);
 
-        if($model->update_type == 'delete')
-            $table->deleteAll();
-
         if($handle){
-            // read data lines 
-            for ($i = 0; $line = fgetcsv($handle ); ++$i) {
-                if(!empty($line[0]))
-                {
-                    $model_after_validate = $model::validateModel($model->lookup_type, $line);
-                    $model_after_validate->save();
-                }
-            }
+            $transaction = Yii::$app->db->beginTransaction();
+            try{
+
+                if($model->update_type == 'delete')
+                    $table->deleteAll();
+
+                // read data lines 
+                for ($i = 0; $line = fgetcsv($handle ); ++$i) {
+                    if(!empty($line[0]))
+                    {
+                        $model_after_validate = $model::validateModel($model->lookup_type, $line);
+                        $model_after_validate->save();
+                    }
+                } 
+
+                $model->execute_responsible_uid = Yii::$app->user->identity->id;
+
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model->executed_datetime = $date->format('Y-m-d H:i:s');
+                $model->save();
+
+                $transaction->commit();
+            }catch(Exception $error){
+                print_r($error);
+                $transaction->rollback();
+            }      
         }
         fclose($handle);
 
-    
         // delete file folder from PC
         // unlink(Yii::$app->basePath . '/web/' . $model->file_import);
 
-        $model->execute_responsible_uid = Yii::$app->user->identity->id;
+        $model_read_only->read_only = 0;
+        $model_read_only->save();
 
-        $date = new \DateTime();
-        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-        $model->executed_datetime = $date->format('Y-m-d H:i:s');
+        $array = explode("/", $model->file_import);
 
         if($model->save())
         {
-            $model_read_only->read_only = 0;
-            $model_read_only->save();
-
             Yii::$app->session->setFlash('msg', '
                 <div class="alert alert-success alert-dismissable">
                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                '.Yii::t('app', 'You have successfully import file '.$model->file_import.'.'). '</div>'
+                '.Yii::t('app', 'You have successfully execute file ').$array[1]. ' .</div>'
             );
-        
             return $this->redirect(['index']);
         }
-
     }
 
     public function actionApprove($id)
     {
-       
         $model = $this->findModel($id);
 
         if(empty($model->approval1_responsible_uid))
@@ -298,7 +293,6 @@ class Pekeliling_importController extends Controller
 
     public function actionDownload($id)
     {
-       
         $model = $this->findModel($id);
 
         $path = Yii::$app->basePath . '/web/' . $model->file_import;
@@ -357,23 +351,23 @@ class Pekeliling_importController extends Controller
             'columns' => [
                 [
                     'attribute' => 'ward_code',
-                    'label' => Yii::t('app','Ward Code'),
+                    'label' =>'ward_code',
                 ],
                 [
                     'attribute' => 'ward_name',
-                    'label' => Yii::t('app','Ward Name'),
+                    'label' => 'ward_name',
                 ],
                 [
                     'attribute' => 'sex',
-                    'label' => Yii::t('app','Sex'),
+                    'label' => 'sex',
                 ],
                 [
                     'attribute' => 'min_age',
-                    'label' => Yii::t('app','Min Age'),
+                    'label' => 'min_age',
                 ],
                 [
                     'attribute' => 'max_age',
-                    'label' => Yii::t('app','Max Age'),
+                    'label' =>  'max_age',
                 ],
             ],
         ]);
@@ -393,31 +387,31 @@ class Pekeliling_importController extends Controller
             'columns' => [
                 [
                     'attribute' => 'status_code',
-                    'label' => Yii::t('app','Status Code'),
+                    'label' =>'status_code',
                 ],
                 [
                     'attribute' => 'status_description',
-                    'label' => Yii::t('app','Status Description'),
+                    'label' => 'status_description',
                 ],
                 [
                     'attribute' => 'class_1a_ward_cost',
-                    'label' =>  Yii::t('app','Class 1a Ward Cost'),
+                    'label' =>  'class_1a_ward_cost',
                 ],
                 [
                     'attribute' => 'class_1b_ward_cost',
-                    'label' => Yii::t('app','Class 1b Ward Cost'),
+                    'label' => 'class_1b_ward_cost',
                 ],
                 [
                     'attribute' => 'class_1c_ward_cost',
-                    'label' => Yii::t('app','Class 1c Ward Cost'),
+                    'label' => 'class_1c_ward_cost',
                 ],
                 [
                     'attribute' => 'class_2_ward_cost',
-                    'label' => Yii::t('app','Class 2 Ward Cost'),
+                    'label' =>'class_2_ward_cost',
                 ],
                 [
                     'attribute' => 'class_3_ward_cost',
-                    'label' => Yii::t('app','Class 3 Ward Cost'),
+                    'label' =>  'class_3_ward_cost',
                 ],
             ],
         ]);
@@ -437,27 +431,27 @@ class Pekeliling_importController extends Controller
             'columns' => [
                 [
                     'attribute' => 'treatment_code',
-                    'label' => Yii::t('app','Treatment Code'),
+                    'label' => 'treatment_code',
                 ],
                 [
                     'attribute' => 'treatment_name',
-                    'label' => Yii::t('app','Treatment Name'),
+                    'label' => 'treatment_name',
                 ],
                 [
                     'attribute' => 'class_1_cost_per_unit',
-                    'label' => Yii::t('app','Class  1 Cost Per Unit'),
+                    'label' =>  'class_1_cost_per_unit',
                 ],
                 [
                     'attribute' => 'class_2_cost_per_unit',
-                    'label' =>  Yii::t('app','Class  2 Cost Per Unit'),
+                    'label' =>  'class_2_cost_per_unit',
                 ],
                 [
                     'attribute' => 'class_3_cost_per_unit',
-                    'label' => Yii::t('app','Class  3 Cost Per Unit'),
+                    'label' => 'class_3_cost_per_unit',
                 ],
                 [
                     'attribute' => 'class_Daycare_FPP_per_unit',
-                    'label' => Yii::t('app','Class DayCare FPP Cost Per Unit'),
+                    'label' =>'class_Daycare_FPP_per_unit',
                 ],
             ],
         ]);
@@ -477,27 +471,27 @@ class Pekeliling_importController extends Controller
             'columns' => [
                 [
                     'attribute' => 'department_code',
-                    'label' => Yii::t('app','Department Code'),
+                    'label' => 'department_code',
                 ],
                 [
                     'attribute' => 'department_name',
-                    'label' => Yii::t('app','Department Name'),
+                    'label' => 'department_name',
                 ],
                 [
                     'attribute' => 'phone_number',
-                    'label' => Yii::t('app','Phone Number'),
+                    'label' => 'phone_number',
                 ],
                 [
                     'attribute' => 'address1',
-                    'label' =>Yii::t('app','Address 1'),
+                    'label' =>'address1',
                 ],
                 [
                     'attribute' => 'address2',
-                    'label' => Yii::t('app','Address 2'),
+                    'label' => 'address2',
                 ],
                 [
                     'attribute' => 'address3',
-                    'label' => Yii::t('app','Address 3'),
+                    'label' =>'address3',
                 ],
             ],
         ]);
@@ -521,15 +515,15 @@ class Pekeliling_importController extends Controller
                 ],
                 [
                     'attribute' => 'name',
-                    'label' => Yii::t('app', 'Name'),
+                    'label' => 'name',
                 ],
                 [
                     'attribute' => 'min_cost_per_unit',
-                    'label' =>Yii::t('app', 'Min Cost Per Unit'),
+                    'label' => 'min_cost_per_unit',
                 ],
                 [
                     'attribute' => 'max_cost_per_unit',
-                    'label' => Yii::t('app', 'Max Cost Per Unit'),
+                    'label' => 'max_cost_per_unit',
                 ],
             ],
         ]);

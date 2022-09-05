@@ -181,7 +181,7 @@ else{
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
-                            'width' => '220px',
+                            // 'width' => '220px',
                         ],
                     ])->label(false); ?>
                 </td>
@@ -192,7 +192,7 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
                     <!-- <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?> -->
-                    <?= $form->field($modelFPP, "[$index]additional_details")->textarea(['class' => 'expand', 'title' => $modelFPP->additional_details, 'rows' => '1', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]additional_details")->textarea(['style' => 'width: 200px','class' => 'textarea-expand', 'title' => $modelFPP->additional_details, 'rows' => '1', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -209,7 +209,7 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();',])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['style' => 'width: 100px', 'class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();',])->label(false) ?>
                     <!-- 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')" -->
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
