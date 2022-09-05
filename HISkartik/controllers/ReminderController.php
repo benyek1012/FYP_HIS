@@ -274,11 +274,26 @@ class ReminderController extends Controller
                     },
                 ],
                //guarantor address?
+                /*[
+                    'attribute' => 'gurantor_address',
+                    'label' => 'Guarantor Address',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->gurantor_address;
+
+                    },
+                ],*/
+
                 [
                     'attribute' => 'entry_datetime',
                     'label' => 'Entry Datetime',
-                    'format' => 'datetime',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->entry_datetime;
+
+                    },
                 ],
+
                 [
                     'attribute' => 'reminder1',
                     'label' => 'Reminder 1',
@@ -291,6 +306,19 @@ class ReminderController extends Controller
                     'attribute' => 'reminder3',
                     'label' => 'Reminder 3',
                 ],
+
+                [
+                    'attribute' => 'final_ward_datetime',
+
+                    'label' => 'Discharge Date',
+
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->bills->final_ward_datetime;
+
+                    },
+                ],
+                
                 [
                     'attribute' => 'name',
 
@@ -302,6 +330,18 @@ class ReminderController extends Controller
 
                     },
                 ],
+                [
+                    'attribute' => 'batch_date',
+
+                    'label' => 'Batch Date',
+
+                    'value' => function($model, $index, $dataColumn) use ($batch_date) {
+
+                        return $batch_date;
+
+                    },
+                ],
+
                 [
                     'attribute' => 'batch_date',
 

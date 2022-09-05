@@ -121,7 +121,7 @@ class Reminder extends \yii\db\ActiveRecord
             $model->reminder2count = 0;
             $model->reminder3count = 0;
             $model->save();
-            echo 'test';
+            //echo 'test';
         }
     }
 
