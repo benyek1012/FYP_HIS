@@ -6,6 +6,7 @@ use yii\bootstrap4\Html;
 use kartik\datetime\DateTimePicker;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
+use app\models\Bill;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
@@ -112,7 +113,9 @@ use yii\helpers\Url;
     // <?php kartik\form\ActiveForm::end();
 
     $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
-    if(!empty($cancellation)){
+    $billModel = new Bill();
+    $checkDate = $billModel->isGenerated(Yii::$app->request->get('rn'));
+    if(!empty($cancellation) || $checkDate != false){
         $disabled = true;
         $linkDisabled = 'disabled-link';
     }
@@ -123,6 +126,7 @@ use yii\helpers\Url;
 
     $url = Url::toRoute(['/patient_admission/update', 'rn'=> Yii::$app->request->get('rn')]);
 
+   
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
