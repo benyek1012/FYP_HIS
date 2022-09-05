@@ -421,7 +421,7 @@ textarea {
     transition: all 0.5s ease;
 }
 
-textarea:focus {
+.textarea-expand:focus {
     height: 5em;
 }
 </style>
