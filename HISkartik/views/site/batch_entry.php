@@ -59,7 +59,7 @@ $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
     <a name="batch_entry">
             <div class="card">
                 <div class="card-header text-white bg-primary">
-                    <h3 class="card-title"><?php echo Yii::t('app','Bath Entry');?></h3>
+                    <h3 class="card-title"><?php echo Yii::t('app','Batch Entry');?></h3>
                     <div class="card-tools">
                         <!-- Collapse Button -->
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
