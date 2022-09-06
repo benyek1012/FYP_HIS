@@ -18,7 +18,7 @@ class Lookup_wardSearch extends Lookup_ward
     {
         return [
             [['ward_uid', 'ward_code', 'ward_name', 'sex'], 'safe'],
-            [['min_age', 'max_age', 'batch'], 'integer'],
+            [['min_age', 'max_age',], 'integer'],
         ];
     }
 
@@ -65,8 +65,8 @@ class Lookup_wardSearch extends Lookup_ward
         $query->andFilterWhere(['like', 'ward_uid', $this->ward_uid])
             ->andFilterWhere(['like', 'ward_code', $this->ward_code])
             ->andFilterWhere(['like', 'ward_name', $this->ward_name])
-            ->andFilterWhere(['like', 'sex', $this->sex])
-            ->andFilterWhere(['like', 'batch', $this->batch]);
+            ->andFilterWhere(['like', 'sex', $this->sex]);
+            
 
         return $dataProvider;
     }
