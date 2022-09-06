@@ -137,19 +137,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => '\kartik\grid\EditableColumn',
-                'attribute' => 'role_guest_print',
-                'headerOptions'=>['style'=>'max-width: 100px;'],
-                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                    'data' => [0,1],                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/new_user/user']],
-                ]
-            ],
-
-            [
-                'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'Case_Note',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
@@ -200,6 +187,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'visible' => false,
                 'hidden' => true,
+                'editableOptions' =>  [
+                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'data' => [0,1],                
+                    'asPopover' => false,
+                    'formOptions' => ['action' => ['/new_user/user']],
+                ]
+            ],
+            [
+                'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'retire',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
                     'inputType' => Editable::INPUT_DROPDOWN_LIST,
                     'data' => [0,1],                
