@@ -38,7 +38,7 @@ class Treatment_details extends \yii\db\ActiveRecord
             [['item_count'], 'integer'],
             [['treatment_details_uid', 'bill_uid'], 'string', 'max' => 64],
             [['treatment_code'], 'string', 'max' => 20],
-            [['treatment_name'], 'string', 'max' => 50],
+            [['treatment_name'], 'string', 'max' => 200],
             [['treatment_details_uid'], 'unique'],
             [['bill_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Bill::className(), 'targetAttribute' => ['bill_uid' => 'bill_uid']],
         ];
