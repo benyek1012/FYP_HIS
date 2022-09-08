@@ -84,6 +84,11 @@ class Receipt extends \yii\db\ActiveRecord
         return $this->hasOne(Patient_admission::className(), ['rn' => 'rn']);
     }
 
+    public function getPatient_admission() 
+    {
+        return $this->hasMany(Patient_admission::className(), ['rn' => 'rn']);
+    }
+
 
     // return true if Bill doesn't exist || If admission is cancelled || Bill final fee is negative
     public static function checkRefunfable()

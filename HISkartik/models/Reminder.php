@@ -130,6 +130,11 @@ class Reminder extends \yii\db\ActiveRecord
         return $this->hasOne(Bill::className(), ['rn' => 'rn', 'deleted' => 0]);
     }
 
+    public function getPatient_admission() 
+    {
+        return $this->hasMany(Patient_admission::className(), ['reminder1' => 'batch_date']);
+    }
+
 /*    public function getId() {
         return $this->username;
     }

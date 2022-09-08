@@ -435,7 +435,11 @@ class BillController extends Controller
                     $model->bill_generation_datetime =  $date->format('Y-m-d H:i:s');
 
                     if($modelWards->count() > 0)
-                        $model->final_ward_datetime =  $modelWards->max('ward_end_datetime');
+                    {
+                        $final_ward_datetime = Ward::find()->select('ward_end_datetime')->where(['bill_uid' => $bill_uid])
+                        ->orderBy('ward_end_datetime DESC')->limit(1)->one();
+                        $model->final_ward_datetime =  date($final_ward_datetime["ward_end_datetime"]);
+                    }
                     else
                         $model->final_ward_datetime =  $date->format('Y-m-d H:i:s');
                 }

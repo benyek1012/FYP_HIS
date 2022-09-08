@@ -65,6 +65,14 @@ class ReminderController extends Controller
             {
                 $this->exportCSV($_GET['batch_date']);
             }
+            if ($_GET['function'] == 'exportPdf')
+            {
+                $this->exportPDF($_GET['batch_date']);
+            }
+            if ($_GET['function'] == 'print')
+            {
+                $this->print($_GET['batch_date']);
+            }
                 
             //echo $userid;
             //echo $table;
@@ -207,9 +215,18 @@ class ReminderController extends Controller
        // $modeladmission = Patient_admission::find()->where(['rn'=> $modelbill->rn]);
         $batch_date = '9999-12-31';
         
+        $query = Patient_admission::find()
+        ->select('patient_admission.*')
+        ->from('patient_admission')
+        ->joinWith('patient_information',true)
+        ->joinWith('bill',true)
+        ->joinWith('receipt',true)
+        ->joinWith('reminder',true)
+        ->where(['in','batch_date',$batch_date]);
+        
         $exporter = new CsvGrid([
             'dataProvider' => new ActiveDataProvider([
-                'query' => Patient_admission::find()->where([]),
+                'query' => $query,
                 'pagination' => [
                     'pageSize' => 100, // export batch size
                 ],
@@ -222,137 +239,133 @@ class ReminderController extends Controller
                 [
                     'attribute' => 'nric',
                     'label' => 'IC',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->patientU->nric;
-
-                    },
+                    // 'value' => 'patientU.name'
                 ],
-                [
-                    'attribute' => 'race',
-                    'label' => 'Race',
-                    'value' => function($model, $index, $dataColumn) {
+            //     [
+            //         'attribute' => 'race',
+            //         'label' => 'Race',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->race;
+            //             return $model->patientU->race;
 
-                    },
-                ],
-                [
-                    'attribute' => 'address1',
-                    'label' => 'address1',
-                    'value' => function($model, $index, $dataColumn) {
+            //         },
+            //     ],
+            //     [
+            //         'attribute' => 'address1',
+            //         'label' => 'address1',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->address1;
+            //             return $model->patientU->address1;
 
-                    },
-                ],
-                [
-                    'attribute' => 'address2',
-                    'label' => 'address2',
-                    'value' => function($model, $index, $dataColumn) {
+            //         },
+            //     ],
+            //     [
+            //         'attribute' => 'address2',
+            //         'label' => 'address2',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->address2;
+            //             return $model->patientU->address2;
 
-                    },
-                ],
-                [
-                    'attribute' => 'address3',
-                    'label' => 'address3',
-                    'value' => function($model, $index, $dataColumn) {
+            //         },
+            //     ],
+            //     [
+            //         'attribute' => 'address3',
+            //         'label' => 'address3',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->address3;
+            //             return $model->patientU->address3;
 
-                    },
-                ],
-                [
-                    'attribute' => 'guarantor_nric',
-                    'label' => 'Guarantor Ic',
-                    'value' => function($model, $index, $dataColumn) {
+            //         },
+            //     ],
+            //     [
+            //         'attribute' => 'guarantor_nric',
+            //         'label' => 'Guarantor Ic',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->guarantor_nric;
+            //             return $model->guarantor_nric;
 
-                    },
-                ],
-               //guarantor address?
-                /*[
-                    'attribute' => 'gurantor_address',
-                    'label' => 'Guarantor Address',
-                    'value' => function($model, $index, $dataColumn) {
+            //         },
+            //     ],
+            //    //guarantor address?
+            //     /*[
+            //         'attribute' => 'gurantor_address',
+            //         'label' => 'Guarantor Address',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->gurantor_address;
+            //             return $model->gurantor_address;
 
-                    },
-                ],*/
+            //         },
+            //     ],*/
 
-                [
-                    'attribute' => 'entry_datetime',
-                    'label' => 'Entry Datetime',
-                    'value' => function($model, $index, $dataColumn) {
+            //     [
+            //         'attribute' => 'entry_datetime',
+            //         'label' => 'Entry Datetime',
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->entry_datetime;
+            //             return $model->entry_datetime;
 
-                    },
-                ],
+            //         },
+            //     ],
 
-                [
-                    'attribute' => 'reminder1',
-                    'label' => 'Reminder 1',
-                ],
-                [
-                    'attribute' => 'reminder2',
-                    'label' => 'Reminder 2',
-                ],
-                [
-                    'attribute' => 'reminder3',
-                    'label' => 'Reminder 3',
-                ],
+            //     [
+            //         'attribute' => 'reminder1',
+            //         'label' => 'Reminder 1',
+            //     ],
+            //     [
+            //         'attribute' => 'reminder2',
+            //         'label' => 'Reminder 2',
+            //     ],
+            //     [
+            //         'attribute' => 'reminder3',
+            //         'label' => 'Reminder 3',
+            //     ],
 
-                [
-                    'attribute' => 'final_ward_datetime',
+            //     [
+            //         'attribute' => 'final_ward_datetime',
 
-                    'label' => 'Discharge Date',
+            //         'label' => 'Discharge Date',
 
-                    'value' => function($model, $index, $dataColumn) {
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->bills->final_ward_datetime;
+            //             return $model->bills->final_ward_datetime;
 
-                    },
-                ],
+            //         },
+            //     ],
                 
-                [
-                    'attribute' => 'name',
+            //     [
+            //         'attribute' => 'name',
 
-                    'label' => 'patient Name',
+            //         'label' => 'patient Name',
 
-                    'value' => function($model, $index, $dataColumn) {
+            //         'value' => function($model, $index, $dataColumn) {
 
-                        return $model->patientU->name;
+            //             return $model->patientU->name;
 
-                    },
-                ],
-                [
-                    'attribute' => 'batch_date',
+            //         },
+            //     ],
+            //     [
+            //         'attribute' => 'batch_date',
 
-                    'label' => 'Batch Date',
+            //         'label' => 'Batch Date',
 
-                    'value' => function($model, $index, $dataColumn) use ($batch_date) {
+            //         'value' => function($model, $index, $dataColumn) use ($batch_date) {
 
-                        return $batch_date;
+            //             return $batch_date;
 
-                    },
-                ],
+            //         },
+            //     ],
 
-                [
-                    'attribute' => 'batch_date',
+            //     [
+            //         'attribute' => 'batch_date',
 
-                    'label' => 'Batch Date',
+            //         'label' => 'Batch Date',
 
-                    'value' => function($model, $index, $dataColumn) use ($batch_date) {
+            //         'value' => function($model, $index, $dataColumn) use ($batch_date) {
 
-                        return $batch_date;
+            //             return $batch_date;
 
-                    },
-                ],
+            //         },
+            //     ],
 
             ],
         ]);
@@ -362,6 +375,28 @@ class ReminderController extends Controller
         return $this->render('update', [
 			'model' => $model,
 		]);
+    }
+
+    public function print($batch_date)
+    {
+       
+        $query = Patient_admission::find()
+        ->select('patient_admission.*')
+        ->from('patient_admission')
+        ->joinWith('patient_information',true)
+        ->joinWith('bill',true)
+        ->joinWith('receipt',true)
+        ->joinWith('reminder',true)
+        ->where(['in','batch_date',$batch_date]);
+        
+        var_dump($query->all());
+        exit;
+    }
+
+    public function exportPDF($batch_date)
+    {
+        var_dump($batch_date);
+        exit;
     }
 
 }

@@ -104,6 +104,11 @@ class Bill extends \yii\db\ActiveRecord
         return $this->hasOne(Patient_admission::className(), ['rn' => 'rn']);
     }
 
+    public function getPatient_admission() 
+    {
+        return $this->hasMany(Patient_admission::className(), ['rn' => 'rn']);
+    }
+
     /**
      * Gets query for [[TreatmentDetails]].
      *

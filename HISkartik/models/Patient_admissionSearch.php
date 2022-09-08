@@ -58,7 +58,6 @@ class Patient_admissionSearch extends Patient_admission
         ->where(['in','entry_datetime',$datetime])
         // ->andWhere(['name' => $this->name])
         ->groupBy(['patient_uid']);
-        
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

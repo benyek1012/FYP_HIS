@@ -138,6 +138,21 @@ class Patient_admission extends \yii\db\ActiveRecord
         return $this->hasMany(Patient_information::className(), ['patient_uid' => 'patient_uid']);
     }
 
+    public function getBill() 
+    {
+        return $this->hasMany(Bill::className(), ['rn' => 'rn']);
+    }
+
+    public function getReceipt() 
+    {
+        return $this->hasMany(Receipt::className(), ['rn' => 'rn']);
+    }
+
+    public function getReminder() 
+    {
+        return $this->hasMany(Reminder::className(), ['batch_date' => 'reminder1']);
+    }
+
     // Check whether deposit is generated
     public function isdeposited($rn){
         $row_receipt = Receipt::findOne(['rn' => $rn, 'receipt_type' => "deposit"]);
