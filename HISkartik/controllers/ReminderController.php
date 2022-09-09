@@ -7,6 +7,8 @@ use app\models\Reminder;
 use app\models\New_user;
 use app\models\ReminderSearch;
 use app\models\Patient_admission;
+use Exception;
+use FPDF as GlobalFPDF;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -395,8 +397,17 @@ class ReminderController extends Controller
 
     public function exportPDF($batch_date)
     {
-        var_dump($batch_date);
-        exit;
-    }
+        $pdf = new GlobalFPDF();
+        $model = $this->findModel($batch_date);
+        $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
+        $filename = $batch_date. '.pdf'; 
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 15);
+        $pdf->Cell(40, 10, $content);
 
+        $pdf->Output('D', $filename);
+
+        // var_dump($batch_date);
+        // exit;
+    }
 }
