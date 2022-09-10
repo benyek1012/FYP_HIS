@@ -30,7 +30,7 @@
         "wbraganca/yii2-dynamicform": "*",
         "mike42/escpos-php": "^2.2",
         "kartik-v/yii2-widget-select2": "dev-master",
-        "yii2tech/csv-grid": "*"
+        "setasign/fpdf": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -44,6 +44,7 @@
         "codeception/module-yii2": "^1.0.0",
         "codeception/module-asserts": "^1.0.0"
     },
+    
     "config": {
         "process-timeout": 1800,
         "fxp-asset": {
