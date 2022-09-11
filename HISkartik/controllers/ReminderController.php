@@ -243,43 +243,34 @@ class ReminderController extends Controller
                     'label' => 'RN',
                 ],
                 [
-                    'attribute' => 'patientU.ic',
+                    'attribute' => 'patientU.nric',
                     'label' => 'IC',
                 ],
                 [
-                    'attribute' => 'race',
+                    'attribute' => 'patientU.race',
                     'label' => 'Race',
                 ],
-                [
-                    'attribute' => 'address1',
+               [
+                    'attribute' => 'patientU.address1',
                     'label' => 'address1',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->patientU->address1;
-
-                    },
+                    
                 ],
                 [
-                    'attribute' => 'address2',
+                    'attribute' => 'patientU.address2',
                     'label' => 'address2',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->patientU->address2;
-
-                    },
+                   
                 ],
                 [
-                    'attribute' => 'address3',
+                    'attribute' => 'patientU.address3',
                     'label' => 'address3',
-                    'value' => function($model, $index, $dataColumn) {
+                    
 
-                        return $model->patientU->address3;
-
-                    },
+                   
                 ],
                 [
                     'attribute' => 'guarantor_nric',
                     'label' => 'Guarantor Ic',
+                    'format' =>'text',
                     'value' => function($model, $index, $dataColumn) {
 
                         return $model->guarantor_nric;
@@ -310,38 +301,32 @@ class ReminderController extends Controller
                 [
                     'attribute' => 'reminder1',
                     'label' => 'Reminder 1',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->reminder1;
+                    }
                 ],
                 [
                     'attribute' => 'reminder2',
                     'label' => 'Reminder 2',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->reminder2;
+                    }
                 ],
                 [
                     'attribute' => 'reminder3',
                     'label' => 'Reminder 3',
+                    'value' => function($model, $index, $dataColumn) {
+
+                        return $model->reminder3;
+                    }
                 ],
-
                 [
-                    'attribute' => 'final_ward_datetime',
-
+                    'attribute' => 'bills.final_ward_datetime',
                     'label' => 'Discharge Date',
 
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->bills->final_ward_datetime;
-
-                    },
-                ],
-                
-                [
-                    'attribute' => 'name',
-
-                    'label' => 'patient Name',
-
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->patientU->name;
-
-                    },
+                    
                 ],
                 [
                     'attribute' => 'batch_date',
