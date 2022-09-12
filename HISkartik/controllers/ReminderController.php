@@ -371,38 +371,17 @@ class ReminderController extends Controller
 
     public function exportPDF($batch_date)
     {
-        // $pdf = new GlobalFPDF();
-        // $model = $this->findModel($batch_date);
-        // $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
-        // $filename = $batch_date. '.pdf'; 
-        // $pdf->AddPage();
-        // $pdf->SetFont('Arial', 'B', 15);
-        // $pdf->Cell(40, 10, $content);
+        $model = $this->findModel($batch_date);
+        $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
+        $filename = $batch_date. '.pdf'; 
 
-        // $pdf->Output('D', $filename);
-
-        $error = NULL;
-    
-        $searchModel = new ReminderSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-
-        $html =  $this->renderPartial('index', [
-            'error' => $error,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-
-       $dompdf = new Dompdf;
-       $dompdf->loadHtml($html);
-      // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
-    
-
-        // Render the HTML as PDF
-        $dompdf->render();
-        ob_end_clean();
-        // Output the generated PDF to Browser
-        $dompdf->stream();
-
+        $pdf = new Pdf();
+        $pdf->AliasNbPages();
+        // Add new pages
+        $pdf->AddPage();
+        // Set font-family and font-size.
+        $pdf->SetFont('Times','',12); 
+        $pdf->content();
+        $pdf->Output('D', $filename);
     }
 }
