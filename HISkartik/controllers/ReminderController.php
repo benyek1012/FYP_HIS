@@ -371,17 +371,30 @@ class ReminderController extends Controller
 
     public function exportPDF($batch_date)
     {
+        $query = Patient_admission::find()
+        ->select('patient_information.patient_uid')
+        ->from('patient_admission')
+        ->joinWith('patient_information',true)
+        ->joinWith('reminder',true)
+        ->where(['in','batch_date',$batch_date])
+        ->one();
+      
+        $AmountDue = (new Patient_information())-> getBalanceRM($query);
+
         $model = $this->findModel($batch_date);
         $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         $filename = $batch_date. '.pdf'; 
 
         $pdf = new Pdf();
         $pdf->AliasNbPages();
-        $pdf->setMargins(22, 30, 11.6);
+        $pdf->setMargins(22, 20, 11.6);
         // Add new pages
         $pdf->AddPage();
-        
-        $pdf->content();
+        $pdf->content1();
+        $pdf->AddPage();
+        $pdf->content2();
+        $pdf->AddPage();
+        $pdf->content3();
         $pdf->Output('D', $filename);
     }
 }
