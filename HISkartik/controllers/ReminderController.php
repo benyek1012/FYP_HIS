@@ -7,6 +7,9 @@ use app\models\Reminder;
 use app\models\New_user;
 use app\models\ReminderSearch;
 use app\models\Patient_admission;
+use app\models\Patient_information;
+use app\models\Pdf;
+use app\models\Pdf_html;
 use Exception;
 use FPDF as GlobalFPDF;
 use Dompdf\Dompdf;
@@ -402,38 +405,40 @@ class ReminderController extends Controller
 
     public function exportPDF($batch_date)
     {
-        // $pdf = new GlobalFPDF();
         // $model = $this->findModel($batch_date);
         // $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         // $filename = $batch_date. '.pdf'; 
-        // $pdf->AddPage();
-        // $pdf->SetFont('Arial', 'B', 15);
-        // $pdf->Cell(40, 10, $content);
 
+        // $pdf = new Pdf_html();
+        // $pdf->AliasNbPages();
+        // // Add new pages
+        // $pdf->AddPage();
+        // $pdf->content_first_page();
         // $pdf->Output('D', $filename);
 
-        $error = NULL;
-    
-        $searchModel = new ReminderSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        // $query = Patient_admission::find()
+        // ->select('patient_information.patient_uid')
+        // ->from('patient_admission')
+        // ->joinWith('patient_information',true)
+        // ->joinWith('reminder',true)
+        // ->where(['in','batch_date',$batch_date])
+        // ->one();
+      
+        // $AmountDue = (new Patient_information())-> getBalanceRM($query);
 
-        $html =  $this->renderPartial('index', [
-            'error' => $error,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-
-       $dompdf = new Dompdf;
-       $dompdf->loadHtml($html);
-      // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
-    
-
-        // Render the HTML as PDF
-        $dompdf->render();
-        ob_end_clean();
-        // Output the generated PDF to Browser
-        $dompdf->stream();
-
+        $model = $this->findModel($batch_date);
+        $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
+        $filename = $batch_date. '.pdf'; 
+        $pdf = new Pdf_html();
+        $pdf->AliasNbPages();
+        $pdf->setMargins(22, 20, 11.6);
+        // Add new pages
+        $pdf->AddPage();
+        $pdf->content1();
+        $pdf->AddPage();
+        $pdf->content2();
+        $pdf->AddPage();
+        $pdf->content3();
+        $pdf->Output('D', $filename);
     }
 }
