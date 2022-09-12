@@ -215,6 +215,8 @@ class ReminderController extends Controller
     //To be filtered rn that has value on reminder1,2,3; exist in batch_date
         $model = $this->findModel($batch_date);
 
+        
+
         $query = Patient_admission::find()
         ->select('patient_admission.*')
         ->from('patient_admission')
@@ -230,6 +232,15 @@ class ReminderController extends Controller
         // exit;
         // echo "</pre>";
         
+       
+        // if(!empty($isreminder1))
+        // {
+        //     $isreminder1->modify('+14 day');
+        // }
+        // else
+        // return '';
+
+
         $exporter = new CsvGrid([
             'dataProvider' => new ActiveDataProvider([
                 'query' => $query,
@@ -319,15 +330,30 @@ class ReminderController extends Controller
                     
                 ],
                 [
-                    'attribute' => 'batch_date',
+                    'attribute' => 'bills.final_ward_datetime',
+                    'label' => 'Reminder Date1',
+                    'value' => function($model, $index, $dataColumn) {
+                        if(!empty($model->reminder1))
+                        {
+                           
+                           return date_add($model->bills->final_ward_datetime,date_interval_create_from_date_string("14 days"));
+                        }
+                        else
+                        return $model->bills->final_ward_datetime;
+                    }
+                    
+                ],
+                [
+                    'attribute' => 'bills.final_ward_datetime',
+                    'label' => 'Reminder Date2',
 
-                    'label' => 'Batch Date',
+                    
+                ],
+                [
+                    'attribute' => 'bills.final_ward_datetime',
+                    'label' => 'Reminder Date3',
 
-                    'value' => function($model, $index, $dataColumn) use ($batch_date) {
-
-                        return $batch_date;
-
-                    },
+                    
                 ],
 
                 [
@@ -342,6 +368,7 @@ class ReminderController extends Controller
                     },
                 ],
 
+
             ],
         ]);
         return $exporter->export()->send('items.csv');
@@ -353,6 +380,7 @@ class ReminderController extends Controller
 
     public function print($batch_date)
     {
+        $model = $this->findModel($batch_date);
         $query = Patient_admission::find()
         ->select('patient_admission.*')
         ->from('patient_admission')
@@ -362,6 +390,9 @@ class ReminderController extends Controller
         ->joinWith('reminder',true)
         ->where(['batch_date'=>$batch_date])
         ->groupBy(['rn']);
+
+
+        
 
         echo "<pre>";
         var_dump($query->all());
