@@ -7,6 +7,9 @@ use app\models\Reminder;
 use app\models\New_user;
 use app\models\ReminderSearch;
 use app\models\Patient_admission;
+use app\models\Patient_information;
+use app\models\Pdf;
+use app\models\Pdf_html;
 use Exception;
 use FPDF as GlobalFPDF;
 use Dompdf\Dompdf;
@@ -371,21 +374,31 @@ class ReminderController extends Controller
 
     public function exportPDF($batch_date)
     {
-        $query = Patient_admission::find()
-        ->select('patient_information.patient_uid')
-        ->from('patient_admission')
-        ->joinWith('patient_information',true)
-        ->joinWith('reminder',true)
-        ->where(['in','batch_date',$batch_date])
-        ->one();
+        // $model = $this->findModel($batch_date);
+        // $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
+        // $filename = $batch_date. '.pdf'; 
+
+        // $pdf = new Pdf_html();
+        // $pdf->AliasNbPages();
+        // // Add new pages
+        // $pdf->AddPage();
+        // $pdf->content_first_page();
+        // $pdf->Output('D', $filename);
+
+        // $query = Patient_admission::find()
+        // ->select('patient_information.patient_uid')
+        // ->from('patient_admission')
+        // ->joinWith('patient_information',true)
+        // ->joinWith('reminder',true)
+        // ->where(['in','batch_date',$batch_date])
+        // ->one();
       
-        $AmountDue = (new Patient_information())-> getBalanceRM($query);
+        // $AmountDue = (new Patient_information())-> getBalanceRM($query);
 
         $model = $this->findModel($batch_date);
         $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         $filename = $batch_date. '.pdf'; 
-
-        $pdf = new Pdf();
+        $pdf = new Pdf_html();
         $pdf->AliasNbPages();
         $pdf->setMargins(22, 20, 11.6);
         // Add new pages
