@@ -111,7 +111,7 @@ class Patient_admission extends \yii\db\ActiveRecord
      */
     public function getBills()
     {
-        return $this->hasOne(Bill::className(), ['rn' => 'rn', 'deleted' => 0]);
+        return $this->hasOne(Bill::className(), ['rn' => 'rn']);
     }
 
     /**
@@ -140,7 +140,7 @@ class Patient_admission extends \yii\db\ActiveRecord
 
     public function getBill() 
     {
-        return $this->hasMany(Bill::className(), ['rn' => 'rn']);
+        return $this->hasMany(Bill::className(), ['rn' => 'rn'])->where(['deleted' => 0]);
     }
 
     public function getReceipt() 

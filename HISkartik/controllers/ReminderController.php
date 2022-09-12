@@ -214,7 +214,7 @@ class ReminderController extends Controller
     
     //To be filtered rn that has value on reminder1,2,3; exist in batch_date
         $model = $this->findModel($batch_date);
-            
+
         $query = Patient_admission::find()
         ->select('patient_admission.*')
         ->from('patient_admission')
@@ -253,29 +253,19 @@ class ReminderController extends Controller
                [
                     'attribute' => 'patientU.address1',
                     'label' => 'address1',
-                    
                 ],
                 [
                     'attribute' => 'patientU.address2',
                     'label' => 'address2',
-                   
                 ],
                 [
                     'attribute' => 'patientU.address3',
                     'label' => 'address3',
-                    
-
-                   
                 ],
                 [
                     'attribute' => 'guarantor_nric',
                     'label' => 'Guarantor Ic',
                     'format' =>'text',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->guarantor_nric;
-
-                    },
                 ],
                //guarantor address?
                 /*[
@@ -363,7 +353,6 @@ class ReminderController extends Controller
 
     public function print($batch_date)
     {
-       
         $query = Patient_admission::find()
         ->select('patient_admission.*')
         ->from('patient_admission')
