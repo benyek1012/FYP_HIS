@@ -377,10 +377,10 @@ class ReminderController extends Controller
 
         $pdf = new Pdf();
         $pdf->AliasNbPages();
+        $pdf->setMargins(22, 30, 11.6);
         // Add new pages
         $pdf->AddPage();
-        // Set font-family and font-size.
-        $pdf->SetFont('Times','',12); 
+        
         $pdf->content();
         $pdf->Output('D', $filename);
     }
