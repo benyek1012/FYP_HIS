@@ -51,6 +51,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['guarantor_nric'], 'integer'],
             [['guarantor_email'], 'email'],
             [['guarantor_email'], 'string', 'max' => 100],
+            [['guarantor_address'],'string', 'max' => 100],
             [['type'], 'string', 'max' => 20],
             [['rn'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
@@ -74,6 +75,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             'guarantor_nric' => Yii::t('app','Guarantor NRIC'),
             'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
             'guarantor_email' => Yii::t('app','Guarantor Email'),
+            'guarantor_address' => Yii::t('app','Guarantor Address'),
             'type' => Yii::t('app','Type'),
             'nric' => 'NRIC',
             'name' => Yii::t('app','Name'),
@@ -109,9 +111,9 @@ class Patient_admission extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBills()
+    public function getBill()
     {
-        return $this->hasOne(Bill::className(), ['rn' => 'rn']);
+        return $this->hasOne(Bill::className(), ['rn' => 'rn'])->where(['deleted' => 0]);
     }
 
     /**
@@ -138,7 +140,7 @@ class Patient_admission extends \yii\db\ActiveRecord
         return $this->hasMany(Patient_information::className(), ['patient_uid' => 'patient_uid']);
     }
 
-    public function getBill() 
+    public function getBills() 
     {
         return $this->hasMany(Bill::className(), ['rn' => 'rn'])->where(['deleted' => 0]);
     }
@@ -160,5 +162,8 @@ class Patient_admission extends \yii\db\ActiveRecord
             return !empty($row_receipt['receipt_serial_number']) ? $row_receipt['receipt_serial_number'] : false;
     }
 
-  
+    public function getFinalwardDate()
+    {
+        return $this->hasOne(Bill::className(), ['final_ward_datetime' => 'final_ward_datetime']);
+    }
 }

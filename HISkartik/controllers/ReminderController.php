@@ -333,16 +333,19 @@ class ReminderController extends Controller
                     
                 ],
                 [
-                    'attribute' => 'bills.final_ward_datetime',
+                    'attribute' => '',
                     'label' => 'Reminder Date1',
                     'value' => function($model, $index, $dataColumn) {
                         if(!empty($model->reminder1))
                         {
-                           
-                           return date_add($model->bills->final_ward_datetime,date_interval_create_from_date_string("14 days"));
+                            $remindate =  date_create_from_format('Y-m-d H:i:s',$model->bill->final_ward_datetime);
+
+                           return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
+                           //return 'xx'. $model->bill->final_ward_datetime. ' xx';
+                            //  return gettype($model->bill->final_ward_datetime);
                         }
                         else
-                        return $model->bills->final_ward_datetime;
+                        return NULL;
                     }
                     
                 ],
@@ -360,15 +363,11 @@ class ReminderController extends Controller
                 ],
 
                 [
-                    'attribute' => 'batch_date',
+                    'attribute' => 'bills.bill_generation_final_fee_rm',
 
-                    'label' => 'Batch Date',
+                    'label' => 'Amount Owe',
 
-                    'value' => function($model, $index, $dataColumn) use ($batch_date) {
-
-                        return $batch_date;
-
-                    },
+                  
                 ],
 
 

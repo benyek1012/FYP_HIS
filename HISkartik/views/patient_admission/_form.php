@@ -209,6 +209,9 @@ if($isdeposited){
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
         </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_address')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>  
+        </div>
 
         <?php }else{  ?>
         <div class="col-sm-6">
@@ -228,6 +231,9 @@ if($isdeposited){
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_address')->textInput(['maxlength' => true, 'disabled' => $disabled,]) ?>  
         </div>
         <?php } ?>
     </div>

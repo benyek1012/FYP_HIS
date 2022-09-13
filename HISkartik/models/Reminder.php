@@ -135,6 +135,11 @@ class Reminder extends \yii\db\ActiveRecord
         return $this->hasMany(Patient_admission::className(), ['reminder1' => 'batch_date']);
     }
 
+    public function getFinalwardDate()
+    {
+        return $this->hasOne(Bill::className(), ['final_ward_datetime' => 'final_ward_datetime']);
+    }
+
 /*    public function getId() {
         return $this->username;
     }
