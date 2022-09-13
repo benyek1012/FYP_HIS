@@ -383,7 +383,6 @@ class ReminderController extends Controller
 
     public function print($batch_date)
     {
-        $model = $this->findModel($batch_date);
         $query = Patient_admission::find()
         ->select('patient_admission.*')
         ->from('patient_admission')
@@ -393,9 +392,6 @@ class ReminderController extends Controller
         ->joinWith('reminder',true)
         ->where(['batch_date'=>$batch_date])
         ->groupBy(['rn']);
-
-
-        
 
         echo "<pre>";
         var_dump($query->all());
@@ -431,7 +427,7 @@ class ReminderController extends Controller
         $filename = $batch_date. '.pdf'; 
         $pdf = new Pdf_html();
         $pdf->AliasNbPages();
-        $pdf->setMargins(22, 20, 11.6);
+        $pdf->setMargins(22, 8, 11.6);
         // Add new pages
         $pdf->AddPage();
         $pdf->content1();

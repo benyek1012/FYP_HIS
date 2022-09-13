@@ -268,7 +268,7 @@ class Pdf_html extends FPDF
         $this->Cell(30, 15, '"BERKHIDMAT UNTUK NEGARA" ', 0, 2, 'L');
         $this->SetFont('Arial','',11);
         $this->Cell(30, 15, 'Saya yang menurut perintah, ', 0, 2, 'L');
-        $this->Cell(30, 8, '(                             ), ', 0, 2, 'L');
+        $this->Cell(30, 8, '(                             ) ', 0, 2, 'L');
         $this->Cell(30, 8, 'b.p Pengarah', 0, 2, 'L');
         $this->Cell(30, 8, 'Hospital.........', 0, 2, 'L');
   
@@ -313,14 +313,9 @@ class Pdf_html extends FPDF
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
-        // Move to the right
-        //$this->Cell(20); 
-        // Set font-family and font-size
-        $this->SetFont('Times','B',11);
-        // Set the title of pages.
-        $this->Cell(30, 15, 'Tuan / Puan', 0, 2, 'L');
-        $this->SetFont('Times','B',10);
-        $this->Cell(30, 8, 'BAYARAN TUNGGAKAN BIL RAWATAN', 0, 2, 'L');
+     
+        $this->content_bill();
+
 
         $this->SetFont('Arial','',11);
         $this->Cell(160, 15,  "Dengan hormatnya saya adalah diarah merujuk kepada perkara di atas.", 0,'L',0);
@@ -333,7 +328,7 @@ class Pdf_html extends FPDF
         $this->Cell(30, 15, '"BERKHIDMAT UNTUK NEGARA" ', 0, 2, 'L');
         $this->SetFont('Arial','',11);
         $this->Cell(30, 15, 'Saya yang menurut perintah, ', 0, 2, 'L');
-        $this->Cell(30, 8, '(                             ), ', 0, 2, 'L');
+        $this->Cell(30, 8, '(                             ) ', 0, 2, 'L');
         $this->Cell(30, 8, 'b.p Pengarah', 0, 2, 'L');
         $this->Cell(30, 8, 'Hospital.........', 0, 2, 'L');
     }
@@ -357,14 +352,9 @@ class Pdf_html extends FPDF
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
-         // Move to the right
-        //$this->Cell(20); 
-        // Set font-family and font-size
-        $this->SetFont('Times','B',11);
-          // Set the title of pages.
-        $this->Cell(30, 15, 'Tuan / Puan', 0, 2, 'L');
-        $this->SetFont('Times','B',10);
-        $this->Cell(30, 8, 'BAYARAN TUNGGAKAN BIL RAWATAN', 0, 2, 'L');
+     
+        $this->content_bill();
+
 
         $this->SetFont('Arial','',11);
         $this->Cell(160, 15,  "Dengan hormatnya saya adalah diarah merujuk kepada perkara di atas.", 0,'L',0);
@@ -375,10 +365,10 @@ class Pdf_html extends FPDF
         $this->MultiCell(160, 8,  "Sekian, harap maklum. Terima kasih.", 0,'J',0);
         $this->SetFont('Times','B',10);
         // Set the title of pages.
-        $this->Cell(30, 15, '"BERKHIDMAT UNTUK NEGARA" ', 0, 2, 'L');
+        $this->Cell(30, 10, '"BERKHIDMAT UNTUK NEGARA" ', 0, 2, 'L');
         $this->SetFont('Arial','',11);
         $this->Cell(30, 15, 'Saya yang menurut perintah, ', 0, 2, 'L');
-        $this->Cell(30, 8, '(                             ), ', 0, 2, 'L');
+        $this->Cell(30, 8, '(                             ) ', 0, 2, 'L');
         $this->Cell(30, 8, 'b.p Pengarah', 0, 2, 'L');
         $this->Cell(30, 8, 'Hospital.........', 0, 2, 'L');
    }
