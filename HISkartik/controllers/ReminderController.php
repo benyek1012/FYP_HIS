@@ -219,6 +219,80 @@ class ReminderController extends Controller
         $model = $this->findModel($batch_date);
 
         
+        // $query_reminder1 =  Patient_admission::find()  
+        // ->select('rn, reminder1, reminder2, reminder3')
+        // ->from("patient_admission")
+        // ->where(['<=', 'reminder1', $batch_date])
+        // ->orWhere(['<=', 'reminder2', $batch_date])
+        // ->orWhere(['<=', 'reminder3', $batch_date])
+        // ->groupBy(['rn'])
+        // ->all();
+
+        // $query_reminder2 =  Patient_admission::find()  
+        // ->select('rn, reminder1, reminder2, reminder3')
+        // ->from("patient_admission")
+        // ->where(['and', 'reminder1 = reminder2'])
+        // ->andWhere(['not', ['reminder2' => null]])
+        // ->andWhere(['<=', 'reminder1', $batch_date])
+        // ->andWhere(['<=', 'reminder2', $batch_date])
+        // ->orWhere(['<=', 'reminder3', $batch_date])
+        // ->groupBy(['rn'])   
+        // ->all();
+
+        // $query_reminder3 =  Patient_admission::find()  
+        // ->select('rn, reminder1, reminder2, reminder3')
+        // ->from("patient_admission")
+        // ->where(['and', 'reminder1 = reminder2', 'reminder2 = reminder3'])
+        // ->andWhere(['not', ['reminder2' => null]])
+        // ->andWhere(['<=', 'reminder1', $batch_date])
+        // ->andWhere(['<=', 'reminder2', $batch_date])
+        // ->andWhere(['<=', 'reminder3', $batch_date])
+        // ->groupBy(['rn'])   
+        // ->all();
+
+        $query =  Patient_admission::find()  
+        ->select('rn, reminder1, reminder2, reminder3')
+        ->from("patient_admission")
+        ->where(['<=', 'reminder1', $batch_date])
+        ->orWhere(['<=', 'reminder2', $batch_date])
+        ->orWhere(['<=', 'reminder3', $batch_date])
+        ->groupBy(['rn'])
+        ->all();
+        
+        foreach ($query as $q)
+        {
+            if($q->reminder2 == NULL && $q->reminder3 == NULL){
+                //reminder 1
+                echo "<pre>";
+                var_dump("reminder 1");
+                echo "</pre>";
+
+            }
+            else if($q->reminder2 != NULL && $q->reminder3 == NULL){
+                //reminder 1 and reminder 2
+                echo "<pre>";
+                var_dump("reminder 1 and reminder 2");
+                echo "</pre>";
+            }
+            else{
+                //reminder 1, reminder 2 and reminder 3
+                echo "<pre>";
+                var_dump("reminder 1, reminder 2 and reminder 3");
+                echo "</pre>";
+            }
+            // echo "<pre>";
+            // var_dump($q->rn);
+            // var_dump($q->reminder1);
+            // var_dump($q->reminder2);
+            // var_dump($q->reminder3);
+            // echo "</pre>";
+        }
+        exit;
+
+        // echo "<pre>";
+        // var_dump($query_reminder123->all());
+        // exit;
+        // echo "</pre>";
 
         $query = Patient_admission::find()
         ->select('patient_admission.*')
@@ -303,7 +377,6 @@ class ReminderController extends Controller
                 ],
 
                 [
-                    'attribute' => 'reminder1',
                     'label' => 'Reminder 1',
                     'value' => function($model, $index, $dataColumn) {
 
@@ -420,20 +493,59 @@ class ReminderController extends Controller
         // ->one();
       
         // $AmountDue = (new Patient_information())-> getBalanceRM($query);
-
         $model = $this->findModel($batch_date);
         $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         $filename = $batch_date. '.pdf'; 
         $pdf = new Pdf_html();
         $pdf->AliasNbPages();
         $pdf->setMargins(22, 8, 11.6);
-        // Add new pages
-        $pdf->AddPage();
-        $pdf->content1();
-        $pdf->AddPage();
-        $pdf->content2();
-        $pdf->AddPage();
-        $pdf->content3();
+
+        $query =  Patient_admission::find()  
+        ->select('rn, reminder1, reminder2, reminder3')
+        ->from("patient_admission")
+        ->where(['<=', 'reminder1', $batch_date])
+        ->orWhere(['<=', 'reminder2', $batch_date])
+        ->orWhere(['<=', 'reminder3', $batch_date])
+        ->groupBy(['rn'])
+        ->all();
+        
+        foreach ($query as $q)
+        {
+            if($q->reminder2 == NULL && $q->reminder3 == NULL){
+                //reminder 1
+                $pdf->AddPage();
+                $pdf->content1();
+               
+                
+            }
+            else if($q->reminder2 != NULL && $q->reminder3 == NULL){
+                //reminder 1 and reminder 2
+                $pdf->AddPage();
+                $pdf->content1();
+                $pdf->AddPage();
+                $pdf->content2();
+               
+            }
+            else{
+                //reminder 1, reminder 2 and reminder 3
+                $pdf->AddPage();
+                $pdf->content1();
+                $pdf->AddPage();
+                $pdf->content2();
+                $pdf->AddPage();
+                $pdf->content3();
+           
+            }
+            // echo "<pre>";
+            // var_dump($q->rn);
+            // var_dump($q->reminder1);
+            // var_dump($q->reminder2);
+            // var_dump($q->reminder3);
+            // echo "</pre>";
+        }
         $pdf->Output('D', $filename);
+
+       
+       
     }
 }
