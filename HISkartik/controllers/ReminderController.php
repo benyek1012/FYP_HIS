@@ -10,6 +10,7 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Pdf;
 use app\models\Pdf_html;
+use app\models\Reminder_pdf;
 use Exception;
 use FPDF as GlobalFPDF;
 use Dompdf\Dompdf;
@@ -19,6 +20,7 @@ use yii\filters\VerbFilter;
 use yii2tech\csvgrid\CsvGrid;
 use yii\data\ActiveDataProvider;
 use Yii;
+use yii\data\ArrayDataProvider;
 
 /**
  * ReminderController implements the CRUD actions for Reminder model.
@@ -196,7 +198,6 @@ class ReminderController extends Controller
     }
 
     public function exportCSV($batch_date) //Teo fill export CSV code here
-    
     {
         // to be filled in RN, 
 	// IC, 
@@ -217,95 +218,14 @@ class ReminderController extends Controller
     
     //To be filtered rn that has value on reminder1,2,3; exist in batch_date
         $model = $this->findModel($batch_date);
+        $query = $model->getReminderNumberRows($batch_date);
 
-        
-        // $query_reminder1 =  Patient_admission::find()  
-        // ->select('rn, reminder1, reminder2, reminder3')
-        // ->from("patient_admission")
-        // ->where(['<=', 'reminder1', $batch_date])
-        // ->orWhere(['<=', 'reminder2', $batch_date])
-        // ->orWhere(['<=', 'reminder3', $batch_date])
-        // ->groupBy(['rn'])
-        // ->all();
-
-        // $query_reminder2 =  Patient_admission::find()  
-        // ->select('rn, reminder1, reminder2, reminder3')
-        // ->from("patient_admission")
-        // ->where(['and', 'reminder1 = reminder2'])
-        // ->andWhere(['not', ['reminder2' => null]])
-        // ->andWhere(['<=', 'reminder1', $batch_date])
-        // ->andWhere(['<=', 'reminder2', $batch_date])
-        // ->orWhere(['<=', 'reminder3', $batch_date])
-        // ->groupBy(['rn'])   
-        // ->all();
-
-        // $query_reminder3 =  Patient_admission::find()  
-        // ->select('rn, reminder1, reminder2, reminder3')
-        // ->from("patient_admission")
-        // ->where(['and', 'reminder1 = reminder2', 'reminder2 = reminder3'])
-        // ->andWhere(['not', ['reminder2' => null]])
-        // ->andWhere(['<=', 'reminder1', $batch_date])
-        // ->andWhere(['<=', 'reminder2', $batch_date])
-        // ->andWhere(['<=', 'reminder3', $batch_date])
-        // ->groupBy(['rn'])   
-        // ->all();
-
-        $query =  Patient_admission::find()  
-        ->select('rn, reminder1, reminder2, reminder3')
-        ->from("patient_admission")
-        ->where(['<=', 'reminder1', $batch_date])
-        ->orWhere(['<=', 'reminder2', $batch_date])
-        ->orWhere(['<=', 'reminder3', $batch_date])
-        ->groupBy(['rn'])
-        ->all();
-        
-        foreach ($query as $q)
-        {
-            if($q->reminder2 == NULL && $q->reminder3 == NULL){
-                //reminder 1
-                echo "<pre>";
-                var_dump("reminder 1");
-                echo "</pre>";
-
-            }
-            else if($q->reminder2 != NULL && $q->reminder3 == NULL){
-                //reminder 1 and reminder 2
-                echo "<pre>";
-                var_dump("reminder 1 and reminder 2");
-                echo "</pre>";
-            }
-            else{
-                //reminder 1, reminder 2 and reminder 3
-                echo "<pre>";
-                var_dump("reminder 1, reminder 2 and reminder 3");
-                echo "</pre>";
-            }
-            // echo "<pre>";
-            // var_dump($q->rn);
-            // var_dump($q->reminder1);
-            // var_dump($q->reminder2);
-            // var_dump($q->reminder3);
-            // echo "</pre>";
-        }
-        exit;
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $query,
+        ]);
 
         // echo "<pre>";
-        // var_dump($query_reminder123->all());
-        // exit;
-        // echo "</pre>";
-
-        $query = Patient_admission::find()
-        ->select('patient_admission.*')
-        ->from('patient_admission')
-        ->joinWith('patient_information',true)
-        ->joinWith('bill',true)
-        ->joinWith('receipt',true)
-        ->joinWith('reminder',true)
-        ->where(['batch_date'=>$batch_date])
-        ->groupBy(['rn']);
-
-        // echo "<pre>";
-        // var_dump($query->all());
+        // var_dump($query);
         // exit;
         // echo "</pre>";
         
@@ -319,35 +239,30 @@ class ReminderController extends Controller
 
 
         $exporter = new CsvGrid([
-            'dataProvider' => new ActiveDataProvider([
-                'query' => $query,
-                'pagination' => [
-                    'pageSize' => 100, // export batch size
-                ],
-            ]),
+            'dataProvider' => $dataProvider,
             'columns' => [
                 [
                     'attribute' => 'rn',
                     'label' => 'RN',
                 ],
                 [
-                    'attribute' => 'patientU.nric',
+                    'attribute' => 'nric',
                     'label' => 'IC',
                 ],
                 [
-                    'attribute' => 'patientU.race',
+                    'attribute' => 'race',
                     'label' => 'Race',
                 ],
                [
-                    'attribute' => 'patientU.address1',
+                    'attribute' => 'address1',
                     'label' => 'address1',
                 ],
                 [
-                    'attribute' => 'patientU.address2',
+                    'attribute' => 'address2',
                     'label' => 'address2',
                 ],
                 [
-                    'attribute' => 'patientU.address3',
+                    'attribute' => 'address3',
                     'label' => 'address3',
                 ],
                 [
@@ -355,92 +270,59 @@ class ReminderController extends Controller
                     'label' => 'Guarantor Ic',
                     'format' =>'text',
                 ],
-               //guarantor address?
-                /*[
+                [
                     'attribute' => 'gurantor_address',
                     'label' => 'Guarantor Address',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->gurantor_address;
-
-                    },
-                ],*/
-
+                ],
                 [
                     'attribute' => 'entry_datetime',
                     'label' => 'Entry Datetime',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->entry_datetime;
-
-                    },
                 ],
-
                 [
-                    'label' => 'Reminder 1',
+                    'attribute' => 'Reminder Number',
                     'value' => function($model, $index, $dataColumn) {
-
-                        return $model->reminder1;
+                        if(!empty($model['Reminder Number']))
+                        {
+                            if($model['Reminder Number'] == 'reminder1') return '1';
+                            else if($model['Reminder Number'] == 'reminder2') return '2';
+                            else if($model['Reminder Number'] == 'reminder3') return '3';
+                        }
+                        else return NULL;
                     }
                 ],
                 [
-                    'attribute' => 'reminder2',
-                    'label' => 'Reminder 2',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->reminder2;
-                    }
+                    'attribute' => 'Batch date',
                 ],
                 [
-                    'attribute' => 'reminder3',
-                    'label' => 'Reminder 3',
-                    'value' => function($model, $index, $dataColumn) {
-
-                        return $model->reminder3;
-                    }
-                ],
-                [
-                    'attribute' => 'bills.final_ward_datetime',
-                    'label' => 'Discharge Date',
-
-                    
+                    'attribute' => 'Discharge Date',
                 ],
                 [
                     'attribute' => '',
-                    'label' => 'Reminder Date1',
+                    'label' => 'Reminder Date',
                     'value' => function($model, $index, $dataColumn) {
-                        if(!empty($model->reminder1))
+                        if(!empty($model['Discharge Date']))
                         {
-                            $remindate =  date_create_from_format('Y-m-d H:i:s',$model->bill->final_ward_datetime);
+                            $remindate =  date_create_from_format('Y-m-d H:i:s',$model['Discharge Date']);
 
                            return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
                            //return 'xx'. $model->bill->final_ward_datetime. ' xx';
                             //  return gettype($model->bill->final_ward_datetime);
                         }
-                        else
-                        return NULL;
+                        else return NULL;
                     }
-                    
                 ],
                 [
-                    'attribute' => 'bills.final_ward_datetime',
-                    'label' => 'Reminder Date2',
-
-                    
+                    'attribute' => 'Billable Fee',
                 ],
+              
                 [
-                    'attribute' => 'bills.final_ward_datetime',
-                    'label' => 'Reminder Date3',
+                   // 'attribute' => 'bills.bill_generation_final_fee_rm',
 
-                    
-                ],
+                    'label' => 'Amount Payable',
+                    'value' => function($model, $index, $dataColumn) {
+                      
+                    }
 
-                [
-                    'attribute' => 'bills.bill_generation_final_fee_rm',
-
-                    'label' => 'Amount Owe',
-
-                  
                 ],
 
 
@@ -496,7 +378,7 @@ class ReminderController extends Controller
         $model = $this->findModel($batch_date);
         $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         $filename = $batch_date. '.pdf'; 
-        $pdf = new Pdf_html();
+        $pdf = new Reminder_pdf();
         $pdf->AliasNbPages();
         $pdf->setMargins(22, 8, 11.6);
 
@@ -511,31 +393,24 @@ class ReminderController extends Controller
         
         foreach ($query as $q)
         {
-            if($q->reminder2 == NULL && $q->reminder3 == NULL){
-                //reminder 1
+            // reminder 1
+            if($q->reminder1 != NULL && $q->reminder1 <= $batch_date){
                 $pdf->AddPage();
-                $pdf->content1();
-               
-                
+                $pdf->content1($q->rn);
             }
-            else if($q->reminder2 != NULL && $q->reminder3 == NULL){
-                //reminder 1 and reminder 2
+          
+            // reminder 2
+            if($q->reminder2 != NULL && $q->reminder2 <= $batch_date){
                 $pdf->AddPage();
-                $pdf->content1();
-                $pdf->AddPage();
-                $pdf->content2();
-               
+                $pdf->content2($q->rn);
             }
-            else{
-                //reminder 1, reminder 2 and reminder 3
+
+            // reminder 3
+            if($q->reminder3 != NULL && $q->reminder3 <= $batch_date){
                 $pdf->AddPage();
-                $pdf->content1();
-                $pdf->AddPage();
-                $pdf->content2();
-                $pdf->AddPage();
-                $pdf->content3();
-           
+                $pdf->content3($q->rn);
             }
+            
             // echo "<pre>";
             // var_dump($q->rn);
             // var_dump($q->reminder1);

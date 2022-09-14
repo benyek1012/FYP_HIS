@@ -125,6 +125,18 @@ class Reminder extends \yii\db\ActiveRecord
         }
     }
 
+    
+    public static function getReminderNumberRows($batch_date)
+    {
+        $result = \Yii::$app->db->createCommand("CALL reminder_select_number(:date)") 
+        ->bindValue(':date' , $batch_date )
+        ->queryAll();
+        
+        if(!empty($result))
+            return $result;
+
+    }
+
     public function getBills()
     {
         return $this->hasOne(Bill::className(), ['rn' => 'rn', 'deleted' => 0]);
