@@ -12,6 +12,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use GpsLab\Component\Base64UID\Base64UID;
 use Yii;
+use yii\helpers\Json;
 
 /**
  * Treatment_detailsController implements the CRUD actions for Treatment_details model.
@@ -36,31 +37,56 @@ class Treatment_detailsController extends Controller
         );
     }
 
+    public function actionTreatment($bill_uid) {
+        $cost = array();
+        $cost['treatmentTotal'] = (new Bill()) -> getTotalTreatmentCost($bill_uid);
+        $cost['billAble'] = (new Bill()) -> calculateBillable($bill_uid);
+        $cost['finalFee'] = (new Bill()) -> calculateFinalFee($bill_uid);
+        echo Json::encode($cost);
+    }
+
     public function actionTreatmentrow()
     {
-        if (Yii::$app->request->post('addTreatmentRow') == 'true') {
+        // if (Yii::$app->request->post('addTreatmentRow') == 'true') {
             $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
 
-            if(empty($dbTreatment)) {
-                $count = count(Yii::$app->request->post('Treatment_details', []));
-                for($i = 0; $i < $count; $i++) {
+            // if(empty($dbTreatment)) {
+            //     $count = count(Yii::$app->request->post('Treatment_details', []));
+            //     for($i = 0; $i < $count; $i++) {
+            //         $modelTreatment[] = new Treatment_details();
+            //     }
+            //     $modelTreatment[] = new Treatment_details();
+            // }
+            // else {
+            //     $modelTreatment = $dbTreatment;
+            //     $count = count(Yii::$app->request->post('Treatment_details', [])) - count($dbTreatment);
+            //     for($i = 0; $i < $count; $i++) {
+            //         $modelTreatment[] = new Treatment_details();
+            //     }
+            //     $modelTreatment[] = new Treatment_details();
+            // }
+
+            if(empty(Yii::$app->request->get('update'))){
+                if(!empty(Yii::$app->request->get('countTreatment'))){
+                    $modelTreatment = $dbTreatment;
+                    $countTreatment = (int)Yii::$app->request->get('countTreatment');
+                    $count = $countTreatment - count($dbTreatment);
+
+                    for($i = 0; $i < $count; $i++){
+                        $modelTreatment[] = new Treatment_details();
+                    }
                     $modelTreatment[] = new Treatment_details();
                 }
-                $modelTreatment[] = new Treatment_details();
             }
-            else {
+            else{
                 $modelTreatment = $dbTreatment;
-                $count = count(Yii::$app->request->post('Treatment_details', [])) - count($dbTreatment);
-                for($i = 0; $i < $count; $i++) {
-                    $modelTreatment[] = new Treatment_details();
-                }
                 $modelTreatment[] = new Treatment_details();
             }
 
             return $this->renderPartial('/treatment_details/_form', [
                 'modelTreatment' => $modelTreatment,
             ]);
-        }
+        // }
     }
 
     /**
@@ -157,39 +183,72 @@ class Treatment_detailsController extends Controller
                                 if(!empty($modelTreatment[$i - 1]->treatment_code) && !empty($modelTreatment[$i - 1]->treatment_name) && !empty($modelTreatment[$i - 1]->item_per_unit_cost_rm) && !empty($modelTreatment[$i - 1]->item_count) && !empty($modelTreatment[$i - 1]->item_total_unit_cost_rm)){
                                     $modelTreatment[$i - 1]->save();
                                 }
-                            }
-                        }
-                        else if($countTreatment == $countdb){
-                            $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
-                            $modelBill = Bill::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
-                
-                            if( Model::loadMultiple($modelTreatmentUpdate, Yii::$app->request->post())) {
-                                $valid = Model::validateMultiple($modelTreatmentUpdate);
-                                
-                                if($valid) {                    
-                                    foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
-                                        $modelLookupTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatmentUpdate->treatment_code]);
+                                else{
+                                    $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                                    $modelBill = Bill::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+                        
+                                    if( Model::loadMultiple($modelTreatmentUpdate, Yii::$app->request->post())) {
+                                        $valid = Model::validateMultiple($modelTreatmentUpdate);
                                         
-                                        if($modelBill->class == '1a' || $modelBill->class == '1b' || $modelBill->class == '1c'){
-                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_1_cost_per_unit;
-                                        }
-                                        if($modelBill->class == '2'){
-                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_2_cost_per_unit;
-                                        }
-                                        if($modelBill->class == '3'){
-                                            $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_3_cost_per_unit;
-                                        }
-                            
-                                        $itemPerUnit = $modelTreatmentUpdate->item_per_unit_cost_rm;
-                                        $itemCount = $modelTreatmentUpdate->item_count;
-                            
-                                        $modelTreatmentUpdate->item_total_unit_cost_rm = $itemPerUnit * $itemCount;
+                                        if($valid) {                    
+                                            foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
+                                                $modelLookupTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatmentUpdate->treatment_code]);
+                                                
+                                                if($modelBill->class == '1a' || $modelBill->class == '1b' || $modelBill->class == '1c'){
+                                                    $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_1_cost_per_unit;
+                                                }
+                                                if($modelBill->class == '2'){
+                                                    $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_2_cost_per_unit;
+                                                }
+                                                if($modelBill->class == '3'){
+                                                    $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_3_cost_per_unit;
+                                                }
+                                    
+                                                $itemPerUnit = $modelTreatmentUpdate->item_per_unit_cost_rm;
+                                                $itemCount = $modelTreatmentUpdate->item_count;
+                                    
+                                                $modelTreatmentUpdate->item_total_unit_cost_rm = $itemPerUnit * $itemCount;
 
-                                        $modelTreatmentUpdate->save();
+                                                $modelTreatmentUpdate->save();
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
+
+
+                        // else if($countTreatment == $countdb){
+                            // $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                            // $modelBill = Bill::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+                
+                            // if( Model::loadMultiple($modelTreatmentUpdate, Yii::$app->request->post())) {
+                            //     $valid = Model::validateMultiple($modelTreatmentUpdate);
+                                
+                            //     if($valid) {                    
+                            //         foreach ($modelTreatmentUpdate as $modelTreatmentUpdate) {
+                            //             $modelLookupTreatment = Lookup_treatment::findOne( ['treatment_code' => $modelTreatmentUpdate->treatment_code]);
+                                        
+                            //             if($modelBill->class == '1a' || $modelBill->class == '1b' || $modelBill->class == '1c'){
+                            //                 $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_1_cost_per_unit;
+                            //             }
+                            //             if($modelBill->class == '2'){
+                            //                 $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_2_cost_per_unit;
+                            //             }
+                            //             if($modelBill->class == '3'){
+                            //                 $modelTreatmentUpdate->item_per_unit_cost_rm = $modelLookupTreatment->class_3_cost_per_unit;
+                            //             }
+                            
+                            //             $itemPerUnit = $modelTreatmentUpdate->item_per_unit_cost_rm;
+                            //             $itemCount = $modelTreatmentUpdate->item_count;
+                            
+                            //             $modelTreatmentUpdate->item_total_unit_cost_rm = $itemPerUnit * $itemCount;
+
+                            //             $modelTreatmentUpdate->save();
+                            //         }
+                            //     }
+                            // }
+                        // }
                     }
                 }
             } 

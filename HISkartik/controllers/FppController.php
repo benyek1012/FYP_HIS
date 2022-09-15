@@ -12,6 +12,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use GpsLab\Component\Base64UID\Base64UID;
+use yii\helpers\Json;
 
 /**
  * FppController implements the CRUD actions for Fpp model.
@@ -36,31 +37,56 @@ class FppController extends Controller
         );
     }
 
+    public function actionFpp($bill_uid) {
+        $cost = array();
+        $cost['fppTotal'] = (new Bill()) -> getTotalFPPCost($bill_uid);
+        $cost['billAble'] = (new Bill()) -> calculateBillable($bill_uid);
+        $cost['finalFee'] = (new Bill()) -> calculateFinalFee($bill_uid);
+        echo Json::encode($cost);
+    }
+
     public function actionFpprow()
     {
-        if (Yii::$app->request->post('addFppRow') == 'true') {
+        // if (Yii::$app->request->post('addFppRow') == 'true') {
             $dbFpp = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
 
-            if(empty($dbFpp)) {
-                $count = count(Yii::$app->request->post('Fpp', []));
-                for($i = 0; $i < $count; $i++) {
+            // if(empty($dbFpp)) {
+            //     $count = count(Yii::$app->request->post('Fpp', []));
+            //     for($i = 0; $i < $count; $i++) {
+            //         $modelFPP[] = new Fpp();
+            //     }
+            //     $modelFPP[] = new Fpp();
+            // }
+            // else {
+            //     $modelFPP = $dbFpp;
+            //     $count = count(Yii::$app->request->post('Fpp', [])) - count($dbFpp);
+            //     for($i = 0; $i < $count; $i++) {
+            //         $modelFPP[] = new Fpp();
+            //     }
+            //     $modelFPP[] = new Fpp();
+            // }
+
+            if(empty(Yii::$app->request->get('update'))){
+                if(!empty(Yii::$app->request->get('countFpp'))){
+                    $modelFPP = $dbFpp;
+                    $countFpp = (int)Yii::$app->request->get('countFpp');
+                    $count = $countFpp - count($dbFpp);
+
+                    for($i = 0; $i < $count; $i++){
+                        $modelFPP[] = new Fpp();
+                    }
                     $modelFPP[] = new Fpp();
                 }
-                $modelFPP[] = new Fpp();
             }
-            else {
+            else{
                 $modelFPP = $dbFpp;
-                $count = count(Yii::$app->request->post('Fpp', [])) - count($dbFpp);
-                for($i = 0; $i < $count; $i++) {
-                    $modelFPP[] = new Fpp();
-                }
                 $modelFPP[] = new Fpp();
             }
 
             return $this->renderPartial('/fpp/_form', [
                 'modelFPP' => $modelFPP,
             ]);
-        }
+        // }
     }
 
     /**
@@ -153,7 +179,7 @@ class FppController extends Controller
                     $valid = Model::validateMultiple($modelFPP);
                     
                     if($valid) {    
-                        if($countFpp > $countdb){                
+                        if($countFpp > $countdb){          
                             for($i = $countFpp; $i > $countdb; $i--) {
                                 $modelFPP[$i - 1]->fpp_uid = Base64UID::generate(32);
                                 $modelFPP[$i - 1]->bill_uid = Yii::$app->request->get('bill_uid');
@@ -161,35 +187,61 @@ class FppController extends Controller
                                 if(!empty($modelFPP[$i - 1]->kod) && !empty($modelFPP[$i - 1]->name) && !empty($modelFPP[$i - 1]->cost_per_unit) && !empty($modelFPP[$i - 1]->min_cost_per_unit) && !empty($modelFPP[$i - 1]->max_cost_per_unit) && !empty($modelFPP[$i - 1]->number_of_units) && !empty($modelFPP[$i - 1]->total_cost)){
                                     $modelFPP[$i - 1]->save();
                                 }
-                            }
-                        }
-                        else if($countFpp == $countdb){
-                            $modelFppUpdate = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                                else{
+                                    $modelFppUpdate = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
                 
-                            if( Model::loadMultiple($modelFppUpdate, Yii::$app->request->post())) {
-                                $valid = Model::validateMultiple($modelFppUpdate);
-                                
-                                if($valid) {                    
-                                    foreach ($modelFppUpdate as $modelFppUpdate) {
-                                        $modelLookUpFpp = Lookup_fpp::findOne( ['kod' => $modelFppUpdate->kod]);
+                                    if( Model::loadMultiple($modelFppUpdate, Yii::$app->request->post())) {
+                                        $valid = Model::validateMultiple($modelFppUpdate);
+                                        
+                                        if($valid) {                    
+                                            foreach ($modelFppUpdate as $modelFppUpdate) {
+                                                $modelLookUpFpp = Lookup_fpp::findOne( ['kod' => $modelFppUpdate->kod]);
 
-                                        $modelFppUpdate->name = $modelLookUpFpp->name;
-                                        $modelFppUpdate->min_cost_per_unit = $modelLookUpFpp->min_cost_per_unit;
-                                        $modelFppUpdate->max_cost_per_unit = $modelLookUpFpp->max_cost_per_unit;
-                            
-                                        $costPerUnit = $modelFppUpdate->cost_per_unit;
-                                        $numberOfUnit = $modelFppUpdate->number_of_units;
-                            
-                                        $modelFppUpdate->total_cost = $costPerUnit * $numberOfUnit;
+                                                $modelFppUpdate->name = $modelLookUpFpp->name;
+                                                $modelFppUpdate->min_cost_per_unit = $modelLookUpFpp->min_cost_per_unit;
+                                                $modelFppUpdate->max_cost_per_unit = $modelLookUpFpp->max_cost_per_unit;
+                                    
+                                                $costPerUnit = $modelFppUpdate->cost_per_unit;
+                                                $numberOfUnit = $modelFppUpdate->number_of_units;
+                                    
+                                                $modelFppUpdate->total_cost = $costPerUnit * $numberOfUnit;
 
-                                        $modelFppUpdate->save();
+                                                $modelFppUpdate->save();
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
+
+                        // else if(($countFpp - 1) == $countdb){
+                        //     $modelFppUpdate = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                
+                        //     if( Model::loadMultiple($modelFppUpdate, Yii::$app->request->post())) {
+                        //         $valid = Model::validateMultiple($modelFppUpdate);
+                                
+                        //         if($valid) {                    
+                        //             foreach ($modelFppUpdate as $modelFppUpdate) {
+                        //                 $modelLookUpFpp = Lookup_fpp::findOne( ['kod' => $modelFppUpdate->kod]);
+
+                        //                 $modelFppUpdate->name = $modelLookUpFpp->name;
+                        //                 $modelFppUpdate->min_cost_per_unit = $modelLookUpFpp->min_cost_per_unit;
+                        //                 $modelFppUpdate->max_cost_per_unit = $modelLookUpFpp->max_cost_per_unit;
+                            
+                        //                 $costPerUnit = $modelFppUpdate->cost_per_unit;
+                        //                 $numberOfUnit = $modelFppUpdate->number_of_units;
+                            
+                        //                 $modelFppUpdate->total_cost = $costPerUnit * $numberOfUnit;
+
+                        //                 $modelFppUpdate->save();
+                        //             }
+                        //         }
+                        //     }
+                        // }
                     }
                 }
             } 
+
             // return Yii::$app->getResponse()->redirect(array('/bill/generate', 
             //     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'treatment'));
         }
@@ -202,9 +254,9 @@ class FppController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($kod)
+    public function actionDelete($fpp_uid)
     {
-        $this->findModel($kod)->delete();
+        $this->findModel($fpp_uid)->delete();
         // $this->findModel($kod)->delete();
 
         // return $this->redirect(['index']);
@@ -217,9 +269,9 @@ class FppController extends Controller
      * @return Fpp the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($kod)
+    protected function findModel($fpp_uid)
     {
-        if (($model = Fpp::findOne(['kod' => $kod])) !== null) {
+        if (($model = Fpp::findOne(['fpp_uid' => $fpp_uid])) !== null) {
             return $model;
         }
 

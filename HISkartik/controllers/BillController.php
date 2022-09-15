@@ -95,7 +95,7 @@ class BillController extends Controller
     }
 
     public function actionFpp($fpp) {
-        $model = Lookup_fpp::findOne( ['kod' => $fpp]);
+        $model = Lookup_fpp::findOne(['kod' => $fpp]);
         echo Json::encode($model);
     }
 
@@ -396,12 +396,15 @@ class BillController extends Controller
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
         $model_cancellation = new Cancellation();
         $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
+        $modelFPP[] = new Fpp();
+        $modelTreatment[] = new Treatment_details();
+        $modelWard[] = new Ward();
 
         return $this->render('generate', [
             'model' => $model,
-            'modelWard' => (empty($modelWard)) ? [new Ward] : $modelWard,
-            'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
-            'modelFPP' =>(empty($modelFPP)) ? [new Fpp] : $modelFPP,
+            'modelWard' => $modelWard,
+            'modelTreatment' => $modelTreatment,
+            'modelFPP' => $modelFPP,
             'model_cancellation' => $model_cancellation,
         ]); 
     }
