@@ -147,7 +147,7 @@ else{
 ?>
 
 <a name="ward">
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin(['id' => 'pjax-ward-form']); ?>
     <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'ward-form',
         'options' => ['data-pjax' => true],
@@ -424,17 +424,19 @@ else{
                     });
                 });
 
-                $('.start_date', document).each(function(index, item, event) {
-                    $('#ward-'+index+'-ward_start_datetime').datetimepicker(
-                        { showOn: "focus"}
-                    )
-                });
+                // $('.start_date', document).each(function(index, item, event) {
+                //     $('#ward-'+index+'-ward_start_datetime').datetimepicker(
+                //         { showOn: "focus"}
+                //     )
+                // });
 
-                $('.end_date', document).each(function(index, item, event) {
-                    $('#ward-'+index+'-ward_end_datetime').datetimepicker(
-                        { showOn: "focus"}
-                    )
-                });
+                // $('.end_date', document).each(function(index, item, event) {
+                //     $('#ward-'+index+'-ward_end_datetime').datetimepicker(
+                //         { showOn: "focus"}
+                //     )
+                // });
+
+                $.pjax.reload({container: '#pjax-ward-form'});
 
                 document.getElementById(focusID).focus();
             }
