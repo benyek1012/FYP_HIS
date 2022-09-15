@@ -120,7 +120,7 @@ if(empty($checkFPP)){
 
 $url = Url::toRoute(['/bill/fpp']);
 $urlCost = Url::toRoute(['/bill/cost']);
-$urlSubmit = Url::toRoute(['/fpp/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'fpp']);
+$urlSubmit = Url::toRoute(['/fpp/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlFppRow = Url::toRoute(['/fpp/fpprow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlFpp = Url::toRoute(['/fpp/fpp']);
 
@@ -141,7 +141,7 @@ else{
         'id' => 'fpp-form',
         'options' => ['data-pjax' => true],
         'type' => 'vertical',
-        'action' =>  Url::toRoute(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'fpp']),
+        'action' =>  Url::toRoute(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]),
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],

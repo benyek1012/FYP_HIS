@@ -131,7 +131,7 @@ if(empty($checkFPP)){
 
 $url = Url::toRoute(['/bill/ward']);
 $urlDate = Url::toRoute(['/bill/date']);
-$urlSubmit = Url::toRoute(['/ward/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'ward']);
+$urlSubmit = Url::toRoute(['/ward/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWardRow = Url::toRoute(['/ward/wardrow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWard = Url::toRoute(['/ward/ward']);
 
@@ -152,7 +152,7 @@ else{
         'id' => 'ward-form',
         'options' => ['data-pjax' => true],
         'type' => 'vertical',
-        'action' =>  Url::toRoute(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'ward']),
+        'action' =>  Url::toRoute(['/bill/generate', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]),
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -210,7 +210,7 @@ else{
                                 'value' => $admission_model->initial_ward_code,
                             ],
                             'pluginOptions' => [
-                                'allowClear' => true,
+                                // 'allowClear' => true,
                                 'width' => '220px',
                             ],
                         ])->label(false); ?> -->
@@ -237,7 +237,7 @@ else{
                                 'onchange' => "wardCode('{$url}');",
                             ],
                             'pluginOptions' => [
-                                'allowClear' => true,
+                                // 'allowClear' => true,
                                 'width' => '220px',
                             ],
                         ])->label(false); ?> -->
@@ -421,6 +421,7 @@ else{
                     $('#ward-'+index+'-ward_code').select2({
                         placeholder: '<?php echo Yii::t('app', 'Select ward code'); ?>',
                         width: '220px',
+                        allowClear: false,
                     });
                 });
 
@@ -571,6 +572,7 @@ $(document).ready(function() {
         $('#ward-'+index+'-ward_code').select2({
             placeholder: 'Select ward code',
             width: '220px',
+            allowClear: false,
         });
     });
 });
