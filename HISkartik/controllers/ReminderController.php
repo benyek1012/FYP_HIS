@@ -10,6 +10,7 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Pdf;
 use app\models\Pdf_html;
+use app\models\Receipt;
 use app\models\Reminder_pdf;
 use Exception;
 use FPDF as GlobalFPDF;
@@ -220,6 +221,8 @@ class ReminderController extends Controller
         $model = $this->findModel($batch_date);
         $query = $model->getReminderNumberRows($batch_date);
 
+
+
         $dataProvider = new ArrayDataProvider([
             'allModels' => $query,
         ]);
@@ -228,6 +231,8 @@ class ReminderController extends Controller
         // var_dump($query);
         // exit;
         // echo "</pre>";
+
+        
         
        
         // if(!empty($isreminder1))
@@ -303,8 +308,12 @@ class ReminderController extends Controller
                         if(!empty($model['Discharge Date']))
                         {
                             $remindate =  date_create_from_format('Y-m-d H:i:s',$model['Discharge Date']);
-
-                           return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
+                            if($model['Reminder Number'] == 'reminder1')
+                                return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
+                            else if($model['Reminder Number'] == 'reminder2')
+                                return date_add($remindate,date_interval_create_from_date_string("28 days"))->format('Y-m-d');
+                            else if($model['Reminder Number'] == 'reminder3')
+                                return date_add($remindate,date_interval_create_from_date_string("42 days"))->format('Y-m-d');
                            //return 'xx'. $model->bill->final_ward_datetime. ' xx';
                             //  return gettype($model->bill->final_ward_datetime);
                         }
@@ -320,6 +329,14 @@ class ReminderController extends Controller
 
                     'label' => 'Amount Payable',
                     'value' => function($model, $index, $dataColumn) {
+                        
+                    
+                        // $modelreceipt = Receipt::findOne(['rn' => 'rn']);
+
+                        // if($modelreceipt->receipt_type <> 'refund' && $modelreceipt->receipt_content_datetime_paid < $remindate)
+                        // {
+                        //     $minus = $model['Billable Fee'] - $modelreceipt->receipt_content_sum;
+                        // }
                       
                     }
 
@@ -347,10 +364,53 @@ class ReminderController extends Controller
         ->where(['batch_date'=>$batch_date])
         ->groupBy(['rn']);
 
-        echo "<pre>";
-        var_dump($query->all());
-        exit;
-        echo "</pre>";
+
+        // $exporter = new CsvGrid([
+        //     'dataProvider' => new ActiveDataProvider([
+        //         'query' => $query,
+        //         'pagination' => [
+        //             'pageSize' => 100, // export batch size
+        //         ],
+        //     ]),
+        //     'columns' => [
+        //         [
+        //             'attribute' => 'rn',
+        //             'label' => 'RN',
+        //         ],
+        //         [
+        //             'attribute' => '',
+        //             'label' => '',
+        //         ],
+        //         [
+        //             'label' => 'Reminder 1',
+        //             'value' => function($model, $index, $dataColumn) {
+        //                 if(!empty($model->reminder1))
+        //                 return 'x';
+        //             }
+        //         ],
+        //         [
+        //             'label' => 'Reminder 2',
+        //             'value' => function($model, $index, $dataColumn) {
+        //                 if(!empty($model->reminder2))
+        //                 return 'x';
+                        
+        //             }
+        //         ],
+        //         [
+        //             'label' => 'Reminder 3',
+        //             'value' => function($model, $index, $dataColumn) {
+        //                 if(!empty($model->reminder3))
+        //                 return 'x';
+        //             }
+        //         ],
+        //     ],
+        // ]);
+        // return $exporter->export()->send('remindernumber.csv');
+
+                    echo "<pre>";
+                    var_dump($query->all());
+                    exit;
+                    echo "</pre>";
     }
 
     public function exportPDF($batch_date)
