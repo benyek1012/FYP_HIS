@@ -257,7 +257,7 @@ else{
                         <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true, 'value' => $admission_model->entry_datetime],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
-                        'type' => DateTimePicker::TYPE_INPUT,
+                        // 'type' => DateTimePicker::TYPE_INPUT,
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
@@ -270,7 +270,7 @@ else{
                         <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true,],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
-                        'type' => DateTimePicker::TYPE_INPUT,
+                        // 'type' => DateTimePicker::TYPE_INPUT,
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
@@ -284,7 +284,7 @@ else{
                 <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'end_date', 'disabled' => empty($isGenerated) ? false : true,], 
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
-                        'type' => DateTimePicker::TYPE_INPUT,
+                        // 'type' => DateTimePicker::TYPE_INPUT,
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
@@ -372,7 +372,7 @@ else{
         });
     }
 
-    function submitWardForm(count, url, urlWard, type){
+    function submitWardForm(url, urlWard, type){
         var form = $('#ward-form');
         var formData = form.serialize();
         var countWard = document.getElementById('countWard').value;
@@ -384,7 +384,6 @@ else{
 
             success: function (data) {
                 flag = 0;
-                counted = parseInt(count) + 1;
 
                 if(type == 'insert'){
                     $.get(urlWard, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
@@ -472,10 +471,10 @@ else{
                     if(document.getElementById('ward-'+(countWard - 1)+'-ward_code').value == '' || 
                         document.getElementById('ward-'+(countWard - 1)+'-ward_start_datetime').value == '' || 
                         document.getElementById('ward-'+(countWard - 1)+'-ward_end_datetime').value == ''){
-                        submitWardForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlWard}" ?>', '<?php echo "update" ?>');
+                        submitWardForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlWard}" ?>', '<?php echo "update" ?>');
                     }
                     else{
-                        submitWardForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlWard}" ?>', '<?php echo "insert" ?>');
+                        submitWardForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlWard}" ?>', '<?php echo "insert" ?>');
                     }
                 }
             }            

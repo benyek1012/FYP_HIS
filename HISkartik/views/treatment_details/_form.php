@@ -364,7 +364,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
         });
     }
 
-    function submitTreatmentForm(count, url, urlTreatment, type){
+    function submitTreatmentForm(url, urlTreatment, type){
         var form = $('#treatment-form');
         var formData = form.serialize();
         var countTreatment = document.getElementById('countTreatment').value;
@@ -376,7 +376,6 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
 
             success: function (data) {
                 flag = 0;
-                counted = parseInt(count) + 1;
 
                 if(type == 'insert'){
                     $.get(urlTreatment, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
@@ -451,10 +450,10 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
 
                     if(document.getElementById('treatment_details-'+(countTreatment - 1)+'-treatment_code').value == '' || 
                         document.getElementById('treatment_details-'+(countTreatment - 1)+'-item_count').value == ''){
-                        submitTreatmentForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlTreatment}" ?>', '<?php echo "update" ?>');
+                        submitTreatmentForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlTreatment}" ?>', '<?php echo "update" ?>');
                     }
                     else{
-                        submitTreatmentForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlTreatment}" ?>', '<?php echo "insert" ?>');
+                        submitTreatmentForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlTreatment}" ?>', '<?php echo "insert" ?>');
                     }
                 }
             }            

@@ -333,7 +333,7 @@ else{
         });
     }
 
-    function submitFPPForm(count, url, urlFpp, type){
+    function submitFPPForm(url, urlFpp, type){
         var form = $('#fpp-form');
         var formData = form.serialize();
         var countFPP = document.getElementById('countFPP').value;
@@ -345,7 +345,6 @@ else{
 
             success: function (data) {
                 flag = 0;
-                counted = parseInt(count) + 1;
 
                 if(type == 'insert'){
                     $.get(urlFpp, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
@@ -478,10 +477,10 @@ else{
                     if(document.getElementById('fpp-'+(countFPP - 1)+'-kod').value == '' || 
                         document.getElementById('fpp-'+(countFPP - 1)+'-cost_per_unit').value == ''  || 
                         document.getElementById('fpp-'+(countFPP - 1)+'-number_of_units').value == ''){
-                        submitFPPForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlFpp}" ?>', '<?php echo "update" ?>');
+                        submitFPPForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlFpp}" ?>', '<?php echo "update" ?>');
                     }
                     else{
-                        submitFPPForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlFpp}" ?>', '<?php echo "insert" ?>');
+                        submitFPPForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlFpp}" ?>', '<?php echo "insert" ?>');
                     }
                 }
             }            
