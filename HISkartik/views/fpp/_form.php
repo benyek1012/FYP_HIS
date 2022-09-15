@@ -1,4 +1,6 @@
 <?php
+
+use app\controllers\FppController;
 use yii\helpers\Html;
 use app\models\Patient_admission;
 use app\models\Cancellation;
@@ -82,6 +84,7 @@ $rows = (new \yii\db\Query())
 ->all();
 
 $fpp_kod = array();
+$fpp_kod[''] = '';
 foreach($rows as $row){
     $fpp_kod[$row['kod']] = $row['kod'] . ' - ' . $row['name'];
 } 
@@ -118,6 +121,8 @@ if(empty($checkFPP)){
 $url = Url::toRoute(['/bill/fpp']);
 $urlCost = Url::toRoute(['/bill/cost']);
 $urlSubmit = Url::toRoute(['/fpp/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'fpp']);
+$urlFppRow = Url::toRoute(['/fpp/fpprow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
+$urlFpp = Url::toRoute(['/fpp/fpp']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -146,6 +151,7 @@ else{
         <input type="hidden" id="countFPP" name="countFPP" value="<?php echo count($modelFPP); ?>">
         <input type="hidden" id="ward-bill-uid" name="ward-bill-uid" value="<?php echo Yii::$app->request->get('bill_uid') ?>">
         <input type="hidden" id="costURL" name="dateUcostURLRL" value="<?php echo $urlCost ?>">
+        <input type="hidden" id="FppRowURL" name="FppRowURL" value="<?php echo $urlFppRow ?>">
         <table id="fpp-table">
             <tr>
                 <td><?php echo Yii::t('app','Kod');?></td>
@@ -168,8 +174,16 @@ else{
             </tr>
             <?php foreach ($modelFPP as $index => $modelFPP) { ?>
             <tr>
-                <td>                    
-                    <?= $form->field($modelFPP, "[$index]kod")->widget(kartik\select2\Select2::classname(), [
+                <td>      
+                    <?= $form->field($modelFPP, "[$index]kod")->dropDownList(empty($isGenerated) ? $fpp_kod : $lockedFPPKod,[
+                        'class' => 'fppKod',
+                        'maxlength' => true, 
+                        'disabled' => empty($isGenerated) ? false : true, 
+                        'onchange' => "fppKod('{$url}'); calculateFPPTotalCost()",
+                        'placeholder' => Yii::t('app','Select FPP Kod'), 
+                    ])->label(false) ?>
+                    
+                    <!-- <?= $form->field($modelFPP, "[$index]kod")->widget(kartik\select2\Select2::classname(), [
                         'data' => empty($isGenerated) ? $fpp_kod : $lockedFPPKod,
                         // 'disabled' => $print_readonly == false? $disabled : $print_readonly,
                         'disabled' => empty($isGenerated) ? false : true,
@@ -177,17 +191,16 @@ else{
                             'placeholder' => Yii::t('app','Select FPP Kod'), 
                             'class' => 'fppKod',
                             'onchange' => "fppKod('{$url}'); calculateFPPTotalCost()",
-                            // 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')",
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
                             // 'width' => '220px',
                         ],
-                    ])->label(false); ?>
+                    ])->label(false); ?> -->
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP ,"[$index]name")->textInput(['maxlength' => true, 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP ,"[$index]name")->textInput(['tabindex' => '-1', 'maxlength' => true, 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
@@ -196,33 +209,32 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]min_cost_per_unit")->textInput(['class' => 'minCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]min_cost_per_unit")->textInput(['tabindex' => '-1', 'class' => 'minCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
                     <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}'); calculateFPPTotalCost()",])->label(false) ?>
-                    <!-- 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')" -->
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]max_cost_per_unit")->textInput(['class' => 'maxCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]max_cost_per_unit")->textInput(['tabindex' => '-1', 'class' => 'maxCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['style' => 'width: 100px', 'class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();',])->label(false) ?>
-                    <!-- 'onfocusout' => "submitFPPForm('{$index}', '{$urlSubmit}')" -->
+                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['style' => 'width: 100px', 'class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]total_cost")->textInput(['readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]total_cost")->textInput(['tabindex' => '-1', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
-                <td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td style="vertical-align: top;">
                     <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                     <?php }else{ 
                         if(!empty($modelFPP->kod)){
                         ?>
-                            <?= Html::a("x", ["/fpp/delete", "kod" => $modelFPP->kod,
-                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs", "id"=>"fppDelete"]) ?>
+                            <?= Html::a('x', ["/fpp/delete", "fpp_uid" => $modelFPP->fpp_uid,
+                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"fppDelete"]) ?>
                     <?php }
                     } ?>
                 </td>
@@ -230,19 +242,21 @@ else{
             <?php } ?>
         </table>
 
-        <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+        <!-- <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveFpp', 'name' => 'saveFpp', 'value' => 'true', 'onclick' => "checkMinMaxTotalCost('{$url}')", 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?= Html::submitButton('+', ['id' => 'addFppRow', 'name' => 'addFppRow', 'value' => 'true', 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?php }else{ ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveFpp', 'name' => 'saveFpp', 'value' => 'true', 'onclick' => "checkMinMaxTotalCost('{$url}')", 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?= Html::submitButton('+', ['id' => 'addFppRow', 'name' => 'addFppRow', 'value' => 'true', 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
-        <?php } ?>
+        <?php } ?> -->
     <?php kartik\form\ActiveForm::end(); ?>
     <?php Pjax::end(); ?>
 </a>
 
 <script>
+    var focusID = '';
+
     function calculateFPPTotalCost() {
         $('.fppKod', document).each(function(index, item) {
             var kod = this.value;
@@ -296,13 +310,17 @@ else{
             $(document).on('change', '#fpp-'+index+'-cost_per_unit', function() {
                 var costPerUnit = this.value;
                 var kod = document.getElementById('fpp-'+index+'-kod').value;
+                var cost = parseFloat(costPerUnit);
 
                 $.get(url, {fpp : kod}, function(data){
                     var data = $.parseJSON(data);
+                    var min = parseFloat(data.min_cost_per_unit);
+                    var max = parseFloat(data.max_cost_per_unit);
+
                     $('#fpp-'+index+'-min_cost_per_unit').attr('value', data.min_cost_per_unit);
                     $('#fpp-'+index+'-max_cost_per_unit').attr('value', data.max_cost_per_unit);
 
-                    if(costPerUnit <= data.min_cost_per_unit || costPerUnit > data.max_cost_per_unit){
+                    if(cost < min || cost > max){
                         $('#fpp-'+index+'-min_cost_per_unit').addClass('textColor');
                         $('#fpp-'+index+'-max_cost_per_unit').addClass('textColor');
                     }
@@ -315,53 +333,215 @@ else{
         });
     }
 
-    // function submitFPPForm(count, url){
-    //     var form = $('#fpp-form');
-    //     var formData = form.serialize();
-    //     var countFPP = document.getElementById('countFPP').value;
+    function submitFPPForm(count, url, urlFpp, type){
+        var form = $('#fpp-form');
+        var formData = form.serialize();
+        var countFPP = document.getElementById('countFPP').value;
 
-    //     $.ajax({
-    //         url: url,
-    //         type: form.attr("method"),
-    //         data: formData,
+        $.ajax({
+            url: url,
+            type: form.attr("method"),
+            data: formData,
 
-    //         success: function (data) {
-    //             flag = 0;
-    //             counted = parseInt(count) + 1;
+            success: function (data) {
+                flag = 0;
+                counted = parseInt(count) + 1;
 
-    //             if(document.getElementById('fpp-'+count+'-kod').value == '' || 
-    //                 document.getElementById('fpp-'+count+'-cost_per_unit').value == '' || 
-    //                 document.getElementById('fpp-'+count+'-number_of_units').value == ''){
-    //                 return false;
+                if(type == 'insert'){
+                    $.get(urlFpp, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('fppTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.fppTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
+                        document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
+                    });
+                    addFPPRow('');
+                }
+                
+                if(type == 'update'){
+                    $.get(urlFpp, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('fppTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.fppTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
+                        document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
+                    });
+                    addFPPRow('update');
+                }
+            },
+        });
+    }
+
+    function addFPPRow(type) {
+        var addRow = document.getElementById('FppRowURL').value;
+        var countFpp = $('.fppKod').length;
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange  = function() {
+            if(xhttp.readyState == 4 && xhttp.status == 200){
+                document.getElementById("fpp-div").innerHTML = this.responseText;
+
+                $('.fppKod', document).each(function(index, item, event) {
+                    $('#fpp-'+index+'-kod').select2({
+                        placeholder: 'Select FPP Kod',
+                        width: '220px',
+                    });
+                });
+
+                document.getElementById(focusID).focus();
+                
+                var billUid = $('#ward-bill-uid').val();
+                var url = document.getElementById("costURL").value;
+
+                $.get(url, {bill_uid : billUid}, function(data){
+                    var data = $.parseJSON(data);
+
+                    for(var i = 0; i < data.length; i++){
+                        var cost = parseFloat(data[i].cost_per_unit);
+                        var min = parseFloat(data[i].min_cost_per_unit);
+                        var max = parseFloat(data[i].max_cost_per_unit);
+
+                        if(cost < min || cost > max){
+                            $('#fpp-'+i+'-min_cost_per_unit').addClass('textColor');
+                            $('#fpp-'+i+'-max_cost_per_unit').addClass('textColor');
+                        }
+                        else{
+                            $('#fpp-'+i+'-min_cost_per_unit').removeClass('textColor');
+                            $('#fpp-'+i+'-max_cost_per_unit').removeClass('textColor');
+                        }
+                    }
+                });
+            }
+        }
+        if(type == 'update'){
+            xhttp.open("GET", addRow + "&countFpp=" + countFpp + "&update=true", true);
+        }
+        else{
+            xhttp.open("GET", addRow + "&countFpp=" + countFpp, true);
+        }
+        xhttp.send();
+    }
+
+    document.addEventListener("keypress", function(event) {
+        // if (event.keyCode == 115 && event.shiftKey) { 
+        //     var addRow = document.getElementById('FppRowURL').value;
+        //     var countFPP = document.getElementById('countFPP').value;
+
+        //     for(var i = 0; i < countFPP; i++){
+        //         var kod = document.querySelector('#fpp-'+i+'-kod');
+        //         var name = document.querySelector('#fpp-'+i+'-name');
+        //         var details = document.querySelector('#fpp-'+i+'-additional_details');
+        //         var minCost = document.querySelector('#fpp-'+i+'-min_cost_per_unit');
+        //         var cost = document.querySelector('#fpp-'+i+'-cost_per_unit');
+        //         var maxCost = document.querySelector('#fpp-'+i+'-max_cost_per_unit');
+        //         var numberOfUnits = document.querySelector('#fpp-'+i+'-number_of_units');
+        //         var totalCost = document.querySelector('#fpp-'+i+'-total_cost');
+
+        //         if(document.activeElement == kod || 
+        //             document.activeElement == name || 
+        //             document.activeElement == details || 
+        //             document.activeElement == minCost || 
+        //             document.activeElement == cost || 
+        //             document.activeElement == maxCost || 
+        //             document.activeElement == numberOfUnits || 
+        //             document.activeElement == totalCost){
+        //             addFPPRow('');
+        //         }
+        //     }
+        // }
+        if(event.keyCode == 13 && event.shiftKey){
+            return 0;
+        }
+        else if(event.keyCode == 13){
+            var countFPP = document.getElementById('countFPP').value;
+            focusID = document.activeElement.id;
+            
+            for(var i = 0; i < countFPP; i++){
+                var kod = document.querySelector('#fpp-'+i+'-kod');
+                var name = document.querySelector('#fpp-'+i+'-name');
+                var details = document.querySelector('#fpp-'+i+'-additional_details');
+                var minCost = document.querySelector('#fpp-'+i+'-min_cost_per_unit');
+                var cost = document.querySelector('#fpp-'+i+'-cost_per_unit');
+                var maxCost = document.querySelector('#fpp-'+i+'-max_cost_per_unit');
+                var numberOfUnits = document.querySelector('#fpp-'+i+'-number_of_units');
+                var totalCost = document.querySelector('#fpp-'+i+'-total_cost');
+
+                if(document.activeElement == kod || 
+                    document.activeElement == name || 
+                    document.activeElement == details || 
+                    document.activeElement == minCost || 
+                    document.activeElement == cost || 
+                    document.activeElement == maxCost || 
+                    document.activeElement == numberOfUnits || 
+                    document.activeElement == totalCost){
+
+                    calculateFPPTotalCost();
+
+                    if(document.getElementById('fpp-'+(countFPP - 1)+'-kod').value == '' || 
+                        document.getElementById('fpp-'+(countFPP - 1)+'-cost_per_unit').value == ''  || 
+                        document.getElementById('fpp-'+(countFPP - 1)+'-number_of_units').value == ''){
+                        submitFPPForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlFpp}" ?>', '<?php echo "update" ?>');
+                    }
+                    else{
+                        submitFPPForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlFpp}" ?>', '<?php echo "insert" ?>');
+                    }
+                }
+            }            
+        }
+    });
+
+    // document.addEventListener("keyup", function(event) {
+    //     if(event.keyCode == 9){
+    //         var countFPP = document.getElementById('countFPP').value;
+
+    //         for(var i = 0; i <= (countFPP - 2); i++){
+    //             var kod = document.querySelector('#fpp-'+i+'-kod');
+    //             var name = document.querySelector('#fpp-'+i+'-name');
+    //             var details = document.querySelector('#fpp-'+i+'-additional_details');
+    //             var minCost = document.querySelector('#fpp-'+i+'-min_cost_per_unit');
+    //             var cost = document.querySelector('#fpp-'+i+'-cost_per_unit');
+    //             var maxCost = document.querySelector('#fpp-'+i+'-max_cost_per_unit');
+    //             var numberOfUnits = document.querySelector('#fpp-'+i+'-number_of_units');
+    //             var totalCost = document.querySelector('#fpp-'+i+'-total_cost');
+
+    //             if(document.activeElement == kod || 
+    //                 document.activeElement == name || 
+    //                 document.activeElement == details || 
+    //                 document.activeElement == minCost || 
+    //                 document.activeElement == cost || 
+    //                 document.activeElement == maxCost || 
+    //                 document.activeElement == numberOfUnits || 
+    //                 document.activeElement == totalCost){
+
+    //                 $('#fpp-'+(countFPP - 1)+'-kod').focus();
     //             }
+    //         }
+    //     }
+    //     else if(event.keyCode == 115 && event.shiftKey){
+    //         var addRow = document.getElementById('FppRowURL').value;
+    //         var countFPP = document.getElementById('countFPP').value;
 
-    //             // update
-    //             if($('.fppKod').length == countFPP|| $('.costPerUnit').length == countFPP || $('.numberOfUnits').length == countFPP){
-    //                 for(var i = 0; i < countFPP; i++){
-    //                     if(document.getElementById('fpp-'+i+'-kod').value == '' || 
-    //                         document.getElementById('fpp-'+i+'-cost_per_unit').value == '' || 
-    //                         document.getElementById('fpp-'+i+'-number_of_units').value == ''){
-    //                         continue;
-    //                     }
-    //                     else{
-    //                         flag++;
-    //                     }
-    //                 }
+    //         for(var i = 0; i < countFPP; i++){
+    //             var kod = document.querySelector('#fpp-'+i+'-kod');
+    //             var name = document.querySelector('#fpp-'+i+'-name');
+    //             var details = document.querySelector('#fpp-'+i+'-additional_details');
+    //             var minCost = document.querySelector('#fpp-'+i+'-min_cost_per_unit');
+    //             var cost = document.querySelector('#fpp-'+i+'-cost_per_unit');
+    //             var maxCost = document.querySelector('#fpp-'+i+'-max_cost_per_unit');
+    //             var numberOfUnits = document.querySelector('#fpp-'+i+'-number_of_units');
+    //             var totalCost = document.querySelector('#fpp-'+i+'-total_cost');
 
-    //                 if(flag == countFPP){
-    //                     location.reload();
-    //                 }
-    //                 else{
-    //                     return false;
-    //                 }
+    //             if(document.activeElement == kod || 
+    //                 document.activeElement == name || 
+    //                 document.activeElement == details || 
+    //                 document.activeElement == minCost || 
+    //                 document.activeElement == cost || 
+    //                 document.activeElement == maxCost || 
+    //                 document.activeElement == numberOfUnits || 
+    //                 document.activeElement == totalCost){
+    //                 addFPPRow('');
     //             }
-    //             // insert
-    //             else if(counted == countFPP){
-    //                 location.reload();  
-    //             }
-    //         },
-    //     });
-    // }
+    //         }
+    //     }
+    // });    
 </script>
 
 <?php 
@@ -405,7 +585,11 @@ $.get(url, {bill_uid : billUid}, function(data){
     var data = $.parseJSON(data);
 
     for(var i = 0; i < data.length; i++){
-        if(data[i].cost_per_unit <= data[i].min_cost_per_unit || data[i].cost_per_unit > data[i].max_cost_per_unit){
+        var cost = parseFloat(data[i].cost_per_unit);
+        var min = parseFloat(data[i].min_cost_per_unit);
+        var max = parseFloat(data[i].max_cost_per_unit);
+
+        if(cost < min || cost > max){
             $('#fpp-'+i+'-min_cost_per_unit').addClass('textColor');
             $('#fpp-'+i+'-max_cost_per_unit').addClass('textColor');
         }
@@ -414,6 +598,15 @@ $.get(url, {bill_uid : billUid}, function(data){
             $('#fpp-'+i+'-max_cost_per_unit').removeClass('textColor');
         }
     }
+});
+
+$(document).ready(function() {
+    $('.fppKod', document).each(function(index, item) {
+        $('#fpp-'+index+'-kod').select2({
+            placeholder: 'Select FPP Kod',
+            width: '220px',
+        });
+    });
 });
 JS;
 $this->registerJS($script);

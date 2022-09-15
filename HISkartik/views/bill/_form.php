@@ -424,6 +424,13 @@ textarea {
 .textarea-expand:focus {
     height: 5em;
 }
+
+.btn:focus {
+    outline-color: transparent;
+    outline-style:solid;
+    box-shadow: 0 0 0 4px #5a01a7;
+    transition: 0.2s;
+  }
 </style>
 
 <div class="bill-form">
@@ -471,7 +478,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'status_description')->textInput(['maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
+                        <?= $form->field($model, 'status_description')->textInput(['tabindex' => '-1', 'maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -504,7 +511,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['maxlength' => true, 'id'=>'ward_cost',  
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['tabindex' => '-1', 'maxlength' => true, 'id'=>'ward_cost',  
                                 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
                     </div>
 
@@ -523,7 +530,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'department_name')->textInput(['maxlength' => true, 'id'=>'departmentName', 
+                        <?= $form->field($model, 'department_name')->textInput(['tabindex' => '-1', 'maxlength' => true, 'id'=>'departmentName', 
                              'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
 
@@ -580,7 +587,7 @@ textarea {
                 <div class="d-flex justify-content-end">
                     <?php
                     if(!empty($model))
-                        echo "<div>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                        echo "<div id='wardTotal'>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                     ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -606,7 +613,7 @@ textarea {
                 <div class="d-flex justify-content-end">
                     <?php
                     if(!empty($model))
-                        echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                        echo "<div id='treatmentTotal'>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                     ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -632,7 +639,7 @@ textarea {
                 <div class="d-flex justify-content-end">
                     <?php
                     if(!empty($model))
-                        echo "<div>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalFPPCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
+                        echo "<div id='fppTotal'>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalFPPCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                     ?>
                     <div class="card-tools">
                         <!-- Collapse Button -->
@@ -685,7 +692,8 @@ textarea {
                             'disabled' => $print_readonly,
                             'maxlength' => true, 
                             'class' => 'billalbe', 
-                            'value' => (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid'))
+                            'value' => (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')),
+                            'tabindex' => '-1'
                         ]) ?>
                     </div>
 
@@ -699,7 +707,8 @@ textarea {
                                     'disabled' => $print_readonly,
                                     'maxlength' => true, 
                                     'class' => 'finalFee', 
-                                    'value' =>  $finalFee
+                                    'value' =>  $finalFee,
+                                    'tabindex' => '-1'
                                 ]); 
                         }
                         else
@@ -710,7 +719,8 @@ textarea {
                                 'disabled' => $print_readonly,
                                 'maxlength' => true, 
                                 'class' => 'finalFee', 
-                                'value' =>  (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid'))
+                                'value' =>  (new Bill()) -> calculateFinalFee(Yii::$app->request->get('bill_uid')),
+                                'tabindex' => '-1'
                             ]);
                         }
                     ?>

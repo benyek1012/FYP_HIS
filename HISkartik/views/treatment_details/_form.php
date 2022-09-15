@@ -7,6 +7,7 @@ use app\models\Ward;
 use app\models\Fpp;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use app\models\Treatment_details;
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $modelWardDate = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
@@ -84,6 +85,7 @@ $rows = (new \yii\db\Query())
 
 $treatment_code = array();
 $unit_cost = "";
+$treatment_code[''] = '';
 foreach($rows as $row){
     $treatment_code[$row['treatment_code']] = $row['treatment_code'] . ' - ' . $row['treatment_name'];
     if($unit_class == "1"){
@@ -127,8 +129,9 @@ if(empty($checkFPP)){
 }
 
 $url = Url::toRoute(['/bill/treatment']);
-$urlTreatment = Url::toRoute(['/bill/treatment']);
+$urlTreatment = Url::toRoute(['/treatment_details/treatment']);
 $urlSubmit = Url::toRoute(['/treatment_details/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn'), '#' => 'treatment']);
+$urlTreatmentRow = Url::toRoute(['/treatment_details/treatmentrow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -139,7 +142,11 @@ else{
     $disabled = false;
     $linkDisabled = '';
 }
+
+$dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+
 ?>
+
 
 <a name="treatment">
     <?php Pjax::begin(); ?>
@@ -161,6 +168,7 @@ else{
         <!-- <?= Html::submitButton('-', ['id' => 'removeTreatmentRow', 'name' => 'removeTreatmentRow', 'value' => 'true', 'class' => 'btn btn-danger btn-sm']) ?> -->
         <?php } ?>
         <input type="hidden" id="countTreatment" name="countTreatment" value="<?php echo count($modelTreatment); ?>">
+        <input type="hidden" id="TreatmentRowURL" name="TreatmentRowURL" value="<?php echo $urlTreatmentRow ?>">
         <table id="treatment-table">
             <tr>
                 <td><?php echo Yii::t('app','Treatment Code');?></td>
@@ -175,29 +183,36 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td> </td>
             </tr>
-            <?php foreach ($modelTreatment as $index => $modelTreatment) { ?>
+            <?php foreach ($modelTreatment as $index => $model) { ?>
             <tr>
                 <td>
-                    <!-- <?= $form->field($modelTreatment, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
+                    <!-- <?= $form->field($model, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
                         'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?> -->
                     
-                    <?= $form->field($modelTreatment, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
+                    <!-- <?= $form->field($model, "[$index]treatment_code")->widget(kartik\select2\Select2::classname(), [
                         'data' => empty($isGenerated) ? $treatment_code : $lockedTreatmentCode,
                         'disabled' => empty($isGenerated) ? false : true,
                         'options' => [
                             'placeholder' => Yii::t('app','Select treatment code'), 
                             'class' => 'treatmentCode',
                             'onchange' => "treatmentCode('{$url}');",
-                            // 'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')",
                         ],
                         'pluginOptions' => [
                             'allowClear' => true,
                             'width' => '220px',
                         ],
-                    ])->label(false); ?>
+                    ])->label(false); ?> -->
+                    
+                    <?= $form->field($model, "[$index]treatment_code")->dropDownList(empty($isGenerated) ? $treatment_code : $lockedTreatmentCode,[
+                        'class' => 'treatmentCode',
+                        'maxlength' => true, 
+                        'disabled' => empty($isGenerated) ? false : true, 
+                        'onchange' => "treatmentCode('{$url}');",
+                        'placeholder' => Yii::t('app','Select treatment code'), 
+                    ])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelTreatment ,"[$index]treatment_name")->textInput(['maxlength' => true, 'class' => 'treatmentName',
+                <td><?= $form->field($model ,"[$index]treatment_name")->textInput(['tabindex' => '-1', 'maxlength' => true, 'class' => 'treatmentName',
                         'readonly' => true, 'disabled' => empty($isGenerated) ? false : true, 'style' => 'width: 280px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -207,38 +222,38 @@ else{
                         <?php 
                             if(empty( Yii::$app->request->get('bill_uid'))){ 
                                 if($initial_ward_class == "1a"){?>
-                                    <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1',  'disabled' => true,
                                         'class' => '1_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
                 
                                 else if($initial_ward_class == "1b"){?>
-                                    <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
                                         'class' => '1_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
 
                                 else if($initial_ward_class == "1c"){?>
-                                    <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
                                          'class' => '1_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
 
                                 else if($initial_ward_class == "2"){?>
-                                    <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
                                         'class' => '2_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
 
                                 else if($initial_ward_class == "3"){?>
-                                    <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput([ 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
                                         'class' => '3_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
                             }
                             else{ ?>
-                                <?= $form->field($modelTreatment, "[$index]item_per_unit_cost_rm")->textInput(
-                                    [ 'readonly' => true, 'disabled' => empty($isGenerated) || empty($isPrinted) ? false : true,])->label(false) ?>
+                                <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(
+                                    ['tabindex' => '-1', 'readonly' => true, 'disabled' => empty($isGenerated) || empty($isPrinted) ? false : true,])->label(false) ?>
                                 <?php    
                             }
                         ?>
@@ -246,22 +261,22 @@ else{
                 </div>
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelTreatment, "[$index]item_count")->textInput(['class' => 'item_num',
-                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();',])->label(false) ?>
-                        <!-- 'onfocusout' => "submitTreatmentForm('{$index}', '{$urlSubmit}')" -->
+                <td>
+                    <?= $form->field($model, "[$index]item_count")->textInput(['class' => 'item_num',
+                        'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelTreatment, "[$index]item_total_unit_cost_rm")->textInput([ 'readonly' => true,
+                <td><?= $form->field($model, "[$index]item_total_unit_cost_rm")->textInput(['tabindex' => '-1', 'readonly' => true,
                         'disabled' => empty($isGenerated) ? false : true, 'class' => 'item_total_cost'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>
+                <td style="vertical-align: top;">
                     <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                     <?php }else{ 
-                        if(!empty($modelTreatment->treatment_details_uid)){
+                        if(!empty($model->treatment_details_uid)){
                         ?>
-                            <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $modelTreatment->treatment_details_uid,
-                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-xs", "id"=>"treatmentDelete"]) ?>
+                            <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $model->treatment_details_uid,
+                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"treatmentDelete"]) ?>
                     <?php }
                     } ?>
                 </td>
@@ -269,19 +284,21 @@ else{
             <?php } ?>
         </table>
 
-        <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+        <!-- <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
         <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');", 'disabled' => $disabled]) ?>
         <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?php }else{ ?>
         <?= Html::submitButton(Yii::t('app','Update'), ['id' => 'saveTreatment', 'name' => 'saveTreatment', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "calculateItemCost('{$url}');", 'disabled' => $disabled]) ?>
         <?= Html::submitButton('+', ['id' => 'addTreatmentRow', 'name' => 'addTreatmentRow', 'value' => 'true', 'class' => 'btn btn-success', 'disabled' => $disabled]) ?>
-        <?php } ?>
+        <?php } ?> -->
     <?php kartik\form\ActiveForm::end(); ?>
     <?php Pjax::end(); ?>
 </a>
 
 <script>
+    var focusID = '';
+
     function calculateItemTotalCost() {
         $('.treatmentCode', document).each(function(index, item) {
             var treatmentCode = this.value;
@@ -347,49 +364,102 @@ else{
         });
     }
 
-    // function submitTreatmentForm(count, url){
-    //     var form = $('#treatment-form');
-    //     var formData = form.serialize();
-    //     var countTreatment = document.getElementById('countTreatment').value;
+    function submitTreatmentForm(count, url, urlTreatment, type){
+        var form = $('#treatment-form');
+        var formData = form.serialize();
+        var countTreatment = document.getElementById('countTreatment').value;
 
-    //     $.ajax({
-    //         url: url,
-    //         type: form.attr("method"),
-    //         data: formData,
+        $.ajax({
+            url: url,
+            type: form.attr("method"),
+            data: formData,
 
-    //         success: function (data) {
-    //             flag = 0;
-    //             counted = parseInt(count) + 1;
+            success: function (data) {
+                flag = 0;
+                counted = parseInt(count) + 1;
 
-    //             if(document.getElementById('treatment_details-'+count+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').value == ''){
-    //                 return false;
-    //             }
+                if(type == 'insert'){
+                    $.get(urlTreatment, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('treatmentTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.treatmentTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
+                        document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
+                    });
+                    addTreatmentRow('');
+                }
+                
+                if(type == 'update'){
+                    $.get(urlTreatment, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('treatmentTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.treatmentTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
+                        document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
+                    });
+                    addTreatmentRow('update');
+                }
+            },
+        });
+    }
 
-    //             // update
-    //             if($('.item_num').length == countTreatment || $('.treatmentCode').length == countTreatment){
-    //                 for(var i = 0; i < countTreatment; i++){
-    //                     if(document.getElementById('treatment_details-'+i+'-treatment_code').value == '' || document.getElementById('treatment_details-'+count+'-item_count').i == ''){
-    //                         continue;
-    //                     }
-    //                     else{
-    //                         flag++;
-    //                     }
-    //                 }
+    function addTreatmentRow(type) {
+        var addRow = document.getElementById('TreatmentRowURL').value;
+        var countTreatment = $('.treatmentCode').length;
 
-    //                 if(flag == countTreatment){
-    //                     location.reload();
-    //                 }
-    //                 else{
-    //                     return false;
-    //                 }
-    //             }
-    //             // insert
-    //             else if(counted == countTreatment){
-    //                 location.reload();
-    //             }
-    //         },
-    //     });
-    // }
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange  = function() {
+            if(xhttp.readyState == 4 && xhttp.status == 200){
+                document.getElementById("treatment-div").innerHTML = this.responseText;
+
+                $('.treatmentCode', document).each(function(index, item, event) {
+                    $('#treatment_details-'+index+'-treatment_code').select2({
+                        placeholder: '<?php echo Yii::t('app', 'Select treatment code'); ?>',
+                        width: '220px',
+                    });
+                });
+
+                document.getElementById(focusID).focus();
+            }
+        }
+        if(type == 'update'){
+            xhttp.open("GET", addRow + "&countTreatment=" + countTreatment + "&update=true", true);
+        }
+        else{
+            xhttp.open("GET", addRow + "&countTreatment=" + countTreatment, true);
+        }
+        xhttp.send();
+    }
+
+    document.addEventListener("keypress", function(event) {
+        if(event.keyCode == 13){
+            var countTreatment = document.getElementById('countTreatment').value;
+            focusID = document.activeElement.id;
+            
+            for(var i = 0; i < countTreatment; i++){
+                var treatment_code = document.querySelector('#treatment_details-'+i+'-treatment_code');
+                var treatment_name = document.querySelector('#treatment_details-'+i+'-treatment_name');
+                var item_cost = document.querySelector('#treatment_details-'+i+'-item_per_unit_cost_rm');
+                var item_count = document.querySelector('#treatment_details-'+i+'-item_count');
+                var total_cost = document.querySelector('#treatment_details-'+i+'-item_total_unit_cost_rm');
+
+                if(document.activeElement == treatment_code || 
+                    document.activeElement == treatment_name || 
+                    document.activeElement == item_cost || 
+                    document.activeElement == item_count || 
+                    document.activeElement == total_cost){
+
+                    calculateItemTotalCost();
+
+                    if(document.getElementById('treatment_details-'+(countTreatment - 1)+'-treatment_code').value == '' || 
+                        document.getElementById('treatment_details-'+(countTreatment - 1)+'-item_count').value == ''){
+                        submitTreatmentForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlTreatment}" ?>', '<?php echo "update" ?>');
+                    }
+                    else{
+                        submitTreatmentForm('<?php echo "{$index}" ?>', '<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlTreatment}" ?>', '<?php echo "insert" ?>');
+                    }
+                }
+            }            
+        }
+    });
 </script>
 
 <?php 
@@ -424,7 +494,16 @@ $(document).on('click', '#treatmentDelete', function(e){
             alert("Something went wrong");
         }
     });
-})
+});
+
+$(document).ready(function() {
+    $('.treatmentCode', document).each(function(index, item, event) {
+        $('#treatment_details-'+index+'-treatment_code').select2({
+            placeholder: 'Select treatment code',
+            width: '220px',
+        });
+    });
+});
 JS;
 $this->registerJS($script);
 ?>
