@@ -151,7 +151,111 @@ class Reminder extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Bill::className(), ['final_ward_datetime' => 'final_ward_datetime']);
     }
+    // public static function x($rows)
+    // {
+    //     $results = new Query;
+    //     $result ->select()
+    // }
 
+    public static function getReminderDate($reminder_number,$discharge_date)
+    {
+        
+        if(!empty($discharge_date))
+        {
+            
+            $remindate =  date_create_from_format('Y-m-d H:i:s',$discharge_date);
+
+            if($reminder_number == 'reminder1')
+                return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
+            else if($reminder_number == 'reminder2')
+                return date_add($remindate,date_interval_create_from_date_string("28 days"))->format('Y-m-d');
+            else if($reminder_number == 'reminder3')
+                return date_add($remindate,date_interval_create_from_date_string("42 days"))->format('Y-m-d');
+           //return 'xx'. $model->bill->final_ward_datetime. ' xx';
+            //  return gettype($model->bill->final_ward_datetime);
+        }
+        return NULL;
+
+        // if(!empty($model['Discharge Date']))
+        // {
+            
+        //     $remindate =  date_create_from_format('Y-m-d H:i:s',$model['Discharge Date']);
+
+        //     if($model['Reminder Number'] == 'reminder1')
+        //         return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
+        //     else if($model['Reminder Number'] == 'reminder2')
+        //         return date_add($remindate,date_interval_create_from_date_string("28 days"))->format('Y-m-d');
+        //     else if($model['Reminder Number'] == 'reminder3')
+        //         return date_add($remindate,date_interval_create_from_date_string("42 days"))->format('Y-m-d');
+        //    //return 'xx'. $model->bill->final_ward_datetime. ' xx';
+        //     //  return gettype($model->bill->final_ward_datetime);
+        // }
+        // return NULL;
+    }
+    public static function getReminderDateForAmountdue($reminder_number,$discharge_date)
+    {
+        
+        if(!empty($discharge_date))
+        {
+            
+            $remindate =  date_create_from_format('Y-m-d H:i:s',$discharge_date);
+
+            if($reminder_number == 'reminder1')
+                return date_add($remindate,date_interval_create_from_date_string("15 days"))->format('Y-m-d');
+            else if($reminder_number == 'reminder2')
+                return date_add($remindate,date_interval_create_from_date_string("29 days"))->format('Y-m-d');
+            else if($reminder_number == 'reminder3')
+                return date_add($remindate,date_interval_create_from_date_string("43 days"))->format('Y-m-d');
+           //return 'xx'. $model->bill->final_ward_datetime. ' xx';
+            //  return gettype($model->bill->final_ward_datetime);
+        }
+        return NULL;
+    }
+    
+    public static function calculateAmountdue($rn,$bill_billable,$reminderdate)
+    {
+        // $totalreceiptMinus = 0.0;
+        // $totalreceiptPlus = 0.0;
+         //$modelreceiptMinus = Receipt::find()->where(['rn'=>$rn,['!=','receipt_type' , 'refund'], ['<','receipt_content_datetime_paid' , $reminderdate]])->sum(['receipt_content_sum']);
+          //$modelreceiptPlus = Receipt::find()->where(['receipt_type' == 'refund', 'receipt_content_datetime_paid' < $reminderdate])->sum(['receipt_content_sum'])->all();
+         // $abc = Receipt::find()->andWhere([['!=','receipt_type','refund'],['<','receipt_content_datetime_paid',$reminderdate]]);
+         $modelreceipt = Receipt::findAll(['rn'=> $rn, 'receipt_type' <> 'deposit','receipt_content_datetime_paid' < $reminderdate]);
+            return $modelreceipt;
+       
+        //  $amountdue = $bill_billable - $modelreceiptMinus->receipt_content_sum + $modelreceiptPlus->receipt_content_sum;
+        //   return $amountdue;
+
+        //$modelreceipt = Receipt::findAll(['rn' => 'rn']);
+
+        // foreach($modelreceiptMinus as $index => $modelreceiptMinus)
+        // {
+        //     $totalreceiptMinus += $modelreceiptMinus->receipt_content_sum;
+        // }
+
+        // $amountdue = $bill_billable - $totalreceiptMinus;
+        
+        // return $amountdue;
+
+
+
+
+
+        // $billable = $modelbill->bill_generation_billable_sum_rm;
+
+        
+
+	//     return $amountdue = $addSum;
+   // if($receipt_type <> 'refund' && $receipt_pay_date < $reminderdate)      
+	    // $amountdue = $bill_billable- $receipt_amount; //mayb need foreach to loop and minus  
+    //if($receipt_type == 'refund' && $receipt_pay_date < $reminderdate)
+	//{
+        	//$PlusSum = $modelbill->bill_generation_billable_sum_rm + $modelreceipt->receipt_content_sum; //  bill.payable - MinusSum + addSum 
+
+             //return $amountdue + $receipt_amount; // probably need foreach loop and add
+		
+	//}
+    
+    }
 /*    public function getId() {
         return $this->username;
     }
@@ -161,7 +265,15 @@ class Reminder extends \yii\db\ActiveRecord
         return $user->name;
         //return $user;    
     } */
-
+// if($modelreceipt->receipt_type = 'refund' && $modelreceipt->receipt_content_datetime_paid < $model)
+        // $amountdue = $modelbill->bill_generation_billable_sum_rm - $modelreceipt->receipt_content_sum; 
+    //     if($modelreceipt->receipt_type <> 'refund' && $modelreceipt->receipt_content_datetime_paid < $reminderdate)
+	//         $MinusSum = $modelbill->bill_generation_billable_sum_rm -= $modelreceipt->receipt_content_sum; // probably need foreach
+    //     if($modelreceipt->receipt_type == 'refund' && $modelreceipt->receipt_content_datetime_paid < $reminderdate)
+	// {
+    //     	//$PlusSum = $modelbill->bill_generation_billable_sum_rm + $modelreceipt->receipt_content_sum; //  bill.payable - MinusSum + addSum 
+	// 	    $addSum = $MinusSum += $modelreceipt->receipt_content_sum;  //probably need foreach as well
+	// }
    
 }
 

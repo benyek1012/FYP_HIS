@@ -222,7 +222,6 @@ class ReminderController extends Controller
         $query = $model->getReminderNumberRows($batch_date);
 
 
-
         $dataProvider = new ArrayDataProvider([
             'allModels' => $query,
         ]);
@@ -232,8 +231,9 @@ class ReminderController extends Controller
         // exit;
         // echo "</pre>";
 
+    
         
-        
+
        
         // if(!empty($isreminder1))
         // {
@@ -304,20 +304,8 @@ class ReminderController extends Controller
                 [
                     'attribute' => '',
                     'label' => 'Reminder Date',
-                    'value' => function($model, $index, $dataColumn) {
-                        if(!empty($model['Discharge Date']))
-                        {
-                            $remindate =  date_create_from_format('Y-m-d H:i:s',$model['Discharge Date']);
-                            if($model['Reminder Number'] == 'reminder1')
-                                return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
-                            else if($model['Reminder Number'] == 'reminder2')
-                                return date_add($remindate,date_interval_create_from_date_string("28 days"))->format('Y-m-d');
-                            else if($model['Reminder Number'] == 'reminder3')
-                                return date_add($remindate,date_interval_create_from_date_string("42 days"))->format('Y-m-d');
-                           //return 'xx'. $model->bill->final_ward_datetime. ' xx';
-                            //  return gettype($model->bill->final_ward_datetime);
-                        }
-                        else return NULL;
+                    'value' => function($model, $index, $dataColumn)  {
+                        return  ((new Reminder()) -> getReminderDate($model['Reminder Number'], $model['Discharge Date'])); 
                     }
                 ],
                 [
@@ -329,14 +317,12 @@ class ReminderController extends Controller
 
                     'label' => 'Amount Payable',
                     'value' => function($model, $index, $dataColumn) {
-                        
-                    
-                        // $modelreceipt = Receipt::findOne(['rn' => 'rn']);
 
-                        // if($modelreceipt->receipt_type <> 'refund' && $modelreceipt->receipt_content_datetime_paid < $remindate)
-                        // {
-                        //     $minus = $model['Billable Fee'] - $modelreceipt->receipt_content_sum;
-                        // }
+                        $remindate = ((new Reminder()) -> getReminderDateForAmountdue($model['Reminder Number'], $model['Discharge Date'])); 
+                        
+                        
+                    return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],'15/8/2022'));
+                        
                       
                     }
 
@@ -354,17 +340,20 @@ class ReminderController extends Controller
 
     public function print($batch_date)
     {
-        $query = Patient_admission::find()
-        ->select('patient_admission.*')
-        ->from('patient_admission')
-        ->joinWith('patient_information',true)
-        ->joinWith('bill',true)
-        ->joinWith('receipt',true)
-        ->joinWith('reminder',true)
-        ->where(['batch_date'=>$batch_date])
-        ->groupBy(['rn']);
+        $model = $this->findModel($batch_date);
+        $query = $model->getReminderNumberRows($batch_date);
+        // $query = Patient_admission::find()
+        // ->select('patient_admission.*')
+        // ->from('patient_admission')
+        // ->joinWith('patient_information',true)
+        // ->joinWith('bill',true)
+        // ->joinWith('receipt',true)
+        // ->joinWith('reminder',true)
+        // ->where(['batch_date'=>$batch_date])
+        // ->groupBy(['rn']);
 
-
+        var_dump ($query['rn']);
+        exit();
         // $exporter = new CsvGrid([
         //     'dataProvider' => new ActiveDataProvider([
         //         'query' => $query,
@@ -483,4 +472,22 @@ class ReminderController extends Controller
        
        
     }
+
+    // public function calculateReminderDate()
+    // {
+    //     if(!empty($model['Discharge Date']))
+    //     {
+    //         $remindate =  date_create_from_format('Y-m-d H:i:s',$model['Discharge Date']);
+
+    //         if($model['Reminder Number'] == 'reminder1')
+    //             return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
+    //         else if($model['Reminder Number'] == 'reminder2')
+    //             return date_add($remindate,date_interval_create_from_date_string("28 days"))->format('Y-m-d');
+    //         else if($model['Reminder Number'] == 'reminder3')
+    //             return date_add($remindate,date_interval_create_from_date_string("42 days"))->format('Y-m-d');
+    //        //return 'xx'. $model->bill->final_ward_datetime. ' xx';
+    //         //  return gettype($model->bill->final_ward_datetime);
+    //     }
+    //     return NULL;
+    // }
 }
