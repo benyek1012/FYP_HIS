@@ -8,12 +8,8 @@ use app\models\New_user;
 use app\models\ReminderSearch;
 use app\models\Patient_admission;
 use app\models\Patient_information;
-use app\models\Pdf;
-use app\models\Pdf_html;
-use app\models\Receipt;
 use app\models\Reminder_pdf;
 use Exception;
-use FPDF as GlobalFPDF;
 use Dompdf\Dompdf;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -221,7 +217,6 @@ class ReminderController extends Controller
         $model = $this->findModel($batch_date);
         $query = $model->getReminderNumberRows($batch_date);
 
-
         $dataProvider = new ArrayDataProvider([
             'allModels' => $query,
         ]);
@@ -230,10 +225,7 @@ class ReminderController extends Controller
         // var_dump($query);
         // exit;
         // echo "</pre>";
-
-    
         
-
        
         // if(!empty($isreminder1))
         // {
@@ -304,8 +296,8 @@ class ReminderController extends Controller
                 [
                     'attribute' => '',
                     'label' => 'Reminder Date',
-                    'value' => function($model, $index, $dataColumn)  {
-                        return  ((new Reminder()) -> getReminderDate($model['Reminder Number'], $model['Discharge Date'])); 
+                    'value' => function($model, $index, $dataColumn) {
+                        return (new Reminder())->getReminderDate($model['Reminder Number'], $model['Discharge Date']);
                     }
                 ],
                 [
@@ -317,12 +309,6 @@ class ReminderController extends Controller
 
                     'label' => 'Amount Payable',
                     'value' => function($model, $index, $dataColumn) {
-
-                        $remindate = ((new Reminder()) -> getReminderDateForAmountdue($model['Reminder Number'], $model['Discharge Date'])); 
-                        
-                        
-                    return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],'15/8/2022'));
-                        
                       
                     }
 
@@ -340,95 +326,37 @@ class ReminderController extends Controller
 
     public function print($batch_date)
     {
-        $model = $this->findModel($batch_date);
-        $query = $model->getReminderNumberRows($batch_date);
-        // $query = Patient_admission::find()
-        // ->select('patient_admission.*')
-        // ->from('patient_admission')
-        // ->joinWith('patient_information',true)
-        // ->joinWith('bill',true)
-        // ->joinWith('receipt',true)
-        // ->joinWith('reminder',true)
-        // ->where(['batch_date'=>$batch_date])
-        // ->groupBy(['rn']);
+        $query = Patient_admission::find()
+        ->select('patient_admission.*')
+        ->from('patient_admission')
+        ->joinWith('patient_information',true)
+        ->joinWith('bill',true)
+        ->joinWith('receipt',true)
+        ->joinWith('reminder',true)
+        ->where(['batch_date'=>$batch_date])
+        ->groupBy(['rn']);
 
-        var_dump ($query['rn']);
-        exit();
-        // $exporter = new CsvGrid([
-        //     'dataProvider' => new ActiveDataProvider([
-        //         'query' => $query,
-        //         'pagination' => [
-        //             'pageSize' => 100, // export batch size
-        //         ],
-        //     ]),
-        //     'columns' => [
-        //         [
-        //             'attribute' => 'rn',
-        //             'label' => 'RN',
-        //         ],
-        //         [
-        //             'attribute' => '',
-        //             'label' => '',
-        //         ],
-        //         [
-        //             'label' => 'Reminder 1',
-        //             'value' => function($model, $index, $dataColumn) {
-        //                 if(!empty($model->reminder1))
-        //                 return 'x';
-        //             }
-        //         ],
-        //         [
-        //             'label' => 'Reminder 2',
-        //             'value' => function($model, $index, $dataColumn) {
-        //                 if(!empty($model->reminder2))
-        //                 return 'x';
-                        
-        //             }
-        //         ],
-        //         [
-        //             'label' => 'Reminder 3',
-        //             'value' => function($model, $index, $dataColumn) {
-        //                 if(!empty($model->reminder3))
-        //                 return 'x';
-        //             }
-        //         ],
-        //     ],
-        // ]);
-        // return $exporter->export()->send('remindernumber.csv');
-
-                    echo "<pre>";
-                    var_dump($query->all());
-                    exit;
-                    echo "</pre>";
+        echo "<pre>";
+        var_dump($query->all());
+        exit;
+        echo "</pre>";
     }
 
     public function exportPDF($batch_date)
     {
-        // $model = $this->findModel($batch_date);
-        // $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
-        // $filename = $batch_date. '.pdf'; 
-
-        // $pdf = new Pdf_html();
-        // $pdf->AliasNbPages();
-        // // Add new pages
-        // $pdf->AddPage();
-        // $pdf->content_first_page();
-        // $pdf->Output('D', $filename);
-
-        // $query = Patient_admission::find()
-        // ->select('patient_information.patient_uid')
-        // ->from('patient_admission')
-        // ->joinWith('patient_information',true)
-        // ->joinWith('reminder',true)
-        // ->where(['in','batch_date',$batch_date])
-        // ->one();
-      
-        // $AmountDue = (new Patient_information())-> getBalanceRM($query);
         $model = $this->findModel($batch_date);
         $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         $filename = $batch_date. '.pdf'; 
-        $pdf = new Reminder_pdf();
-        $pdf->AliasNbPages();
+
+        $pdf = new Reminder_pdf();   // create TCPDF object with default constructor args
+
+        // set default monospaced font
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->setPrintFooter(false);
+        // set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
         $pdf->setMargins(22, 8, 11.6);
 
         $query =  Patient_admission::find()  
@@ -467,27 +395,13 @@ class ReminderController extends Controller
             // var_dump($q->reminder3);
             // echo "</pre>";
         }
-        $pdf->Output('D', $filename);
+
+        // ---------------------------------------------------------
+
+        //Close and output PDF document
+        $pdf->Output($filename, 'D');
 
        
        
     }
-
-    // public function calculateReminderDate()
-    // {
-    //     if(!empty($model['Discharge Date']))
-    //     {
-    //         $remindate =  date_create_from_format('Y-m-d H:i:s',$model['Discharge Date']);
-
-    //         if($model['Reminder Number'] == 'reminder1')
-    //             return date_add($remindate,date_interval_create_from_date_string("14 days"))->format('Y-m-d');
-    //         else if($model['Reminder Number'] == 'reminder2')
-    //             return date_add($remindate,date_interval_create_from_date_string("28 days"))->format('Y-m-d');
-    //         else if($model['Reminder Number'] == 'reminder3')
-    //             return date_add($remindate,date_interval_create_from_date_string("42 days"))->format('Y-m-d');
-    //        //return 'xx'. $model->bill->final_ward_datetime. ' xx';
-    //         //  return gettype($model->bill->final_ward_datetime);
-    //     }
-    //     return NULL;
-    // }
 }
