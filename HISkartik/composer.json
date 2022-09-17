@@ -31,7 +31,8 @@
         "mike42/escpos-php": "^2.2",
         "kartik-v/yii2-widget-select2": "dev-master",
         "yii2tech/csv-grid": "*",
-        "setasign/fpdf": "*"
+        "setasign/fpdf": "*",
+        "tecnickcom/tcpdf": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
