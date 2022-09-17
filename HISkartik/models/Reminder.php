@@ -192,42 +192,22 @@ class Reminder extends \yii\db\ActiveRecord
         // }
         // return NULL;
     }
-    public static function getReminderDateForAmountdue($reminder_number,$discharge_date)
-    {
-        
-        if(!empty($discharge_date))
-        {
-            
-            $remindate =  date_create_from_format('Y-m-d H:i:s',$discharge_date);
-
-            if($reminder_number == 'reminder1')
-                return date_add($remindate,date_interval_create_from_date_string("15 days"))->format('Y-m-d');
-            else if($reminder_number == 'reminder2')
-                return date_add($remindate,date_interval_create_from_date_string("29 days"))->format('Y-m-d');
-            else if($reminder_number == 'reminder3')
-                return date_add($remindate,date_interval_create_from_date_string("43 days"))->format('Y-m-d');
-           //return 'xx'. $model->bill->final_ward_datetime. ' xx';
-            //  return gettype($model->bill->final_ward_datetime);
-        }
-        return NULL;
-    }
+   
     
     public static function calculateAmountdue($rn,$bill_billable,$reminderdate)
     {
         $totalreceiptMinus = 0.0;
         $totalreceiptPlus = 0.0;
-        //$modelreceiptMinus = Receipt::find()->where(['rn'=>$rn,['!=','receipt_type' , 'refund'], ['<','receipt_content_datetime_paid' , $reminderdate]])->sum(['receipt_content_sum']);
-         //$modelreceiptPlus = Receipt::find()->where(['receipt_type' == 'refund', 'receipt_content_datetime_paid' < $reminderdate])->sum(['receipt_content_sum'])->all();
-        // $abc = Receipt::find()->andWhere([['!=','receipt_type','refund'],['<','receipt_content_datetime_paid',$reminderdate]]);
+        $remindate =  date_create_from_format('Y-m-d',$reminderdate);
         $modelreceipt = Receipt::findAll(['rn'=>$rn]);
         foreach($modelreceipt as $model)
         {
-           if($model->receipt_type <> 'refund' && $model->receipt_content_datetime_paid < $reminderdate)
+           if($model->receipt_type <> 'refund' && $model->receipt_content_datetime_paid < date_add($remindate,date_interval_create_from_date_string("1 days")))
            {
                $totalreceiptMinus += $model->receipt_content_sum;
                //$bill_billable -= $totalreceiptMinus;
            }
-           if($model->receipt_type == 'refund' && $model->receipt_content_datetime_paid < $reminderdate )
+           if($model->receipt_type == 'refund' && $model->receipt_content_datetime_paid < date_add($remindate,date_interval_create_from_date_string("1 days")))
            {
                $totalreceiptPlus += $model->receipt_content_sum;
                //$bill_billable += $totalreceiptPlus;
@@ -236,7 +216,6 @@ class Reminder extends \yii\db\ActiveRecord
         $amountdue = $bill_billable - $totalreceiptMinus + $totalreceiptPlus;
         //var_dump ($totalreceiptMinus);
         
-        //return $modelreceipt;
         return $amountdue;
     
     }

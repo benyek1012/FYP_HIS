@@ -307,9 +307,9 @@ class ReminderController extends Controller
                 [
                    // 'attribute' => 'bills.bill_generation_final_fee_rm',
 
-                    'label' => 'Amount Payable',
+                    'label' => 'Amount Due',
                     'value' => function($model, $index, $dataColumn) {
-                        $remindate = ((new Reminder()) -> getReminderDateForAmountdue($model['Reminder Number'], $model['Discharge Date'])); 
+                        $remindate = ((new Reminder()) -> getReminderDate($model['Reminder Number'], $model['Discharge Date'])); 
 
                         return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],$remindate));
                     }
