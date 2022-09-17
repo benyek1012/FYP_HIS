@@ -214,46 +214,26 @@ class Reminder extends \yii\db\ActiveRecord
     
     public static function calculateAmountdue($rn,$bill_billable,$reminderdate)
     {
-        // $totalreceiptMinus = 0.0;
-        // $totalreceiptPlus = 0.0;
-         //$modelreceiptMinus = Receipt::find()->where(['rn'=>$rn,['!=','receipt_type' , 'refund'], ['<','receipt_content_datetime_paid' , $reminderdate]])->sum(['receipt_content_sum']);
-          //$modelreceiptPlus = Receipt::find()->where(['receipt_type' == 'refund', 'receipt_content_datetime_paid' < $reminderdate])->sum(['receipt_content_sum'])->all();
-         // $abc = Receipt::find()->andWhere([['!=','receipt_type','refund'],['<','receipt_content_datetime_paid',$reminderdate]]);
-         $modelreceipt = Receipt::findAll(['rn'=> $rn, 'receipt_type' <> 'deposit','receipt_content_datetime_paid' < $reminderdate]);
-            return $modelreceipt;
-       
-        //  $amountdue = $bill_billable - $modelreceiptMinus->receipt_content_sum + $modelreceiptPlus->receipt_content_sum;
-        //   return $amountdue;
-
-        //$modelreceipt = Receipt::findAll(['rn' => 'rn']);
-
-        // foreach($modelreceiptMinus as $index => $modelreceiptMinus)
-        // {
-        //     $totalreceiptMinus += $modelreceiptMinus->receipt_content_sum;
-        // }
-
-        // $amountdue = $bill_billable - $totalreceiptMinus;
-        
-        // return $amountdue;
-
-
-
-
-
-        // $billable = $modelbill->bill_generation_billable_sum_rm;
-
-        
-
-	//     return $amountdue = $addSum;
-   // if($receipt_type <> 'refund' && $receipt_pay_date < $reminderdate)      
-	    // $amountdue = $bill_billable- $receipt_amount; //mayb need foreach to loop and minus  
-    //if($receipt_type == 'refund' && $receipt_pay_date < $reminderdate)
-	//{
-        	//$PlusSum = $modelbill->bill_generation_billable_sum_rm + $modelreceipt->receipt_content_sum; //  bill.payable - MinusSum + addSum 
-
-             //return $amountdue + $receipt_amount; // probably need foreach loop and add
-		
-	//}
+        $totalreceiptMinus = 0.0;
+        $totalreceiptPlus = 0.0;
+        //$modelreceiptMinus = Receipt::find()->where(['rn'=>$rn,['!=','receipt_type' , 'refund'], ['<','receipt_content_datetime_paid' , $reminderdate]])->sum(['receipt_content_sum']);
+         //$modelreceiptPlus = Receipt::find()->where(['receipt_type' == 'refund', 'receipt_content_datetime_paid' < $reminderdate])->sum(['receipt_content_sum'])->all();
+        // $abc = Receipt::find()->andWhere([['!=','receipt_type','refund'],['<','receipt_content_datetime_paid',$reminderdate]]);
+        $modelreceipt = Receipt::findAll(['rn'=>$rn]);
+        foreach($modelreceipt as $modelreceipt)
+        {
+           if($modelreceipt->receipt_type != 'refund' && $modelreceipt->receipt_content_datetime_paid < $reminderdate)
+           {
+               $totalreceiptMinus += $modelreceipt->receipt_content_sum;
+               $bill_billable -= $totalreceiptMinus;
+           }
+           if($modelreceipt->receipt_type == 'refund' && $modelreceipt->receipt_content_datetime_paid < $reminderdate)
+           {
+               $totalreceiptPlus += $modelreceipt->receipt_content_sum;
+               $bill_billable += $totalreceiptPlus;
+           }
+        }
+        return $bill_billable;
     
     }
 /*    public function getId() {
