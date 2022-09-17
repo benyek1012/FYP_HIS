@@ -310,7 +310,8 @@ class ReminderController extends Controller
                     'label' => 'Amount Payable',
                     'value' => function($model, $index, $dataColumn) {
                         $remindate = ((new Reminder()) -> getReminderDateForAmountdue($model['Reminder Number'], $model['Discharge Date'])); 
-                        return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],'15/8/2022'));
+
+                        return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],$remindate));
                     }
 
                 ],
