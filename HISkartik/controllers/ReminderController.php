@@ -359,35 +359,67 @@ class ReminderController extends Controller
         // set auto page breaks
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-        $pdf->setMargins(22, 8, 11.6);
+        $pdf->setMargins(22, 22, 11.6);
 
-        $query =  Patient_admission::find()  
-        ->select('rn, reminder1, reminder2, reminder3')
-        ->from("patient_admission")
-        ->where(['<=', 'reminder1', $batch_date])
-        ->orWhere(['<=', 'reminder2', $batch_date])
-        ->orWhere(['<=', 'reminder3', $batch_date])
-        ->groupBy(['rn'])
-        ->all();
+        // $query =  Patient_admission::find()  
+        // ->select('rn, reminder1, reminder2, reminder3')
+        // ->from("patient_admission")
+        // ->where(['<=', 'reminder1', $batch_date])
+        // ->orWhere(['<=', 'reminder2', $batch_date])
+        // ->orWhere(['<=', 'reminder3', $batch_date])
+        // ->groupBy(['rn'])
+        // ->all();
+
         
+        $query = $model->getReminderNumberRows($batch_date);
+                
         foreach ($query as $q)
-        {
+        {           
             // reminder 1
-            if($q->reminder1 != NULL && $q->reminder1 <= $batch_date){
+            if($q['Reminder Number'] == 'reminder1'){
+                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                $pdf->setData($reminder_date);
                 $pdf->AddPage();
-                $pdf->content1($q->rn);
+                $ic = $q['nric'];
+                $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                $rn = $q['rn'];
+                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                $pdf->content1($rn,$name,$datetime,$amount_due,$bill_No);
             }
           
             // reminder 2
-            if($q->reminder2 != NULL && $q->reminder2 <= $batch_date){
+            if($q['Reminder Number']== 'reminder2'){
+                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                $pdf->setData($reminder_date);
                 $pdf->AddPage();
-                $pdf->content2($q->rn);
+                // $pdf->setData($batch_date);
+                $ic = $q['nric'];
+                $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                $rn = $q['rn'];
+                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                $pdf->content2($rn,$name,$datetime,$amount_due,$bill_No);
             }
 
             // reminder 3
-            if($q->reminder3 != NULL && $q->reminder3 <= $batch_date){
+            if($q['Reminder Number'] == 'reminder3'){
+                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                $pdf->setData($reminder_date);
                 $pdf->AddPage();
-                $pdf->content3($q->rn);
+                // $pdf->setData($batch_date);
+                $ic = $q['nric'];
+                $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                $rn = $q['rn'];
+                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                $pdf->content3($rn,$name,$datetime,$amount_due,$bill_No);
             }
             
             // echo "<pre>";

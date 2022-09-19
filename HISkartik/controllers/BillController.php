@@ -642,6 +642,14 @@ class BillController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    protected function findModel_Rn($rn)
+    {
+        if (($model = Bill::findOne(['rn' => $rn])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
 
     protected function findModel_Ward($ward_uid)
     {
