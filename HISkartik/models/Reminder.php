@@ -202,12 +202,13 @@ class Reminder extends \yii\db\ActiveRecord
         $modelreceipt = Receipt::findAll(['rn'=>$rn]);
         foreach($modelreceipt as $model)
         {
-           if($model->receipt_type <> 'refund' && $model->receipt_content_datetime_paid < date_add($remindate,date_interval_create_from_date_string("1 days")))
+            $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
+           if($model->receipt_type <> 'refund' && empty($model_cancellation) && $model->receipt_content_datetime_paid < date_add($remindate,date_interval_create_from_date_string("1 days")))
            {
                $totalreceiptMinus += $model->receipt_content_sum;
                //$bill_billable -= $totalreceiptMinus;
            }
-           if($model->receipt_type == 'refund' && $model->receipt_content_datetime_paid < date_add($remindate,date_interval_create_from_date_string("1 days")))
+           if($model->receipt_type == 'refund' && empty($model_cancellation) &&  $model->receipt_content_datetime_paid < date_add($remindate,date_interval_create_from_date_string("1 days")))
            {
                $totalreceiptPlus += $model->receipt_content_sum;
                //$bill_billable += $totalreceiptPlus;
