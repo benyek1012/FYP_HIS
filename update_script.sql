@@ -56,6 +56,7 @@ ORDER BY rn, reminder_no;
 END$$
 DELIMITER ;
 
+ALTER TABLE `variable` ADD `hospital_name` VARCHAR(64) NOT NULL DEFAULT 'Sarawak General Hospital' AFTER `read_only`, ADD `director_name` VARCHAR(64) NOT NULL AFTER `hospital_name`;
 	
 
 /* Update Error change to varchar(500000) Version 0.2.5 END */
