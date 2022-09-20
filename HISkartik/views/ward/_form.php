@@ -186,7 +186,7 @@ else{
             </tr>
 
             <?php foreach ($modelWard as $index => $modelWard) { ?>
-            <tr>
+            <tr id='ward-<?php echo $index ?>'>
                 <td>
                     <?php 
                         if(!empty($admission_model->initial_ward_code && empty($modelWard->ward_code) && $index == 0)){
@@ -359,7 +359,8 @@ else{
                 $("#ward-" + i + "-ward_number_of_days").val(days);
 
                 if(numberOfDay != days && numberOfDay != ''){
-                    document.getElementById('ward-' + i + '-ward_number_of_days').style.backgroundColor = '#ffc107';
+                    // document.getElementById('ward-' + i + '-ward_number_of_days').style.backgroundColor = '#ffc107';
+                    document.getElementById('ward-'+i).style.backgroundColor = '#ffc107';
                 }
             }
             
@@ -375,7 +376,8 @@ else{
                     $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
                 });
 
-                document.getElementById('ward-'+index+'-ward_name').style.backgroundColor = '#ffc107';
+                // document.getElementById('ward-'+index+'-ward_name').style.backgroundColor = '#ffc107';
+                document.getElementById('ward-'+index).style.backgroundColor = '#ffc107';
             });
         });
     }

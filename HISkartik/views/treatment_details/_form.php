@@ -184,7 +184,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                 <td> </td>
             </tr>
             <?php foreach ($modelTreatment as $index => $model) { ?>
-            <tr>
+            <tr id='treatment-<?php echo $index ?>'>
                 <td>
                     <!-- <?= $form->field($model, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
                         'prompt'=> Yii::t('app','Select treatment code'),'maxlength' => true, 'disabled' => $print_readonly])->label(false) ?> -->
@@ -313,7 +313,8 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
             }
 
             if(cost != totalCost && cost != ''){
-                document.getElementById('treatment_details-' + index + '-item_total_unit_cost_rm').style.backgroundColor = '#ffc107';
+                // document.getElementById('treatment_details-' + index + '-item_total_unit_cost_rm').style.backgroundColor = '#ffc107';
+                document.getElementById('treatment-'+index).style.backgroundColor = '#ffc107';
             }
         });
     }
@@ -365,8 +366,10 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                     }
                     // calculateItemCost();
 
-                    document.getElementById('treatment_details-'+index+'-treatment_name').style.backgroundColor = '#ffc107';
-                    document.getElementById('treatment_details-'+index+'-item_per_unit_cost_rm').style.backgroundColor = '#ffc107';
+                    // document.getElementById('treatment_details-'+index+'-treatment_name').style.backgroundColor = '#ffc107';
+                    // document.getElementById('treatment_details-'+index+'-item_per_unit_cost_rm').style.backgroundColor = '#ffc107';
+
+                    document.getElementById('treatment-'+index).style.backgroundColor = '#ffc107';
                 });
             });
         });

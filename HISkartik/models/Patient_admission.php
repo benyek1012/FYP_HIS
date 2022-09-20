@@ -91,8 +91,8 @@ class Patient_admission extends \yii\db\ActiveRecord
 
     public function get_bill($rn){
         if( (new Bill())  -> getUnclaimed($rn) <= 0 )
-            return Yii::t('app','+')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getAmtDued($rn));
-        else return Yii::t('app','-')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getUnclaimed($rn));
+            return Yii::t('app','-')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getAmtDued($rn));
+        else return Yii::t('app','+')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getUnclaimed($rn));
 
         return null;
     }

@@ -173,7 +173,7 @@ else{
                 <td> </td>
             </tr>
             <?php foreach ($modelFPP as $index => $modelFPP) { ?>
-            <tr>
+            <tr id='fpp-<?php echo $index ?>'>
                 <td>      
                     <?= $form->field($modelFPP, "[$index]kod")->dropDownList(empty($isGenerated) ? $fpp_kod : $lockedFPPKod,[
                         'class' => 'fppKod',
@@ -272,7 +272,8 @@ else{
             }
 
             if(cost != totalCost && cost != ''){
-                document.getElementById('fpp-' + index + '-total_cost').style.backgroundColor = '#ffc107';
+                // document.getElementById('fpp-' + index + '-total_cost').style.backgroundColor = '#ffc107';
+                document.getElementById('fpp-' + index).style.backgroundColor = '#ffc107';
             }
         });
     }
@@ -307,9 +308,11 @@ else{
                     $('#fpp-'+index+'-min_cost_per_unit').attr('value', data.min_cost_per_unit);
                     $('#fpp-'+index+'-max_cost_per_unit').attr('value', data.max_cost_per_unit);
 
-                    document.getElementById('fpp-'+index+'-name').style.backgroundColor = '#ffc107';
-                    document.getElementById('fpp-' + index + '-min_cost_per_unit').style.backgroundColor = '#ffc107';
-                    document.getElementById('fpp-' + index + '-max_cost_per_unit').style.backgroundColor = '#ffc107';
+                    // document.getElementById('fpp-'+index+'-name').style.backgroundColor = '#ffc107';
+                    // document.getElementById('fpp-' + index + '-min_cost_per_unit').style.backgroundColor = '#ffc107';
+                    // document.getElementById('fpp-' + index + '-max_cost_per_unit').style.backgroundColor = '#ffc107';
+
+                    document.getElementById('fpp-' + index).style.backgroundColor = '#ffc107';
                 });
             });
         });

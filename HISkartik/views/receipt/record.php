@@ -189,15 +189,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
                     // Bill
-                    else if($model_bill->deleted == 1){
-                        $type = 'Bill Cancelled';
-                        $title = '';
-                        $class = 'badge-danger';
-                    }
-                    else{
-                        $type = 'Bill';
-                        $title = '';
-                        $class = 'badge-primary';
+                    else if(!empty($model_bill)){
+                        if($model_bill->deleted == 1){
+                            $type = 'Bill Cancelled';
+                            $title = '';
+                            $class = 'badge-danger';
+                        }
+                        else{
+                            $type = 'Bill';
+                            $title = '';
+                            $class = 'badge-primary';
+                        }
                     }
 
                     $tag = Html::tag('span', Yii::t('app', $type) , [
