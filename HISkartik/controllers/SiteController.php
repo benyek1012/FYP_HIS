@@ -106,14 +106,16 @@ class SiteController extends Controller
             $this->redirect(Url::to(['/site/login']));
         else 
         {
-            if((new New_user())->isAdmin())
-                return $this->render('admin_dashboard');
-            else if((new New_user())->isCashier())
-                $this->redirect(Url::to(['/site/admission']));
-            else if((new New_user())->isClerk())
-                return $this->render('clerk_dashboard');
-            else if((new New_user())->isGuestPrinter())
-                $this->redirect(Url::to(['/site/guest_printer_dashboard']));
+            $this->redirect(Url::to(['/site/admission']));
+
+            // if((new New_user())->isAdmin())
+            //     return $this->render('admin_dashboard');
+            // else if((new New_user())->isCashier())
+            //     $this->redirect(Url::to(['/site/admission']));
+            // else if((new New_user())->isClerk())
+            //     return $this->render('clerk_dashboard');
+            // else if((new New_user())->isGuestPrinter())
+            //     $this->redirect(Url::to(['/site/guest_printer_dashboard']));
         }
     }
 

@@ -142,6 +142,13 @@ class BillController extends Controller
         echo Json::encode($modelFPP);
     }  
 
+    public function actionBillable_final_fee($bill_uid) {
+        $cost = array();
+        $cost['billAble'] = (new Bill()) -> calculateBillable($bill_uid);
+        $cost['finalFee'] = (new Bill()) -> calculateFinalFee($bill_uid);
+        echo Json::encode($cost);
+    }
+
     /**
      * Displays a single Bill model.
      * @param string $bill_uid Bill Uid
@@ -204,13 +211,15 @@ class BillController extends Controller
                 }
 
                 $model_cancellation = Cancellation::findAll(['replacement_uid' => null]);
+              
                 if(!empty($model_cancellation)){
                     foreach($model_cancellation as $model_cancellation){
                         $model_bill_cancel = Bill::findOne(['bill_uid' => $model_cancellation->cancellation_uid]);
-                        if($model_bill_cancel->rn == $model->rn){
-                            $model_cancellation->replacement_uid = $model->bill_uid;
-                            $model_cancellation->save();
-                        }
+                        if(!empty($model_bill_cancel))
+                            if($model_bill_cancel->rn == $model->rn){
+                                $model_cancellation->replacement_uid = $model->bill_uid;
+                                $model_cancellation->save();
+                            }
                     }
                 }
                 
@@ -264,8 +273,11 @@ class BillController extends Controller
             $modelTreatment->save();
         }      
         
+        // return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+        //     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
+
         return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-            'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
+            'bill_uid' => $model->bill_uid, 'rn' => $model->rn));
     }
 
       /**
