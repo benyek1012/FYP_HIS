@@ -10,7 +10,6 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Reminder_pdf;
 use Exception;
-use Dompdf\Dompdf;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -221,20 +220,6 @@ class ReminderController extends Controller
             'allModels' => $query,
         ]);
 
-        // echo "<pre>";
-        // var_dump($query);
-        // exit;
-        // echo "</pre>";
-        
-       
-        // if(!empty($isreminder1))
-        // {
-        //     $isreminder1->modify('+14 day');
-        // }
-        // else
-        // return '';
-
-
         $exporter = new CsvGrid([
             'dataProvider' => $dataProvider,
             'columns' => [
@@ -319,11 +304,9 @@ class ReminderController extends Controller
 
             ],
         ]);
-        return $exporter->export()->send('items.csv');
-
-        return $this->render('update', [
-			'model' => $model,
-		]);
+        $filename = $batch_date. '.csv'; 
+        
+        return $exporter->export()->send($filename);
     }
 
     public function print($batch_date)
@@ -347,7 +330,6 @@ class ReminderController extends Controller
     public function exportPDF($batch_date)
     {
         $model = $this->findModel($batch_date);
-        $content = "Batch Date : ".preg_replace("<<br/>>","\r\n", $model->batch_date);
         $filename = $batch_date. '.pdf'; 
 
         $pdf = new Reminder_pdf();   // create TCPDF object with default constructor args
@@ -360,16 +342,6 @@ class ReminderController extends Controller
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
         $pdf->setMargins(22, 22, 11.6);
-
-        // $query =  Patient_admission::find()  
-        // ->select('rn, reminder1, reminder2, reminder3')
-        // ->from("patient_admission")
-        // ->where(['<=', 'reminder1', $batch_date])
-        // ->orWhere(['<=', 'reminder2', $batch_date])
-        // ->orWhere(['<=', 'reminder3', $batch_date])
-        // ->groupBy(['rn'])
-        // ->all();
-
         
         $query = $model->getReminderNumberRows($batch_date);
                 
@@ -386,8 +358,9 @@ class ReminderController extends Controller
                 $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
                 $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
                 $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $amount = "RM ".$q['Billable Fee'];
                 $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $pdf->content1($rn,$name,$datetime,$amount_due,$bill_No);
+                $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No);
             }
           
             // reminder 2
@@ -402,8 +375,9 @@ class ReminderController extends Controller
                 $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
                 $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
                 $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $amount = "RM ".$q['Billable Fee'];
                 $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $pdf->content2($rn,$name,$datetime,$amount_due,$bill_No);
+                $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No);
             }
 
             // reminder 3
@@ -418,24 +392,15 @@ class ReminderController extends Controller
                 $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
                 $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
                 $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $amount = "RM ".$q['Billable Fee'];
                 $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $pdf->content3($rn,$name,$datetime,$amount_due,$bill_No);
+                $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No);
             }
             
-            // echo "<pre>";
-            // var_dump($q->rn);
-            // var_dump($q->reminder1);
-            // var_dump($q->reminder2);
-            // var_dump($q->reminder3);
-            // echo "</pre>";
         }
-
-        // ---------------------------------------------------------
 
         //Close and output PDF document
         $pdf->Output($filename, 'D');
-
-       
        
     }
 }

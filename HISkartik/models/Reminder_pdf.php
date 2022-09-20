@@ -29,7 +29,7 @@ class Reminder_pdf extends TCPDF {
     }
 
   
-    function content1($rn,$name,$bill_datetime,$amount_due,$bill_no){
+    function content1($rn,$name,$bill_datetime,$amount_due,$amount, $bill_no){
         // Set font-family and font-size
         $this->SetFont('times','B',12);
         
@@ -48,7 +48,7 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
     
-        $this->content_bill($rn,$name,$bill_datetime,$amount_due,$bill_no);
+        $this->content_bill($rn,$name,$bill_datetime,$amount_due,$amount, $bill_no);
 
         $this->SetFont('helvetica','',11);
         $this->Cell(160, 15,  "Dengan hormatnya saya adalah diarah merujuk kepada perkara di atas.", 0,'L',0);
@@ -74,13 +74,14 @@ class Reminder_pdf extends TCPDF {
   
     }
 
-    function content_bill($rn,$name,$bill_datetime,$amount_due,$bill_no){
+    function content_bill($rn,$name,$bill_datetime,$amount_due,$amount,$bill_no){
        
        $name = $name;
        $bill_no = $bill_no;
        $rn = $rn;
        $date_bill = $bill_datetime;
-       $amount = $amount_due;
+    //   $amount_due = $amount_due;
+       $amount = $amount;
        
         // Set font-family and font-size
         $this->SetFont('times','B',10);
@@ -94,7 +95,7 @@ class Reminder_pdf extends TCPDF {
         $this->WriteHTML('<br><p><hr></p>');
     }
 
-    function content2($rn,$name,$bill_datetime,$amount_due,$bill_no){
+    function content2($rn,$name,$bill_datetime,$amount_due,$amount, $bill_no){
 
         // Set font-family and font-size
         $this->SetFont('times','B',12);
@@ -114,7 +115,7 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
      
-        $this->content_bill($rn,$name,$bill_datetime,$amount_due,$bill_no);
+        $this->content_bill($rn,$name,$bill_datetime,$amount_due,$amount,$bill_no);
 
 
         $this->SetFont('helvetica','',11);
@@ -142,7 +143,7 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 8, 'Hospital.........', 0, 2, 'L');
     }
 
-    function content3($rn,$name,$bill_datetime,$amount_due,$bill_no){
+    function content3($rn,$name,$bill_datetime,$amount_due,$amount, $bill_no){
 
         // Set font-family and font-size
         $this->SetFont('times','B',12);
@@ -162,7 +163,7 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
         $this->Cell(30, 5, '..................................................................', 0, 2, 'L');
      
-        $this->content_bill($rn,$name,$bill_datetime,$amount_due,$bill_no);
+        $this->content_bill($rn,$name,$bill_datetime,$amount_due,$amount,$bill_no);
 
 
         $this->SetFont('helvetica','',11);
