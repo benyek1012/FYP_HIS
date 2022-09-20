@@ -14,6 +14,11 @@ if (Yii::$app->user->isGuest){  ?>
 #sidebarx {
     display: none;
 }
+
+.link:hover{
+    cursor: all-scroll;
+}
+
 </style>
 
 <?php
@@ -140,12 +145,12 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                     'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/RN')])->label(false)?>
 
                 <div class="input-group-append">
-                <?php 
+                    <?php 
                     if(Yii::$app->controller->action->id == "guest_printer_dashboard"){
                         ?><?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlGuestPrinter}', '{$urlPatientAdmission}')"]);
                     }
                     else{?>
-                        <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]);
+                    <?= Html::button('<i class="fas fa-search fa-fw"></i>', ['class' => 'btn btn-sidebar', 'id' => 'searchButton','onclick' => "sidebar('{$url}', '{$urlAdmission}', '{$urlPatientAdmission}')"]);
                     }?>
                 </div>
 
@@ -161,21 +166,30 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                 if(!empty($info)){
                     if($info->name == "") $temp_name = "Unknown";
                     else $temp_name = $info->name;
-                    if(Yii::$app->controller->action->id == "guest_printer_dashboard")
-                     echo \hail812\adminlte\widgets\Menu::widget([
-                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/guest_printer_dashboard', 'id' => $info->patient_uid]]]]);
-                    else  echo \hail812\adminlte\widgets\Menu::widget([
-                        'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
-                    
+                    // if(Yii::$app->controller->action->id == "guest_printer_dashboard")
+                    //  echo \hail812\adminlte\widgets\Menu::widget([
+                    //     'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/guest_printer_dashboard', 'id' => $info->patient_uid]]]]);
+                    // else  echo \hail812\adminlte\widgets\Menu::widget([
+                    //     'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/admission', 'id' => $info->patient_uid]]]]);
                       
              ?>
             <div class="mt-1 ml-1 d-flex">
-                <div class="info">
-                    <p class="text-white"><?php echo Yii::t('app','Patient IC')." : ".$info->nric;?></p>
-                    <p class="text-light">
-                        <?php echo (new Patient_information()) -> getBalance($info->patient_uid).
+                <div class="info link">
+                    <nav class="nav-sidebar">
+                        <ul class="nav tabs">
+                            <li class="nav-item">
+                                <a href="<?php echo Url::toRoute(['site/admission', 'id' => $info->patient_uid]) ?>">
+                                    <p class="text-white"><?php echo Yii::t('app','Patient Name')." : ".$temp_name;?>
+                                    </p>
+                                    <p class="text-white"><?php echo Yii::t('app','Patient IC')." : ".$info->nric;?></p>
+                                    <p class="text-light">
+                                        <?php echo (new Patient_information()) -> getBalance($info->patient_uid).
                                 "<br/>".(new Patient_information()) ->getUnclaimedBalance($info->patient_uid);?>
-                    </p>
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
             <?php  }else{   ?>
@@ -220,27 +234,25 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
 <script>
 document.getElementById("patient_information-nric")
     .addEventListener("keypress", function(event) {
-    if (event.keyCode == 13) {
-        document.getElementById("searchButton").onclick();
-        event.preventDefault();
-    }
-});
+        if (event.keyCode == 13) {
+            document.getElementById("searchButton").onclick();
+            event.preventDefault();
+        }
+    });
 
 function sidebar(url, urlAdmission, urlPatientAdmission) {
     var search = document.getElementById("patient_information-nric").value;
     const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange  = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200){
-            if(this.responseText != false){
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (this.responseText != false) {
                 var data = $.parseJSON(this.responseText);
-                if(data.rn != null){
+                if (data.rn != null) {
                     location.href = urlPatientAdmission + "&rn=" + data.rn;
-                }
-                else if(data.patient_uid != null){
+                } else if (data.patient_uid != null) {
                     location.href = urlAdmission + "&id=" + data.patient_uid;
                 }
-            }
-            else{
+            } else {
                 confirmActionPatient();
             }
         }
@@ -254,17 +266,17 @@ function sidebar(url, urlAdmission, urlPatientAdmission) {
 function confirmActionPatient() {
     var answer = confirm("Are you sure to create patient information?");
     if (answer) {
-        window.location.href =  '<?php echo Url::toRoute(['/patient_information/create']) ?>';
+        window.location.href = '<?php echo Url::toRoute(['/patient_information/create']) ?>';
     } else {
         // window.location.href = '<?php echo Url::toRoute(['/site/admission']) ?>';
         // window.location.href = history.back();
-    }   
+    }
 }
 
 // The function below will start the confirmation dialog
 function duplicateIC() {
-   alert('NRIC is existed in system!');
-   window.location.href = history.go(-1);
+    alert('NRIC is existed in system!');
+    window.location.href = history.go(-1);
 }
 
 <?php }else{?>
@@ -272,21 +284,20 @@ function duplicateIC() {
 function confirmActionPatient() {
     var answer = confirm("Adakah anda pasti untuk membuat butiran pesakit?");
     if (answer) {
-        window.location.href =  '<?php echo Url::toRoute(['/patient_information/create']) ?>';
+        window.location.href = '<?php echo Url::toRoute(['/patient_information/create']) ?>';
     } else {
         // window.location.href = '<?php echo Url::toRoute(['/site/admission']) ?>';
         // window.location.href = history.back();
-    }   
+    }
 }
 
 // The function below will start the confirmation dialog
 function duplicateIC() {
-   alert('NRIC wujud dalam sistem!');
+    alert('NRIC wujud dalam sistem!');
     window.location.href = history.go(-1);
 }
 
 <?php } ?>
-
 </script>
 
 <?php 

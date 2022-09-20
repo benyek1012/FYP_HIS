@@ -170,12 +170,23 @@ class Patient_admissionController extends Controller
     {
         if(Yii::$app->request->get('confirm') == 't')
         {
-            $rows = (new \yii\db\Query())
-            ->select(['rn'])
-            ->from('patient_admission')
-            ->where(['type' => Yii::$app->request->get('type')])
-            ->all();
-            $SID = "1" + count($rows);
+            $SID = "1";
+
+            // check RN Rules for starting on next year
+            $model_latest_rn = Patient_admission::find()->orderBy('entry_datetime DESC')->one();
+            if(!empty($model_latest_rn))
+            {
+                $arr = str_split($model_latest_rn['rn'], 4);
+                $rows = (new \yii\db\Query())
+                ->select(['rn'])
+                ->from('patient_admission')
+                ->where(['type' => Yii::$app->request->get('type')])
+                ->andWhere(['>=','entry_datetime',date("Y-m-d")])
+                ->all();
+               
+                if($arr[0] ==  date('Y'))
+                    $SID = "1" + count($rows);
+            }
     
             if(Yii::$app->request->get('type') == 'Normal')
                 $rn = date('Y')."/".sprintf('%06d', $SID);

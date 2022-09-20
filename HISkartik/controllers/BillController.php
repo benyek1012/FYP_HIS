@@ -204,13 +204,15 @@ class BillController extends Controller
                 }
 
                 $model_cancellation = Cancellation::findAll(['replacement_uid' => null]);
+              
                 if(!empty($model_cancellation)){
                     foreach($model_cancellation as $model_cancellation){
                         $model_bill_cancel = Bill::findOne(['bill_uid' => $model_cancellation->cancellation_uid]);
-                        if($model_bill_cancel->rn == $model->rn){
-                            $model_cancellation->replacement_uid = $model->bill_uid;
-                            $model_cancellation->save();
-                        }
+                        if(!empty($model_bill_cancel))
+                            if($model_bill_cancel->rn == $model->rn){
+                                $model_cancellation->replacement_uid = $model->bill_uid;
+                                $model_cancellation->save();
+                            }
                     }
                 }
                 
