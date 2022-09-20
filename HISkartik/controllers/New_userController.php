@@ -192,7 +192,7 @@ class New_userController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($user_uid)
+    public function actionPassword_change($user_uid)
     {
         $model = $this->findModel($user_uid);
         $searchModel = new New_userSearch();
