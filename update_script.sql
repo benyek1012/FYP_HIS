@@ -97,5 +97,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+UPDATE `variable` SET `hospital_name` = 'Hospital Umum Sarawak' WHERE `variable`.`read_only` = 0;
+UPDATE `variable` SET `hospital_phone_number` = '082-276666' WHERE `variable`.`read_only` = 0;
 
 /* Update Error change to varchar(500000) Version 0.2.5 END */

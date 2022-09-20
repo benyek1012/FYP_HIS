@@ -21,9 +21,9 @@ class Reminder_pdf extends TCPDF {
         // Set font-family and font-size
         $this->SetFont('helvetica','',10);
         // Set the title of pages
-        $this->Cell(170, 8, "Rujukan kami : ", 0, 0,"R");
+        $this->Cell(133.5, 8, "Rujukan kami : ", 0, 0,"R");
         $this->SetY(15);
-        $this->Cell(0, 8, 'Tarikh : '.$this->date, 0, 0,"R");
+        $this->Cell(140, 8, 'Tarikh : '.$this->date, 0, 0,"R");
         // Break line with given space
         $this->Ln(5);
     }
@@ -35,7 +35,7 @@ class Reminder_pdf extends TCPDF {
         
         $this->Cell(70);
         // Set the title of pages.
-        $this->Cell(30, 20, 'SURAT PERINGATAN 1', 0, 2, 'C');
+        $this->Cell(30, 12, 'SURAT PERINGATAN 1', 0, 2, 'C');
           
         // Break line with given space
         $this->Ln(5);
@@ -80,9 +80,9 @@ class Reminder_pdf extends TCPDF {
         masih belum dijelaskan. Tuan / Puan dipohon untuk menjelaskan bil rawatan tersebut dalam tempoh <b>14 hari dari
         tarikh surat</b> ini dikeluarkan. Bayaran boleh dibuat secara <b>tunai / kad debit / kad kredit
         di kaunter bayaran Unit Hasil Hospital. Selain itu, bayaran juga boleh dibuat menggunakan
-        Wang Pos / Bank Draf</b> yang berpalang atas nama "<b>Pengarah Hospital : '.$director_name.'</b>".
+        Wang Pos / Bank Draf</b> yang berpalang atas nama "<b>Pengarah Hospital '.$director_name.'</b>".
         Sekiranya tuan/ puan mempunyai sebarang pertanyaan mengenai perkara ini, tuan / puan
-        boleh berhubung dengan pegawai di Unit Hasil Hospital.....di <b>talian '.$hospital_phone_number.' atau melalui emel '.$hospital_email.'.</b>*<br/>';
+        boleh berhubung dengan pegawai di Unit Hasil Hospital '.$hospital_name.' di <b>talian '.$hospital_phone_number.' atau melalui emel '.$hospital_email.'.</b>*<br/>';
 
         $this->MultiCell(160, 15,  $text, 0,'FJ', false, 1, '', '', true, 0, true, true, 0, 'T', false);
         $text2 = '3.       Sila abaikan surat ini jika pembayaran penuh telah dibuat dan pihak hospital mengucapkan terima kasih.';
@@ -93,7 +93,7 @@ class Reminder_pdf extends TCPDF {
         $this->SetFont('helvetica','',11);
         $this->Cell(30, 15, 'Saya yang menurut perintah, ', 0, 2, 'L');
         $this->Cell(30, 8, '(                             ) ', 0, 2, 'L');
-        $this->Cell(30, 8, 'b.p Pengarah', 0, 2, 'L');
+        $this->Cell(30, 8, 'b.p Pengarah '.$director_name, 0, 2, 'L');
         $this->Cell(30, 8, $hospital_name, 0, 2, 'L');
   
     }
@@ -110,12 +110,14 @@ class Reminder_pdf extends TCPDF {
         // Set font-family and font-size
         $this->SetFont('times','B',10);
           // Set the title of pages.
-        $this->Cell(30, 15, 'Tuan / Puan', 0, 2, 'L');
+        $text = '<br/><br/><br/>Tuan / Puan';
+        $this->writeHTMLCell(30, 15, '', $this->GetY(), $text, 0, 1, 0, true, 'L', true);
+        //$this->Cell(30, 15, , 0, 2, 'L');
         $this->Cell(30, 5, 'BAYARAN TUNGGAKAN BIL RAWATAN', 0, 2, 'L');
         $this->Cell(30, 5, 'NAMA PESAKIT     : '.$name, 0, 2, 'L');
-        $this->Cell(0, 5, 'NO. BIL                     : '.$bill_no.'                                 TARIKH BIL    : '.$date_bill, 0, 2, 'L');
-        $this->Cell(160, 5, 'R/N                             : '.$rn.'                                 AMAUN      : '.$amount, 0, 2, 'L');
-
+        $this->Cell(30, 5, 'NO. BIL                     : '.$bill_no.'                                 TARIKH BIL    : '.$date_bill, 0, 0, 'L');
+        $this->SetY($this->GetY()+5);
+        $this->Cell(30, 5, 'R/N                             : '.$rn.'                                 AMAUN      : '.$amount, 0, 0, 'L');
         $this->WriteHTML('<br><p><hr></p>');
     }
 
@@ -126,7 +128,7 @@ class Reminder_pdf extends TCPDF {
         
         $this->Cell(70);
         // Set the title of pages.
-        $this->Cell(30, 20, 'SURAT PERINGATAN 2', 0, 2, 'C');
+        $this->Cell(30, 12, 'SURAT PERINGATAN 2', 0, 2, 'C');
           
         // Break line with given space
         $this->Ln(5);
@@ -168,8 +170,8 @@ class Reminder_pdf extends TCPDF {
         telah tertunggak selama <b>28 hari</b>. Tuan / Puan dipohon untuk menjelaskan bil rawatan tersebut dalam tempoh <b>
         14 hari dari tarikh surat ini</b> dikeluarkan. Bayaran boleh dibuat secara <b>tunai / kad debit / kad kredit di 
         kaunter bayaran Unit Hasil Hospital. Selain itu, bayaran juga boleh dibuat menggunakan Wang Pos Bank Draf</b> 
-        yang berpalang atas nama "<b>Pengarah Hospital : '.$director_name.'</b>". Sekiranya tuan/ puan mempunyai sebarang pertanyaan 
-        mengenai perkara ini, tuan / puan boleh berhubung dengan pegawai di Unit Hasil Hospital.....di 
+        yang berpalang atas nama "<b>Pengarah Hospital '.$director_name.'</b>". Sekiranya tuan/ puan mempunyai sebarang pertanyaan 
+        mengenai perkara ini, tuan / puan boleh berhubung dengan pegawai di Unit Hasil Hospital '.$hospital_name.' di 
         <b>talian '.$hospital_phone_number.' atau melalui emel '.$hospital_email.'</b>*<br/>';
 
         $this->MultiCell(160, 15,  $text, 0,'FJ', false, 1, '', '', true, 0, true, true, 0, 'T', false);
@@ -183,7 +185,7 @@ class Reminder_pdf extends TCPDF {
         $this->SetFont('helvetica','',11);
         $this->Cell(30, 15, 'Saya yang menurut perintah, ', 0, 2, 'L');
         $this->Cell(30, 8, '(                             ) ', 0, 2, 'L');
-        $this->Cell(30, 8, 'b.p Pengarah', 0, 2, 'L');
+        $this->Cell(30, 8,  'b.p Pengarah '.$director_name, 0, 2, 'L');
         $this->Cell(30, 8, $hospital_name, 0, 2, 'L');
     }
 
@@ -194,7 +196,7 @@ class Reminder_pdf extends TCPDF {
         
         $this->Cell(70);
         // Set the title of pages.
-        $this->Cell(30, 20, 'SURAT PERINGATAN 3', 0, 2, 'C');
+        $this->Cell(30, 12, 'SURAT PERINGATAN 3', 0, 2, 'C');
           
         // Break line with given space
         $this->Ln(5);
@@ -236,9 +238,9 @@ class Reminder_pdf extends TCPDF {
          tertunggak selama <b>42 hari</b>. Tuan / Puan dipohon untuk menjelaskan bil rawatan tersebut dalam tempoh 
          <b>14 hari dari tarikh surat ini</b> dikeluarkan. Bayaran boleh dibuat secara <b>tunai / kad debit / kad 
          kredit di kaunter bavaran Unit Hasil Hospital. Selain itu, bayaran juga boleh dibuat menggunakan Wang 
-         Pos / Bank Draf</b> yang berpalang atas nama <b>"Pengarah Hospital : '.$director_name.'"</b>. Sekiranya tuan / puan 
+         Pos / Bank Draf</b> yang berpalang atas nama <b>"Pengarah Hospital '.$director_name.'"</b>. Sekiranya tuan / puan 
          mempunyai sebarang pertanyaan mengenai perkara ini, tuan / puan boleh berhubung dengan pegawai di Unit 
-         Hasil Hospital.....di <b>talian '.$hospital_phone_number.'</b>*<br/>';
+         Hasil Hospital '.$hospital_name.' di <b>talian '.$hospital_phone_number.'</b>*<br/>';
 
         $this->MultiCell(160, 15,  $text, 0,'FJ', false, 1, '', '', true, 0, true, true, 0, 'T', false);
         $text2 = '3.       Ini merupakan <b>SURAT PERINGATAN TERAKHIR</b> dan <b>sekiranya</b> 
@@ -253,7 +255,7 @@ class Reminder_pdf extends TCPDF {
          $this->SetFont('helvetica','',11);
          $this->Cell(30, 15, 'Saya yang menurut perintah, ', 0, 2, 'L');
          $this->Cell(30, 8, '(                             ) ', 0, 2, 'L');
-         $this->Cell(30, 8, 'b.p Pengarah', 0, 2, 'L');
+         $this->Cell(30, 8,  'b.p Pengarah '.$director_name, 0, 2, 'L');
          $this->Cell(30, 8, $hospital_name, 0, 2, 'L');
    }
 }

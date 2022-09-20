@@ -326,7 +326,6 @@ class ReminderController extends Controller
     public function exportPDF($batch_date)
     {
         $model = $this->findModel($batch_date);
-        $filename = $batch_date. '.pdf'; 
 
         $pdf = new Reminder_pdf();   // create TCPDF object with default constructor args
 
@@ -354,7 +353,7 @@ class ReminderController extends Controller
                 $address2 = (Patient_information::findOne(['nric' => $ic]))->address2;
                 $address3 = (Patient_information::findOne(['nric' => $ic]))->address3;
                 $rn = $q['rn'];
-                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                $datetime = date("Y-m-d", strtotime((Bill::findOne(['rn' => $rn]))->bill_generation_datetime));
                 $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
                 $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
                 $amount = "RM ".$q['Billable Fee'];
@@ -379,6 +378,8 @@ class ReminderController extends Controller
                 }
                 
             }
+
+            $filename = $batch_date. '.pdf'; 
     
             //Close and output PDF document
             $pdf->Output($filename, 'D');
