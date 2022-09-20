@@ -64,9 +64,9 @@ class Patient_next_of_kin extends \yii\db\ActiveRecord
             'nok_relationship' => Yii::t('app','Nok Relationship'),
             'nok_phone_number' => Yii::t('app','Nok Phone Number'),
             'nok_email' => Yii::t('app','Nok Email'),
-            'nok_address1' => Yii::t('app','Address'),
-            'nok_address2' => Yii::t('app','Address'),
-            'nok_address3' => Yii::t('app','Address'),
+            'nok_address1' => Yii::t('app','Address 1'),
+            'nok_address2' => Yii::t('app','Address 2'),
+            'nok_address3' => Yii::t('app','Address 3'),
             'nok_datetime_updated' => 'Nok Date Time Updated'
         ];
     }

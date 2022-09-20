@@ -7,6 +7,7 @@ use kartik\datetime\DateTimePicker;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
 use app\models\Bill;
+use app\models\Receipt;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
@@ -49,16 +50,6 @@ use app\models\Bill;
     ->from('patient_admission')
     ->where(['rn' => Yii::$app->request->get('rn')])
     ->one();
-
-  
-
-    $isdeposited = false;
-
-   
-    if(!empty($row_receipt))
-    {
-        $isdeposited = (new Patient_admission()) -> isdeposited($row_receipt['rn']);
-    }
 
     // $rows_patient_information = (new \yii\db\Query())
     // ->select('*')
@@ -115,7 +106,9 @@ use app\models\Bill;
     $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
     $billModel = new Bill();
     $checkDate = $billModel->isGenerated(Yii::$app->request->get('rn'));
-    if(!empty($cancellation) || $checkDate != false){
+    $receiptModel = new Receipt();
+    $checkDeposit = $receiptModel->isGenerated(Yii::$app->request->get('rn'));
+    if(!empty($cancellation) || $checkDate != false || $checkDeposit != false){
         $disabled = true;
         $linkDisabled = 'disabled-link';
     }
@@ -187,31 +180,32 @@ use app\models\Bill;
                 
             ],])?>
         </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?>  
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_address1')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>  
        
-
-   
-                
-        <div class="col-sm-6">
-            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'readonly' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?>  
+            <?= $form->field($model, 'guarantor_address2')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>  
+      
+            <?= $form->field($model, 'guarantor_address3')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>  
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled, 'readonly' => true]) ?>
+            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_address')->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => true]) ?>  
-        </div>
+    </div>
 
     <div class="form-group">
         <?php
@@ -221,17 +215,9 @@ use app\models\Bill;
         }
         ?>
 
-          <?php 
-if($isdeposited){
-   
-                ?>
-                <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update'])])?>
-                <?php }else{  ?>
-                    <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
+        
+        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
         <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update']), 'disabled' => $disabled])?>
-        <?php } ?>
-
-       
 
         <?php
             Modal::begin([
