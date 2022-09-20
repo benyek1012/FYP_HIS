@@ -51,13 +51,15 @@ SELECT bill.rn, patient_information.nric, patient_information.race, patient_info
     WHERE bill.bill_generation_datetime is not null
 )  dummy_name
 WHERE reminder_batch_date is not null AND deleted = 0 AND reminder_batch_date <= batch_date 
-ORDER BY reminder_no;
+ORDER BY rn, reminder_no;
 
 END$$
 DELIMITER ;
 
 ALTER TABLE `variable` ADD `hospital_name` VARCHAR(64) NOT NULL DEFAULT 'Sarawak General Hospital' AFTER `read_only`, ADD `director_name` VARCHAR(64) NOT NULL AFTER `hospital_name`;
 	
+
+CREATE DATABASE sghis / DROP DATABASE dbhis
 
 ALTER TABLE `patient_admission` CHANGE `guarantor_address` `guarantor_address1` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `patient_admission` ADD `guarantor_address2` VARCHAR(100) NOT NULL AFTER `guarantor_address1`, ADD `guarantor_address3` VARCHAR(100) NOT NULL AFTER `guarantor_address2`;
@@ -97,5 +99,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+UPDATE `variable` SET `hospital_name` = 'Hospital Umum Sarawak' WHERE `variable`.`read_only` = 0;
+UPDATE `variable` SET `hospital_phone_number` = '082-276666' WHERE `variable`.`read_only` = 0;
 
 /* Update Error change to varchar(500000) Version 0.2.5 END */
