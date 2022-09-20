@@ -63,6 +63,10 @@ class ReminderController extends Controller
                     Reminder::batchCreate($userid);
                 } catch(Exception $e){
                     $error = $e->getMessage();
+                    Yii::$app->session->setFlash('error_user', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                    '.$error.'</div>');
                 }
             }
             if ($_GET['function'] == 'downloadcsv')
@@ -91,22 +95,10 @@ class ReminderController extends Controller
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
-            'error' => $error,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
-
-    /*public function actionBatch($responsible_uid)
-    {
-        $model = $this->findModel($responsible_uid);
-
-        $model->responsible_uid = Yii::$app->user->identity->responsible_uid;
-         
-        $model::batchCreate($responsible_uid);
-
-        return $this->redirect(['index']);
-    }*/
 
     /**
      * Displays a single Reminder model.
@@ -220,109 +212,105 @@ class ReminderController extends Controller
             'allModels' => $query,
         ]);
 
-        $exporter = new CsvGrid([
-            'dataProvider' => $dataProvider,
-            'columns' => [
+        if($query != NULL)
+        {
+            $exporter = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    [
+                        'attribute' => 'rn',
+                        'label' => 'RN',
+                    ],
+                    [
+                        'attribute' => 'nric',
+                        'label' => 'IC',
+                    ],
+                    [
+                        'attribute' => 'race',
+                        'label' => 'Race',
+                    ],
                 [
-                    'attribute' => 'rn',
-                    'label' => 'RN',
-                ],
-                [
-                    'attribute' => 'nric',
-                    'label' => 'IC',
-                ],
-                [
-                    'attribute' => 'race',
-                    'label' => 'Race',
-                ],
-               [
-                    'attribute' => 'address1',
-                    'label' => 'address1',
-                ],
-                [
-                    'attribute' => 'address2',
-                    'label' => 'address2',
-                ],
-                [
-                    'attribute' => 'address3',
-                    'label' => 'address3',
-                ],
-                [
-                    'attribute' => 'guarantor_nric',
-                    'label' => 'Guarantor Ic',
-                    'format' =>'text',
-                ],
-                [
-                    'attribute' => 'gurantor_address',
-                    'label' => 'Guarantor Address',
-                ],
-                [
-                    'attribute' => 'entry_datetime',
-                    'label' => 'Entry Datetime',
-                ],
-                [
-                    'attribute' => 'Reminder Number',
-                    'value' => function($model, $index, $dataColumn) {
-                        if(!empty($model['Reminder Number']))
-                        {
-                            if($model['Reminder Number'] == 'reminder1') return '1';
-                            else if($model['Reminder Number'] == 'reminder2') return '2';
-                            else if($model['Reminder Number'] == 'reminder3') return '3';
+                        'attribute' => 'address1',
+                        'label' => 'address1',
+                    ],
+                    [
+                        'attribute' => 'address2',
+                        'label' => 'address2',
+                    ],
+                    [
+                        'attribute' => 'address3',
+                        'label' => 'address3',
+                    ],
+                    [
+                        'attribute' => 'guarantor_nric',
+                        'label' => 'Guarantor Ic',
+                        'format' =>'text',
+                    ],
+                    [
+                        'attribute' => 'gurantor_address',
+                        'label' => 'Guarantor Address',
+                    ],
+                    [
+                        'attribute' => 'entry_datetime',
+                        'label' => 'Entry Datetime',
+                    ],
+                    [
+                        'attribute' => 'Reminder Number',
+                        'value' => function($model, $index, $dataColumn) {
+                            if(!empty($model['Reminder Number']))
+                            {
+                                if($model['Reminder Number'] == 'reminder1') return '1';
+                                else if($model['Reminder Number'] == 'reminder2') return '2';
+                                else if($model['Reminder Number'] == 'reminder3') return '3';
+                            }
+                            else return NULL;
                         }
-                        else return NULL;
-                    }
-                ],
-                [
-                    'attribute' => 'Batch date',
-                ],
-                [
-                    'attribute' => 'Discharge Date',
-                ],
-                [
-                    'attribute' => '',
-                    'label' => 'Reminder Date',
-                    'value' => function($model, $index, $dataColumn) {
-                        return (new Reminder())->getReminderDate($model['Reminder Number'], $model['Discharge Date']);
-                    }
-                ],
-                [
-                    'attribute' => 'Billable Fee',
-                ],
-              
-                [
-                   // 'attribute' => 'bills.bill_generation_final_fee_rm',
+                    ],
+                    [
+                        'attribute' => 'Batch date',
+                    ],
+                    [
+                        'attribute' => 'Discharge Date',
+                    ],
+                    [
+                        'attribute' => '',
+                        'label' => 'Reminder Date',
+                        'value' => function($model, $index, $dataColumn) {
+                            return (new Reminder())->getReminderDate($model['Reminder Number'], $model['Discharge Date']);
+                        }
+                    ],
+                    [
+                        'attribute' => 'Billable Fee',
+                    ],
+                
+                    [
+                    // 'attribute' => 'bills.bill_generation_final_fee_rm',
 
-                    'label' => 'Amount Due',
-                    'value' => function($model, $index, $dataColumn) {
-                        $remindate = ((new Reminder()) -> getReminderDate($model['Reminder Number'], $model['Discharge Date'])); 
+                        'label' => 'Amount Due',
+                        'value' => function($model, $index, $dataColumn) {
+                            $remindate = ((new Reminder()) -> getReminderDate($model['Reminder Number'], $model['Discharge Date'])); 
 
-                        return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],$remindate));
-                    }
+                            return ((new Reminder()) -> calculateAmountdue($model['rn'],$model['Billable Fee'],$remindate));
+                        }
 
-                ],
+                    ],
 
 
-            ],
-        ]);
-        $filename = $batch_date. '.csv'; 
-        
-        return $exporter->export()->send($filename);
+                ],
+            ]);
+            $filename = $batch_date. '.csv'; 
+            
+            return $exporter->export()->send($filename);
+        }
     }
 
     public function print($batch_date)
     {
-        $query = Patient_admission::find()
-        ->select('patient_admission.*')
-        ->from('patient_admission')
-        ->joinWith('patient_information',true)
-        ->joinWith('bill',true)
-        ->joinWith('receipt',true)
-        ->joinWith('reminder',true)
-        ->where(['batch_date'=>$batch_date])
-        ->groupBy(['rn']);
+        $model = $this->findModel($batch_date);
+        $query = $model->getReminderNumberRows($batch_date);
 
         echo "<pre>";
-        var_dump($query->all());
+        var_dump($query);
         exit;
         echo "</pre>";
     }
@@ -344,63 +332,67 @@ class ReminderController extends Controller
         $pdf->setMargins(22, 22, 11.6);
         
         $query = $model->getReminderNumberRows($batch_date);
+
+        if($query != NULL)
+        {
+            foreach ($query as $q)
+            {           
+                // reminder 1
+                if($q['Reminder Number'] == 'reminder1'){
+                    $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                    $pdf->setData($reminder_date);
+                    $pdf->AddPage();
+                    $ic = $q['nric'];
+                    $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                    $rn = $q['rn'];
+                    $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                    $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                    $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                    $amount = "RM ".$q['Billable Fee'];
+                    $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                    $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No);
+                }
+              
+                // reminder 2
+                if($q['Reminder Number']== 'reminder2'){
+                    $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                    $pdf->setData($reminder_date);
+                    $pdf->AddPage();
+                    // $pdf->setData($batch_date);
+                    $ic = $q['nric'];
+                    $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                    $rn = $q['rn'];
+                    $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                    $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                    $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                    $amount = "RM ".$q['Billable Fee'];
+                    $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                    $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No);
+                }
+    
+                // reminder 3
+                if($q['Reminder Number'] == 'reminder3'){
+                    $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                    $pdf->setData($reminder_date);
+                    $pdf->AddPage();
+                    // $pdf->setData($batch_date);
+                    $ic = $q['nric'];
+                    $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                    $rn = $q['rn'];
+                    $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                    $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                    $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                    $amount = "RM ".$q['Billable Fee'];
+                    $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                    $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No);
+                }
                 
-        foreach ($query as $q)
-        {           
-            // reminder 1
-            if($q['Reminder Number'] == 'reminder1'){
-                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
-                $pdf->setData($reminder_date);
-                $pdf->AddPage();
-                $ic = $q['nric'];
-                $name = (Patient_information::findOne(['nric' => $ic]))->name;
-                $rn = $q['rn'];
-                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
-                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
-                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
-                $amount = "RM ".$q['Billable Fee'];
-                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No);
             }
-          
-            // reminder 2
-            if($q['Reminder Number']== 'reminder2'){
-                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
-                $pdf->setData($reminder_date);
-                $pdf->AddPage();
-                // $pdf->setData($batch_date);
-                $ic = $q['nric'];
-                $name = (Patient_information::findOne(['nric' => $ic]))->name;
-                $rn = $q['rn'];
-                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
-                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
-                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
-                $amount = "RM ".$q['Billable Fee'];
-                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No);
-            }
-
-            // reminder 3
-            if($q['Reminder Number'] == 'reminder3'){
-                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
-                $pdf->setData($reminder_date);
-                $pdf->AddPage();
-                // $pdf->setData($batch_date);
-                $ic = $q['nric'];
-                $name = (Patient_information::findOne(['nric' => $ic]))->name;
-                $rn = $q['rn'];
-                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
-                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
-                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
-                $amount = "RM ".$q['Billable Fee'];
-                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No);
-            }
-            
+    
+            //Close and output PDF document
+            $pdf->Output($filename, 'D');
         }
-
-        //Close and output PDF document
-        $pdf->Output($filename, 'D');
+    
        
     }
 }

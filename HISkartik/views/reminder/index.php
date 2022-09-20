@@ -26,7 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app','Create Batch'), ['index'], ['class' => 'btn btn-success']) ?>
     </p>-->
 
-    <?= $error ?>
+    <?php if(Yii::$app->session->hasFlash('error_user')):?>
+        <div id = "flashError">
+            <?= Yii::$app->session->getFlash('error_user') ?>
+        </div>
+    <?php endif; ?>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
