@@ -247,8 +247,16 @@ class ReminderController extends Controller
                         'format' =>'text',
                     ],
                     [
-                        'attribute' => 'gurantor_address',
-                        'label' => 'Guarantor Address',
+                        'attribute' => 'guarantor_address1',
+                        'label' => 'Guarantor Address 1',
+                    ],
+                    [
+                        'attribute' => 'guarantor_address2',
+                        'label' => 'Guarantor Address 2',
+                    ],
+                    [
+                        'attribute' => 'guarantor_addres3',
+                        'label' => 'Guarantor Address 3',
                     ],
                     [
                         'attribute' => 'entry_datetime',
@@ -337,54 +345,37 @@ class ReminderController extends Controller
         {
             foreach ($query as $q)
             {           
+                $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
+                $pdf->setData($reminder_date);
+                $pdf->AddPage();
+                $ic = $q['nric'];
+                $name = (Patient_information::findOne(['nric' => $ic]))->name;
+                $address1 = (Patient_information::findOne(['nric' => $ic]))->address1;
+                $address2 = (Patient_information::findOne(['nric' => $ic]))->address2;
+                $address3 = (Patient_information::findOne(['nric' => $ic]))->address3;
+                $rn = $q['rn'];
+                $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
+                $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
+                $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
+                $amount = "RM ".$q['Billable Fee'];
+                $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
+                $guarantor_name = (Patient_admission::findOne(['rn' => $rn]))->guarantor_name;
+                $guarantor_address1 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address1;
+                $guarantor_address2 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address2;
+                $guarantor_address3 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address3;
                 // reminder 1
                 if($q['Reminder Number'] == 'reminder1'){
-                    $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
-                    $pdf->setData($reminder_date);
-                    $pdf->AddPage();
-                    $ic = $q['nric'];
-                    $name = (Patient_information::findOne(['nric' => $ic]))->name;
-                    $rn = $q['rn'];
-                    $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
-                    $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
-                    $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
-                    $amount = "RM ".$q['Billable Fee'];
-                    $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                    $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No);
+                    $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No,$guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3);
                 }
               
                 // reminder 2
                 if($q['Reminder Number']== 'reminder2'){
-                    $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
-                    $pdf->setData($reminder_date);
-                    $pdf->AddPage();
-                    // $pdf->setData($batch_date);
-                    $ic = $q['nric'];
-                    $name = (Patient_information::findOne(['nric' => $ic]))->name;
-                    $rn = $q['rn'];
-                    $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
-                    $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
-                    $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
-                    $amount = "RM ".$q['Billable Fee'];
-                    $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                    $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No);
+                    $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3);
                 }
     
                 // reminder 3
                 if($q['Reminder Number'] == 'reminder3'){
-                    $reminder_date = (new Reminder())->getReminderDate($q['Reminder Number'], $q['Discharge Date']);
-                    $pdf->setData($reminder_date);
-                    $pdf->AddPage();
-                    // $pdf->setData($batch_date);
-                    $ic = $q['nric'];
-                    $name = (Patient_information::findOne(['nric' => $ic]))->name;
-                    $rn = $q['rn'];
-                    $datetime = (Bill::findOne(['rn' => $rn]))->bill_generation_datetime;
-                    $remindate = ((new Reminder()) -> getReminderDate($q['Reminder Number'], $q['Discharge Date'])); 
-                    $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
-                    $amount = "RM ".$q['Billable Fee'];
-                    $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                    $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No);
+                    $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3);
                 }
                 
             }

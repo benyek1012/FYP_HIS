@@ -104,4 +104,10 @@ class Receipt extends \yii\db\ActiveRecord
         }
         return true;
     }
+    // Check whether deposite is generated
+    public function isGenerated($rn){
+            $row_receipt = Receipt::findOne(['rn' => $rn, 'receipt_type' => 'deposit']);
+            if(!empty($row_receipt))
+                return !empty($row_receipt['receipt_content_datetime_paid']) ? $row_receipt['receipt_content_datetime_paid'] : false;
+    }
 }
