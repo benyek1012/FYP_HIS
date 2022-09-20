@@ -142,6 +142,13 @@ class BillController extends Controller
         echo Json::encode($modelFPP);
     }  
 
+    public function actionBillable_final_fee($bill_uid) {
+        $cost = array();
+        $cost['billAble'] = (new Bill()) -> calculateBillable($bill_uid);
+        $cost['finalFee'] = (new Bill()) -> calculateFinalFee($bill_uid);
+        echo Json::encode($cost);
+    }
+
     /**
      * Displays a single Bill model.
      * @param string $bill_uid Bill Uid
@@ -266,8 +273,11 @@ class BillController extends Controller
             $modelTreatment->save();
         }      
         
+        // return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+        //     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
+
         return Yii::$app->getResponse()->redirect(array('/bill/generate', 
-            'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'bill'));
+            'bill_uid' => $model->bill_uid, 'rn' => $model->rn));
     }
 
       /**

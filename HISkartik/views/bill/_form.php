@@ -225,6 +225,9 @@ $this->registerJs(
             else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
             else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
             else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+
+            document.getElementById('ward_cost').style.backgroundColor = '#ffc107';
+            document.getElementById('status_des').style.backgroundColor = '#ffc107';
         });
     });"
 );
@@ -260,6 +263,8 @@ $this->registerJs(
                     calculateItemCost();
                 });
             });
+
+            document.getElementById('ward_cost').style.backgroundColor = '#ffc107';
         });        
     });"
 );
@@ -275,6 +280,8 @@ $this->registerJs(
             else{
                 $('#departmentName').attr('value', data.department_name);
             }
+
+            document.getElementById('departmentName').style.backgroundColor = '#ffc107';
         });
     });"
 );
@@ -390,6 +397,7 @@ if(empty($checkFPP)){
 
 $urlStatus = Url::toRoute(['/bill/status']);
 $urlGenerate = Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->request->get('bill_uid')]);
+$urlBillableAndFinalFee = Url::toRoute(['/bill/billable_final_fee']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 
@@ -729,7 +737,7 @@ textarea {
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee();", 'disabled' => $disabled]) ?>
+                <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee('{$urlBillableAndFinalFee}');", 'disabled' => $disabled]) ?>
                 <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
                 <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
@@ -862,11 +870,13 @@ function cancellation(){
     }
 }
 
-function getBillableAndFinalFee() {
-    $('#bill-bill_generation_billable_sum_rm').val(
-        <?php echo (new Bill())  -> calculateBillable(Yii::$app->request->get('bill_uid')); ?>);
-    $('#bill-bill_generation_final_fee_rm').val(
-        <?php echo (new Bill())  -> calculateFinalFee(Yii::$app->request->get('bill_uid')); ?>);
+function getBillableAndFinalFee(url) {
+    $.get(url, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+        var data = $.parseJSON(data);                 
+
+        $('#bill-bill_generation_billable_sum_rm').val(data.billAble);
+        $('#bill-bill_generation_final_fee_rm').val(data.finalFee);
+    });
 }
 
 function getDailyWardCost(url) {

@@ -260,6 +260,7 @@ else{
     function calculateFPPTotalCost() {
         $('.fppKod', document).each(function(index, item) {
             var kod = this.value;
+            var cost = $('#fpp-' + index + '-total_cost').val();
 
             var costPerUnit = $('#fpp-' + index + '-cost_per_unit').val();
             var numberOfUnit = $('#fpp-' + index + '-number_of_units').val();
@@ -267,6 +268,11 @@ else{
             if (costPerUnit != '' && numberOfUnit != "") {
                 var totalCost = parseFloat(costPerUnit) * parseFloat(numberOfUnit);
                 $('#fpp-' + index + '-total_cost').val(totalCost);
+                
+            }
+
+            if(cost != totalCost && cost != ''){
+                document.getElementById('fpp-' + index + '-total_cost').style.backgroundColor = '#ffc107';
             }
         });
     }
@@ -300,6 +306,10 @@ else{
                     $('#fpp-'+index+'-name').attr('value', data.name);
                     $('#fpp-'+index+'-min_cost_per_unit').attr('value', data.min_cost_per_unit);
                     $('#fpp-'+index+'-max_cost_per_unit').attr('value', data.max_cost_per_unit);
+
+                    document.getElementById('fpp-'+index+'-name').style.backgroundColor = '#ffc107';
+                    document.getElementById('fpp-' + index + '-min_cost_per_unit').style.backgroundColor = '#ffc107';
+                    document.getElementById('fpp-' + index + '-max_cost_per_unit').style.backgroundColor = '#ffc107';
                 });
             });
         });

@@ -333,6 +333,8 @@ return[
     'Pekeliling Imports' => 'Import Kod Pekeliling',
     'You have successfully import file ' => 'Anda telah berjaya mengimport fail ',
     'You have successfully execute file ' => 'Anda telah berjaya melaksanakan fail ',
-    
+    'Account Code' => 'Kod Akaun',
+    'Receipt Cancelled' => 'Resit Dibatalkan',
+    'Bill Cancelled' => 'Bil Dibatalkan',
 ];
 ?>

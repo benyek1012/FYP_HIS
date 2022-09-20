@@ -326,6 +326,8 @@ else{
         var countWard = $("#countWard").val();
 
         for (var i = 0; i < countWard; i++) {
+            var numberOfDay = $('#ward-' + i + '-ward_number_of_days').val();
+
             var date1 = new Date($("#ward-" + i + "-ward_start_datetime").val());
             var date2 = new Date($("#ward-" + i + "-ward_end_datetime").val());
 
@@ -356,7 +358,11 @@ else{
 
                 $("#ward-" + i + "-ward_number_of_days").val(days);
 
+                if(numberOfDay != days && numberOfDay != ''){
+                    document.getElementById('ward-' + i + '-ward_number_of_days').style.backgroundColor = '#ffc107';
+                }
             }
+            
         }
     }
 
@@ -368,6 +374,8 @@ else{
                     var data = $.parseJSON(data);
                     $('#ward-'+index+'-ward_name').attr('value', data.ward_name);
                 });
+
+                document.getElementById('ward-'+index+'-ward_name').style.backgroundColor = '#ffc107';
             });
         });
     }

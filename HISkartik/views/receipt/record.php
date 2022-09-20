@@ -168,6 +168,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+                    $model_bill = Bill::findOne(['final_ward_datetime' => $data['receipt_content_datetime_paid']]);
 
                     if(!empty($model_receipt)){
                         $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
@@ -188,6 +189,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
                     // Bill
+                    else if($model_bill->deleted == 1){
+                        $type = 'Bill Cancelled';
+                        $title = '';
+                        $class = 'badge-danger';
+                    }
                     else{
                         $type = 'Bill';
                         $title = '';
@@ -201,6 +207,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-toggle'=>'tooltip',
                         'style' => 'white-space:pre;'
                     ]);
+
                     return $tag;
 
                 },

@@ -302,6 +302,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
     function calculateItemTotalCost() {
         $('.treatmentCode', document).each(function(index, item) {
             var treatmentCode = this.value;
+            var cost = $('#treatment_details-' + index + '-item_total_unit_cost_rm').val();
 
             var itemPerUnit = $('#treatment_details-' + index + '-item_per_unit_cost_rm').val();
             var itemCount = $('#treatment_details-' + index + '-item_count').val();
@@ -309,6 +310,10 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
             if (itemCount != '' && itemPerUnit != "") {
                 var totalCost = parseFloat(itemPerUnit) * parseFloat(itemCount);
                 $('#treatment_details-' + index + '-item_total_unit_cost_rm').val(totalCost);
+            }
+
+            if(cost != totalCost && cost != ''){
+                document.getElementById('treatment_details-' + index + '-item_total_unit_cost_rm').style.backgroundColor = '#ffc107';
             }
         });
     }
@@ -359,6 +364,9 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                         $('#treatment_details-'+index+'-item_per_unit_cost_rm').attr('value', data.class_3_cost_per_unit);
                     }
                     // calculateItemCost();
+
+                    document.getElementById('treatment_details-'+index+'-treatment_name').style.backgroundColor = '#ffc107';
+                    document.getElementById('treatment_details-'+index+'-item_per_unit_cost_rm').style.backgroundColor = '#ffc107';
                 });
             });
         });

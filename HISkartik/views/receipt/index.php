@@ -247,6 +247,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'label' => Yii::t('app','Payer Name')
             ],
+
+            [
+                'attribute'=> 'kod_akaun',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                'value' => function($data){
+                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+
+                    if(!empty($model_receipt)){
+                        return $model_receipt->kod_akaun;
+                    }
+                    else{
+                        return null;
+                    }
+                },
+                'label' => Yii::t('app','Account Code')
+            ],
            
             [
                 'attribute' => 'receipt_responsible',
