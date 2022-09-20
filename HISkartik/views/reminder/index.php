@@ -120,9 +120,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'print' => function ($url, $model, $key) {
                         return ($model->batch_date != Reminder::placeholder) ? 
-                            HTML::a('Print', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
+                            HTML::a('Print Pdf', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
                                 ['class' => 'btn btn-success btn-xs'])
-                        :  HTML::a('Print', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
+                        :  HTML::a('Print Pdf', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
                         ['class' => 'd-none btn btn-success btn-xs']);
                     },
                 ]
