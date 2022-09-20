@@ -781,7 +781,7 @@ textarea {
                 <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
                 <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
-                <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
+                <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
                     'onclick' => '(function ( $event ) {
                         document.getElementById("serial_number").readOnly = false; 
                         document.getElementById("serial_number").value = "";

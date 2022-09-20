@@ -118,7 +118,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
     <a href="<?= Url::to(['/site/index']); ?>" class="brand-link">
         <!-- <img src="<?=$assetDir?>/img/AdminLTELogo.png" alt="HIS Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> -->
-        <span class="brand-text font-weight-light "><b>HIS</b></span>
+        <span class="brand-text font-weight-light "><b>SGHIS</b></span>
     </a>
 
     <!-- Sidebar -->

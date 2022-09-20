@@ -254,7 +254,7 @@ else{
 
     <div class="form-group" id="div_print">
         <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?>
-        <?= Html::button(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 
+        <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
             'onclick' => "(function () {
                  document.getElementById('serial_number'+{$index}).readOnly = false; 
                  document.getElementById('serial_number'+{$index}).value = '';
