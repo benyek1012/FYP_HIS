@@ -536,14 +536,6 @@ class BillController extends Controller
                     Yii::$app->session->setFlash('msg', '
                     <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
                 }
-               
-				$bill = Bill::findOne(["bill_uid" => $bill_uid]);
-				$bill->bill_print_datetime = (new \DateTime())->format('Y-m-d H:i:s');
-				$bill->bill_print_id = SerialNumber::getSerialNumber("bill");
-				$bill->bill_print_responsible_uid = Yii::$app->user->identity->getId();
-				$bill->save();
-				
-				$model = $bill;
                           
                 if($model->bill_print_id != SerialNumber::getSerialNumber("bill"))
                 {
