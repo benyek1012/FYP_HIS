@@ -170,27 +170,48 @@ class Patient_admissionController extends Controller
     {
         if(Yii::$app->request->get('confirm') == 't')
         {
-            $SID = "1";
-
+            $SID = "0";
             // check RN Rules for starting on next year
-            $model_latest_rn = Patient_admission::find()->orderBy('entry_datetime DESC')->one();
+            $model_latest_rn = Patient_admission::find()
+            ->where(['type' => Yii::$app->request->get('type')])
+            ->orderBy('entry_datetime DESC')
+            ->one();
+            // var_dump($model_latest_rn->rn);
+            // exit;
             if(!empty($model_latest_rn))
             {
                 $arr = str_split($model_latest_rn['rn'], 4);
-                $rows = (new \yii\db\Query())
-                ->select(['rn'])
-                ->from('patient_admission')
-                ->where(['type' => Yii::$app->request->get('type')])
-                ->andWhere(['>=','entry_datetime',date("Y-m-d")])
-                ->all();
-               
-                if($arr[0] ==  date('Y'))
-                    $SID = "1" + count($rows);
+                // $rows = Patient_admission::find()
+                // ->select(['rn'])
+                // ->where(['type' => Yii::$app->request->get('type')])
+                // ->andWhere(['>=','entry_datetime',date("Y-m-d")])
+                // ->all();
+
+                $SID = (string)$model_latest_rn->rn;
+                   
+                // var_dump($SID);
+                // exit;
+                //2022/000001, 2022/900001
+                $SID = substr($SID,5,11); 
+                if($arr[0] ==  date('Y')){
+                    $SID = (int) $SID + 1;
+                    if(Yii::$app->request->get('type') == 'Normal') $SID = str_pad($SID, 6, "0", STR_PAD_LEFT);
+                }
+                else{
+                    if(Yii::$app->request->get('type') == 'Normal') $SID = "000001";
+                    else $SID = "900001";
+                }
+                // var_dump($SID);
+                // exit;
+            }
+            else {
+               if(Yii::$app->request->get('type') == 'Normal') $SID = "000001";
+               else $SID = "900001";
             }
     
             if(Yii::$app->request->get('type') == 'Normal')
-                $rn = date('Y')."/".sprintf('%06d', $SID);
-            else $rn = date('Y')."/9".sprintf('%05d', $SID);
+                $rn = date('Y')."/".$SID;
+            else $rn = date('Y')."/".$SID;
             
             $date = new \DateTime();
             $date->setTimezone(new \DateTimeZone('+0800')); //GMT
