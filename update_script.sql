@@ -100,4 +100,6 @@ DELIMITER ;
 UPDATE `variable` SET `hospital_name` = 'Hospital Umum Sarawak' WHERE `variable`.`read_only` = 0;
 UPDATE `variable` SET `hospital_phone_number` = '082-276666' WHERE `variable`.`read_only` = 0;
 
+ALTER TABLE `lookup_department` CHANGE `department_name` `department_name` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
 /* Update Error change to varchar(500000) Version 0.2.5 END */
