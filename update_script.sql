@@ -51,7 +51,7 @@ SELECT bill.rn, patient_information.nric, patient_information.race, patient_info
     WHERE bill.bill_generation_datetime is not null
 )  dummy_name
 WHERE reminder_batch_date is not null AND deleted = 0 AND reminder_batch_date <= batch_date 
-ORDER BY reminder_no;
+ORDER BY reminder_no, rn;
 
 END$$
 DELIMITER ;
