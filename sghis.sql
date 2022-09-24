@@ -18,10 +18,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `dbhis`
+-- Database: `sghis`
 --
-CREATE DATABASE IF NOT EXISTS `dbhis` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `dbhis`;
+CREATE DATABASE IF NOT EXISTS `sghis` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `sghis`;
 
 DELIMITER $$
 --
