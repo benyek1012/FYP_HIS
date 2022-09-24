@@ -34,7 +34,7 @@ class Lookup_department extends \yii\db\ActiveRecord
             [['department_uid', 'department_code', 'department_name'], 'required'],
             [['department_uid'], 'string', 'max' => 64],
             [['department_code'], 'string', 'max' => 20],
-            [['department_name'], 'string', 'max' => 50],
+            [['department_name'], 'string', 'max' => 200],
             [['phone_number', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
             [['department_code'], 'unique'],
             [['department_uid'], 'unique'],

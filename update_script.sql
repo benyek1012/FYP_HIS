@@ -51,7 +51,7 @@ SELECT bill.rn, patient_information.nric, patient_information.race, patient_info
     WHERE bill.bill_generation_datetime is not null
 )  dummy_name
 WHERE reminder_batch_date is not null AND deleted = 0 AND reminder_batch_date <= batch_date 
-ORDER BY reminder_no;
+ORDER BY reminder_no, rn;
 
 END$$
 DELIMITER ;
@@ -99,5 +99,7 @@ DELIMITER ;
 
 UPDATE `variable` SET `hospital_name` = 'Hospital Umum Sarawak' WHERE `variable`.`read_only` = 0;
 UPDATE `variable` SET `hospital_phone_number` = '082-276666' WHERE `variable`.`read_only` = 0;
+
+ALTER TABLE `lookup_department` CHANGE `department_name` `department_name` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
 /* Update Error change to varchar(500000) Version 0.2.5 END */
