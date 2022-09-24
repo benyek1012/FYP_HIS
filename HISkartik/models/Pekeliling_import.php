@@ -115,11 +115,12 @@ class Pekeliling_import extends \yii\db\ActiveRecord
         switch ($type) {
             case "status":
                 $model_lookup = Lookup_status::findOne(['status_code' =>  $line[0]]);
-                if(!$model_lookup):
+                if(empty($model_lookup))
+                {
                     $model_lookup = new Lookup_status();
-                endif;
-                $model_lookup->status_uid =  Base64UID::generate(32);
-                $model_lookup->status_code = $line[0];
+                    $model_lookup->status_uid =  Base64UID::generate(32);
+                    $model_lookup->status_code = $line[0];
+                }  
                 $model_lookup->status_description = $line[1];
                 $model_lookup->class_1a_ward_cost = $line[2];
                 $model_lookup->class_1b_ward_cost = $line[3];
@@ -130,11 +131,12 @@ class Pekeliling_import extends \yii\db\ActiveRecord
 
             case "treatment":
                 $model_lookup = Lookup_treatment::findOne(['treatment_code' =>  $line[0]]);
-                if(!$model_lookup):
+                if(empty($model_lookup))
+                {
                     $model_lookup = new Lookup_treatment();
-                endif;
-                $model_lookup->treatment_uid =  Base64UID::generate(32);
-                $model_lookup->treatment_code = $line[0];
+                    $model_lookup->treatment_uid =  Base64UID::generate(32);
+                    $model_lookup->treatment_code = $line[0];
+                }
                 $model_lookup->treatment_name = $line[1];
                 $model_lookup->class_1_cost_per_unit = $line[2];
                 $model_lookup->class_2_cost_per_unit = $line[3];
@@ -144,11 +146,12 @@ class Pekeliling_import extends \yii\db\ActiveRecord
 
             case "ward":
                 $model_lookup = Lookup_ward::findOne(['ward_code' =>  $line[0]]);
-                if(!$model_lookup):
+                if(empty($model_lookup))
+                {
                     $model_lookup = new Lookup_ward();
-                endif;
-                $model_lookup->ward_uid =  Base64UID::generate(32);
-                $model_lookup->ward_code = $line[0];
+                    $model_lookup->ward_uid =  Base64UID::generate(32);
+                    $model_lookup->ward_code = $line[0];
+                }
                 $model_lookup->ward_name = $line[1];
                 $model_lookup->sex = $line[2];
                 $model_lookup->min_age = $line[3];
@@ -157,11 +160,12 @@ class Pekeliling_import extends \yii\db\ActiveRecord
               
             case "department":
                 $model_lookup = Lookup_department::findOne(['department_code' =>  $line[0]]);
-                if(!$model_lookup):
+                if(empty($model_lookup))
+                {
                     $model_lookup = new Lookup_department();
-                endif;
-                $model_lookup->department_uid =  Base64UID::generate(32);
-                $model_lookup->department_code = $line[0];
+                    $model_lookup->department_uid =  Base64UID::generate(32);
+                    $model_lookup->department_code = $line[0];
+                }
                 $model_lookup->department_name = $line[1];
                 $model_lookup->phone_number = $line[2];
                 $model_lookup->address1 = $line[3];
@@ -171,10 +175,11 @@ class Pekeliling_import extends \yii\db\ActiveRecord
 
             case "fpp":
                 $model_lookup = Lookup_fpp::findOne(['kod' =>  $line[0]]);
-                if(!$model_lookup):
+                if(empty($model_lookup))
+                {
                     $model_lookup = new Lookup_fpp();
-                endif;
-                $model_lookup->kod = $line[0];
+                    $model_lookup->kod = $line[0];
+                }
                 $model_lookup->name = $line[1];
                 $model_lookup->min_cost_per_unit = $line[2];
                 $model_lookup->max_cost_per_unit = $line[3];
