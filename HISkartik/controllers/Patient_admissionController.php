@@ -276,8 +276,8 @@ class Patient_admissionController extends Controller
                 $model->initial_ward_class = "UNKNOWN";
             }
             if($model->save()){
-                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                    'rn' => $model->rn));  
+                // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                //     'rn' => $model->rn));  
             }    
         }
 

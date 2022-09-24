@@ -113,8 +113,8 @@ class Patient_informationController extends Controller
 
                 if($model->save())
                 {
-                    return Yii::$app->getResponse()->redirect(array('/site/admission', 
-                    'id' => $model->patient_uid, '#' => 'patient'));                 
+                    // return Yii::$app->getResponse()->redirect(array('/site/admission', 
+                    // 'id' => $model->patient_uid, '#' => 'patient'));                 
                 }
             }
             else{

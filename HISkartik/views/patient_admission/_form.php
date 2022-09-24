@@ -154,6 +154,12 @@ use app\models\Receipt;
                     'allowClear' => true,
                     // 'tags' => true,
                 ],
+                'pluginEvents' => [
+                    "change" => "function() { 
+                        getFocusID('initial_ward_code');
+                        submitPatientAdmissionForm();
+                    }",
+                ]
             ]); ?>
         </div>
 
@@ -169,6 +175,12 @@ use app\models\Receipt;
                     'allowClear' => true,
                     // 'tags' => true,
                 ],
+                'pluginEvents' => [
+                    "change" => "function() { 
+                        getFocusID('initial_ward_class');
+                        submitPatientAdmissionForm();
+                    }",
+                ]
             ]); ?>
         </div>
 
@@ -177,33 +189,36 @@ use app\models\Receipt;
             'options' => ['class' => 'entry_datetime', 'disabled' => $disabled],
             'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
             'pluginEvents' => [
-                
+                "change" => "function() { 
+                    getFocusID('patient_admission-entry_datetime');
+                    submitPatientAdmissionForm();
+                }",
             ],])?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')"]) ?>  
+            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')", 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled]) ?>
+            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_address1')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>  
+            <?= $form->field($model, 'guarantor_address1')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
        
-            <?= $form->field($model, 'guarantor_address2')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>  
+            <?= $form->field($model, 'guarantor_address2')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
       
-            <?= $form->field($model, 'guarantor_address3')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>  
+            <?= $form->field($model, 'guarantor_address3')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
     </div>
 
@@ -216,7 +231,7 @@ use app\models\Receipt;
         ?>
 
         
-        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
+        <!-- <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?> -->
         <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update']), 'disabled' => $disabled])?>
 
         <?php
@@ -283,5 +298,31 @@ $this->registerJs(
                 // console.log(wardForm.attr("method"));
             },
         });
+    }
+
+    var focusID = '';
+
+    function submitPatientAdmissionForm(){
+        var form = $('#patient-admission-form');
+        var formData = $('#'+focusID).serialize();
+
+        $.ajax({
+            url: form.attr("action"),
+            type: form.attr("method"), 
+            data: formData,
+
+            success: function (data) {
+                // $.pjax.reload({container: '#pjax-patient-admission-form'});
+            },
+        });
+    }
+
+    function getFocusID(id) {
+        if(id == ''){
+            focusID = document.activeElement.id;
+        }
+        else{
+            focusID = id;
+        }
     }
 </script>
