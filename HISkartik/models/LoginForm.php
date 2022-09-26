@@ -79,8 +79,9 @@ class LoginForm extends Model
                 $newCookie->expire = time() + 60 * 60 * 24 * 180;
                 Yii::$app->getResponse()->getCookies()->add($newCookie); 
             }
-            
-            return Yii::$app->user->login($this->getUser(), isset($newCookie) ? time() + 60 * 60 * 24 * 180 : 0);
+
+            if(!$this->validateRetire()) return false;
+            else return Yii::$app->user->login($this->getUser(), isset($newCookie) ? time() + 60 * 60 * 24 * 180 : 0);
         }
         return false;
     }
@@ -116,5 +117,12 @@ class LoginForm extends Model
     public function hashPassword($password) {// Function to create password hash
         $salt = "stev37f";
         return md5($password.$salt);
+    }
+
+    public function validateRetire(){
+        $user = New_user::findOne([$this->getUserId()]);
+        if($user->retire == 1)
+            return true;
+        else return false;
     }
 }
