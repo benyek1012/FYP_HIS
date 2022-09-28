@@ -339,5 +339,9 @@ return[
     'Account Code' => 'Kod Akaun',
     'Receipt Cancelled' => 'Resit Dibatalkan',
     'Bill Cancelled' => 'Bil Dibatalkan',
+    'Deleted' => 'Dipadamkan',
+    'Deleted Date' => 'Tarikh Dipadamkan',
+    'Bill Cancellation' => 'Pembatalan Bil',
+    'Receipt Cancellation' => 'Pembatalan Resit',
 ];
 ?>

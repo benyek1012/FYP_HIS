@@ -67,14 +67,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'department_code',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_department/department']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_department/department']],
+                // ]
             ],
             [
                 'class' => '\kartik\grid\EditableColumn',
