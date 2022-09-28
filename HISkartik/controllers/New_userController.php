@@ -106,6 +106,8 @@ class New_userController extends Controller
         //$this->redirect (Url::to(['/site/no_access']));
     }
 
+    
+
     public function actionuser($modeluser){
         if ($modeluser->save()) {
              $model_founded = New_userController::findModel($modeluser->user_uid);

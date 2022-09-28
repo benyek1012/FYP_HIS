@@ -28,6 +28,7 @@ else{
     $role_clerk = false;
 }
 
+
 if($model->role_cashier){
     $role_cashier = true;
 }
@@ -119,7 +120,7 @@ else{
         if(empty(Yii::$app->request->get('user_uid'))){
         ?>
             <div class="col-sm-6">
-                <?= $form->field($model, 'retire')->textInput(['value' => '0', 'disabled' => $disabled]) ?>
+                <?= $form->field($model, 'retire')->textInput(['value' => '1', 'disabled' => $disabled]) ?>
             </div>
         <?php
         }
