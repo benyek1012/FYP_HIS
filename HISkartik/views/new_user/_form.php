@@ -15,7 +15,7 @@ if(empty(Yii::$app->request->get('user_uid'))){
     $authKey = Base64UID::generate(32);
 }
 else{
-    $url = ['new_user/update', 'user_uid'=>$model['user_uid']];
+    $url = ['new_user/password_change', 'user_uid'=>$model['user_uid']];
     $disabled = true;
     $user_uid = $model->user_uid;
     $authKey = $model->authKey;
@@ -67,6 +67,17 @@ else{
         <div class="col-sm-6">
             <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
+
+        <?php
+        if(!empty(Yii::$app->request->get('user_uid'))){
+        ?>
+            <div class="col-sm-6">
+                <?= $form->field($model, 'original_password')->passwordInput(['maxlength' => true]) ?>
+            </div>
+        <?php
+        }
+        ?>
+
         <?php
         if(empty(Yii::$app->request->get('user_uid'))){
         ?>

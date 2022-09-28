@@ -203,7 +203,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('error_user', '
                     <div class="alert alert-danger alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    '.Yii::t('app', 'New Password and Confirm New Password cannot be blank.').'</div>'
+                    '.Yii::t('app', 'Original Password, New Password and Confirm New Password cannot be blank.').'</div>'
                 );
             }
             else{

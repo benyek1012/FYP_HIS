@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'urlCreator' => function ($action, $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'user_uid' => $model->user_uid]);
-                 }
+                },
             ],
 
             [

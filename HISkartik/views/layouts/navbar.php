@@ -118,6 +118,8 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li>
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
                 </ul>
@@ -129,8 +131,19 @@ body {
             }
             ?>
     </ul>
-    <!-- Right navbar links -->
+    <!-- Right navbar links -->        
     <ul class="navbar-nav ml-auto">
+        <?php 
+        if(!(new New_user()) -> isAdmin())
+        {
+        ?>
+        <li class="nav-item dropdown">
+            <a id="password" href="<?php echo Url::to(['/new_user/change_password']); ?>" class="nav-link"><?php echo Yii::t('app', 'Change Password') ?></a>
+        </li>
+        <?php
+        }
+        ?>
+
         <li class="nav-item dropdown">
             <a id="admission" href="<?php echo Url::to(['/site/logout']); ?>" class="nav-link"><?php echo  Yii::t('app','Logout'). 
                         ' (' . Yii::$app->user->identity->username . ')'; ?></a>
