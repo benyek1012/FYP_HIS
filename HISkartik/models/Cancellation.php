@@ -11,6 +11,7 @@ use Yii;
  * @property string $table
  * @property string $reason
  * @property string|null $replacement_uid
+ * @property string|null $deleted_datetime
  */
 class Cancellation extends \yii\db\ActiveRecord
 {
@@ -28,10 +29,11 @@ class Cancellation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['cancellation_uid', 'table', 'reason', 'responsible_uid'], 'required'],
+            [['cancellation_uid', 'table', 'reason', 'responsible_uid', 'deleted_datetime'], 'required'],
             [['cancellation_uid', 'table', 'replacement_uid' ,'responsible_uid'], 'string', 'max' => 64],
             [['reason'], 'string', 'max' => 100],
             [['cancellation_uid'], 'unique'],
+            [['deleted_datetime'], 'safe'],
         ];
     }
 
@@ -46,6 +48,7 @@ class Cancellation extends \yii\db\ActiveRecord
             'reason' => Yii::t('app', 'Reason'),
             'replacement_uid' => Yii::t('app', 'Replacement Uid'),
             'responsible_uid' => Yii::t('app', 'Responsible Uid'),
+            'deleted_datetime' => Yii::t('app','Deleted Date'),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\New_user;
 use app\models\Cancellation;
 use app\models\CancellationSearch;
 use app\models\Patient_admission;
@@ -117,6 +118,18 @@ class CancellationController extends Controller
         $this->findModel($cancellation_uid)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionDeleted(){
+        $model_bill = Cancellation::findAll(['table' => 'bill']);
+        $model_receipt = Cancellation::findAll(['table' => 'receipt']);
+
+        if(!(new New_user()) -> isAdmin()) return $this->render('/site/no_access');
+        
+        return $this->render('deleted', [
+            'model_bill' => $model_bill,
+            'model_receipt' => $model_receipt,
+        ]);
     }
 
     /**

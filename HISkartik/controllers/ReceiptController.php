@@ -67,6 +67,7 @@ class ReceiptController extends Controller
             
             $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
             $model_cancellation->replacement_uid = $model->receipt_uid;
+            $model_cancellation->deleted_datetime =  $date->format('Y-m-d H:i:s');
             
             if($model->validate() && $model_cancellation->validate()){
 

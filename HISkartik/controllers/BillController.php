@@ -620,6 +620,13 @@ class BillController extends Controller
 
         $model_cancellation = new Cancellation();
         if($this->request->isPost && $model_cancellation->load($this->request->post())){
+            if(empty($model_cancellation->deleted_datetime))
+            {
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model_cancellation->deleted_datetime =  $date->format('Y-m-d H:i:s');
+            }
+
             $model_cancellation->cancellation_uid = $model->bill_uid;
             $model_cancellation->table = 'bill';
             $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
