@@ -343,5 +343,6 @@ return[
     'Deleted Date' => 'Tarikh Dipadamkan',
     'Bill Cancellation' => 'Pembatalan Bil',
     'Receipt Cancellation' => 'Pembatalan Resit',
+    'Admin Password' => 'Kata Laluan Pentadbir',
 ];
 ?>

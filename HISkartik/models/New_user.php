@@ -22,6 +22,7 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
     public $new_password;
     public $original_password;
     public $confirm_new_password;
+    public $admin_password;
 
     /**
      * {@inheritdoc}
@@ -51,9 +52,10 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             [['user_uid'], 'unique'],
             [['username'], 'unique'],    
             
-            [['new_password', 'original_password', 'confirm_new_password'], 'safe'],
+            [['new_password', 'original_password', 'confirm_new_password', 'admin_password'], 'safe'],
             [['original_password'] ,'validateOriginalPassword'],
-            [['new_password', 'confirm_new_password', 'original_password'], 'string', 'max' => 40],
+            [['admin_password'] ,'validateAdminPassword'],
+            [['new_password', 'confirm_new_password', 'original_password', 'admin_password'], 'string', 'max' => 40],
             [['new_password', 'confirm_new_password'], 'filter', 'filter' => 'trim'],
             [['confirm_new_password'], 'compare', 'compareAttribute' => 'new_password', 'message' => Yii::t('app', 'Passwords does not match with new password')],
         ];
@@ -62,6 +64,22 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateOriginalPassword() {
         if(!$this->verifyPassword($this->original_password)) {
             $this->addError("original_password", Yii::t('app' ,'Original Password Incorrect'));
+        }
+    }
+
+    public function validateAdminPassword() {
+        if(!$this->verifyAdminPassword($this->admin_password)) {
+            $this->addError("admin_password", Yii::t('app' ,'Admin Password Incorrect'));
+        }
+    }
+
+    public function verifyAdminPassword($password) {
+        $admin = New_user::findOne(['username' => 'administrator1']);
+        if($this->hashPassword($password) == $admin->user_password){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
@@ -195,6 +213,7 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             'original_password' => Yii::t('app', 'Original Password'),
             'new_password' => Yii::t('app', 'New Password'),
             'confirm_new_password' => Yii::t('app', 'Confirm New Password'),
+            'admin_password' => Yii::t('app', 'Admin Password'),
         ];
     }
 }

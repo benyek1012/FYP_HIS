@@ -73,7 +73,7 @@ else{
         if(!empty(Yii::$app->request->get('user_uid'))){
         ?>
             <div class="col-sm-6">
-                <?= $form->field($model, 'original_password')->passwordInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'admin_password')->passwordInput(['maxlength' => true]) ?>
             </div>
         <?php
         }
