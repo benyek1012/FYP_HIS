@@ -297,6 +297,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
                     $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+                    $model_bill = Bill::findOne(['bill_generation_datetime' => $data['receipt_content_datetime_paid']]);
 
                     if(!empty($model_receipt)){
                         $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model_receipt->receipt_uid]);
@@ -317,10 +318,22 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
                     // Bill
-                    else{
-                        $type = 'Bill';
-                        $title = '';
-                        $class = 'badge-primary';
+                    // else{
+                    //     $type = 'Bill';
+                    //     $title = '';
+                    //     $class = 'badge-primary';
+                    // }
+                    else if(!empty($model_bill)){
+                        if($model_bill->deleted == 1){
+                            $type = 'Bill Cancelled';
+                            $title = '';
+                            $class = 'badge-danger';
+                        }
+                        else{
+                            $type = 'Bill';
+                            $title = '';
+                            $class = 'badge-primary';
+                        }
                     }
 
                     $tag = Html::tag('span', Yii::t('app', $type) , [
