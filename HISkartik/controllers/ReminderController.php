@@ -362,19 +362,20 @@ class ReminderController extends Controller
                 $guarantor_address1 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address1;
                 $guarantor_address2 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address2;
                 $guarantor_address3 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address3;
+                $status_kod = (Bill::findOne(['rn' => $rn])->status_description);
                 // reminder 1
                 if($q['Reminder Number'] == 'reminder1'){
-                    $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No,$guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3);
+                    $pdf->content1($rn,$name,$datetime,$amount_due, $amount,$bill_No,$guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3,$status_kod);
                 }
               
                 // reminder 2
                 if($q['Reminder Number']== 'reminder2'){
-                    $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3);
+                    $pdf->content2($rn,$name,$datetime,$amount_due, $amount,$bill_No, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3,$status_kod);
                 }
     
                 // reminder 3
                 if($q['Reminder Number'] == 'reminder3'){
-                    $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3);
+                    $pdf->content3($rn,$name,$datetime,$amount_due, $amount,$bill_No, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3,$status_kod);
                 }
                 
             }
