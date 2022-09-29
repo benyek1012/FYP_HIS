@@ -346,5 +346,10 @@ return[
     'Admin Password' => 'Kata Laluan Pentadbir',
     'Payment Type' => 'Jenis Pembayaran',
     'Cancellation record is not founded' => 'Rekod pembatalan tidak diasaskan',
+    'Change Registration Number' => 'Tukar Nombor Daftar',
+    'Change To New Registration Number' => 'Tukar Kepada Nombor Daftar Baharu',
+    'You have successfully changed Registration Number !' => 'Anda telah berjaya menukar Nombor Daftar !',
+    'Please enter Registration Number' => 'Sila masukkan Nombor Daftar',
+
 ];
 ?>

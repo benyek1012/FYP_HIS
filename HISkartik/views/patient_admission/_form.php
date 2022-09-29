@@ -135,12 +135,12 @@ use app\models\Receipt;
     <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('id')])->label(false); ?>
     <div class="row">
         
-        <div class="col-sm-6">
+        <!-- <div class="col-sm-6">
             <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
-        </div>
-        <div class="col-sm-6">
+        </div> -->
+        <!-- <div class="col-sm-6">
             <?= $form->field($model, 'type')->hiddenInput(['readonly' => true,'maxlength' => true, 'value' => Yii::$app->request->get('type')])->label(false) ?>
-        </div>
+        </div> -->
 
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
@@ -230,20 +230,19 @@ use app\models\Receipt;
         }
         ?>
 
-        
-        <!-- <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?> -->
-        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'value'=>Url::to(['/patient_admission/update']), 'disabled' => $disabled])?>
-
+        <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled, 'style' => 'display: none;']) ?>
+        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'disabled' => $disabled])?>
+        <?= Html::button(Yii::t('app','Change Registration Number'), ['class' => 'btn btn-primary', 'id' => 'btnChange', 'disabled' => $disabled])?>
         <?php
+           // Modal for transfer patient
             Modal::begin([
-               // 'title'=>'<h4>Transfer</h4>',
+                'title'=>'<h4>'.Yii::t('app','Transfer To New Patient').'</h4>',
                 'id'=>'modal',
                 'size'=>'modal-lg',
             ]);
             $form = kartik\form\ActiveForm::begin([
                     'id' => 'patient-admission-form',
                     'type' => 'vertical',
-                   // 'action' => ['patient_admission/transfer'],
                     'fieldConfig' => [
                         'template' => "{label}\n{input}\n{error}",
                         'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
@@ -252,12 +251,37 @@ use app\models\Receipt;
                 
             ?>
              <div id='modalContent'>
-            <?= $form->field($modelpatient, 'nric')->textInput([ 'autocomplete' =>'off', 'value' => ""])->label(Yii::t('app','Transfer To New Patient'));?>
-            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'Update', 'value' => 'Update', 'disabled' => $disabled])?>
+            <?= $form->field($modelpatient, 'nric')->textInput([ 'autocomplete' =>'off', 'value' => ""]);?>
+            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'transfer', 'value' => 'transfer', 'disabled' => $disabled])?>
             </div>
             <?php
             kartik\form\ActiveForm::end();
             Modal::end();
+
+            // Modal for change RN
+            Modal::begin([
+                'title'=>'<h4>'.Yii::t('app','Change To New Registration Number').'</h4>',
+                'id'=>'modal_change',
+                'size'=>'modal-lg',
+             ]);
+             $form = kartik\form\ActiveForm::begin([
+                     'id' => 'patient-admission-form',
+                     'type' => 'vertical',
+                    // 'action' => ['patient_admission/transfer'],
+                     'fieldConfig' => [
+                         'template' => "{label}\n{input}\n{error}",
+                         'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+                     ],
+                 ]); 
+                 
+             ?>
+              <div id='modalContent'>
+             <?= $form->field($model_change_rn, 'rn')->textInput([ 'autocomplete' =>'off', 'value' => ""]);?>
+             <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'change', 'value' => 'change', 'disabled' => $disabled])?>
+             </div>
+             <?php
+             kartik\form\ActiveForm::end();
+             Modal::end();
         ?>
         <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>
@@ -281,6 +305,14 @@ $this->registerJs(
         .load($(this).attr('value'));
     });"
 );
+
+$this->registerJs(
+    "$('#btnChange').on('click',function () {
+        $('#modal_change').modal('show')
+            .find('#modalContent')
+            .load($(this).attr('value'));
+        });"
+    );
 ?>
 
 <script>
