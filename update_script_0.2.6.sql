@@ -11,6 +11,8 @@ REPLACE INTO `new_user`
 ('3BUf9deDPpjBuaD7YO3_7vPrmxE4THBo', 'clerk1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 1, 0, 0, NULL, NULL, NULL, NULL, 1, '12345c'),
 ('iwJ4pQTEP0chTyfqzfr8KvpSo7XlMQ3S', 'guest_print1', '7b9efcfad5bc24b82b5acbe6175842f2', 0, 0, 0, 1, NULL, NULL, NULL, NULL, 1, 'pyLoI1aXGp7sAq72FW-D5u9RxSxub71p');
 
+DROP PROCEDURE IF EXISTS `receipt_bill_procedure`;
+
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `receipt_bill_procedure`(IN `rn` VARCHAR(11))
 BEGIN
