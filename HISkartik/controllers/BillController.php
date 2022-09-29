@@ -453,7 +453,13 @@ class BillController extends Controller
                     {
                         $final_ward_datetime = Ward::find()->select('ward_end_datetime')->where(['bill_uid' => $bill_uid])
                         ->orderBy('ward_end_datetime DESC')->limit(1)->one();
-                        $model->final_ward_datetime =  date($final_ward_datetime["ward_end_datetime"]);
+                        // $model->final_ward_datetime =  date($final_ward_datetime["ward_end_datetime"]);
+                        if(!empty($final_ward_datetime["ward_end_datetime"])){
+                            $model->final_ward_datetime =  date($final_ward_datetime["ward_end_datetime"]);
+                        }
+                        else{
+                            $model->final_ward_datetime =  $date->format('Y-m-d H:i:s');
+                        }
                     }
                     else
                         $model->final_ward_datetime =  $date->format('Y-m-d H:i:s');
@@ -520,7 +526,8 @@ class BillController extends Controller
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model = $this->findModel($bill_uid);
-		$modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+		// $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+        $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all();   
         $modelreceipt = Receipt::findAll(['rn'=> $model->rn, 'receipt_type' => 'deposit']);
         $modelrefund = Receipt::findAll(['rn'=> $model->rn, 'receipt_type' => 'refund']);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
