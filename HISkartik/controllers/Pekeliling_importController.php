@@ -106,7 +106,7 @@ class Pekeliling_importController extends Controller
                     if($handle){
                         $first_column_csv = fgetcsv($handle);
 
-                        $validate_header = Pekeliling_import::validateHeader($first_column_csv, $column);
+                        $validate_header = Pekeliling_import::validateHeader($first_column_csv, $column, $model->lookup_type);
 
                         if(!$validate_header)
                         {
@@ -511,7 +511,7 @@ class Pekeliling_importController extends Controller
             'columns' => [
                 [
                     'attribute' => 'kod',
-                    'label' =>'Kod',
+                    'label' =>'kod',
                 ],
                 [
                     'attribute' => 'name',

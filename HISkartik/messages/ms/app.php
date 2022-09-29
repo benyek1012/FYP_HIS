@@ -350,6 +350,11 @@ return[
     'Change To New Registration Number' => 'Tukar Kepada Nombor Daftar Baharu',
     'You have successfully changed Registration Number !' => 'Anda telah berjaya menukar Nombor Daftar !',
     'Please enter Registration Number' => 'Sila masukkan Nombor Daftar',
+    '{attribute} should contain at most 200 characters' => '{attribute} hendaklah mengandungi paling banyak 200 aksara',
+    '{attribute} should contain at most 20 characters' => '{attribute} hendaklah mengandungi paling banyak 20 aksara',
+    '{attribute} should contain at most 100 characters' => '{attribute} hendaklah mengandungi paling banyak 100 aksara',
+    '{attribute} should contain at most 50 characters' => '{attribute} hendaklah mengandungi paling banyak 50 aksara',
+    '{attribute} should contain at most 64 characters' => '{attribute} hendaklah mengandungi paling banyak 64 aksara',
 
 ];
 ?>

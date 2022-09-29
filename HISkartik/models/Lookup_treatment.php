@@ -33,9 +33,9 @@ class Lookup_treatment extends \yii\db\ActiveRecord
         return [
             [['treatment_uid', 'treatment_code', 'treatment_name', 'class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit', 'class_Daycare_FPP_per_unit'], 'required'],
             [['class_1_cost_per_unit', 'class_2_cost_per_unit', 'class_3_cost_per_unit', 'class_Daycare_FPP_per_unit'], 'number'],
-            [['treatment_uid'], 'string', 'max' => 64],
-            [['treatment_code'], 'string', 'max' => 20],
-            [['treatment_name'], 'string', 'max' => 200],
+            [['treatment_uid'], 'string', 'max' => 64, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 64 characters')],
+            [['treatment_code'], 'string', 'max' => 20, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 20 characters')],
+            [['treatment_name'], 'string', 'max' => 200, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 200 characters')],
             [['treatment_code'], 'unique'],
             [['treatment_uid'], 'unique'],
         ];

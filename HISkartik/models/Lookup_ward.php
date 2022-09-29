@@ -32,9 +32,9 @@ class Lookup_ward extends \yii\db\ActiveRecord
         return [
             [['ward_uid', 'ward_code', 'ward_name'], 'required'],
             [['min_age', 'max_age'], 'integer'],
-            [['ward_uid'], 'string', 'max' => 64],
-            [['ward_code', 'sex'], 'string', 'max' => 20],
-            [['ward_name'], 'string', 'max' => 50],
+            [['ward_uid'], 'string', 'max' => 64, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 64 characters')],
+            [['ward_code', 'sex'], 'string', 'max' => 20, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 20 characters')],
+            [['ward_name'], 'string', 'max' => 50, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 50 characters')],
             [['ward_code'], 'unique'],
             [['ward_uid'], 'unique'],
         ];

@@ -187,7 +187,7 @@ class Pekeliling_import extends \yii\db\ActiveRecord
         }
     }
 
-    public static function validateHeader($first_column_csv, $col)
+    public static function validateHeader($first_column_csv, $col, $lookup_type)
     {
         foreach ($first_column_csv as $key => $val) {
             if(!empty($first_column_csv[$key]))
@@ -198,7 +198,8 @@ class Pekeliling_import extends \yii\db\ActiveRecord
         }
 
         // remove first element from database header
-        array_shift($col);
+        if($lookup_type != 'fpp')
+            array_shift($col);
 
         // filter empty column
         $first_column_csv = array_filter($first_column_csv);

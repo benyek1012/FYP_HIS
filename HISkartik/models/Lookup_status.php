@@ -34,9 +34,9 @@ class Lookup_status extends \yii\db\ActiveRecord
         return [
             [['status_uid', 'status_code', 'status_description', 'class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost'], 'required'],
             [['class_1a_ward_cost', 'class_1b_ward_cost', 'class_1c_ward_cost', 'class_2_ward_cost', 'class_3_ward_cost'], 'number'],
-            [['status_uid'], 'string', 'max' => 64],
-            [['status_code'], 'string', 'max' => 20],
-            [['status_description'], 'string', 'max' => 100],
+            [['status_uid'], 'string', 'max' => 64, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 64 characters')],
+            [['status_code'], 'string', 'max' => 20, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 20 characters')],
+            [['status_description'], 'string', 'max' => 100, 'tooLong'=> Yii::t('app', '{attribute} should contain at most 100 characters')],
             [['status_code'], 'unique'],
             [['status_uid'], 'unique'],
         ];
