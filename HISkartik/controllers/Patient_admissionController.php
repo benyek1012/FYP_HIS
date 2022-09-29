@@ -311,6 +311,12 @@ class Patient_admissionController extends Controller
                 else{
                     if(!empty($new_rn)){
                         $model->rn = $new_rn;
+                        $arr = str_split($new_rn, 5);
+                        $first_character = substr($arr[1], 0, 1);
+                        if($first_character == '9')
+                            $model->type = 'Labor';
+                        else $model->type = 'Normal';
+
                         $model->validate();
                         $array_error = $model->getFirstErrors();
                         foreach($array_error as $error){

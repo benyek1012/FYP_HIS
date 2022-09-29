@@ -98,7 +98,7 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 5, 'PENGARAH,', 0, 2, 'L');
         $this->Cell(30, 5, strtoupper($hospital_name), 0, 2, 'L');
         $this->Cell(30, 5, 'KUCHING', 0, 2, 'L');
-        $this->Cell(160, 25, "(Surat ini yang dikeluarkan melalui komputer tidak memerlukan tandatangan)", 0, 2, 'J');
+        $this->Cell(160, 25, "(Surat ini yang dikeluarkan melalui komputer tidak memerlukan tandatangan)", 0, 2, 'L');
         
   
     }
@@ -222,7 +222,7 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 5, 'PENGARAH,', 0, 2, 'L');
         $this->Cell(30, 5, strtoupper($hospital_name), 0, 2, 'L');
         $this->Cell(30, 5, 'KUCHING', 0, 2, 'L');
-        $this->Cell(160, 25, "(Surat ini yang dikeluarkan melalui komputer tidak memerlukan tandatangan)", 0, 2, 'J');
+        $this->Cell(160, 25, "(Surat ini yang dikeluarkan melalui komputer tidak memerlukan tandatangan)", 0, 2, 'L');
     }
 
     function content3($rn,$name,$bill_datetime,$amount_due,$amount, $bill_no, $guarantor_name,$guarantor_address1,$guarantor_address2,$guarantor_address3,$address1,$address2,$address3,$status_kod){
@@ -296,6 +296,6 @@ class Reminder_pdf extends TCPDF {
         $this->Cell(30, 5, 'PENGARAH,', 0, 2, 'L');
         $this->Cell(30, 5, strtoupper($hospital_name), 0, 2, 'L');
         $this->Cell(30, 5, 'KUCHING', 0, 2, 'L');
-        $this->Cell(160, 25, "(Surat ini yang dikeluarkan melalui komputer tidak memerlukan tandatangan)", 0, 2, 'J');
+        $this->Cell(160, 25, "(Surat ini yang dikeluarkan melalui komputer tidak memerlukan tandatangan)", 0, 2, 'L');
    }
 }
