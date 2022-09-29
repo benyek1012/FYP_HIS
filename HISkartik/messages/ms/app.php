@@ -344,5 +344,7 @@ return[
     'Bill Cancellation' => 'Pembatalan Bil',
     'Receipt Cancellation' => 'Pembatalan Resit',
     'Admin Password' => 'Kata Laluan Pentadbir',
+    'Payment Type' => 'Jenis Pembayaran',
+    'Cancellation record is not founded' => 'Rekod pembatalan tidak diasaskan',
 ];
 ?>
