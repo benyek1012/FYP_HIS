@@ -149,7 +149,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
 
 
 <a name="treatment">
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin(['id' => 'pjax-treatment-form']); ?>
     <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'treatment-form',
         'options' => ['data-pjax' => true],
@@ -276,7 +276,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                         if(!empty($model->treatment_details_uid)){
                         ?>
                             <?= Html::a("x", ["/treatment_details/delete", "treatment_details_uid" => $model->treatment_details_uid,
-                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"treatmentDelete"]) ?>
+                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"treatmentDelete", 'tabindex' => '-1']) ?>
                     <?php }
                     } ?>
                 </td>
@@ -426,6 +426,12 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                         width: '220px',
                     });
                 });
+                
+                $(document).on('select2:open', () => {
+                    document.querySelector('.select2-search__field').focus();
+                });
+
+                // $.pjax.reload({container: '#pjax-treatment-form'});
 
                 document.getElementById(focusID).focus();
             }
