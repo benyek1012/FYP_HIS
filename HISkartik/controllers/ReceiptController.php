@@ -66,12 +66,15 @@ class ReceiptController extends Controller
                 $model_cancellation->replacement_uid = null;
                 $model_cancellation->deleted_datetime =  $date->format('Y-m-d H:i:s');
 
-                // echo '<pre>';
-                // var_dump($model_cancellation);
-                // echo '</pre>';
-                // exit();
                 if($model_cancellation->validate()){
                     $model_cancellation->save();
+                }
+                else{
+                    Yii::$app->session->setFlash('cancellation_error', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Cancellation Fail!').'</strong>'.'</div>'
+                    );
                 }
             }
             else{
