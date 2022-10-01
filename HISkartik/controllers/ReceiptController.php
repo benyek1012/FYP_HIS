@@ -57,68 +57,85 @@ class ReceiptController extends Controller
         $searchModel = new ReceiptSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model_cancellation->load($this->request->post())) {
-            if(empty($model->receipt_content_datetime_paid))
-            {
-                $date = new \DateTime();
-                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
-            }
-            
-            $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
-            $model_cancellation->replacement_uid = $model->receipt_uid;
-            $model_cancellation->deleted_datetime =  $date->format('Y-m-d H:i:s');
-            
-            if($model->validate() && $model_cancellation->validate()){
+            if($model_cancellation->checkbox_replacement == true){
+                $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
+                $model_cancellation->replacement_uid = null;
+                $model_cancellation->deleted_datetime =  $date->format('Y-m-d H:i:s');
 
-                if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit')
-                {
-                    if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
-                    {
-                        $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
-
-                        $str = $model->receipt_serial_number;
-                        $only_integer = preg_replace('/[^0-9]/', '', $str);
-                        $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
-                        $model_serial->digit_length = strlen($only_integer);
-                        $model_serial->running_value = $only_integer;
-
-                        $model_serial->save();    
-                    }
-                    else{
-                        $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
-                        $model_serial->running_value =  $model_serial->running_value + 1;
-                        $model_serial->save();    
-                    }
+                // echo '<pre>';
+                // var_dump($model_cancellation);
+                // echo '</pre>';
+                // exit();
+                if($model_cancellation->validate()){
+                    $model_cancellation->save();
                 }
-
-                $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
-                $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
-
-                // Print Bill / Deposit 
-                if(($model->receipt_type !='refund') && ($model->receipt_type !='exception'))
-                {
-                    $error = PrintForm::printReceipt($model, $modelpatient);
-                    if(!empty($error))
-                    {
-                        Yii::$app->session->setFlash('msg', '
-                        <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
-                    }
-                }
-
-                $model->save();
-                $model_cancellation->save();
-				
-                return Yii::$app->getResponse()->redirect(array('/receipt/index', 
-                'rn' => $model->rn));
             }
-            else
-            {
-                Yii::$app->session->setFlash('cancellation_error', '
-                    <div class="alert alert-danger alert-dismissable">
-                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    <strong>'.Yii::t('app', 'Cancellation Fail!').'</strong>'.'</div>'
-                );
+            else{
+                if(empty($model->receipt_content_datetime_paid))
+                {
+                    $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
+                }
+                
+                $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
+                $model_cancellation->replacement_uid = $model->receipt_uid;
+                $model_cancellation->deleted_datetime =  $date->format('Y-m-d H:i:s');
+                
+                if($model->validate() && $model_cancellation->validate()){
+
+                    if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit')
+                    {
+                        if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
+                        {
+                            $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
+
+                            $str = $model->receipt_serial_number;
+                            $only_integer = preg_replace('/[^0-9]/', '', $str);
+                            $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
+                            $model_serial->digit_length = strlen($only_integer);
+                            $model_serial->running_value = $only_integer;
+
+                            $model_serial->save();    
+                        }
+                        else{
+                            $model_serial = SerialNumber::findOne(['serial_name' => "receipt"]);
+                            $model_serial->running_value =  $model_serial->running_value + 1;
+                            $model_serial->save();    
+                        }
+                    }
+
+                    $modeladmission = Patient_admission::findOne(['rn' => yii::$app->request->get('rn')]) ;
+                    $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
+
+                    // Print Bill / Deposit 
+                    if(($model->receipt_type !='refund') && ($model->receipt_type !='exception'))
+                    {
+                        $error = PrintForm::printReceipt($model, $modelpatient);
+                        if(!empty($error))
+                        {
+                            Yii::$app->session->setFlash('msg', '
+                            <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
+                        }
+                    }
+
+                    $model->save();
+                    $model_cancellation->save();
+                    
+                    return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                    'rn' => $model->rn));
+                }
+                
+                else
+                {
+                    Yii::$app->session->setFlash('cancellation_error', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Cancellation Fail!').'</strong>'.'</div>'
+                    );
+                }
             }
         }
         else
