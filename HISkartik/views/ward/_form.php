@@ -274,7 +274,6 @@ else{
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
-                                changeRowColor('{$index}');
                             }",
                         ],])->label(false)?>
                     <?php
@@ -289,7 +288,6 @@ else{
                         'pluginEvents' => [
                             'change' => "function () {
                                 calculateDays();
-                                changeRowColor('{$index}');
                             }",
                         ],])->label(false)?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -303,7 +301,7 @@ else{
                     <?php }else{ 
                         if(!empty($modelWard->ward_uid)){ ?>
                             <?= Html::a("x", ["/ward/delete", "ward_uid" => $modelWard->ward_uid, 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                                'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"wardDelete", 'tabindex' => '-1']) ?>
+                                'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"wardDelete"]) ?>
                     <?php }
                     } ?>
                 </td>
@@ -384,10 +382,6 @@ else{
         });
     }
 
-    function changeRowColor(index){
-        document.getElementById('ward-'+index).style.backgroundColor = '#ffc107';
-    }
-
     function submitWardForm(url, urlWard, type){
         var form = $('#ward-form');
         var formData = form.serialize();
@@ -455,9 +449,7 @@ else{
 
                 $.pjax.reload({container: '#pjax-ward-form'});
 
-                $(document).on('ready pjax:success', function(){
-                    document.getElementById(focusID).focus();
-                });
+                document.getElementById(focusID).focus();
             }
         }
         if(type == 'update'){

@@ -234,7 +234,7 @@ else{
                         if(!empty($modelFPP->kod)){
                         ?>
                             <?= Html::a('x', ["/fpp/delete", "fpp_uid" => $modelFPP->fpp_uid,
-                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"fppDelete", 'tabindex' => '-1']) ?>
+                                'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ["class"=>"btn btn-danger btn-sm", "id"=>"fppDelete"]) ?>
                     <?php }
                     } ?>
                 </td>
@@ -396,10 +396,6 @@ else{
                         placeholder: 'Select FPP Kod',
                         width: '220px',
                     });
-                });
-
-                $(document).on('select2:open', () => {
-                    document.querySelector('.select2-search__field').focus();
                 });
 
                 document.getElementById(focusID).focus();
