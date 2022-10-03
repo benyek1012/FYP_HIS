@@ -180,7 +180,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         if(!empty($model_cancellation)){
                             $type = 'Receipt Cancelled';
-                            $title = $model_new_receipt->receipt_serial_number;
+                            if(!empty($model_new_receipt->receipt_serial_number)){
+                                $title = $model_new_receipt->receipt_serial_number;
+                            }
+                            else{
+                                $title = '';
+                            }
                             $class = 'badge-danger';
                         }
                         else if(!empty($model_receipt->receipt_type)){
