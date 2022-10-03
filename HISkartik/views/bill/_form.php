@@ -489,17 +489,22 @@ textarea {
                     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
 
                     <div class="col-sm-6">
-                        <!-- <?= $form->field($model, 'status_code')->dropDownList($status_code, ['id'=>'statusCode',
-                    'prompt'=> Yii::t('app','Please select status code'),'maxlength' => true, 'disabled' => $print_readonly]) ?> -->
+                        <?= $form->field($model, 'status_code')->dropDownList($print_readonly == false? $status_code : $lockedStatusCode,
+                        [
+                            'id'=>'statusCode',
+                            'prompt'=> Yii::t('app','Please select status code'),
+                            'maxlength' => true, 
+                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                        ])?>
 
-                        <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
+                        <!-- <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
                             'data' => $print_readonly == false? $status_code : $lockedStatusCode,
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select status code'), 'id' => 'statusCode',],
                             'pluginOptions' => [
                                 'allowClear' => true,
                             ],
-                        ]); ?>
+                        ]); ?> -->
                     </div>
 
                     <div class="col-sm-6">
@@ -508,29 +513,38 @@ textarea {
 
                     <div class="col-sm-6">
                         <?php if(empty( Yii::$app->request->get('bill_uid'))){ ?>
-                        <!-- <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'value' => $initial_ward_class]) ?> -->
+                        <?= $form->field($model, 'class')->dropDownList($ward_class, 
+                            [
+                                'id'=>'wardClass',
+                                'prompt'=> Yii::t('app','Please select ward class'), 
+                                'value' => $initial_ward_class == 'UNKNOWN' ? 3 : $initial_ward_class,
+                                'disabled' => $disabled,
+                            ]) ?>
 
-                        <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
+                        <!-- <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
                                 'data' => $ward_class,
                                 'disabled' => $disabled,
                                 'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass', 'value' => $initial_ward_class == 'UNKNOWN' ? 3 : $initial_ward_class],
                                 'pluginOptions' => [
                                     'allowClear' => true,
                                 ],
-                            ]); ?>
+                            ]); ?> -->
                         <?php }else{ ?>
-                        <!-- <?= $form->field($model, 'class')->dropDownList($ward_class, 
-                            ['id'=>'wardClass','prompt'=> Yii::t('app','Please select ward class'), 'disabled' => $print_readonly]) ?> -->
+                        <?= $form->field($model, 'class')->dropDownList($ward_class, 
+                            [
+                                'id'=>'wardClass',
+                                'prompt'=> Yii::t('app','Please select ward class'), 
+                                'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                            ]) ?>
 
-                        <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
+                        <!-- <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
                                 'data' => $ward_class,
                                 'disabled' => $print_readonly == false? $disabled : $print_readonly,
                                 'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass'],
                                 'pluginOptions' => [
                                     'allowClear' => true,
                                 ],
-                            ]); ?>
+                            ]); ?> -->
                         <?php } ?>
 
                     </div>
@@ -541,17 +555,22 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <!-- <?= $form->field($model, 'department_code')->dropDownList($department_code, ['id'=>'departmentCode',
-                    'prompt'=> Yii::t('app','Please select department code'),'maxlength' => true, 'disabled' => $print_readonly]) ?> -->
+                        <?= $form->field($model, 'department_code')->dropDownList($print_readonly == false? $department_code : $lockedDepartmentCode, 
+                        [
+                            'id'=>'departmentCode',
+                            'prompt'=> Yii::t('app','Please select department code'),
+                            'maxlength' => true, 
+                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                        ]) ?>
 
-                        <?= $form->field($model, 'department_code')->widget(kartik\select2\Select2::classname(), [
+                        <!-- <?= $form->field($model, 'department_code')->widget(kartik\select2\Select2::classname(), [
                             'data' => $print_readonly == false? $department_code : $lockedDepartmentCode,
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select department code'), 'id' => 'departmentCode',],
                             'pluginOptions' => [
                                 'allowClear' => true,
                             ],
-                        ]); ?>
+                        ]); ?> -->
                     </div>
 
                     <div class="col-sm-6">
@@ -575,9 +594,16 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <!-- <?= $form->field($model, 'nurse_responsible')->textInput(['maxlength' => true, 'disabled' => $print_readonly]) ?> -->
+                        <?= $form->field($model, 'nurse_responsible')->dropDownList($nurse_responsible, 
+                        [
+                            'id'=>'nurse_responsible',
+                            'prompt'=> Yii::t('app','Please select nurse responsible'),
+                            'maxlength' => true, 
+                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                        ]) ?>
 
-                        <?= $form->field($model, 'nurse_responsible')->widget(kartik\select2\Select2::classname(), [
+
+                        <!-- <?= $form->field($model, 'nurse_responsible')->widget(kartik\select2\Select2::classname(), [
                             'data' => $nurse_responsible,
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select nurse responsible'), 'id' => 'nurse_responsible',],
@@ -585,7 +611,7 @@ textarea {
                                 'allowClear' => true,
                                 'tags' => true
                             ],
-                        ]); ?>
+                        ]); ?> -->
                     </div>
 
                     <div class="col-sm-6">
@@ -963,4 +989,88 @@ function generateBill(url) {
     xhttp.open("GET", url, true);
     xhttp.send();
 }
+
+function matchBill(params, data) {
+    // Search first letter
+    // params.term = params.term || '';
+    // var code = data.text.split(" - ");
+    // console.log(indexOf(params.term.toUpperCase()));
+    // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
+    //     return data;
+    // }
+    // return null;
+
+    // Search code 
+    // If search is empty we return everything
+    if ($.trim(params.term) === '') return data;
+
+    // Compose the regex
+    var regex_text = '.*';
+    regex_text += (params.term).split('').join('.*');
+    regex_text += '.*'
+    
+    // Case insensitive
+    var regex = new RegExp(regex_text, "i");
+
+    // Splite code and name
+    var code = data.text.split(" - ");
+
+    // If no match is found we return nothing
+    if (!regex.test(code[0])) {
+    return null;
+    }
+
+    // Else we return everything that is matching
+    return data;
+}
 </script>
+
+<?php 
+$script = <<< JS
+$(document).ready(function() {
+    $('#statusCode').select2({
+        placeholder: 'Please select status code',
+        allowClear: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchBill(params, data);
+        },
+    });
+});
+
+$(document).ready(function() {
+    $('#wardClass').select2({
+        placeholder: 'Please select ward class',
+        allowClear: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchBill(params, data);
+        },
+    });
+});
+
+$(document).ready(function() {
+    $('#departmentCode').select2({
+        placeholder: 'Please select department code',
+        allowClear: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchBill(params, data);
+        },
+    });
+});
+
+$(document).ready(function() {
+    $('#nurse_responsible').select2({
+        placeholder: 'Please select nurse responsible',
+        allowClear: true,
+        tags: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchBill(params, data);
+        },
+    });
+});
+JS;
+$this->registerJS($script);
+?>

@@ -143,11 +143,19 @@ use app\models\Receipt;
         </div> -->
 
         <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code, 
-             ['prompt'=> Yii::t('app','Please select ward code')]
-            ) ?> -->
+            <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code,
+                [
+                    'id' => 'initial_ward_code',
+                    'prompt'=> Yii::t('app','Please select ward code'),
+                    'disabled' => $disabled,
+                    "change" => "function() { 
+                        getFocusID('initial_ward_code');
+                        submitPatientAdmissionForm();
+                    }",
+                ]
+            ) ?>
 
-            <?= $form->field($model, 'initial_ward_code')->widget(kartik\select2\Select2::classname(), [
+            <!-- <?= $form->field($model, 'initial_ward_code')->widget(kartik\select2\Select2::classname(), [
                 'data' => $ward_code,
                 'options' => ['placeholder' => Yii::t('app','Please select ward code'), 'id' => 'initial_ward_code', 'disabled' => $disabled],
                 'pluginOptions' => [
@@ -160,15 +168,23 @@ use app\models\Receipt;
                         submitPatientAdmissionForm();
                     }",
                 ]
-            ]); ?>
+            ]); ?> -->
         </div>
 
         <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
-             ['prompt'=> Yii::t('app','Please select ward class')]
-            ) ?> -->
+            <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
+                [
+                    'id' => 'initial_ward_class',
+                    'prompt'=> Yii::t('app','Please select ward class'),
+                    'disabled' => $disabled,
+                    "change" => "function() { 
+                        getFocusID('initial_ward_class');
+                        submitPatientAdmissionForm();
+                    }",
+                ]
+            ) ?>
 
-            <?= $form->field($model, 'initial_ward_class')->widget(kartik\select2\Select2::classname(), [
+            <!-- <?= $form->field($model, 'initial_ward_class')->widget(kartik\select2\Select2::classname(), [
                 'data' => $ward_class,
                 'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'initial_ward_class', 'disabled' => $disabled],
                 'pluginOptions' => [
@@ -181,7 +197,7 @@ use app\models\Receipt;
                         submitPatientAdmissionForm();
                     }",
                 ]
-            ]); ?>
+            ]); ?> -->
         </div>
 
         <div class="col-sm-6">
@@ -357,4 +373,65 @@ $this->registerJs(
             focusID = id;
         }
     }
+    
+    function matchAdmission(params, data) {
+        // Search first letter
+        // params.term = params.term || '';
+        // var code = data.text.split(" - ");
+        // console.log(indexOf(params.term.toUpperCase()));
+        // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
+        //     return data;
+        // }
+        // return null;
+
+        // Search code 
+        // If search is empty we return everything
+        if ($.trim(params.term) === '') return data;
+
+        // Compose the regex
+        var regex_text = '.*';
+        regex_text += (params.term).split('').join('.*');
+        regex_text += '.*'
+        
+        // Case insensitive
+        var regex = new RegExp(regex_text, "i");
+
+        // Splite code and name
+        var code = data.text.split(" - ");
+
+        // If no match is found we return nothing
+        if (!regex.test(code[0])) {
+        return null;
+        }
+
+        // Else we return everything that is matching
+        return data;
+    }
 </script>
+
+<?php 
+$script = <<< JS
+$(document).ready(function() {
+    $('#initial_ward_code').select2({
+        placeholder: 'Please select ward code',
+        allowClear: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchAdmission(params, data);
+        },
+    });
+});
+
+$(document).ready(function() {
+    $('#initial_ward_class').select2({
+        placeholder: 'Please select ward class',
+        allowClear: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchAdmission(params, data);
+        },
+    });
+});
+JS;
+$this->registerJS($script);
+?>

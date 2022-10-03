@@ -395,6 +395,9 @@ else{
                     $('#fpp-'+index+'-kod').select2({
                         placeholder: 'Select FPP Kod',
                         width: '220px',
+                        matcher: function(params, data) {
+                            return matchFpp(params, data);
+                        },
                     });
                 });
 
@@ -503,6 +506,40 @@ else{
             }            
         }
     });
+
+    function matchFpp(params, data) {
+        // Search first letter
+        // params.term = params.term || '';
+        // var code = data.text.split(" - ");
+        // console.log(indexOf(params.term.toUpperCase()));
+        // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
+        //     return data;
+        // }
+        // return null;
+
+        // Search code 
+        // If search is empty we return everything
+        if ($.trim(params.term) === '') return data;
+
+        // Compose the regex
+        var regex_text = '.*';
+        regex_text += (params.term).split('').join('.*');
+        regex_text += '.*'
+        
+        // Case insensitive
+        var regex = new RegExp(regex_text, "i");
+
+        // Splite code and name
+        var code = data.text.split(" - ");
+
+        // If no match is found we return nothing
+        if (!regex.test(code[0])) {
+        return null;
+        }
+
+        // Else we return everything that is matching
+        return data;
+    }
 
     // document.addEventListener("keyup", function(event) {
     //     if(event.keyCode == 9){
@@ -621,6 +658,9 @@ $(document).ready(function() {
         $('#fpp-'+index+'-kod').select2({
             placeholder: 'Select FPP Kod',
             width: '220px',
+            matcher: function(params, data) {
+                return matchFpp(params, data);
+            },
         });
     });
 });
