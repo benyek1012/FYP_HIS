@@ -4,7 +4,7 @@ namespace app\models;
 
 use DateTime;
 use Yii;
-
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "patient_information".
  *
@@ -309,5 +309,16 @@ class Patient_information extends \yii\db\ActiveRecord
     public function getPatient_admission() 
     {
         return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
+    }
+
+    public function RemoveUnvalidPatients()
+    {
+     //$noIcPatients = Patient_information::find()->innerJoin('patient_admission')->where(['nric'=> NULL],['rn' => NULL ])->all();
+     $emptyIcPatient = Patient_information::find()->select('patient_uid')->asArray()->where(['nric' => NULL])->all();
+     $emptyIcPatientID = ArrayHelper::getColumn($emptyIcPatient, 'patient_uid');
+
+     $RemovingUnvalidPatients = Patient_admission::deleteAll(['patient_uid' => $emptyIcPatientID],['rn'=>NULL]);
+      
+    
     }
 }
