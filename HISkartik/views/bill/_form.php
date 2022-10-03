@@ -7,7 +7,6 @@ use app\models\Patient_admission;
 use app\models\Bill;
 use app\models\Ward;
 use app\models\Fpp;
-use app\models\Receipt;
 use yii\helpers\Url;
 use app\models\Cancellation;
 use app\models\Variable;
@@ -412,22 +411,6 @@ else{
     $disabled = false;
     $linkDisabled = '';
 }
-
-$disabled_cancellation = false;
-$model_receipt = Receipt::findAll(['rn' => Yii::$app->request->get('rn')]);
-
-foreach($model_receipt as $model_receipt){
-    if($model_receipt->receipt_type == 'bill' || $model_receipt->receipt_type == 'exception'){
-        $cancellation = Cancellation::findOne(['cancellation_uid' => $model_receipt->receipt_uid]);
-        if(empty($cancellation)){
-            $disabled_cancellation = true;
-            break;
-        }
-        else{
-            $disabled_cancellation = false;
-        }
-    }
-}
 ?>
 
 <style>
@@ -816,7 +799,7 @@ textarea {
                         ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')", 'disabled' => $disabled]) ?>
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-                    <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
+                    <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?>
                 <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
 
                 <!-- If the flash message existed, show it  -->
@@ -827,7 +810,7 @@ textarea {
                 <?php endif; ?>
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-                    <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
+                    <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?>
                 <?php } ?>
             </div>
             <!-- /.card-body -->
