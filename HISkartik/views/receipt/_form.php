@@ -240,19 +240,12 @@ else{
         if($cancellation == true)
         {
         ?>
-            <?php $model_cancellation = new Cancellation();?>
-
             <div class="col-sm-6">
+                <?php $model_cancellation = new Cancellation();?>
                 <?= $form->field($model_cancellation, 'cancellation_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?>
                 <?= $form->field($model_cancellation, 'table')->hiddenInput(['maxlength' => true, 'value' => 'receipt'])->label(false); //'value' => 'receipt - ' . $model->receipt_type ?>
                 <!-- <?= $form->field($model_cancellation, 'replacement_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?> -->
                 <?= $form->field($model_cancellation, 'reason')->textarea(['rows' => '6']) ?>
-            </div>
-
-            <div class="col-sm-6">
-                <br>
-                <label>Without Replacement</label>
-                <?= $form->field($model_cancellation, 'checkbox_replacement')->checkbox(['uncheck' => false, 'value' => true])?>
             </div>
         <?php
         }

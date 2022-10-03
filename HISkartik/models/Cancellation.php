@@ -15,8 +15,6 @@ use Yii;
  */
 class Cancellation extends \yii\db\ActiveRecord
 {
-
-    public $checkbox_replacement;
     /**
      * {@inheritdoc}
      */
@@ -35,8 +33,7 @@ class Cancellation extends \yii\db\ActiveRecord
             [['cancellation_uid', 'table', 'replacement_uid' ,'responsible_uid'], 'string', 'max' => 64],
             [['reason'], 'string', 'max' => 100],
             [['cancellation_uid'], 'unique'],
-            [['deleted_datetime',], 'safe'],
-            [['checkbox_replacement'], 'safe'],
+            [['deleted_datetime'], 'safe'],
         ];
     }
 
@@ -52,7 +49,6 @@ class Cancellation extends \yii\db\ActiveRecord
             'replacement_uid' => Yii::t('app', 'Replacement Uid'),
             'responsible_uid' => Yii::t('app', 'Responsible Uid'),
             'deleted_datetime' => Yii::t('app','Deleted Date'),
-            'checkbox_replacement' => Yii::t('app', 'Without Replacement')
         ];
     }
 }

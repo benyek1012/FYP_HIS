@@ -497,7 +497,7 @@ textarea {
                         <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
                                 'data' => $ward_class,
                                 'disabled' => $disabled,
-                                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass', 'value' => $initial_ward_class == 'UNKNOWN' ? 3 : $initial_ward_class],
+                                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass', 'value' => $initial_ward_class],
                                 'pluginOptions' => [
                                     'allowClear' => true,
                                 ],
@@ -509,7 +509,7 @@ textarea {
                         <?= $form->field($model, 'class')->widget(kartik\select2\Select2::classname(), [
                                 'data' => $ward_class,
                                 'disabled' => $print_readonly == false? $disabled : $print_readonly,
-                                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass'],
+                                'options' => ['placeholder' => Yii::t('app','Please select ward class'), 'id' => 'wardClass',],
                                 'pluginOptions' => [
                                     'allowClear' => true,
                                 ],
