@@ -244,9 +244,9 @@ class Bill extends \yii\db\ActiveRecord
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         if(!empty($modelBill))
         {
-            // Billable_sum - sum of deposit - sum of payed - sum of refund
+            // Billable_sum - sum of deposit - sum of payed - sum of refund - sum of exception
             $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($modelBill->rn)
-             - Bill::getPayedAmt($modelBill->rn) - Bill::getRefund($modelBill->rn);
+             - Bill::getPayedAmt($modelBill->rn) - Bill::getRefund($modelBill->rn) - Bill::getException($modelBill->rn);
         }
         $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
@@ -270,6 +270,29 @@ class Bill extends \yii\db\ActiveRecord
         {
             $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
             if($model->receipt_type == 'deposit' && empty($model_cancellation))
+                $sum_deposit += $model->receipt_content_sum;
+        }
+        return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
+    }
+
+     // All Deposit
+     public function getException($rn){
+        // $sum_deposit = 0.0;
+        // $model_receipt = Receipt::findAll(['rn' => $rn]);
+        // foreach($model_receipt as $model)
+        // {
+        //     if($model->receipt_type == 'deposit')
+        //         $sum_deposit += $model->receipt_content_sum;
+        // }
+        // return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
+        
+
+        $sum_deposit = 0.0;
+        $model_receipt = Receipt::findAll(['rn' => $rn]);
+        foreach($model_receipt as $model)
+        {
+            $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
+            if($model->receipt_type == 'exception' && empty($model_cancellation))
                 $sum_deposit += $model->receipt_content_sum;
         }
         return $sum_deposit  < 0 ?  0.0 : $sum_deposit;

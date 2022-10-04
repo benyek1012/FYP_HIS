@@ -7,6 +7,7 @@ use kartik\datetime\DateTimePicker;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
 use app\models\Bill;
+use app\models\Patient_information;
 use app\models\Receipt;
 
 /* @var $this yii\web\View */
@@ -73,6 +74,9 @@ use app\models\Receipt;
         "2" =>'2', 
         "3" =>'3', 
     );
+    $patient_uid = Patient_admission::findone(['rn' => Yii::$app->request->get('rn')])->patient_uid;
+    $patient_nric = Patient_information::findOne(['patient_uid' => $patient_uid])->nric;
+
 
     // foreach($rows_patient_admission as $row_patient_admission){
     //     if(empty($ward_class[$row_patient_admission['initial_ward_class']])){
@@ -247,7 +251,9 @@ use app\models\Receipt;
         ?>
 
         <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled, 'style' => 'display: none;']) ?>
-        <?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'disabled' => $disabled])?>
+        <?php if(empty($patient_nric)){
+            ?><?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'disabled' => $disabled])?>
+        <?php } ?>
         <?= Html::button(Yii::t('app','Change Registration Number'), ['class' => 'btn btn-primary', 'id' => 'btnChange', 'disabled' => $disabled])?>
         <?php
            // Modal for transfer patient

@@ -355,7 +355,6 @@ return[
     '{attribute} should contain at most 100 characters' => '{attribute} hendaklah mengandungi paling banyak 100 aksara',
     '{attribute} should contain at most 50 characters' => '{attribute} hendaklah mengandungi paling banyak 50 aksara',
     '{attribute} should contain at most 64 characters' => '{attribute} hendaklah mengandungi paling banyak 64 aksara',
-
     'Without Replacement' => 'Tanpa Ganti',
     'NRIC/Passport' => 'NRIC/Pasport',
 ];
