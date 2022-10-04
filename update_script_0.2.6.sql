@@ -21,6 +21,7 @@ BEGIN
     UNION
     SELECT bill.rn, bill.bill_generation_datetime, bill.bill_generation_billable_sum_rm, null, null, null, bill.bill_print_id, null, bill.generation_responsible_uid FROM bill WHERE bill.rn = rn AND bill.bill_generation_datetime is not null;
 
-    
+ALTER TABLE `bill` DROP `nurse_responsible`;
+
 END$$
 DELIMITER ;

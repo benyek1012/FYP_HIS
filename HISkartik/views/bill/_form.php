@@ -130,17 +130,17 @@ $rows_bill = (new \yii\db\Query())
 ->where(['rn'=> Yii::$app->request->get('rn')])
 ->all();
 
-$nurse_responsible = array();
-foreach($rows_nurse as $row_nurse){
-    $nurse_responsible[$row_nurse['code']] = $row_nurse['code'] . ' - ' . $row_nurse['name'] . ' [ ' .  $row_nurse['long_description'] . ' ]';  
+// $nurse_responsible = array();
+// foreach($rows_nurse as $row_nurse){
+//     $nurse_responsible[$row_nurse['code']] = $row_nurse['code'] . ' - ' . $row_nurse['name'] . ' [ ' .  $row_nurse['long_description'] . ' ]';  
 
-}  
+// }  
 
-foreach($rows_bill as $row_bill){
-    if(empty($nurse_responsible[$row_bill['nurse_responsible']])){
-        $nurse_responsible[$row_bill['nurse_responsible']] = $row_bill['nurse_responsible'];
-    }            
-}
+// foreach($rows_bill as $row_bill){
+//     if(empty($nurse_responsible[$row_bill['nurse_responsible']])){
+//         $nurse_responsible[$row_bill['nurse_responsible']] = $row_bill['nurse_responsible'];
+//     }            
+// }
 
 $rows = (new \yii\db\Query())
 ->select('*')
@@ -592,7 +592,9 @@ textarea {
                     <div class="col-sm-6">
                         <?= $form->field($model, 'collection_center_code')->textInput(['maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
-
+                   
+                    <?php
+                    /*
                     <div class="col-sm-6">
                         <?= $form->field($model, 'nurse_responsible')->dropDownList($nurse_responsible, 
                         [
@@ -613,6 +615,9 @@ textarea {
                             ],
                         ]); ?> -->
                     </div>
+                    */
+                    ?>
+                   
 
                     <div class="col-sm-6">
                         <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
@@ -1060,17 +1065,17 @@ $(document).ready(function() {
     });
 });
 
-$(document).ready(function() {
-    $('#nurse_responsible').select2({
-        placeholder: 'Please select nurse responsible',
-        allowClear: true,
-        tags: true,
-        width: '100%',
-        matcher: function(params, data) {
-            return matchBill(params, data);
-        },
-    });
-});
+// $(document).ready(function() {
+//     $('#nurse_responsible').select2({
+//         placeholder: 'Please select nurse responsible',
+//         allowClear: true,
+//         tags: true,
+//         width: '100%',
+//         matcher: function(params, data) {
+//             return matchBill(params, data);
+//         },
+//     });
+// });
 JS;
 $this->registerJS($script);
 ?>
