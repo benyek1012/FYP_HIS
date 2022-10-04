@@ -35,6 +35,8 @@ use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use yii\helpers\VarDumper;
 use app\models\PrintForm;
+use DateTime;
+
 /**
  * BillController implements the CRUD actions for Bill model.
  */
@@ -468,6 +470,26 @@ class BillController extends Controller
                 $model->bill_generation_billable_sum_rm = Yii::$app->session->get('billable_sum');
                 $model->bill_generation_final_fee_rm = Yii::$app->session->get('final_fee');
 
+                if(!empty(Yii::$app->request->get('discharge'))){
+                    if(Yii::$app->request->get('discharge')){
+                        $checkFormat = DateTime::createFromFormat('Y-m-d H:i:s', Yii::$app->request->get('discharge'));
+
+                        if($checkFormat){
+                            $model->discharge_date = Yii::$app->request->get('discharge');
+                        }
+                        else{
+                            Yii::$app->session->setFlash('error_generate', '
+                                <div class="alert alert-danger alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                <strong>'.Yii::t('app', 'Invalid Datetime Format!').' <br/></strong> 
+                                '.Yii::t('app', 'Invalid Datetime Format of Discharge Date').'</div>'
+                            );
+
+                            return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'billGeneration'));   
+                        }
+                    }
+                }
 
                 if (Yii::$app->session->has('billable_sum')) Yii::$app->session->remove('billable_sum');
                 if (Yii::$app->session->has('final_fee')) Yii::$app->session->remove('final_fee');

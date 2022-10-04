@@ -782,6 +782,30 @@ textarea {
                     ?>
                     </div>
 
+                    <div class="col-sm-6">
+                        <?php
+                        if($isGenerated)
+                        {
+                            echo $form->field($model, 'discharge_date')->textInput(
+                                [
+                                    'disabled' => empty($isGenerated) ? false : true, 
+                                    'maxlength' => true, 
+                                    'class' => 'dischargeDate', 
+                                ]);
+                        }
+                        else
+                        {
+                            echo $form->field($model, 'discharge_date')->textInput(
+                                [
+                                    'disabled' => empty($isGenerated) ? false : true, 
+                                    'maxlength' => true, 
+                                    'class' => 'dischargeDate', 
+                                    'value' => (new Bill()) -> getLastWardEndDateTime(Yii::$app->request->get('bill_uid')),
+                                ]);
+                        }
+                        ?>
+                    </div>
+
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
@@ -950,7 +974,7 @@ function getDailyWardCost(url) {
 function confirmAction(url) {
     var answer = confirm("Are you sure to generate bill?");
     if (answer) {
-        window.location.href = url + '&confirm=true';
+        window.location.href = url + '&confirm=true&discharge=' + document.getElementById('bill-discharge_date').value;
     }
     // else {
     //     window.location.href = history.go(-1);
@@ -961,7 +985,7 @@ function confirmAction(url) {
 function confirmAction(url) {
     var answer = confirm("Adakah anda pasti menjana bil?");
     if (answer) {
-        window.location.href = url + '&confirm=true';
+        window.location.href = url + '&confirm=true&discharge=' + document.getElementById('bill-discharge_date').value;
     }
     // else {
     // window.location.href = history.go(-1);

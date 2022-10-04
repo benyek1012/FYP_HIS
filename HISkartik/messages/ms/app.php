@@ -357,5 +357,8 @@ return[
     '{attribute} should contain at most 64 characters' => '{attribute} hendaklah mengandungi paling banyak 64 aksara',
     'Without Replacement' => 'Tanpa Ganti',
     'NRIC/Passport' => 'NRIC/Pasport',
+    'Discharge Date' => 'Tarikh Pelepasan',
+    'Invalid Datetime Format!' => 'Format Datetime Tidak Sah!',
+    'Invalid Datetime Format of Discharge Date' => 'Format Datetime Tarikh Pelepasan Tidak Sah',
 ];
 ?>

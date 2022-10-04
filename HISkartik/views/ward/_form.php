@@ -134,6 +134,7 @@ $urlDate = Url::toRoute(['/bill/date']);
 $urlSubmit = Url::toRoute(['/ward/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWardRow = Url::toRoute(['/ward/wardrow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWard = Url::toRoute(['/ward/ward']);
+$urlDischarge = Url::toRoute(['/ward/dischargedate']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -420,6 +421,11 @@ else{
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
+
+                    $.get('<?php echo "{$urlDischarge}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('bill-discharge_date').value = data.date;
+                    });
                     addWardRow('');
                 }
                 
@@ -429,6 +435,11 @@ else{
                         document.getElementById('wardTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.wardTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
+                    });
+
+                    $.get('<?php echo "{$urlDischarge}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('bill-discharge_date').value = data.date;
                     });
                     addWardRow('update');
                 }
@@ -457,9 +468,9 @@ else{
                 //     )
                 // });
 
-                $.pjax.reload({container: '#pjax-ward-form'});
+                // $.pjax.reload({container: '#pjax-ward-form'});
 
-                $(document).on('ready pjax:success', function(){
+                // $(document).on('ready pjax:success', function(){
                     $('.wardCode', document).each(function(index, item, event) {
                         $('#ward-'+index+'-ward_code').select2({
                             placeholder: 'Select ward code',
@@ -469,6 +480,10 @@ else{
                                 return matchWard(params, data);
                             },
                         });
+                    // });
+
+                    $(document).on('select2:open', () => {
+                        document.querySelector('.select2-search__field').focus();
                     });
 
                     document.getElementById(focusID).focus();

@@ -47,6 +47,12 @@ class WardController extends Controller
         echo Json::encode($cost);
     }
 
+    public function actionDischargedate($bill_uid) {
+        $discharge_date = array();
+        $discharge_date['date'] = (new Bill()) -> getLastWardEndDateTime($bill_uid);
+        echo Json::encode($discharge_date);
+    }
+
     public function actionWardrow()
     {
         // Add Ward Row
