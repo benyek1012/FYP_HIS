@@ -24,9 +24,9 @@ use app\models\Receipt;
 <div class="patient-admission-form">
     <!-- If the flash message existed, show it  -->
     <?php if(Yii::$app->session->hasFlash('msg')):?>
-        <div id = "flashError">
-            <?= Yii::$app->session->getFlash('msg') ?>
-        </div>
+    <div id="flashError">
+        <?= Yii::$app->session->getFlash('msg') ?>
+    </div>
     <?php endif; ?>
 
     <?php 
@@ -134,7 +134,7 @@ use app\models\Receipt;
 
     <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> Yii::$app->request->get('id')])->label(false); ?>
     <div class="row">
-        
+
         <!-- <div class="col-sm-6">
             <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
         </div> -->
@@ -212,11 +212,15 @@ use app\models\Receipt;
             ],])?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')", 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
+            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')", 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
+
+    </div>
+<hr/>
+    <div class="row">
         <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
@@ -224,16 +228,12 @@ use app\models\Receipt;
             <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
+            <?= $form->field($model, 'guarantor_address1')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_address2')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_address3')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+        </div>
+        <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_address1')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
-       
-            <?= $form->field($model, 'guarantor_address2')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
-      
-            <?= $form->field($model, 'guarantor_address3')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>  
-        </div>
-        <div class="col-sm-6">
             <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
     </div>
@@ -266,11 +266,11 @@ use app\models\Receipt;
                 ]); 
                 
             ?>
-             <div id='modalContent'>
+        <div id='modalContent'>
             <?= $form->field($modelpatient, 'nric')->textInput([ 'autocomplete' =>'off', 'value' => ""]);?>
             <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'transfer', 'value' => 'transfer', 'disabled' => $disabled])?>
-            </div>
-            <?php
+        </div>
+        <?php
             kartik\form\ActiveForm::end();
             Modal::end();
 
@@ -291,11 +291,11 @@ use app\models\Receipt;
                  ]); 
                  
              ?>
-              <div id='modalContent'>
-             <?= $form->field($model_change_rn, 'rn')->textInput([ 'autocomplete' =>'off', 'value' => ""]);?>
-             <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'change', 'value' => 'change', 'disabled' => $disabled])?>
-             </div>
-             <?php
+        <div id='modalContent'>
+            <?= $form->field($model_change_rn, 'rn')->textInput([ 'autocomplete' =>'off', 'value' => ""]);?>
+            <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'name' => 'change', 'value' => 'change', 'disabled' => $disabled])?>
+        </div>
+        <?php
              kartik\form\ActiveForm::end();
              Modal::end();
         ?>
@@ -311,7 +311,7 @@ use app\models\Receipt;
     <?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
     <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
 </div>
-<br/>
+<br />
 
 <?php
 $this->registerJs(
@@ -332,81 +332,80 @@ $this->registerJs(
 ?>
 
 <script>
-    function testing(url){
-        var wardForm = $('#patient-admission-form');
-        var formData = wardForm.serialize();
-        
-        $.ajax({
-            url: wardForm.attr("action"),
-            type: wardForm.attr("method"),
-            data: formData,
+function testing(url) {
+    var wardForm = $('#patient-admission-form');
+    var formData = wardForm.serialize();
 
-            success: function (data) {
-                // $(wardForm).trigger('reset');
-                // console.log(wardForm.attr("method"));
-            },
-        });
+    $.ajax({
+        url: wardForm.attr("action"),
+        type: wardForm.attr("method"),
+        data: formData,
+
+        success: function(data) {
+            // $(wardForm).trigger('reset');
+            // console.log(wardForm.attr("method"));
+        },
+    });
+}
+
+var focusID = '';
+
+function submitPatientAdmissionForm() {
+    var form = $('#patient-admission-form');
+    var formData = $('#' + focusID).serialize();
+
+    $.ajax({
+        url: form.attr("action"),
+        type: form.attr("method"),
+        data: formData,
+
+        success: function(data) {
+            // $.pjax.reload({container: '#pjax-patient-admission-form'});
+        },
+    });
+}
+
+function getFocusID(id) {
+    if (id == '') {
+        focusID = document.activeElement.id;
+    } else {
+        focusID = id;
     }
+}
 
-    var focusID = '';
+function matchAdmission(params, data) {
+    // Search first letter
+    // params.term = params.term || '';
+    // var code = data.text.split(" - ");
+    // console.log(indexOf(params.term.toUpperCase()));
+    // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
+    //     return data;
+    // }
+    // return null;
 
-    function submitPatientAdmissionForm(){
-        var form = $('#patient-admission-form');
-        var formData = $('#'+focusID).serialize();
+    // Search code 
+    // If search is empty we return everything
+    if ($.trim(params.term) === '') return data;
 
-        $.ajax({
-            url: form.attr("action"),
-            type: form.attr("method"), 
-            data: formData,
+    // Compose the regex
+    var regex_text = '.*';
+    regex_text += (params.term).split('').join('.*');
+    regex_text += '.*'
 
-            success: function (data) {
-                // $.pjax.reload({container: '#pjax-patient-admission-form'});
-            },
-        });
-    }
+    // Case insensitive
+    var regex = new RegExp(regex_text, "i");
 
-    function getFocusID(id) {
-        if(id == ''){
-            focusID = document.activeElement.id;
-        }
-        else{
-            focusID = id;
-        }
-    }
-    
-    function matchAdmission(params, data) {
-        // Search first letter
-        // params.term = params.term || '';
-        // var code = data.text.split(" - ");
-        // console.log(indexOf(params.term.toUpperCase()));
-        // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
-        //     return data;
-        // }
-        // return null;
+    // Splite code and name
+    var code = data.text.split(" - ");
 
-        // Search code 
-        // If search is empty we return everything
-        if ($.trim(params.term) === '') return data;
-
-        // Compose the regex
-        var regex_text = '.*';
-        regex_text += (params.term).split('').join('.*');
-        regex_text += '.*'
-        
-        // Case insensitive
-        var regex = new RegExp(regex_text, "i");
-
-        // Splite code and name
-        var code = data.text.split(" - ");
-
-        // If no match is found we return nothing
-        if (!regex.test(code[0])) {
+    // If no match is found we return nothing
+    if (!regex.test(code[0])) {
         return null;
-        }
-
-        // Else we return everything that is matching
-        return data;
     }
+
+    // Else we return everything that is matching
+    return data;
+}
 </script>
 
 <?php 

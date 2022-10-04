@@ -261,9 +261,12 @@ class Patient_admissionController extends Controller
             if ($modelpatient->load($this->request->post()) ){
                 $ic = $modelpatient->nric;
                 $modelpatient = Patient_information::find()->where(['nric' => $modelpatient->nric])->one();
+                // var_dump(empty($modelpatient));
+                // exit;
                 if(empty($modelpatient)){
                     // echo ' Nric does not exist.';
                     // set the flash message
+                   
                     Yii::$app->session->setFlash('msg', '
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
@@ -286,78 +289,75 @@ class Patient_admissionController extends Controller
                     }
                 }
             
-                return $this->render('update', [
-                    'model' => $model,
-                    'modelpatient' => $modelpatient,
-                    'model_change_rn' => $model_change_rn
-                ]);
+                return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                'rn' => $model->rn));        
             }
         }
 
-        if ($this->request->isPost && isset($_POST['change'])){
-            if ($model_change_rn->load($this->request->post()) ){
-                $pid = $model_change_rn->patient_uid;
-                $new_rn = $model_change_rn->rn;
-                $modelpatient = Patient_information::findOne(['patient_uid' => $pid]);
+        // if ($this->request->isPost && isset($_POST['change'])){
+        //     if ($model_change_rn->load($this->request->post()) ){
+        //         $pid = $model_change_rn->patient_uid;
+        //         $new_rn = $model_change_rn->rn;
+        //         $modelpatient = Patient_information::findOne(['patient_uid' => $pid]);
             
-                if(empty($modelpatient)){
+        //         if(empty($modelpatient)){
                  
-                    Yii::$app->session->setFlash('msg', '
-                        <div class="alert alert-danger alert-dismissable">
-                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                        <strong>'.Yii::t('app', 'Validation error! ').' </strong> Nric : '.$pid.''
-                            .Yii::t('app', ' does not exist').' !</div>'
-                    );
-                }
-                else{
-                    if(!empty($new_rn)){
-                        $model->rn = $new_rn;
-                        $arr = str_split($new_rn, 5);
-                        $first_character = substr($arr[1], 0, 1);
-                        if($first_character == '9')
-                            $model->type = 'Labor';
-                        else $model->type = 'Normal';
+        //             Yii::$app->session->setFlash('msg', '
+        //                 <div class="alert alert-danger alert-dismissable">
+        //                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+        //                 <strong>'.Yii::t('app', 'Validation error! ').' </strong> Nric : '.$pid.''
+        //                     .Yii::t('app', ' does not exist').' !</div>'
+        //             );
+        //         }
+        //         else{
+        //             if(!empty($new_rn)){
+        //                 $model->rn = $new_rn;
+        //                 $arr = str_split($new_rn, 5);
+        //                 $first_character = substr($arr[1], 0, 1);
+        //                 if($first_character == '9')
+        //                     $model->type = 'Labor';
+        //                 else $model->type = 'Normal';
 
-                        $model->validate();
-                        $array_error = $model->getFirstErrors();
-                        foreach($array_error as $error){
-                            $string_error .= $error;
-                        }     
-                        if($string_error != "")
-                        {
-                            Yii::$app->session->setFlash('msg', '
-                            <div class="alert alert-danger alert-dismissable">
-                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                            <strong>'.Yii::t('app', 'Validation error!').' </strong><br/>'. $string_error.'</div>');
-                        }
-                        else{
-                            $model->save();
-                            Yii::$app->session->setFlash('msg', '
-                                <div class="alert alert-success alert-dismissable">
-                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                                '.Yii::t('app', 'You have successfully changed Registration Number !').'</div>'
-                            );
-                            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-                                'rn' => $model->rn));     
-                        } 
-                    }
-                    else{
-                        // set the flash message
-                        Yii::$app->session->setFlash('msg', '
-                        <div class="alert alert-danger alert-dismissable">
-                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                        <strong>'.Yii::t('app', 'Validation error! ').' </strong> 
-                        '.Yii::t('app', 'Please enter Registration Number').' !</div>');
-                    }
-                }
+        //                 $model->validate();
+        //                 $array_error = $model->getFirstErrors();
+        //                 foreach($array_error as $error){
+        //                     $string_error .= $error;
+        //                 }     
+        //                 if($string_error != "")
+        //                 {
+        //                     Yii::$app->session->setFlash('msg', '
+        //                     <div class="alert alert-danger alert-dismissable">
+        //                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+        //                     <strong>'.Yii::t('app', 'Validation error!').' </strong><br/>'. $string_error.'</div>');
+        //                 }
+        //                 else{
+        //                     $model->save();
+        //                     Yii::$app->session->setFlash('msg', '
+        //                         <div class="alert alert-success alert-dismissable">
+        //                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+        //                         '.Yii::t('app', 'You have successfully changed Registration Number !').'</div>'
+        //                     );
+        //                     return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+        //                         'rn' => $model->rn));     
+        //                 } 
+        //             }
+        //             else{
+        //                 // set the flash message
+        //                 Yii::$app->session->setFlash('msg', '
+        //                 <div class="alert alert-danger alert-dismissable">
+        //                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+        //                 <strong>'.Yii::t('app', 'Validation error! ').' </strong> 
+        //                 '.Yii::t('app', 'Please enter Registration Number').' !</div>');
+        //             }
+        //         }
             
-                return $this->render('update', [
-                    'model' => $model,
-                    'modelpatient' => $modelpatient,
-                    'model_change_rn' => $model_change_rn
-                ]);
-            }
-        }
+        //         return $this->render('update', [
+        //             'model' => $model,
+        //             'modelpatient' => $modelpatient,
+        //             'model_change_rn' => $model_change_rn
+        //         ]);
+        //     }
+        // }
         
         if ($this->request->isPost && $model->load($this->request->post()) ) {
             if($model->initial_ward_code == null){
