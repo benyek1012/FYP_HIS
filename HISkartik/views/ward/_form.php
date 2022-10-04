@@ -176,9 +176,9 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Name');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward Start Datetime');?></td>
+                <td><?php echo Yii::t('app','Ward Start Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward End Datetime');?></td>
+                <td><?php echo Yii::t('app','Ward End Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Number of Days');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -254,7 +254,7 @@ else{
                     <?php 
                     if($admission_model->initial_ward_code != "UNKNOWN" && empty($modelWard->ward_code) && $index == 0){
                     ?>
-                        <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        <!-- <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true, 'value' => $admission_model->entry_datetime],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         // 'type' => DateTimePicker::TYPE_INPUT,
@@ -262,12 +262,19 @@ else{
                             'change' => "function () {
                                 calculateDays();
                             }",
-                        ],])->label(false)?>
+                        ],])->label(false)?> -->
+
+                    <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
+                            'class' => 'start_date', 
+                            'disabled' => empty($isGenerated) ? false : true,
+                            'value' => $admission_model->entry_datetime,
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        ])->label(false) ?>
                     <?php 
                     }
                     else{
                     ?>
-                        <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        <!-- <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true,],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         // 'type' => DateTimePicker::TYPE_INPUT,
@@ -276,22 +283,27 @@ else{
                                 calculateDays();
                                 changeRowColor('{$index}');
                             }",
-                        ],])->label(false)?>
+                        ],])->label(false)?> -->
+
+                        <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
+                            'class' => 'start_date', 
+                            'disabled' => empty($isGenerated) ? false : true,
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        ])->label(false) ?>
                     <?php
                     }
                     ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'end_date', 'disabled' => empty($isGenerated) ? false : true,], 
-                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
-                        // 'type' => DateTimePicker::TYPE_INPUT,
-                        'pluginEvents' => [
-                            'change' => "function () {
-                                calculateDays();
-                                changeRowColor('{$index}');
-                            }",
-                        ],])->label(false)?></td>
+                <td>
+                   
+
+                        <?= $form->field($modelWard, "[$index]ward_end_datetime")->textInput([
+                        'class' => 'end_date', 
+                        'disabled' => empty($isGenerated) ? false : true,
+                        'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        ])->label(false) ?>
+                </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
                 <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['tabindex' => '-1','maxlength' => true,
