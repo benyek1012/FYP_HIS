@@ -1,9 +1,13 @@
+USE `sghis`;
+
 ALTER TABLE `bill` DROP `nurse_responsible`;
 
 ALTER TABLE `bill` ADD `discharge_date` DATETIME NULL AFTER `deleted`;
 
 DROP PROCEDURE IF EXISTS `reminder_batch_select`;
 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder_batch_select`(IN `MIN_DATE` DATE, IN `MAX_DATE` DATE, IN `responsible_uid_` VARCHAR(64))
 BEGIN
 
 SET @r1MIN_DATE = DATE_ADD(MIN_DATE, INTERVAL -14 DAY);
@@ -74,5 +78,6 @@ SET @count3 = (SELECT COUNT(reminder3) FROM patient_admission WHERE reminder3 = 
 
 UPDATE reminder_letter SET reminder1count = @count1, reminder2count = @count2, reminder3count = @count3, responsible_uid = responsible_uid_ WHERE batch_date = CAST('9999-12-31' AS DATE);
 
-END
+END$$
+DELIMITER ;
 
