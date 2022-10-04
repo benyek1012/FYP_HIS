@@ -24,3 +24,5 @@ BEGIN
     
 END$$
 DELIMITER ;
+
+ALTER TABLE `bill` ADD `discharge_date` DATETIME NULL AFTER `deleted`;
