@@ -174,6 +174,7 @@ class WardController extends Controller
 
                             if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
                                 $modelWard->save();
+                                echo 'success';
                             }
                         }
                     }
@@ -194,6 +195,7 @@ class WardController extends Controller
 
                                 if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
                                     $modelWard[$i - 1]->save();
+                                    echo 'success';
                                 }
                                 else{
                                     $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
@@ -204,6 +206,7 @@ class WardController extends Controller
                                             foreach ($modelWardUpdate as $modelWardUpdate) {
                                                 $modelWardUpdate->save();
                                             }
+                                            echo 'success';
                                         }
                                     }
                                 }

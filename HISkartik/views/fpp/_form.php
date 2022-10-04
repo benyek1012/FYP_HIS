@@ -366,7 +366,9 @@ else{
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
-                    addFPPRow('');
+                    if(data == 'success'){
+                        addFPPRow('');
+                    }
                 }
                 
                 if(type == 'update'){
@@ -376,7 +378,9 @@ else{
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
-                    addFPPRow('update');
+                    if(data == 'success'){
+                        addFPPRow('update');
+                    }
                 }
             },
         });

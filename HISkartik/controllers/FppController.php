@@ -166,6 +166,7 @@ class FppController extends Controller
 
                             if(!empty($modelFPP->kod) && !empty($modelFPP->name) && !empty($modelFPP->cost_per_unit) && !empty($modelFPP->min_cost_per_unit) && !empty($modelFPP->max_cost_per_unit) && !empty($modelFPP->number_of_units) && !empty($modelFPP->total_cost)){
                                 $modelFPP->save();
+                                echo 'success';
                             }
                         }
                     }
@@ -186,6 +187,7 @@ class FppController extends Controller
 
                                 if(!empty($modelFPP[$i - 1]->kod) && !empty($modelFPP[$i - 1]->name) && !empty($modelFPP[$i - 1]->cost_per_unit) && !empty($modelFPP[$i - 1]->min_cost_per_unit) && !empty($modelFPP[$i - 1]->max_cost_per_unit) && !empty($modelFPP[$i - 1]->number_of_units) && !empty($modelFPP[$i - 1]->total_cost)){
                                     $modelFPP[$i - 1]->save();
+                                    echo 'success';
                                 }
                                 else{
                                     $modelFppUpdate = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
@@ -208,6 +210,7 @@ class FppController extends Controller
 
                                                 $modelFppUpdate->save();
                                             }
+                                            echo 'success';
                                         }
                                     }
                                 }

@@ -395,7 +395,9 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
-                    addTreatmentRow('');
+                    if(data == 'success'){
+                        addTreatmentRow('');
+                    }
                 }
                 
                 if(type == 'update'){
@@ -405,9 +407,11 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
-                    addTreatmentRow('update');
+                    if(data == 'success'){
+                        addTreatmentRow('update');
+                    }
                 }
-            },
+            }
         });
     }
 

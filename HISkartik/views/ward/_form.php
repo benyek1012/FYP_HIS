@@ -432,7 +432,9 @@ else{
                         var data = $.parseJSON(data);                 
                         document.getElementById('bill-discharge_date').value = data.date;
                     });
-                    addWardRow('');
+                    if(data == 'success'){
+                        addWardRow('');
+                    }
                 }
                 
                 if(type == 'update'){
@@ -447,7 +449,9 @@ else{
                         var data = $.parseJSON(data);                 
                         document.getElementById('bill-discharge_date').value = data.date;
                     });
-                    addWardRow('update');
+                    if(data == 'success'){
+                        addWardRow('update');
+                    }
                 }
             },
         });
