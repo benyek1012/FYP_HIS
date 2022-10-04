@@ -108,7 +108,7 @@ use app\models\Receipt;
     $checkDate = $billModel->isGenerated(Yii::$app->request->get('rn'));
     $receiptModel = new Receipt();
     $checkDeposit = $receiptModel->isGenerated(Yii::$app->request->get('rn'));
-    if(!empty($cancellation) || $checkDate != false || $checkDeposit != false){
+    if(!empty($cancellation) || $checkDate != false){ // || $checkDeposit != false
         $disabled = true;
         $linkDisabled = 'disabled-link';
     }

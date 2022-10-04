@@ -225,6 +225,7 @@ class Patient_admissionController extends Controller
             $model->loadDefaultValues();
             $model->initial_ward_class = "UNKNOWN";
             $model->initial_ward_code = "UNKNOWN";
+            $model->initial_ward_class = '3';
             $model->save();
 
             return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
