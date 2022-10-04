@@ -83,7 +83,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                                 $ic = ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->nric;
                                                 return  Html::a($ic, \yii\helpers\Url::to(['/site/admission', 'id' => $data['patient_uid'], '#' => 'patient']));
                                             },
-                                            'label' => Yii::t('app','NRIC')
+                                            'label' => Yii::t('app','NRIC/Passport')
                                         ],
                                         [
                                             'attribute' => 'race',

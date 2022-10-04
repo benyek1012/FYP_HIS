@@ -55,7 +55,7 @@ class Bill extends \yii\db\ActiveRecord
             [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime'], 'safe'],
             [['bill_uid', 'generation_responsible_uid', 'bill_print_responsible_uid'], 'string', 'max' => 64],
             [['rn'], 'string', 'max' => 11],
-            [['status_code', 'class', 'department_code', 'collection_center_code', 'nurse_responsible'], 'string', 'max' => 20],
+            [['status_code', 'class', 'department_code', 'collection_center_code'], 'string', 'max' => 20],
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 200],
@@ -82,7 +82,6 @@ class Bill extends \yii\db\ActiveRecord
             'department_name' => Yii::t('app','Department Name'),
             'is_free' => Yii::t('app','Is Free'),
             'collection_center_code' => Yii::t('app','Collection Center Code'),
-            'nurse_responsible' => Yii::t('app','Nurse Responsible'),
             'bill_generation_datetime' => Yii::t('app','Bill Generation Datetime'),
             'generation_responsible_uid' => Yii::t('app','Generation Responsible Uid'),
             'bill_generation_billable_sum_rm' => Yii::t('app','Billable Total')." (RM)", //Bill Generation Billable Sum Rm
@@ -244,9 +243,9 @@ class Bill extends \yii\db\ActiveRecord
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
         if(!empty($modelBill))
         {
-            // Billable_sum - sum of deposit - sum of payed - sum of refund
+            // Billable_sum - sum of deposit - sum of payed - sum of refund - sum of exception
             $billable = Bill::calculateBillable($bill_uid) - Bill::getDeposit($modelBill->rn)
-             - Bill::getPayedAmt($modelBill->rn) - Bill::getRefund($modelBill->rn);
+             - Bill::getPayedAmt($modelBill->rn) - Bill::getRefund($modelBill->rn) - Bill::getException($modelBill->rn);
         }
         $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
@@ -270,6 +269,29 @@ class Bill extends \yii\db\ActiveRecord
         {
             $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
             if($model->receipt_type == 'deposit' && empty($model_cancellation))
+                $sum_deposit += $model->receipt_content_sum;
+        }
+        return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
+    }
+
+     // All Deposit
+     public function getException($rn){
+        // $sum_deposit = 0.0;
+        // $model_receipt = Receipt::findAll(['rn' => $rn]);
+        // foreach($model_receipt as $model)
+        // {
+        //     if($model->receipt_type == 'deposit')
+        //         $sum_deposit += $model->receipt_content_sum;
+        // }
+        // return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
+        
+
+        $sum_deposit = 0.0;
+        $model_receipt = Receipt::findAll(['rn' => $rn]);
+        foreach($model_receipt as $model)
+        {
+            $model_cancellation = Cancellation::findAll(['cancellation_uid' => $model->receipt_uid]);
+            if($model->receipt_type == 'exception' && empty($model_cancellation))
                 $sum_deposit += $model->receipt_content_sum;
         }
         return $sum_deposit  < 0 ?  0.0 : $sum_deposit;

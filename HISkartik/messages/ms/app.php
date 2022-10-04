@@ -5,7 +5,7 @@ return[
     'Update' => 'Kemas Kini',
     'File' => 'Fail',
     'Patient Name' => 'Nama Pesakit',
-    'Patient IC' => 'IC Pesakit',
+    'Patient IC/Passport' => 'IC/Pasport Pesakit',
     'Amount Due / Unclaimed Balance' => 'Amaun Hutang / Baki Belum Dituntut',
     'R/N Number' => 'R/N Nombor',
     'Deposit' => 'Deposit',
@@ -15,7 +15,7 @@ return[
     'Others' => 'Lain-Lain',
     "Payment" => 'Bayaran',
     'Print Transaction Records' => 'Cetak Rekod Transaksi',
-    'NRIC' => 'NRIC',
+    'NRIC/Passport' => 'NRIC/Pasport',
     'Search IC/RN' => 'Cari IC/RN',
     'Add New R/N' => 'Tambah R/N Baru',
     'Add New Labor R/N' => 'Tambah R/N Labor Baru',
@@ -52,7 +52,7 @@ return[
     'Reference' => 'Rujukan',
     'Medical Legal Code' => 'Kod Perundangan Perubatan',
     'Guarantor Name' => 'Nama Penjamin',
-    'Guarantor NRIC' => 'NRIC Penjamin',
+    'Guarantor NRIC/Passport' => 'NRIC/Pasport Penjamin',
     'Guarantor Phone Number' => 'Nombor Telefon Penjamin',
     'Guarantor Email' => 'Emel Penjamin',
     'Guarantor Address1' => 'Alamat Penjamin1',
@@ -355,7 +355,7 @@ return[
     '{attribute} should contain at most 100 characters' => '{attribute} hendaklah mengandungi paling banyak 100 aksara',
     '{attribute} should contain at most 50 characters' => '{attribute} hendaklah mengandungi paling banyak 50 aksara',
     '{attribute} should contain at most 64 characters' => '{attribute} hendaklah mengandungi paling banyak 64 aksara',
-
     'Without Replacement' => 'Tanpa Ganti',
+    'NRIC/Passport' => 'NRIC/Pasport',
 ];
 ?>

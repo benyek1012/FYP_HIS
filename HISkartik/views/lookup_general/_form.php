@@ -6,6 +6,18 @@ use GpsLab\Component\Base64UID\Base64UID;
 /* @var $this yii\web\View */
 /* @var $model app\models\Lookup_general */
 /* @var $form yii\widgets\ActiveForm */
+
+$rows_cat = (new \yii\db\Query())
+->select('category')
+->from('lookup_general')
+->groupBy('category')
+->all();
+
+$category = array();
+foreach($rows_cat as $rows_cat){
+    $category[$rows_cat['category']] = $rows_cat['category'];  
+} 
+
 ?>
 
 <div class="lookup-general-form" id="LOK_div" style="display:none;">
@@ -28,7 +40,13 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'category')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'category')->widget(kartik\select2\Select2::classname(), [
+                    'data' => $category,
+                    'options' => ['placeholder' => Yii::t('app','Please select category'), 'id' => 'race'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'tags' => true,
+                    ]])?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
