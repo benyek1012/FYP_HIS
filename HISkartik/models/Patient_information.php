@@ -46,7 +46,7 @@ class Patient_information extends \yii\db\ActiveRecord
             [['first_reg_date'], 'required'],
             [['nric'], 'unique'],
             [['name'], 'string', 'max' => 200],
-            ['name', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Name can only contain word characters'],
+            ['name', 'match', 'pattern' => '/^[a-z\s\-\/\.\'@]+$/i', 'message' => 'Name can only contain word characters'],
             // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
