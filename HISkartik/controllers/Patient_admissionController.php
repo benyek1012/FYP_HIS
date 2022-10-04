@@ -220,7 +220,7 @@ class Patient_admissionController extends Controller
 
             $model->rn = $rn;
             $model->patient_uid = Yii::$app->request->get('id');
-            $model->entry_datetime = $date->format('Y-m-d H:i:s');
+            $model->entry_datetime = $date->format('Y-m-d H:i');
             $model->type = Yii::$app->request->get('type');
             $model->loadDefaultValues();
             $model->initial_ward_class = "UNKNOWN";

@@ -41,7 +41,8 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return [
             [['rn', 'entry_datetime', 'patient_uid', 'type'], 'required'],
-            [['entry_datetime'], 'safe'],
+            // [['entry_datetime'], 'safe'],
+            [['entry_datetime'], 'datetime', 'format' => 'php:Y-m-d H:i'],
             [['medical_legal_code'], 'integer'],
             [['rn','startrn','endrn'], 'string', 'max' => 11, 'min' => 11],
             [['patient_uid'], 'string', 'max' => 64],
@@ -67,7 +68,7 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return [
             'rn' =>  Yii::t('app','Registration Number (R/N)'),
-            'entry_datetime' => Yii::t('app','Entry Datetime'),
+            'entry_datetime' => Yii::t('app','Entry Datetime').' (yyyy-mm-dd hh:ii)',
             'patient_uid' => Yii::t('app','Patient Uid'),
             'initial_ward_code' => Yii::t('app','Initial Ward Code'),
             'initial_ward_class' => Yii::t('app','Initial Ward Class'),

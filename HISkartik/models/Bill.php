@@ -52,7 +52,9 @@ class Bill extends \yii\db\ActiveRecord
             [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'daily_ward_cost'], 'required'],
             [['daily_ward_cost', 'bill_generation_billable_sum_rm', 'bill_generation_final_fee_rm'], 'number'],
             [['is_free', 'deleted'], 'integer'],
-            [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime', 'discharge_date'], 'safe'],
+            // [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime', 'discharge_date'], 'safe'],
+            [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime'], 'safe'],
+            [['discharge_date'], 'datetime', 'format' => 'php:Y-m-d H:i'],
             [['bill_uid', 'generation_responsible_uid', 'bill_print_responsible_uid'], 'string', 'max' => 64],
             [['rn'], 'string', 'max' => 11],
             [['status_code', 'class', 'department_code', 'collection_center_code'], 'string', 'max' => 20],
@@ -530,13 +532,15 @@ class Bill extends \yii\db\ActiveRecord
             $discharge_date = Ward::find()->select('ward_end_datetime')->where(['bill_uid' => $bill_uid])
             ->orderBy('ward_end_datetime DESC')->limit(1)->one();
             if(!empty($discharge_date["ward_end_datetime"])){
-                return date($discharge_date["ward_end_datetime"]);
+                $formatedDate = DateFormat::convert($discharge_date["ward_end_datetime"], 'datetime');
+                return $formatedDate;
             }
             else{
-                return $date->format('Y-m-d H:i:s');
+                return $date->format('Y-m-d H:i');
             }
         }
-        else
-            return $date->format('Y-m-d H:i:s');
+        else{
+            return $date->format('Y-m-d H:i');
+        }
     }
 }

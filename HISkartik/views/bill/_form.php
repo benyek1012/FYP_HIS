@@ -10,6 +10,7 @@ use app\models\Fpp;
 use app\models\Receipt;
 use yii\helpers\Url;
 use app\models\Cancellation;
+use app\models\DateFormat;
 use app\models\Variable;
 use yii\bootstrap4\Modal;
 
@@ -786,6 +787,7 @@ textarea {
                         <?php
                         if($isGenerated)
                         {
+                            $model->discharge_date = DateFormat::convert($model->discharge_date, 'datetime');
                             echo $form->field($model, 'discharge_date')->textInput(
                                 [
                                     'disabled' => empty($isGenerated) ? false : true, 

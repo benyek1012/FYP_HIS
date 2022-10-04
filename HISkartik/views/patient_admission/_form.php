@@ -7,6 +7,7 @@ use kartik\datetime\DateTimePicker;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
 use app\models\Bill;
+use app\models\DateFormat;
 use app\models\Patient_information;
 use app\models\Receipt;
 
@@ -123,6 +124,7 @@ use app\models\Receipt;
 
     $url = Url::toRoute(['/patient_admission/update', 'rn'=> Yii::$app->request->get('rn')]);
 
+    $model->entry_datetime = DateFormat::convert($model->entry_datetime, 'datetime');
    
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
@@ -205,7 +207,7 @@ use app\models\Receipt;
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(),[
+            <!-- <?= $form->field($model, 'entry_datetime')->widget(DateTimePicker::classname(),[
             'options' => ['class' => 'entry_datetime', 'disabled' => $disabled],
             'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
             'pluginEvents' => [
@@ -213,7 +215,15 @@ use app\models\Receipt;
                     getFocusID('patient_admission-entry_datetime');
                     submitPatientAdmissionForm();
                 }",
-            ],])?>
+            ],])?> -->
+
+            <?= $form->field($model, 'entry_datetime')->textInput([
+                'maxlength' => true,
+                'class' => 'entry_datetime',
+                'disabled' => $disabled,
+                'onfocusout' => 'submitPatientAdmissionForm();',
+                'onfocus' => "getFocusID('patient_admission-entry_datetime');",
+            ]);?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')", 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>

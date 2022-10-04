@@ -111,19 +111,35 @@ $this->registerJs(
         </div>
         <div class="col-sm-6">
             <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
-                <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
-                'options' => ['id' => 'DOB', 'disabled' => 'disabled', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
-                'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
-                'pluginEvents' => [
-                ],]);
+                <?= 
+                // $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+                // 'options' => ['id' => 'DOB', 'disabled' => 'disabled', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
+                // 'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+                // 'pluginEvents' => [
+                // ],]);
+
+                $form->field($model, 'DOB')->textInput([
+                    'maxlength' => true,
+                    'id' => 'DOB', 
+                    'disabled' => 'disabled',
+                    'onfocusout' => 'submitPatientInformationForm();',
+                    'onfocus' => 'getFocusID("")',
+                ]);
             }
             else{?>
-                <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
-                    'options' => ['id' => 'DOB', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
-                    'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
-                    'pluginEvents' => [
-                        
-                    ],]);
+                <?= 
+                // $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+                //     'options' => ['id' => 'DOB', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
+                //     'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+                //     'pluginEvents' => [
+                //     ],]);
+
+                $form->field($model, 'DOB')->textInput([
+                    'maxlength' => true,
+                    'id' => 'DOB', 
+                    'onfocusout' => 'submitPatientInformationForm();',
+                    'onfocus' => 'getFocusID("")',
+                ]);
             }?>
         </div>
         <div class="col-sm-6">

@@ -50,7 +50,9 @@ class Patient_information extends \yii\db\ActiveRecord
             // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
-            [['first_reg_date', 'DOB'], 'safe'],
+            // [['first_reg_date', 'DOB'], 'safe'],
+            [['first_reg_date'], 'safe'],
+            [['DOB'], 'date', 'format' => 'php:Y-m-d'],
           //  [['nric'], 'integer'],
             [['phone_number'], 'integer'],
             [['email'], 'email'],
@@ -84,7 +86,7 @@ class Patient_information extends \yii\db\ActiveRecord
             'address2' => 'Address 2',
             'address3' => 'Address 3',
             'job' => Yii::t('app','Job'),
-            'DOB' => 'DOB',
+            'DOB' => 'DOB (yyyy-mm-dd)',
         ];
     }
 

@@ -4,6 +4,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Patient_admission;
 use app\models\Cancellation;
 use app\models\Bill;
+use app\models\DateFormat;
 use app\models\Ward;
 use app\models\Fpp;
 use yii\helpers\Url;
@@ -186,7 +187,12 @@ else{
                 <td> </td>
             </tr>
 
-            <?php foreach ($modelWard as $index => $modelWard) { ?>
+            <?php foreach ($modelWard as $index => $modelWard) { 
+                if(!empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime)){
+                    $modelWard->ward_start_datetime = DateFormat::convert($modelWard->ward_start_datetime, 'datetime');
+                    $modelWard->ward_end_datetime = DateFormat::convert($modelWard->ward_end_datetime, 'datetime');
+                }
+            ?>
             <tr id='ward-<?php echo $index ?>'>
                 <td>
                     <?php 

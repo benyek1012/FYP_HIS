@@ -7,6 +7,7 @@ use Yii;
 use app\models\Bill;
 use app\models\BillSearch;
 use app\models\Cancellation;
+use app\models\DateFormat;
 use app\models\Fpp;
 use app\models\Lookup_department;
 use app\models\Lookup_fpp;
@@ -472,10 +473,24 @@ class BillController extends Controller
 
                 if(!empty(Yii::$app->request->get('discharge'))){
                     if(Yii::$app->request->get('discharge')){
-                        $checkFormat = DateTime::createFromFormat('Y-m-d H:i:s', Yii::$app->request->get('discharge'));
+                        $checkFormat = DateTime::createFromFormat('Y-m-d H:i', Yii::$app->request->get('discharge'));
 
                         if($checkFormat){
-                            $model->discharge_date = Yii::$app->request->get('discharge');
+                            $validDate = DateFormat::convert(Yii::$app->request->get('discharge'), 'datetime');
+                            if($validDate){
+                                $model->discharge_date = Yii::$app->request->get('discharge');
+                            }
+                            else{
+                                Yii::$app->session->setFlash('error_generate', '
+                                    <div class="alert alert-danger alert-dismissable">
+                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                    <strong>'.Yii::t('app', 'Invalid Datetime Format!').' <br/></strong> 
+                                    '.Yii::t('app', 'Invalid Datetime Format of Discharge Date').'</div>'
+                                );
+
+                                return Yii::$app->getResponse()->redirect(array('/bill/generate', 
+                                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'billGeneration'));
+                                }
                         }
                         else{
                             Yii::$app->session->setFlash('error_generate', '

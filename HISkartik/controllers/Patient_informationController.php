@@ -110,6 +110,7 @@ class Patient_informationController extends Controller
                 // {
                 //     $model->DOB = $model->getDateForDatabase();
                 // }
+                    
 
                 if($model->save())
                 {
