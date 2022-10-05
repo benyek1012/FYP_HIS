@@ -1,3 +1,5 @@
+USE `sghis`;
+
 ALTER TABLE `cancellation` ADD `deleted_datetime` DATETIME NULL AFTER `responsible_uid`;
 
 ALTER TABLE `cancellation` CHANGE `deleted_datetime` `deleted_datetime` DATETIME NOT NULL;
@@ -21,6 +23,5 @@ BEGIN
     UNION
     SELECT bill.rn, bill.bill_generation_datetime, bill.bill_generation_billable_sum_rm, null, null, null, bill.bill_print_id, null, bill.generation_responsible_uid FROM bill WHERE bill.rn = rn AND bill.bill_generation_datetime is not null;
 
-    
 END$$
 DELIMITER ;

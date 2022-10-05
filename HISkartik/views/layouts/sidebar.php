@@ -181,7 +181,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                                 <a href="<?php echo Url::toRoute(['site/admission', 'id' => $info->patient_uid]) ?>">
                                     <p class="text-white"><?php echo Yii::t('app','Patient Name')." : ".$temp_name;?>
                                     </p>
-                                    <p class="text-white"><?php echo Yii::t('app','Patient IC')." : ".$info->nric;?></p>
+                                    <p class="text-white"><?php echo Yii::t('app','Patient IC/Passport')." : ".$info->nric;?></p>
                                     <p class="text-light">
                                         <?php echo (new Patient_information()) -> getBalance($info->patient_uid).
                                 "<br/>".(new Patient_information()) ->getUnclaimedBalance($info->patient_uid);?>
@@ -197,7 +197,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
             <div class="mt-1 d-flex">
                 <div class="info">
                     <p class="text-white"><?php echo Yii::t('app','Patient Name')." : "?></p>
-                    <p class="text-white"><?php echo Yii::t('app','Patient IC')." : "?></p>
+                    <p class="text-white"><?php echo Yii::t('app','Patient IC/Passport')." : "?></p>
                 </div>
             </div>
             <?php  } ?>

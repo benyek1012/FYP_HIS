@@ -46,6 +46,10 @@ $config = [
         'formatter' => [
             'thousandSeparator' => ',',
             'currencyCode' => 'MYR',
+
+            'class' => 'yii\i18n\Formatter',
+            'dateFormat' => 'php:Y-m-d',
+            'datetimeFormat' => 'php:Y-m-d H:i',
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation

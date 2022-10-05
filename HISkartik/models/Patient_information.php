@@ -4,7 +4,7 @@ namespace app\models;
 
 use DateTime;
 use Yii;
-
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "patient_information".
  *
@@ -46,11 +46,13 @@ class Patient_information extends \yii\db\ActiveRecord
             [['first_reg_date'], 'required'],
             [['nric'], 'unique'],
             [['name'], 'string', 'max' => 200],
-            ['name', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Name can only contain word characters'],
+            ['name', 'match', 'pattern' => '/^[a-z\s\-\/\.\'@]+$/i', 'message' => 'Name can only contain word characters'],
             // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
-            [['first_reg_date', 'DOB'], 'safe'],
+            // [['first_reg_date', 'DOB'], 'safe'],
+            [['first_reg_date'], 'safe'],
+            [['DOB'], 'date', 'format' => 'php:Y-m-d'],
           //  [['nric'], 'integer'],
             [['phone_number'], 'integer'],
             [['email'], 'email'],
@@ -73,7 +75,7 @@ class Patient_information extends \yii\db\ActiveRecord
         return [
             'patient_uid' => Yii::t('app','Patient Uid'),
             'first_reg_date' => Yii::t('app','First Reg Date'),
-            'nric' => 'NRIC',
+            'nric' => Yii::t('app','NRIC/Passport'),
             'nationality' => Yii::t('app','Nationality'),
             'name' => Yii::t('app','Name'),
             'sex' => Yii::t('app','Sex'),
@@ -84,7 +86,7 @@ class Patient_information extends \yii\db\ActiveRecord
             'address2' => 'Address 2',
             'address3' => 'Address 3',
             'job' => Yii::t('app','Job'),
-            'DOB' => 'DOB',
+            'DOB' => 'DOB (yyyy-mm-dd)',
         ];
     }
 
@@ -309,5 +311,16 @@ class Patient_information extends \yii\db\ActiveRecord
     public function getPatient_admission() 
     {
         return $this->hasMany(Patient_admission::className(), ['patient_uid' => 'patient_uid']);
+    }
+
+    public function RemoveUnvalidPatients()
+    {
+     //$noIcPatients = Patient_information::find()->innerJoin('patient_admission')->where(['nric'=> NULL],['rn' => NULL ])->all();
+     $emptyIcPatient = Patient_information::find()->select('patient_uid')->asArray()->where(['nric' => NULL])->all();
+     $emptyIcPatientID = ArrayHelper::getColumn($emptyIcPatient, 'patient_uid');
+
+     $RemovingUnvalidPatients = Patient_admission::deleteAll(['patient_uid' => $emptyIcPatientID],['rn'=>NULL]);
+      
+    
     }
 }

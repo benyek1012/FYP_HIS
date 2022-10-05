@@ -93,9 +93,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
-                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit')
-                        return '+ '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
-                    else return '- '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
+                    if($data['receipt_type'] == 'bill' || $data['receipt_type'] == 'deposit' || $data['receipt_type'] == 'exception')
+                        return '- '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
+                    else return '+ '.Yii::$app->formatter->asCurrency($data['receipt_content_sum']);
                 },
                 'label' => Yii::t('app','Total')
             ],

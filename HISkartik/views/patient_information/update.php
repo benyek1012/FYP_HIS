@@ -111,19 +111,35 @@ $this->registerJs(
         </div>
         <div class="col-sm-6">
             <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
-                <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
-                'options' => ['id' => 'DOB', 'disabled' => 'disabled', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
-                'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
-                'pluginEvents' => [
-                ],]);
+                <?= 
+                // $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+                // 'options' => ['id' => 'DOB', 'disabled' => 'disabled', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
+                // 'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+                // 'pluginEvents' => [
+                // ],]);
+
+                $form->field($model, 'DOB')->textInput([
+                    'maxlength' => true,
+                    'id' => 'DOB', 
+                    'disabled' => 'disabled',
+                    'onfocusout' => 'submitPatientInformationForm();',
+                    'onfocus' => 'getFocusID("")',
+                ]);
             }
             else{?>
-                <?= $form->field($model, 'DOB')->widget(DatePicker::classname(),[
-                    'options' => ['id' => 'DOB', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
-                    'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
-                    'pluginEvents' => [
-                        
-                    ],]);
+                <?= 
+                // $form->field($model, 'DOB')->widget(DatePicker::classname(),[
+                //     'options' => ['id' => 'DOB', 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'],
+                //     'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd'],
+                //     'pluginEvents' => [
+                //     ],]);
+
+                $form->field($model, 'DOB')->textInput([
+                    'maxlength' => true,
+                    'id' => 'DOB', 
+                    'onfocusout' => 'submitPatientInformationForm();',
+                    'onfocus' => 'getFocusID("")',
+                ]);
             }?>
         </div>
         <div class="col-sm-6">
@@ -143,8 +159,8 @@ $this->registerJs(
         </div>
 
         <div class="col-sm-6">
-        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
-             <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
+        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>            
+            <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
                 'data' => $race,
                 'options' => ['placeholder' => Yii::t('app','Please select race'), 'disabled' => 'disabled','id' => 'race'],
                 'pluginOptions' => [
@@ -157,7 +173,7 @@ $this->registerJs(
                         submitPatientInformationForm();
                     }",
                 ]
-            ]);
+            ]); 
             }
             else{?>
                 <?= $form->field($model, 'race')->widget(kartik\select2\Select2::classname(), [
@@ -173,15 +189,12 @@ $this->registerJs(
                             submitPatientInformationForm();
                         }",
                     ]
-                ]); 
+                ]);  
             }?>
         </div>
         
         <div class="col-sm-6">
-            <!-- <?= $form->field($model, 'nationality')->dropDownList($countries, 
-                    ['prompt'=> Yii::t('app','Please select nationality'),'maxlength' => true]) ?> -->
-
-                <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
+                <?php  if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
                     <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
                     'data' => $countries,
                     'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality','disabled' => 'disabled'],
@@ -289,6 +302,40 @@ $this->registerJs(
             focusID = id;
         }
     }
+
+    function matchInformation(params, data) {
+        // Search first letter
+        // params.term = params.term || '';
+        // var code = data.text.split(" - ");
+        // console.log(indexOf(params.term.toUpperCase()));
+        // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
+        //     return data;
+        // }
+        // return null;
+
+        // Search code 
+        // If search is empty we return everything
+        if ($.trim(params.term) === '') return data;
+
+        // Compose the regex
+        var regex_text = '.*';
+        regex_text += (params.term).split('').join('.*');
+        regex_text += '.*'
+        
+        // Case insensitive
+        var regex = new RegExp(regex_text, "i");
+
+        // Splite code and name
+        var code = data.text.split(" - ");
+
+        // If no match is found we return nothing
+        if (!regex.test(code[0])) {
+        return null;
+        }
+
+        // Else we return everything that is matching
+        return data;
+    }
 </script>
 
 <?php 
@@ -296,6 +343,30 @@ $script = <<< JS
 $("input[type='radio']").on('change', function() {
     getFocusID("");
     submitPatientInformationForm();
+});
+
+$(document).ready(function() {
+    $('#race').select2({
+        placeholder: 'Please select race',
+        allowClear: true,
+        tags: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchInformation(params, data);
+        },
+    });
+});
+
+$(document).ready(function() {
+    $('#nationality').select2({
+        placeholder: 'Please select nationality',
+        allowClear: true,
+        tags: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchInformation(params, data);
+        },
+    });
 });
 JS;
 $this->registerJS($script);

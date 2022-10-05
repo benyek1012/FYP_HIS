@@ -4,6 +4,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Patient_admission;
 use app\models\Cancellation;
 use app\models\Bill;
+use app\models\DateFormat;
 use app\models\Ward;
 use app\models\Fpp;
 use yii\helpers\Url;
@@ -134,6 +135,7 @@ $urlDate = Url::toRoute(['/bill/date']);
 $urlSubmit = Url::toRoute(['/ward/update', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWardRow = Url::toRoute(['/ward/wardrow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWard = Url::toRoute(['/ward/ward']);
+$urlDischarge = Url::toRoute(['/ward/dischargedate']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -176,16 +178,21 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Name');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward Start Datetime');?></td>
+                <td><?php echo Yii::t('app','Ward Start Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward End Datetime');?></td>
+                <td><?php echo Yii::t('app','Ward End Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Number of Days');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td> </td>
             </tr>
 
-            <?php foreach ($modelWard as $index => $modelWard) { ?>
+            <?php foreach ($modelWard as $index => $modelWard) { 
+                if(!empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime)){
+                    $modelWard->ward_start_datetime = DateFormat::convert($modelWard->ward_start_datetime, 'datetime');
+                    $modelWard->ward_end_datetime = DateFormat::convert($modelWard->ward_end_datetime, 'datetime');
+                }
+            ?>
             <tr id='ward-<?php echo $index ?>'>
                 <td>
                     <?php 
@@ -254,7 +261,7 @@ else{
                     <?php 
                     if($admission_model->initial_ward_code != "UNKNOWN" && empty($modelWard->ward_code) && $index == 0){
                     ?>
-                        <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        <!-- <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true, 'value' => $admission_model->entry_datetime],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         // 'type' => DateTimePicker::TYPE_INPUT,
@@ -262,12 +269,19 @@ else{
                             'change' => "function () {
                                 calculateDays();
                             }",
-                        ],])->label(false)?>
+                        ],])->label(false)?> -->
+
+                    <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
+                            'class' => 'start_date', 
+                            'disabled' => empty($isGenerated) ? false : true,
+                            'value' => $admission_model->entry_datetime,
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        ])->label(false) ?>
                     <?php 
                     }
                     else{
                     ?>
-                        <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
+                        <!-- <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true,],
                         'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],
                         // 'type' => DateTimePicker::TYPE_INPUT,
@@ -276,22 +290,27 @@ else{
                                 calculateDays();
                                 changeRowColor('{$index}');
                             }",
-                        ],])->label(false)?>
+                        ],])->label(false)?> -->
+
+                        <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
+                            'class' => 'start_date', 
+                            'disabled' => empty($isGenerated) ? false : true,
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        ])->label(false) ?>
                     <?php
                     }
                     ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelWard, "[{$index}]ward_end_datetime")->widget(DateTimePicker::classname(),[
-                        'options' => ['class' => 'end_date', 'disabled' => empty($isGenerated) ? false : true,], 
-                        'pluginOptions' => ['autoclose' => true,'format' => 'yyyy-mm-dd hh:ii'],   
-                        // 'type' => DateTimePicker::TYPE_INPUT,
-                        'pluginEvents' => [
-                            'change' => "function () {
-                                calculateDays();
-                                changeRowColor('{$index}');
-                            }",
-                        ],])->label(false)?></td>
+                <td>
+                   
+
+                        <?= $form->field($modelWard, "[$index]ward_end_datetime")->textInput([
+                        'class' => 'end_date', 
+                        'disabled' => empty($isGenerated) ? false : true,
+                        'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        ])->label(false) ?>
+                </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
                 <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['tabindex' => '-1','maxlength' => true,
@@ -408,7 +427,14 @@ else{
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
-                    addWardRow('');
+
+                    $.get('<?php echo "{$urlDischarge}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('bill-discharge_date').value = data.date;
+                    });
+                    if(data == 'success'){
+                        addWardRow('');
+                    }
                 }
                 
                 if(type == 'update'){
@@ -418,7 +444,14 @@ else{
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;
                     });
-                    addWardRow('update');
+
+                    $.get('<?php echo "{$urlDischarge}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('bill-discharge_date').value = data.date;
+                    });
+                    if(data == 'success'){
+                        addWardRow('update');
+                    }
                 }
             },
         });
@@ -433,14 +466,6 @@ else{
             if(xhttp.readyState == 4 && xhttp.status == 200){
                 document.getElementById("ward-div").innerHTML = this.responseText;
 
-                $('.wardCode', document).each(function(index, item, event) {
-                    $('#ward-'+index+'-ward_code').select2({
-                        placeholder: '<?php echo Yii::t('app', 'Select ward code'); ?>',
-                        width: '220px',
-                        allowClear: false,
-                    });
-                });
-
                 // $('.start_date', document).each(function(index, item, event) {
                 //     $('#ward-'+index+'-ward_start_datetime').datetimepicker(
                 //         { showOn: "focus"}
@@ -453,9 +478,24 @@ else{
                 //     )
                 // });
 
-                $.pjax.reload({container: '#pjax-ward-form'});
+                // $.pjax.reload({container: '#pjax-ward-form'});
 
-                $(document).on('ready pjax:success', function(){
+                // $(document).on('ready pjax:success', function(){
+                    $('.wardCode', document).each(function(index, item, event) {
+                        $('#ward-'+index+'-ward_code').select2({
+                            placeholder: 'Select ward code',
+                            width: '220px',
+                            allowClear: false,
+                            matcher: function(params, data) {
+                                return matchWard(params, data);
+                            },
+                        });
+                    // });
+
+                    $(document).on('select2:open', () => {
+                        document.querySelector('.select2-search__field').focus();
+                    });
+
                     document.getElementById(focusID).focus();
                 });
             }
@@ -501,6 +541,40 @@ else{
             }            
         }
     });
+
+    function matchWard(params, data) {
+        // Search first letter
+        // params.term = params.term || '';
+        // var code = data.text.split(" - ");
+        // console.log(indexOf(params.term.toUpperCase()));
+        // if (code[0].toUpperCase().find(params.term.toUpperCase()) == 0) {
+        //     return data;
+        // }
+        // return null;
+
+        // Search code 
+        // If search is empty we return everything
+        if ($.trim(params.term) === '') return data;
+
+        // Compose the regex
+        var regex_text = '.*';
+        regex_text += (params.term).split('').join('.*');
+        regex_text += '.*'
+        
+        // Case insensitive
+        var regex = new RegExp(regex_text, "i");
+
+        // Splite code and name
+        var code = data.text.split(" - ");
+
+        // If no match is found we return nothing
+        if (!regex.test(code[0])) {
+        return null;
+        }
+
+        // Else we return everything that is matching
+        return data;
+    }
 </script>
 
 <?php 
@@ -591,6 +665,9 @@ $(document).ready(function() {
             placeholder: 'Select ward code',
             width: '220px',
             allowClear: false,
+            matcher: function(params, data) {
+                return matchWard(params, data);
+            },
         });
     });
 });

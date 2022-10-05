@@ -34,7 +34,9 @@ class Ward extends \yii\db\ActiveRecord
     {
         return [
             // [['ward_code', 'ward_name', 'ward_start_datetime', 'ward_end_datetime', 'ward_number_of_days'], 'required'],
-            [['ward_start_datetime', 'ward_end_datetime', 'ward_number_of_days'], 'safe'],
+            // [['ward_start_datetime', 'ward_end_datetime', 'ward_number_of_days'], 'safe'],
+            [['ward_number_of_days'], 'safe'],
+            [['ward_start_datetime', 'ward_end_datetime'], 'datetime', 'format' => 'php:Y-m-d H:i'],
             [['ward_uid', 'bill_uid'], 'string', 'max' => 64],
             [['ward_code'], 'string', 'max' => 20],
             [['ward_name'], 'string', 'max' => 50],

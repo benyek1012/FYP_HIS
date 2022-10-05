@@ -162,6 +162,7 @@ class Treatment_detailsController extends Controller
 
                             if(!empty($modelTreatment->treatment_code) && !empty($modelTreatment->treatment_name) && !empty($modelTreatment->item_per_unit_cost_rm) && !empty($modelTreatment->item_count) && !empty($modelTreatment->item_total_unit_cost_rm)){
                                 $modelTreatment->save();
+                                echo 'success';
                             }
                         }
                     }
@@ -182,6 +183,7 @@ class Treatment_detailsController extends Controller
 
                                 if(!empty($modelTreatment[$i - 1]->treatment_code) && !empty($modelTreatment[$i - 1]->treatment_name) && !empty($modelTreatment[$i - 1]->item_per_unit_cost_rm) && !empty($modelTreatment[$i - 1]->item_count) && !empty($modelTreatment[$i - 1]->item_total_unit_cost_rm)){
                                     $modelTreatment[$i - 1]->save();
+                                    echo 'success';
                                 }
                                 else{
                                     $modelTreatmentUpdate = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
@@ -211,6 +213,7 @@ class Treatment_detailsController extends Controller
 
                                                 $modelTreatmentUpdate->save();
                                             }
+                                            echo 'success';
                                         }
                                     }
                                 }

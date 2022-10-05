@@ -14,7 +14,7 @@ use kartik\grid\EditableColumnAction;
 use yii\helpers\ArrayHelper;
 use GpsLab\Component\Base64UID\Base64UID;
 use yii\helpers\Json;
-
+use DateTime;
 
 /**
  * WardController implements the CRUD actions for Ward model.
@@ -45,6 +45,12 @@ class WardController extends Controller
         $cost['billAble'] = (new Bill()) -> calculateBillable($bill_uid);
         $cost['finalFee'] = (new Bill()) -> calculateFinalFee($bill_uid);
         echo Json::encode($cost);
+    }
+
+    public function actionDischargedate($bill_uid) {
+        $discharge_date = array();
+        $discharge_date['date'] = (new Bill()) -> getLastWardEndDateTime($bill_uid);
+        echo Json::encode($discharge_date);
     }
 
     public function actionWardrow()
@@ -168,6 +174,7 @@ class WardController extends Controller
 
                             if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
                                 $modelWard->save();
+                                echo 'success';
                             }
                         }
                     }
@@ -188,6 +195,7 @@ class WardController extends Controller
 
                                 if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
                                     $modelWard[$i - 1]->save();
+                                    echo 'success';
                                 }
                                 else{
                                     $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
@@ -198,6 +206,7 @@ class WardController extends Controller
                                             foreach ($modelWardUpdate as $modelWardUpdate) {
                                                 $modelWardUpdate->save();
                                             }
+                                            echo 'success';
                                         }
                                     }
                                 }
