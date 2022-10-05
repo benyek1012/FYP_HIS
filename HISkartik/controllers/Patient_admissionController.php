@@ -387,6 +387,18 @@ class Patient_admissionController extends Controller
                     }   
                 }
             }
+
+            if($model->save()){
+                return $this->render('update', [
+                    'model' => $model,
+                    'modelpatient' => $modelpatient,
+                    'model_change_rn' => $model_change_rn
+                ]);
+            }   
+
+            // $model->validate();
+            // var_dump($model->errors);
+            // exit;
             // if($model->save()){
             //     return $this->render('update', [
             //         'model' => $model,
