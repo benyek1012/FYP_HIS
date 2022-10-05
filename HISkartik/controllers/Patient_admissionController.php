@@ -368,6 +368,7 @@ class Patient_admissionController extends Controller
             if($model->initial_ward_class == null){
                 $model->initial_ward_class = "UNKNOWN";
             }
+
             $checkFormat = DateTime::createFromFormat('Y-m-d H:i', $model->entry_datetime);
 
             if($checkFormat){

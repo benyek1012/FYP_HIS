@@ -54,13 +54,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
-            [
-                'class' => ActionColumn::className(),
-                'template' => '{delete}',
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'ward_uid' => $model->ward_uid]);
-                }
-            ],
+            // [
+            //     'class' => ActionColumn::className(),
+            //     'template' => '{delete}',
+            //     'urlCreator' => function ($action, $model, $key, $index, $column) {
+            //         return Url::toRoute([$action, 'ward_uid' => $model->ward_uid]);
+            //     }
+            // ],
 
             [
                 // 'class' => '\kartik\grid\EditableColumn',
@@ -74,47 +74,47 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'ward_name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_ward/ward']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_ward/ward']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'sex',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_ward/ward']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_ward/ward']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'min_age',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_ward/ward']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_ward/ward']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'max_age',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_ward/ward']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_ward/ward']],
+                // ]
             ],
         ],
     ]); ?>

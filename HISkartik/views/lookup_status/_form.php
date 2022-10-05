@@ -26,25 +26,25 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 <div class ="row">
     <div class="col-sm-6">
-        <?= $form->field($model, 'status_code')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'status_code')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'status_description')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'status_description')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_1a_ward_cost')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_1a_ward_cost')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6"> 
-        <?= $form->field($model, 'class_1b_ward_cost')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_1b_ward_cost')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_1c_ward_cost')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_1c_ward_cost')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_2_ward_cost')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_2_ward_cost')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_3_ward_cost')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_3_ward_cost')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'status_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $status_uid])->label(false)?>

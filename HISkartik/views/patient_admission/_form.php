@@ -53,6 +53,17 @@ use app\models\Receipt;
     ->where(['rn' => Yii::$app->request->get('rn')])
     ->one();
 
+    $rows_reference = (new \yii\db\Query())
+    ->select('*')
+    ->from('lookup_general')
+    ->where(['category'=> 'Reference'])
+    ->all();
+
+    $reference = array();
+    foreach($rows_reference as $row_reference){
+        $reference[$row_reference['code']] = $row_reference['code'] . ' - ' . $row_reference['name'];  
+    }  
+
     // $rows_patient_information = (new \yii\db\Query())
     // ->select('*')
     // ->from('patient_information')
@@ -250,6 +261,7 @@ use app\models\Receipt;
             ],])?> -->
 
             <?= $form->field($model, 'entry_datetime')->textInput([
+                'autocomplete' =>'off', 
                 'maxlength' => true,
                 'class' => 'entry_datetime',
                 'disabled' => $disabled,
@@ -259,29 +271,41 @@ use app\models\Receipt;
             ]);?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')", 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <!-- <?= $form->field($model, 'reference')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => "testing('{$url}')", 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?> -->
+        
+            <?= $form->field($model, 'reference')->dropDownList($reference,
+                [
+                    'id' => 'reference',
+                    'prompt'=> Yii::t('app','Please select reference'),
+                    'disabled' => $disabled,
+                    "change" => "function() { 
+                        getFocusID('reference');
+                        submitPatientAdmissionForm();
+                    }",
+                ]); 
+            ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'medical_legal_code')->textInput(['disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'medical_legal_code')->textInput(['autocomplete' =>'off', 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
 
     </div>
 <hr/>
     <div class="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_name')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_name')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_nric')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_nric')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_address1')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-            <?= $form->field($model, 'guarantor_address2')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-            <?= $form->field($model, 'guarantor_address3')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_address1')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_address2')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_address3')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_phone_number')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-            <?= $form->field($model, 'guarantor_email')->textInput(['maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+            <?= $form->field($model, 'guarantor_email')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
     </div>
 
@@ -479,6 +503,44 @@ $(document).ready(function() {
             return matchAdmission(params, data);
         },
     });
+});
+
+$(document).ready(function() {
+    $('#reference').select2({
+        placeholder: 'Please select reference',
+        allowClear: true,
+        width: '100%',
+        matcher: function(params, data) {
+            return matchAdmission(params, data);
+        },
+    });
+});
+
+$('#initial_ward_code').on('change', function (e) {
+    getFocusID('initial_ward_code');
+    submitPatientAdmissionForm();
+});
+
+$('#initial_ward_code').on('select2:open', function (e) {
+    document.querySelector('.select2-search__field').focus();
+});
+
+$('#initial_ward_class').on('change', function (e) {
+    getFocusID('initial_ward_class');
+    submitPatientAdmissionForm();
+});
+
+$('#initial_ward_class').on('select2:open', function (e) {
+    document.querySelector('.select2-search__field').focus();
+});
+
+$('#reference').on('change', function (e) {
+    getFocusID('reference');
+    submitPatientAdmissionForm();
+});
+
+$('#reference').on('select2:open', function (e) {
+    document.querySelector('.select2-search__field').focus();
 });
 JS;
 $this->registerJS($script);

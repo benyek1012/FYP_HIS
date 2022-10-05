@@ -55,9 +55,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'username', ['labelOptions' => [ 'class' => 'col-lg-3' ]])->textInput(['autofocus' => true]) ?>
+    <?= $form->field($model, 'username', ['labelOptions' => [ 'class' => 'col-lg-3' ]])->textInput(['autocomplete' =>'off', 'autofocus' => true]) ?>
 
-    <?= $form->field($model, 'password', ['labelOptions' => [ 'class' => 'col-lg-3' ]])->passwordInput() ?>
+    <?= $form->field($model, 'password', ['labelOptions' => [ 'class' => 'col-lg-3' ]])->passwordInput(['autocomplete' =>'off', ]) ?>
 
     <?= $form->field($model, 'rememberMe')->checkbox([
             'template' => "<div class=\" col-lg-3 custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",

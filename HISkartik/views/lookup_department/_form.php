@@ -26,22 +26,22 @@ use GpsLab\Component\Base64UID\Base64UID;
 
 <div class ="row">
     <div class="col-sm-6">
-        <?= $form->field($model, 'department_code')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'department_code')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'department_name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'department_name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'address1')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'address1')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'address2')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'address3')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'department_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $department_uid])->label(false)?>

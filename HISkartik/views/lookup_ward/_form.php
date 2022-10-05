@@ -32,19 +32,19 @@ use GpsLab\Component\Base64UID\Base64UID;
         <?= $form->field($model, 'ward_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $ward_uid])->label(false); ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'ward_code')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'ward_code')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'ward_name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'ward_name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-    <?= $form->field($model, 'sex')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'sex')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'min_age')->textInput() ?>
+        <?= $form->field($model, 'min_age')->textInput(['autocomplete' =>'off', ]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'max_age')->textInput() ?>
+        <?= $form->field($model, 'max_age')->textInput(['autocomplete' =>'off', ]) ?>
     </div>
 </div>
 

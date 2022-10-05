@@ -142,7 +142,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                     ]]); 
                 ?>
                 <?= $form->field($model , 'nric')->textInput(['autocomplete' =>'off', 'class' => 'form-control form-control-sidebar',
-                    'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/RN')])->label(false)?>
+                    'style' => 'text-color: white !important;','placeholder'=>Yii::t('app','Search IC/Passport/RN')])->label(false)?>
 
                 <div class="input-group-append">
                     <?php 

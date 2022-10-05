@@ -429,6 +429,15 @@ foreach($model_receipt as $model_receipt){
         }
     }
 }
+
+$admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
+if($admission_model->entry_datetime != "UNKNOWN"){
+    $entry_sec = DateTime::createFromFormat('Y-m-d H:i:s', $admission_model->entry_datetime);
+    if($entry_sec){
+        $entry_sec = $entry_sec->format('Y-m-d H:i');
+        $admission_model->entry_datetime = $entry_sec;
+    }
+}
 ?>
 
 <style>
@@ -509,7 +518,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'status_description')->textInput(['tabindex' => '-1', 'maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
+                        <?= $form->field($model, 'status_description')->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'maxlength' => true, 'id'=>'status_des', 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
                     </div>
 
                     <div class="col-sm-6">
@@ -551,7 +560,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'daily_ward_cost')->textInput(['tabindex' => '-1', 'maxlength' => true, 'id'=>'ward_cost',  
+                        <?= $form->field($model, 'daily_ward_cost')->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'maxlength' => true, 'id'=>'ward_cost',  
                                 'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
                     </div>
 
@@ -575,7 +584,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'department_name')->textInput(['tabindex' => '-1', 'maxlength' => true, 'id'=>'departmentName', 
+                        <?= $form->field($model, 'department_name')->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'maxlength' => true, 'id'=>'departmentName', 
                              'readonly' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
 
@@ -591,7 +600,7 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'collection_center_code')->textInput(['maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
+                        <?= $form->field($model, 'collection_center_code')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
                    
                     <?php
@@ -621,7 +630,7 @@ textarea {
                    
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
+                        <?= $form->field($model, 'description')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
                     </div>
                 </div>
                 <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
@@ -640,7 +649,7 @@ textarea {
     <a name="ward">
         <div class="card" id="ward_div" style="display:none;">
             <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Ward Details');?></h3>
+                <h3 class="card-title"><?php echo Yii::t('app','Ward Details').'&nbsp;&nbsp;&nbsp;&nbsp;'; echo Yii::t('app', 'Entry Datetime').': '.$admission_model->entry_datetime?></h3>
                 <div class="d-flex justify-content-end">
                     <?php
                     if(!empty($model))
@@ -745,6 +754,7 @@ textarea {
                     <div class="col-sm-6">
                         <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
                         [
+                            'autocomplete' =>'off', 
                             'readonly' => true, 
                             'disabled' => $print_readonly,
                             'maxlength' => true, 
@@ -760,6 +770,7 @@ textarea {
                         {
                             echo $form->field($model, 'bill_generation_final_fee_rm')->textInput(
                                 [
+                                    'autocomplete' =>'off', 
                                     'readonly' => true, 
                                     'disabled' => $print_readonly,
                                     'maxlength' => true, 
@@ -772,6 +783,7 @@ textarea {
                         {
                             echo $form->field($model, 'bill_generation_final_fee_rm')->textInput(
                             [
+                                'autocomplete' =>'off', 
                                 'readonly' => true, 
                                 'disabled' => $print_readonly,
                                 'maxlength' => true, 
@@ -813,6 +825,7 @@ textarea {
 
                             echo $form->field($model, 'discharge_date')->textInput(
                                 [
+                                    'autocomplete' =>'off', 
                                     'disabled' => empty($isGenerated) ? false : true, 
                                     'maxlength' => true, 
                                     'class' => 'dischargeDate', 
@@ -823,6 +836,7 @@ textarea {
                         {
                             echo $form->field($model, 'discharge_date')->textInput(
                                 [
+                                    'autocomplete' =>'off', 
                                     'disabled' => empty($isGenerated) ? false : true, 
                                     'maxlength' => true, 
                                     'class' => 'dischargeDate', 
@@ -838,7 +852,7 @@ textarea {
                 <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
                 <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee('{$urlBillableAndFinalFee}');", 'disabled' => $disabled]) ?>
                 <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
-                <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
+                <!-- <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
                 <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
                 <!-- <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?> -->
                 <?php } ?>
@@ -878,15 +892,15 @@ textarea {
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <!-- <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?> -->
-                        <?= $form->field($model, 'bill_print_id')->textInput(['maxlength' => true, 'readonly' => true, 'id' => 'serial_number']) ?>
+                        <!-- <?= $form->field($model, 'bill_print_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?> -->
+                        <?= $form->field($model, 'bill_print_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'readonly' => true, 'id' => 'serial_number']) ?>
                     </div>
                 </div>
                 <?php 
                 if( !$isPrinted ){
             ?>
                 <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
-                <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
+                <!-- <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
                 <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
                 <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
                     'onclick' => '(function ( $event ) {

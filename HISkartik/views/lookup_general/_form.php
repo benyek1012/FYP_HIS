@@ -37,7 +37,7 @@ foreach($rows_cat as $rows_cat){
     
     <div class ="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'code')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'category')->widget(kartik\select2\Select2::classname(), [
@@ -49,13 +49,13 @@ foreach($rows_cat as $rows_cat){
                     ]])?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'long_description')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'long_description')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div> 
         <div class="col-sm-6">
-            <?= $form->field($model, 'recommend')->textInput(['value' => '1']) ?>
+            <?= $form->field($model, 'recommend')->textInput(['autocomplete' =>'off', 'value' => '1']) ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'lookup_general_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $lookup_general_uid])->label(false)?>

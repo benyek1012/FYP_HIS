@@ -135,7 +135,7 @@ else{
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
-    <?= $form->field($model, 'kod_akaun')->textInput(['readonly' => true, 'maxlength' => true, 'value' => $account_code]); ?>
+    <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true, 'value' => $account_code]); ?>
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
 
@@ -176,15 +176,15 @@ else{
             ]); ?> -->
             <?php }
             } else{ ?>
-                <?= $form->field($model, 'receipt_type')->textInput(['maxlength' => true, 'readonly' => true, 'id' => 'receipt-receipt_type'.$index]) ?>
+                <?= $form->field($model, 'receipt_type')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'readonly' => true, 'id' => 'receipt-receipt_type'.$index]) ?>
             <?php } ?>
         </div>
 
         <div class="col-sm-6" id="bill_div<?php echo $index ?>">
         <?php if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
+            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
             <?php }else{ ?>
-            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
             <?php } ?>
         </div>
 
@@ -192,18 +192,18 @@ else{
             <!-- <?php  if(!empty($model_bill)){
                     if((new Bill()) -> calculateFinalFee($model_bill->bill_uid) >= 0){
         ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'value' => (new Bill()) -> calculateFinalFee($model_bill->bill_uid)]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'value' => (new Bill()) -> calculateFinalFee($model_bill->bill_uid)]) ?>
             <?php }else{ ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true,  'value' => (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))]) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['autocomplete' =>'off', 'maxlength' => true,  'value' => (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))]) ?>
             <?php }
             }else{ ?>
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'id' => 'receipt_sum']) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'id' => 'receipt_sum']) ?>
             <?php } ?> -->
-            <?= $form->field($model, 'receipt_content_sum')->textInput(['maxlength' => true, 'id' => 'receipt_sum']) ?>
+            <?= $form->field($model, 'receipt_content_sum')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'id' => 'receipt_sum']) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_content_description')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'receipt_content_description')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6">
@@ -227,12 +227,12 @@ else{
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'payment_method_number')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'payment_method_number')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number', 
-                ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['maxlength' => true, 
+                ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['autocomplete' =>'off', 'maxlength' => true, 
                     'readonly' => true, 'id' => 'serial_number'.$index]) ?>
         </div>
 
@@ -260,7 +260,8 @@ else{
     </div>
 
     <div class="form-group" id="div_print">
-        <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?>
+        <!-- <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?> -->
+        <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction();"]) ?>
         <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
             'onclick' => "(function () {
                  document.getElementById('serial_number'+{$index}).readOnly = false; 
@@ -342,6 +343,40 @@ function refreshButton(url, index) {
 }
 
 document.getElementById("div_no_print").style.display = "none";
+
+function submitReceiptForm() {
+    var form = $('#receipt-form');
+    var formData = form.serialize();
+
+    $.ajax({
+        url: form.attr("action"),
+        type: form.attr("method"),
+        data: formData,
+
+        success: function(data) {
+            // $.pjax.reload({container: '#pjax-patient-admission-form'});
+        },
+    });
+}
+
+<?php if( Yii::$app->language == "en"){ ?>
+// The function below will start the confirmation  dialog
+function confirmAction() {
+    var answer = confirm("Are you sure to print receipt?");
+    if (answer) {
+        // window.location.href = url + '&confirm=true';
+        submitReceiptForm();
+    }
+}
+<?php }else{?>
+// The function below will start the confirmation  dialog
+function confirmAction() {
+    var answer = confirm("Adakah anda pasti mencetak resit?");
+    if (answer) {
+        submitReceiptForm();
+    }
+}
+<?php } ?>
 
 // For onchage hide and show payment method input
 // document.querySelectorAll("#radio input[type='radio']").forEach(function(element) {

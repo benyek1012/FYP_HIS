@@ -100,13 +100,13 @@ $this->registerJs(
 
     <div class="row">
         <div class="col-sm-6">
-            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){ ?><?= $form->field($model, 'name')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("");']);} 
-            else { ?><?= $form->field($model, 'name')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){ ?><?= $form->field($model, 'name')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("");']);} 
+            else { ?><?= $form->field($model, 'name')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         </div>
         <div class="col-sm-6">
-            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?><?= $form->field($model, 'nric')->textInput(['maxlength' => true,'readonly' => true, 'id' => 'nric',
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?><?= $form->field($model, 'nric')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'id' => 'nric',
              'value' => Yii::$app->request->get('ic'), 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-             else { ?><?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'id' => 'nric',
+             else { ?><?= $form->field($model, 'nric')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'id' => 'nric',
                 'value' => Yii::$app->request->get('ic'), 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         </div>
         <div class="col-sm-6">
@@ -119,6 +119,7 @@ $this->registerJs(
                 // ],]);
 
                 $form->field($model, 'DOB')->textInput([
+                    'autocomplete' =>'off', 
                     'maxlength' => true,
                     'id' => 'DOB', 
                     'disabled' => 'disabled',
@@ -136,6 +137,7 @@ $this->registerJs(
                 //     ],]);
 
                 $form->field($model, 'DOB')->textInput([
+                    'autocomplete' =>'off', 
                     'maxlength' => true,
                     'id' => 'DOB', 
                     'onfocusout' => 'submitPatientInformationForm();',
@@ -147,7 +149,7 @@ $this->registerJs(
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-sm">
-                    <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
+                    <?= $form->field($model, 'age')->textInput(['autocomplete' =>'off', 'readonly' => true,'maxlength' => true,
                         'id' => 'age', 'value' => $model->getAgeFromDatePicker(), 'tabindex' => '-1']);?>
                 </div>
                 <div class="col-sm align-self-center" style="padding-top:16px">
@@ -236,33 +238,33 @@ $this->registerJs(
         </div>
 
         <div class="col-sm-6">
-        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
          else {
-            ?> <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);
+            ?> <?= $form->field($model, 'phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);
          }?>
         </div>
 
         <div class="col-sm-6">
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address1')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address1')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address1')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'address1')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         <?php
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address2')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address2')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address3')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address3')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
          
         </div>
         
         <div class="col-sm-6">
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'email')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'email')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'email')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
 
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'job')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'job')->textInput(['maxlength' => true, 'onfocusout' => ' submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'job')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'job')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => ' submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
 
         </div>
     </div>
