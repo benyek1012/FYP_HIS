@@ -124,6 +124,7 @@ $this->registerJs(
                     'disabled' => 'disabled',
                     'onfocusout' => 'submitPatientInformationForm();',
                     'onfocus' => 'getFocusID("")',
+                    'placeholder' => 'yyyy-mm-dd', 
                 ]);
             }
             else{?>
@@ -139,6 +140,7 @@ $this->registerJs(
                     'id' => 'DOB', 
                     'onfocusout' => 'submitPatientInformationForm();',
                     'onfocus' => 'getFocusID("")',
+                    'placeholder' => 'yyyy-mm-dd', 
                 ]);
             }?>
         </div>

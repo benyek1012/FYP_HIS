@@ -124,7 +124,39 @@ use app\models\Receipt;
 
     $url = Url::toRoute(['/patient_admission/update', 'rn'=> Yii::$app->request->get('rn')]);
 
-    $model->entry_datetime = DateFormat::convert($model->entry_datetime, 'datetime');
+    // $model->entry_datetime = DateFormat::convert($model->entry_datetime, 'datetime');
+    // $model->entry_datetime = new \DateTime($model->entry_datetime);
+    // $model->entry_datetime = $model->entry_datetime->setTimezone(new \DateTimeZone('+0800'));
+
+    // var_dump(Yii::$app->formatter->asDate($model->entry_datetime, 'php:Y-m-d h:i'));
+    // exit;
+
+    // var_dump(DateFormat::convert($model->entry_datetime, 'datetime'));
+    // exit;
+
+    $entry_sec = DateTime::createFromFormat('Y-m-d H:i:s', $model->entry_datetime);
+    if($entry_sec){
+        $entry_sec = $entry_sec->format('Y-m-d H:i');
+        $model->entry_datetime = $entry_sec;
+    }
+    else{
+        $entry_datetime = DateTime::createFromFormat('Y-m-d H:i', $model->entry_datetime);
+        if($entry_datetime){
+            $entry_datetime = $entry_datetime->format('Y-m-d H:i:s');
+            $model->entry_datetime = $entry_datetime;
+        }
+        else{
+            // Yii::$app->session->setFlash('msg', '
+            //     <div class="alert alert-danger alert-dismissable">
+            //     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+            //     <strong>'.Yii::t('app', 'Invalid Datetime Format!').' <br/></strong> 
+            //     '.Yii::t('app', 'Invalid Datetime Format of Discharge Date').'</div>'
+            // );
+
+            // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+            //     'rn' => $model->rn));
+        }
+    }
    
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
@@ -223,6 +255,7 @@ use app\models\Receipt;
                 'disabled' => $disabled,
                 'onfocusout' => 'submitPatientAdmissionForm();',
                 'onfocus' => "getFocusID('patient_admission-entry_datetime');",
+                'placeholder' => 'yyyy-mm-dd hh:ii', 
             ]);?>
         </div>
         <div class="col-sm-6">

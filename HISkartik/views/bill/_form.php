@@ -787,12 +787,36 @@ textarea {
                         <?php
                         if($isGenerated)
                         {
-                            $model->discharge_date = DateFormat::convert($model->discharge_date, 'datetime');
+                            $discharge_sec = DateTime::createFromFormat('Y-m-d H:i:s', $model->discharge_date);
+                            if($discharge_sec){
+                                $discharge_sec = $discharge_sec->format('Y-m-d H:i');
+                                $model->discharge_date = $discharge_sec;
+                            }
+                            else{
+                                $discharge_date = DateTime::createFromFormat('Y-m-d H:i', $model->discharge_date);
+                                if($discharge_date){
+                                    $discharge_date = $discharge_date->format('Y-m-d H:i');
+                                    $model->discharge_date = $discharge_date;
+                                }
+                                else{
+                                    // Yii::$app->session->setFlash('msg', '
+                                    //     <div class="alert alert-danger alert-dismissable">
+                                    //     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                                    //     <strong>'.Yii::t('app', 'Invalid Datetime Format!').' <br/></strong> 
+                                    //     '.Yii::t('app', 'Invalid Datetime Format of Discharge Date').'</div>'
+                                    // );
+
+                                    // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+                                    //     'rn' => $model->rn));
+                                }
+                            }
+
                             echo $form->field($model, 'discharge_date')->textInput(
                                 [
                                     'disabled' => empty($isGenerated) ? false : true, 
                                     'maxlength' => true, 
                                     'class' => 'dischargeDate', 
+                                    'placeholder' => '(yyyy-mm-dd hh:ii)', 
                                 ]);
                         }
                         else
@@ -803,6 +827,7 @@ textarea {
                                     'maxlength' => true, 
                                     'class' => 'dischargeDate', 
                                     'value' => (new Bill()) -> getLastWardEndDateTime(Yii::$app->request->get('bill_uid')),
+                                    'placeholder' => 'yyyy-mm-dd hh:ii', 
                                 ]);
                         }
                         ?>

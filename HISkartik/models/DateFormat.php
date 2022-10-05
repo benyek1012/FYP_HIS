@@ -4,13 +4,13 @@ namespace app\models;
 class DateFormat {
     const DATE_FORMAT = 'php:Y-m-d';
     const DATETIME_FORMAT = 'php:Y-m-d H:i';
-    const TIME_FORMAT = 'php:H:i:s';
+    const TIME_FORMAT = 'php:H:i';
 
     public static function convert($dateStr, $type='date', $format = null) {
-        if ($type === 'datetime') {
+        if ($type == 'datetime') {
               $fmt = ($format == null) ? self::DATETIME_FORMAT : $format;
         }
-        elseif ($type === 'time') {
+        elseif ($type == 'time') {
               $fmt = ($format == null) ? self::TIME_FORMAT : $format;
         }
         else {

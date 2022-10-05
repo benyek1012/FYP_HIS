@@ -178,9 +178,9 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Name');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward Start Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
+                <td><?php echo Yii::t('app','Ward Start Datetime')?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward End Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
+                <td><?php echo Yii::t('app','Ward End Datetime')?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Number of Days');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -189,8 +189,40 @@ else{
 
             <?php foreach ($modelWard as $index => $modelWard) { 
                 if(!empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime)){
-                    $modelWard->ward_start_datetime = DateFormat::convert($modelWard->ward_start_datetime, 'datetime');
-                    $modelWard->ward_end_datetime = DateFormat::convert($modelWard->ward_end_datetime, 'datetime');
+                    // $modelWard->ward_start_datetime = DateFormat::convert($modelWard->ward_start_datetime, 'datetime');
+                    // $modelWard->ward_end_datetime = DateFormat::convert($modelWard->ward_end_datetime, 'datetime');
+
+                    $ward_start_sec = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_start_datetime);
+                    if($ward_start_sec){
+                        $ward_start_sec = $ward_start_sec->format('Y-m-d H:i');
+                        $modelWard->ward_start_datetime = $ward_start_sec;
+                    }
+                    else{
+                        $ward_start_datetime = DateTime::createFromFormat('Y-m-d H:i', $modelWard->ward_start_datetime);
+                        if($ward_start_datetime){
+                            $ward_start_datetime = $ward_start_datetime->format('Y-m-d H:i');
+                            $modelWard->ward_start_datetime = $ward_start_datetime;
+                        }
+                        else{
+                            
+                        }
+                    }
+
+                    $ward_end_sec = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_end_datetime);
+                    if($ward_end_sec){
+                        $ward_end_sec = $ward_end_sec->format('Y-m-d H:i');
+                        $modelWard->ward_end_datetime = $ward_end_sec;
+                    }
+                    else{
+                        $ward_end_datetime = DateTime::createFromFormat('Y-m-d H:i', $modelWard->ward_end_datetime);
+                        if($ward_end_datetime){
+                            $ward_end_datetime = $ward_end_datetime->format('Y-m-d H:i');
+                            $modelWard->ward_end_datetime = $ward_end_datetime;
+                        }
+                        else{
+                            
+                        }
+                    }
                 }
             ?>
             <tr id='ward-<?php echo $index ?>'>
@@ -275,7 +307,8 @@ else{
                             'class' => 'start_date', 
                             'disabled' => empty($isGenerated) ? false : true,
                             'value' => $admission_model->entry_datetime,
-                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                            'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                     <?php 
                     }
@@ -295,7 +328,8 @@ else{
                         <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
                             'class' => 'start_date', 
                             'disabled' => empty($isGenerated) ? false : true,
-                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                            'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                     <?php
                     }
@@ -308,7 +342,8 @@ else{
                         <?= $form->field($modelWard, "[$index]ward_end_datetime")->textInput([
                         'class' => 'end_date', 
                         'disabled' => empty($isGenerated) ? false : true,
-                        'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                        'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

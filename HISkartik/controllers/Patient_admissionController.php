@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 
 use Yii;
 use app\models\Cancellation;
+use app\models\DateFormat;
 use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
@@ -25,6 +26,7 @@ use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use app\models\PrintForm;
 use app\models\Reminder;
+use DateTime;
 
 /**
  * Patient_admissionController implements the CRUD actions for Patient_admission model.
@@ -220,7 +222,7 @@ class Patient_admissionController extends Controller
 
             $model->rn = $rn;
             $model->patient_uid = Yii::$app->request->get('id');
-            $model->entry_datetime = $date->format('Y-m-d H:i');
+            $model->entry_datetime = $date->format('Y-m-d H:i:s');
             $model->type = Yii::$app->request->get('type');
             $model->loadDefaultValues();
             $model->initial_ward_class = "UNKNOWN";
@@ -366,13 +368,32 @@ class Patient_admissionController extends Controller
             if($model->initial_ward_class == null){
                 $model->initial_ward_class = "UNKNOWN";
             }
-            if($model->save()){
-                return $this->render('update', [
-                    'model' => $model,
-                    'modelpatient' => $modelpatient,
-                    'model_change_rn' => $model_change_rn
-                ]);
-            }    
+            $checkFormat = DateTime::createFromFormat('Y-m-d H:i', $model->entry_datetime);
+
+            if($checkFormat){
+                $validDate = DateFormat::convert($model->entry_datetime, 'datetime');
+
+                if($validDate){
+                    $date = new \DateTime();
+                    $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                    $model->entry_datetime = $model->entry_datetime . ':' .$date->format('s');
+
+                    if($model->save()){
+                        return $this->render('update', [
+                            'model' => $model,
+                            'modelpatient' => $modelpatient,
+                            'model_change_rn' => $model_change_rn
+                        ]);
+                    }   
+                }
+            }
+            // if($model->save()){
+            //     return $this->render('update', [
+            //         'model' => $model,
+            //         'modelpatient' => $modelpatient,
+            //         'model_change_rn' => $model_change_rn
+            //     ]);
+            // }    
         }
 
         $modelpatient = Patient_information::findOne(['patient_uid' => $model->patient_uid]);
