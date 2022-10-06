@@ -14,7 +14,7 @@ use kartik\date\DatePicker;
 /* @var $searchModel app\models\Pekeliling_importSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Report 1';
+$this->title = 'Report Senarai Baki Pendeposit';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pekeliling-import-index">
@@ -36,15 +36,9 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="form-group">
-            <?= Html::submitButton(Yii::t('app','Save'), ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t('app','Export CSV'), ['class' => 'btn btn-success', 'name' => 'csv', 'value' => 'csv']) ?>
+            <?= Html::submitButton(Yii::t('app','Export PDF'), ['class' => 'btn btn-info', 'name' => 'pdf', 'value' => 'pdf']) ?>
         </div>
-
-        <!-- If the flash message existed, show it  -->
-        <?php if(Yii::$app->session->hasFlash('msg')):?>
-        <div id="flashError">
-            <?= Yii::$app->session->getFlash('msg') ?>
-        </div>
-        <?php endif; ?>
 
         <?php kartik\form\ActiveForm::end(); ?>
     </div>

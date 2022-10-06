@@ -10,6 +10,7 @@ use app\models\Patient_admission;
 use app\models\Patient_information;
 use app\models\Pekeliling_import;
 use app\models\Pekeliling_importSearch;
+use app\models\Receipt;
 use app\models\Reminder_pdf;
 use app\models\Report;
 use Exception;
@@ -48,9 +49,17 @@ class ReportController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                var_dump($model->date_report);
-                exit;
-                return $this->redirect(['view', 'batch_date' => $model->batch_date]);
+                if($this->request->isPost && isset($_POST['csv'])){
+                    $senarai_pada = $model->date_report;
+                    if(!empty($senarai_pada))
+                    {
+                        Report::export_csv_report1($senarai_pada);
+                    }
+                }
+
+                if($this->request->isPost && isset($_POST['pdf'])){
+                    
+                }
             }
         } 
 
