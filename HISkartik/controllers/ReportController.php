@@ -84,6 +84,55 @@ class ReportController extends Controller
         ]);
     }
 
+    public function actionReport7()
+    {
+        $model = new Report();
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                
+                $query = Receipt::find()
+                ->select('kod_akaun, COUNT(`receipt_serial_number`) as receipt_serial_number, SUM(`receipt_content_sum`) as receipt_content_sum')
+                ->from('receipt')
+                ->groupBy('kod_akaun')
+                ->where(['EXTRACT(YEAR FROM receipt_content_datetime_paid)' => $model->year])
+                ->andWhere(['EXTRACT(MONTH FROM receipt_content_datetime_paid)' => $model->month]);
+
+                
+    
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
+            ]);
+    
+            if($query != NULL)
+            {
+                $exporter = new CsvGrid([
+                    'dataProvider' => $dataProvider,
+                    'columns' => [
+                        [
+                            'attribute' => 'kod_akaun',
+                            'label' => 'KOD HASI',
+                        ],
+                        [
+                            'attribute' => 'receipt_serial_number',
+                            'label' => 'BILANG RESIT',
+                        ],
+                        [
+                            'attribute' => 'receipt_content_sum',
+                            'label' => 'JUMLAH TERIMAAN(RM)',
+                        ],
+                    ],
+                ]);
+                $filename ='1.csv'; 
+                return $exporter->export()->send($filename);
+            }
+        }
+        }
+
+        return $this->render('report7', [
+            'model' => $model,
+        ]);
+    }
+
     public function exportCSV($batch_date) //Teo fill export CSV code here
     {
         // to be filled in RN, 

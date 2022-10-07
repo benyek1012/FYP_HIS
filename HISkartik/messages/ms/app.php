@@ -360,5 +360,9 @@ return[
     'Discharge Date' => 'Tarikh Pelepasan',
     'Invalid Datetime Format!' => 'Format Datetime Tidak Sah!',
     'Invalid Datetime Format of Discharge Date' => 'Format Datetime Tarikh Pelepasan Tidak Sah',
+    'Please select year' => 'Silakan pilih tahun',
+    'Please select month' => 'Silakan pilih bulan',
+    'Generate' => 'Hasilkan',
+
 ];
 ?>

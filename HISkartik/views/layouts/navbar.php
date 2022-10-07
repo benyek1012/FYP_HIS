@@ -115,6 +115,8 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Report 1'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/report/report2']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Report 2'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/report/report7']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report 7'); ?></a></li>
                     <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li> -->
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"

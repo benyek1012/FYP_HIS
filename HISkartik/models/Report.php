@@ -9,6 +9,8 @@ use Yii;
 class Report extends \yii\db\ActiveRecord{
 
     public $date_report;
+    public $year;
+    public $month;
 
     /**
     * {@inheritdoc}
@@ -16,7 +18,7 @@ class Report extends \yii\db\ActiveRecord{
     public function rules()
     {
         return [  
-            [['date_report'], 'safe'],
+            [['date_report','year','month'], 'safe'],
         ];
     }
 
