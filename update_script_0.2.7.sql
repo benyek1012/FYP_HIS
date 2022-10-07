@@ -81,5 +81,3 @@ UPDATE reminder_letter SET reminder1count = @count1, reminder2count = @count2, r
 END$$
 DELIMITER ;
 
-INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('cjQV_mTE-eOxdk92LMER1ORUd-EsQIYr', 'Default', 'Reference', 'Default', 'Default', '1');
-
