@@ -89,43 +89,16 @@ class ReportController extends Controller
         $model = new Report();
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                
-                $query = Receipt::find()
-                ->select('kod_akaun, COUNT(`receipt_serial_number`) as receipt_serial_number, SUM(`receipt_content_sum`) as receipt_content_sum')
-                ->from('receipt')
-                ->groupBy('kod_akaun')
-                ->where(['EXTRACT(YEAR FROM receipt_content_datetime_paid)' => $model->year])
-                ->andWhere(['EXTRACT(MONTH FROM receipt_content_datetime_paid)' => $model->month]);
+                if($this->request->isPost && isset($_POST['csv'])){
+                    $year = $model->year;
+                    $month = $model->month;
+                    Report::export_csv_report7($year, $month);
+                }
 
-                
-    
-            $dataProvider = new ActiveDataProvider([
-                'query' => $query,
-            ]);
-    
-            if($query != NULL)
-            {
-                $exporter = new CsvGrid([
-                    'dataProvider' => $dataProvider,
-                    'columns' => [
-                        [
-                            'attribute' => 'kod_akaun',
-                            'label' => 'KOD HASI',
-                        ],
-                        [
-                            'attribute' => 'receipt_serial_number',
-                            'label' => 'BILANG RESIT',
-                        ],
-                        [
-                            'attribute' => 'receipt_content_sum',
-                            'label' => 'JUMLAH TERIMAAN(RM)',
-                        ],
-                    ],
-                ]);
-                $filename ='1.csv'; 
-                return $exporter->export()->send($filename);
+                if($this->request->isPost && isset($_POST['pdf'])){
+                    
+                }
             }
-        }
         }
 
         return $this->render('report7', [

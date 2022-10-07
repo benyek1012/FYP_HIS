@@ -38,45 +38,32 @@ for($i=1; $i<=12; $i++)
         ]]); ?>
 
         <div class="row">
-        <div class="col-sm-6">
-            <?= $form->field($model, 'year')->widget(kartik\select2\Select2::classname(), [
+            <div class="col-sm-6">
+                <?= $form->field($model, 'year')->widget(kartik\select2\Select2::classname(), [
                     'data' => $year,
                     'options' => ['placeholder' => Yii::t('app','Please select year'), 'id' => 'year'],
                     'pluginOptions' => [
                         'allowClear' => true,
                         'tags' => true,
-                    ],
-                    'pluginEvents' => [
-                        "change" => "function() { 
-                            getFocusID('year');
-                            submitPatientInformationForm();
-                        }",
-                    ]
-                    ]);
+                    ]]);
             ?>
             </div>
             <div class="col-sm-6">
-            <?= $form->field($model, 'month')->widget(kartik\select2\Select2::classname(), [
+                <?= $form->field($model, 'month')->widget(kartik\select2\Select2::classname(), [
                     'data' => $month,
                     'options' => ['placeholder' => Yii::t('app','Please select month'), 'id' => 'month'],
                     'pluginOptions' => [
                         'allowClear' => true,
                         'tags' => true,
-                    ],
-                    'pluginEvents' => [
-                        "change" => "function() { 
-                            getFocusID('month');
-                            submitPatientInformationForm();
-                        }",
-                    ]
-                    ]);
+                    ]]);
             ?>
 
             </div>
         </div>
 
         <div class="form-group">
-            <?= Html::submitButton(Yii::t('app','Generate'), ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t('app','Export CSV'), ['class' => 'btn btn-success', 'name' => 'csv', 'value' => 'csv']) ?>
+            <?= Html::submitButton(Yii::t('app','Export PDF'), ['class' => 'btn btn-info', 'name' => 'pdf', 'value' => 'pdf']) ?>
         </div>
 
         <!-- If the flash message existed, show it  -->
