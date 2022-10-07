@@ -68,6 +68,9 @@ class ReceiptController extends Controller
 
                 if($model_cancellation->validate()){
                     $model_cancellation->save();
+
+                    return Yii::$app->getResponse()->redirect(array('/receipt/index', 
+                    'rn' => $model->rn));
                 }
                 else{
                     Yii::$app->session->setFlash('cancellation_error', '
