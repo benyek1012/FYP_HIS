@@ -1102,9 +1102,10 @@ $(document).ready(function() {
         placeholder: 'Please select status code',
         allowClear: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchBill(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchBill(params, data);
+        // },
     });
 });
 
@@ -1113,9 +1114,9 @@ $(document).ready(function() {
         placeholder: 'Please select ward class',
         allowClear: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchBill(params, data);
-        },
+        // matcher: function(params, data) {
+        //     return matchBill(params, data);
+        // },
     });
 });
 
@@ -1124,9 +1125,10 @@ $(document).ready(function() {
         placeholder: 'Please select department code',
         allowClear: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchBill(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchBill(params, data);
+        // },
     });
 });
 

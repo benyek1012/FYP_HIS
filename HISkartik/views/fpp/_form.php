@@ -399,9 +399,10 @@ else{
                     $('#fpp-'+index+'-kod').select2({
                         placeholder: 'Select FPP Kod',
                         width: '220px',
-                        matcher: function(params, data) {
-                            return matchFpp(params, data);
-                        },
+                        minimumInputLength: 2,
+                        // matcher: function(params, data) {
+                        //     return matchFpp(params, data);
+                        // },
                     });
                 });
 
@@ -662,9 +663,10 @@ $(document).ready(function() {
         $('#fpp-'+index+'-kod').select2({
             placeholder: 'Select FPP Kod',
             width: '220px',
-            matcher: function(params, data) {
-                return matchFpp(params, data);
-            },
+            minimumInputLength: 2,
+            // matcher: function(params, data) {
+            //     return matchFpp(params, data);
+            // },
         });
     });
 });

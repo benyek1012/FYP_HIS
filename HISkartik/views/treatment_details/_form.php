@@ -428,9 +428,10 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                     $('#treatment_details-'+index+'-treatment_code').select2({
                         placeholder: '<?php echo Yii::t('app', 'Select treatment code'); ?>',
                         width: '220px',
-                        matcher: function(params, data) {
-                            return matchTreatment(params, data);
-                        },
+                        minimumInputLength: 2,
+                        // matcher: function(params, data) {
+                        //     return matchTreatment(params, data);
+                        // },
                     });
                 });
                 
@@ -558,9 +559,10 @@ $(document).ready(function() {
         $('#treatment_details-'+index+'-treatment_code').select2({
             placeholder: 'Select treatment code',
             width: '220px',
-            matcher: function(params, data) {
-                return matchTreatment(params, data);
-            },
+            minimumInputLength: 2,
+            // matcher: function(params, data) {
+            //     return matchTreatment(params, data);
+            // },
         });
     });
 });

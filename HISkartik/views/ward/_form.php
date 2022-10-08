@@ -539,9 +539,10 @@ else{
                             placeholder: 'Select ward code',
                             width: '220px',
                             allowClear: false,
-                            matcher: function(params, data) {
-                                return matchWard(params, data);
-                            },
+                            minimumInputLength: 2,
+                            // matcher: function(params, data) {
+                            //     return matchWard(params, data);
+                            // },
                         });
                     // });
 
@@ -718,9 +719,10 @@ $(document).ready(function() {
             placeholder: 'Select ward code',
             width: '220px',
             allowClear: false,
-            matcher: function(params, data) {
-                return matchWard(params, data);
-            },
+            minimumInputLength: 2,
+            // matcher: function(params, data) {
+            //     return matchWard(params, data);
+            // },
         });
     });
 });

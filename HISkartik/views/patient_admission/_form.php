@@ -53,6 +53,12 @@ use app\models\Receipt;
     ->where(['rn' => Yii::$app->request->get('rn')])
     ->one();
 
+    $rows_patient_admission = (new \yii\db\Query())
+    ->select('*')
+    ->from('patient_admission')
+    ->where(['rn'=> Yii::$app->request->get('rn')])
+    ->all();
+
     $rows_reference = (new \yii\db\Query())
     ->select('*')
     ->from('lookup_general')
@@ -62,7 +68,13 @@ use app\models\Receipt;
     $reference = array();
     foreach($rows_reference as $row_reference){
         $reference[$row_reference['code']] = $row_reference['code'] . ' - ' . $row_reference['name'];  
-    }  
+    } 
+    
+    foreach($rows_patient_admission as $row_patient_admission){
+        if(empty($reference[$row_patient_admission['reference']])){
+            $reference[$row_patient_admission['reference']] = $row_patient_admission['reference'];
+        }            
+    }
 
     // $rows_patient_information = (new \yii\db\Query())
     // ->select('*')
@@ -488,9 +500,11 @@ $(document).ready(function() {
         placeholder: 'Please select ward code',
         allowClear: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchAdmission(params, data);
-        },
+        minimumInputLength: 2,
+        selectOnClose: true,
+        // matcher: function(params, data) {
+        //     return matchAdmission(params, data);
+        // },
     });
 });
 
@@ -499,9 +513,9 @@ $(document).ready(function() {
         placeholder: 'Please select ward class',
         allowClear: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchAdmission(params, data);
-        },
+        // matcher: function(params, data) {
+        //     return matchAdmission(params, data);
+        // },
     });
 });
 
@@ -510,9 +524,10 @@ $(document).ready(function() {
         placeholder: 'Please select reference',
         allowClear: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchAdmission(params, data);
-        },
+        tags: true,
+        // matcher: function(params, data) {
+        //     return matchAdmission(params, data);
+        // },
     });
 });
 
@@ -542,6 +557,7 @@ $('#reference').on('change', function (e) {
 $('#reference').on('select2:open', function (e) {
     document.querySelector('.select2-search__field').focus();
 });
+
 JS;
 $this->registerJS($script);
 ?>

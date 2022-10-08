@@ -106,10 +106,10 @@ class Patient_informationController extends Controller
             }
         
             if($flag == true){
-                // if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
-                // {
-                //     $model->DOB = $model->getDateForDatabase();
-                // }
+                if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
+                {
+                    $model->DOB = $model->getDateForDatabase();
+                }
                     
 
                 if($model->save())

@@ -293,7 +293,7 @@ $this->registerJs(
             data: formData,
 
             success: function (data) {
-                // $.pjax.reload({container: '#pjax-patient-information-form'});
+                $.pjax.reload({container: '#pjax-patient-information-form'});
             },
         });
     }
