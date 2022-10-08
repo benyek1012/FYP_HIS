@@ -109,6 +109,7 @@ class Patient_informationController extends Controller
                 if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
                 {
                     $model->DOB = $model->getDateForDatabase();
+                    echo 's';
                 }
                     
 

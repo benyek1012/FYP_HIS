@@ -293,7 +293,9 @@ $this->registerJs(
             data: formData,
 
             success: function (data) {
-                $.pjax.reload({container: '#pjax-patient-information-form'});
+                if(data[0] == "s"){
+                    $.pjax.reload({container: '#pjax-patient-information-form'});
+                }
             },
         });
     }

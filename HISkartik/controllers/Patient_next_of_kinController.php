@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Patient_next_of_kin;
 use app\models\Patient_next_of_kinSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -113,7 +114,7 @@ class Patient_next_of_kinController extends Controller
     {
         $this->findModel($nok_uid)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['/site/admission', 'id'=> Yii::$app->request->get('id'), "#" => 'nok']);
     }
 
     /**

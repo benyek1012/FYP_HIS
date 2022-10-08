@@ -48,7 +48,8 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['patient_uid'], 'string', 'max' => 64],
             [['initial_ward_code', 'initial_ward_class'], 'string', 'max' => 20],
             [['reference', 'guarantor_name'], 'string', 'max' => 200],
-            [['guarantor_phone_number'], 'integer'],
+            // [['guarantor_phone_number'], 'integer'],
+            [['guarantor_phone_number'], 'string', 'max' => 100],
             [['guarantor_nric'], 'integer'],
             [['guarantor_email'], 'email'],
             [['guarantor_email'], 'string', 'max' => 100],
@@ -58,6 +59,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['type'], 'string', 'max' => 20],
             [['rn'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
+            ['guarantor_phone_number', 'match', 'pattern' => '/^[0-9\/]+$/i', 'message' => 'Guarantor Phone Number can only contain digit and "/" character'],
         ];
     }
 
