@@ -26,9 +26,11 @@ class Report extends \yii\db\ActiveRecord{
         //Add one day
         $time = strtotime($senarai_pada. ' + 1 days');
         $new_senarai_pada = date('Y-m-d',$time);
+        // first day of the current year
+        $start_date = date('Y-m-d', strtotime('first day of january this year'));
 
         $query = Receipt::find()
-        ->where(['<=','receipt_content_datetime_paid',$new_senarai_pada])
+        ->where(['between', 'receipt_content_datetime_paid', $start_date, $new_senarai_pada])
         ->andWhere(['receipt_type' => 'deposit'])
         ->groupBy(['receipt_serial_number', 'receipt_content_datetime_paid']);
        
