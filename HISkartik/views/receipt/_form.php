@@ -96,7 +96,7 @@ else{
         $names = array_filter($names);
     
         $form = kartik\form\ActiveForm::begin([
-        'id' => 'receipt-form',
+        'id' => 'receipt-form'.$index,
         'action' => $urlReceipt,
         'type' => 'vertical',
         'fieldConfig' => [
@@ -260,8 +260,9 @@ else{
     </div>
 
     <div class="form-group" id="div_print">
-        <!-- <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?> -->
-        <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction();"]) ?>
+            <!-- <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?> -->
+
+            <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
         <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
             'onclick' => "(function () {
                  document.getElementById('serial_number'+{$index}).readOnly = false; 
@@ -344,28 +345,30 @@ function refreshButton(url, index) {
 
 document.getElementById("div_no_print").style.display = "none";
 
-function submitReceiptForm() {
-    var form = $('#receipt-form');
+function submitReceiptForm(index) {
+    var form = $('#receipt-form'+index);
     var formData = form.serialize();
+    
+    form.submit();
 
-    $.ajax({
-        url: form.attr("action"),
-        type: form.attr("method"),
-        data: formData,
+    // $.ajax({
+    //     url: form.attr("action"),
+    //     type: form.attr("method"),
+    //     data: formData,
 
-        success: function(data) {
-            // $.pjax.reload({container: '#pjax-patient-admission-form'});
-        },
-    });
+    //     success: function(data) {
+    //         // $.pjax.reload({container: '#pjax-patient-admission-form'});
+    //     },
+    // });
 }
 
 <?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation  dialog
-function confirmAction() {
+function confirmAction(index) {
     var answer = confirm("Are you sure to print receipt?");
     if (answer) {
         // window.location.href = url + '&confirm=true';
-        submitReceiptForm();
+        submitReceiptForm(index);
     }
 }
 <?php }else{?>
@@ -377,6 +380,7 @@ function confirmAction() {
     }
 }
 <?php } ?>
+
 
 // For onchage hide and show payment method input
 // document.querySelectorAll("#radio input[type='radio']").forEach(function(element) {
