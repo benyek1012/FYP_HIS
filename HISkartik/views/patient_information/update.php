@@ -45,6 +45,7 @@ $this->registerJs(
         ->select('*')
         ->from('lookup_general')
         ->where(['category'=> 'Nationality'])
+        ->orderBy('length(code) ASC, code ASC')
         ->all();
         
         $countries = array();
@@ -73,6 +74,7 @@ $this->registerJs(
         ->select('*')
         ->from('lookup_general')
         ->where(['category'=> 'Race'])
+        ->orderBy('length(code) ASC, code ASC')
         ->all();
         
         $race = array();

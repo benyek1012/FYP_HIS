@@ -41,6 +41,7 @@ use app\models\Receipt;
     $rows = (new \yii\db\Query())
     ->select('*')
     ->from('lookup_ward')
+    ->orderBy('length(ward_code) ASC, ward_code ASC')
     ->all();
 
     $ward_code = array();
@@ -600,8 +601,6 @@ $('#patient-admission-form').on('keyup keypress', function(e) {
     return false;
   }
 });
-
-$('#initial_ward_code').select2('data', {a_key: 'male'});
 JS;
 $this->registerJS($script);
 ?>

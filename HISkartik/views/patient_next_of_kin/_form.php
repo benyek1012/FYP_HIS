@@ -25,6 +25,7 @@ use GpsLab\Component\Base64UID\Base64UID;
     ->select('*')
     ->from('lookup_general')
     ->where(['category'=> 'Relationship'])
+    ->orderBy('length(code) ASC, code ASC')
     ->all();
     
     $relationship = array();

@@ -55,6 +55,7 @@ if(!empty($row_bill))
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_status')
+->orderBy('length(status_code) ASC, status_code ASC')
 ->all();
 
 $dayly_ward_cost = "";
@@ -93,6 +94,7 @@ foreach($rows as $row){
 $rows_ward = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_ward')
+->orderBy('length(ward_code) ASC, ward_code ASC')
 ->all();
 
 $wardcode = array();

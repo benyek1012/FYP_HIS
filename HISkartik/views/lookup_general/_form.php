@@ -10,6 +10,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 $rows_cat = (new \yii\db\Query())
 ->select('category')
 ->from('lookup_general')
+->orderBy('length(category) ASC, category ASC')
 ->groupBy('category')
 ->all();
 
