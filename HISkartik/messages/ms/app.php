@@ -364,5 +364,9 @@ return[
     'Receipt Cancellation Form' => 'Borang Pembatalan Resit',
     'Latest Regular RN' => 'RN Biasa Terkini',
     'Latest Labor RN' => 'RN Bersalin Terkini',
+    'Guarantor Phone Number can only contain digit, "/", "-", ",", and " " character' => 'Nombor Telefon Penjamin hanya boleh mengandungi digit, "/", "-", "," dan " " aksara',
+    'Phone Number can only contain digit and "/", "-", ",", and " " character' => 'Nombor Telefon hanya boleh mengandungi digit dan aksara "/", "-", "," dan " "',
+    'NOK Phone Number can only contain digit number and "/", "-", ",", and " " character' => 'Nombor Telefon NOK hanya boleh mengandungi nombor digit dan aksara "/", "-", "," dan " "',
+    "RN Doesn't Exist" => 'RN Tidak Wujud',
 ];
 ?>

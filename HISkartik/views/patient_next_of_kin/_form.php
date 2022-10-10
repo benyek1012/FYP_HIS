@@ -121,9 +121,10 @@ $(document).ready(function() {
         allowClear: true,
         tags: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchNok(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchNok(params, data);
+        // },
     });
 });
 JS;

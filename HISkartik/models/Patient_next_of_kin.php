@@ -44,7 +44,7 @@ class Patient_next_of_kin extends \yii\db\ActiveRecord
             [['nok_relationship'], 'string', 'max' => 20],
           //  [['nok_phone_number'], 'string', 'length' => [10], 'max' => 10],
             [['nok_phone_number'], 'string', 'max' => 100],
-            ['nok_phone_number', 'match', 'pattern' => '/^[0-9\/]+$/i', 'message' => Yii::t('app','NOK Phone Number can only contain digit number and "/" character')],
+            ['nok_phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app','NOK Phone Number can only contain digit number and "/", "-", ",", and " " character')],
             [['nok_email'], 'email'],
             [['nok_email','nok_address1', 'nok_address2', 'nok_address3'], 'string', 'max' => 100],
             [['nok_uid'], 'unique'],

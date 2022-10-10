@@ -458,6 +458,41 @@ function getFocusID(id) {
     }
 }
 
+document.addEventListener("keypress", function(event) {
+    if(event.keyCode == 13){
+        focusID = document.activeElement.id;
+        
+        var ward_code = document.querySelector('#initial_ward_code');
+        var ward_class = document.querySelector('#initial_ward_class');
+        var entry_datetime = document.querySelector('#patient_admission-entry_datetime');
+        var reference = document.querySelector('#reference');
+        var medical = document.querySelector('#patient_admission-medical_legal_code');
+        var gName = document.querySelector('#patient_admission-guarantor_name');
+        var gAddress1 = document.querySelector('#patient_admission-guarantor_address1');
+        var gAddress2 = document.querySelector('#patient_admission-guarantor_address2');
+        var gAddress3 = document.querySelector('#patient_admission-guarantor_address3');
+        var gIC = document.querySelector('#patient_admission-guarantor_nric');
+        var gPhoneNumber = document.querySelector('#patient_admission-guarantor_phone_number');
+        var gEmail = document.querySelector('#patient_admission-guarantor_email');
+
+        if(document.activeElement == ward_code || 
+            document.activeElement == ward_name || 
+            document.activeElement == entry_datetime || 
+            document.activeElement == reference || 
+            document.activeElement == medical ||
+            document.activeElement == gName ||
+            document.activeElement == gAddress1 ||
+            document.activeElement == gAddress2 ||
+            document.activeElement == gAddress3 ||
+            document.activeElement == gIC ||
+            document.activeElement == gPhoneNumber ||
+            document.activeElement == gEmail){
+
+            submitPatientAdmissionForm();
+        }
+    }
+});
+
 function matchAdmission(params, data) {
     // Search first letter
     // params.term = params.term || '';
@@ -501,7 +536,6 @@ $(document).ready(function() {
         allowClear: true,
         width: '100%',
         minimumInputLength: 2,
-        selectOnClose: true,
         // matcher: function(params, data) {
         //     return matchAdmission(params, data);
         // },
@@ -558,6 +592,16 @@ $('#reference').on('select2:open', function (e) {
     document.querySelector('.select2-search__field').focus();
 });
 
+$('#patient-admission-form').on('keyup keypress', function(e) {
+  var keyCode = e.keyCode || e.which;
+  if (keyCode === 13) { 
+    submitPatientAdmissionForm();
+    e.preventDefault();
+    return false;
+  }
+});
+
+$('#initial_ward_code').select2('data', {a_key: 'male'});
 JS;
 $this->registerJS($script);
 ?>

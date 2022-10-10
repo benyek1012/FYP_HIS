@@ -357,9 +357,10 @@ $(document).ready(function() {
         allowClear: true,
         tags: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchInformation(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchInformation(params, data);
+        // },
     });
 });
 
@@ -369,9 +370,10 @@ $(document).ready(function() {
         allowClear: true,
         tags: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchInformation(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchInformation(params, data);
+        // },
     });
 });
 JS;

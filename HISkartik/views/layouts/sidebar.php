@@ -245,14 +245,18 @@ function sidebar(url, urlAdmission, urlPatientAdmission) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-            if (this.responseText != false) {
+            if(this.responseText == 'No'){
+                alert("<?php echo Yii::t('app', "RN Doesn't Exist"); ?>");
+            }
+            else if (this.responseText != false) {
                 var data = $.parseJSON(this.responseText);
                 if (data.rn != null) {
                     location.href = urlPatientAdmission + "&rn=" + data.rn;
                 } else if (data.patient_uid != null) {
                     location.href = urlAdmission + "&id=" + data.patient_uid;
                 }
-            } else {
+            }
+            else {
                 confirmActionPatient();
             }
         }

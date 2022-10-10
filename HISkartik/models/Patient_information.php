@@ -56,7 +56,7 @@ class Patient_information extends \yii\db\ActiveRecord
           //  [['nric'], 'integer'],
             // [['phone_number'], 'integer'],
             [['phone_number'], 'string', 'max' => 100],
-            ['phone_number', 'match', 'pattern' => '/^[0-9\/]+$/i', 'message' => 'Phone Number can only contain digit and "/" character'],
+            ['phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app', 'Phone Number can only contain digit and "/", "-", ",", and " " character')],
             [['email'], 'email'],
             // [['nric', 'nationality', 'sex', 'job', 'race'], 'string', 'max' => 20],
             [['nric', 'job'], 'string', 'max' => 20],

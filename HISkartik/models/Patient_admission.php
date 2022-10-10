@@ -59,7 +59,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['type'], 'string', 'max' => 20],
             [['rn'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
-            ['guarantor_phone_number', 'match', 'pattern' => '/^[0-9\/]+$/i', 'message' => 'Guarantor Phone Number can only contain digit and "/" character'],
+            ['guarantor_phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app', 'Guarantor Phone Number can only contain digit, "/", "-", ",", and " " character')],
         ];
     }
 
@@ -172,5 +172,26 @@ class Patient_admission extends \yii\db\ActiveRecord
     public function getFinalwardDate()
     {
         return $this->hasOne(Bill::className(), ['final_ward_datetime' => 'final_ward_datetime']);
+    }
+
+    public function checkRnFormat($checkRN){
+        $arr = str_split($checkRN, 4);
+
+        $SID = (string)$checkRN;
+
+        //2022/000001, 2022/900001
+        $SID = substr($SID,5,11); 
+        if($arr[0] ==  date('Y')){
+            $SID = str_pad($SID, 6, "0", STR_PAD_LEFT);
+        }
+
+        $rn = date('Y')."/".$SID;
+
+        if(preg_match("/^[0-9]{4}\/[0-9]{6}$/", $rn)) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

@@ -252,7 +252,7 @@ else{
             <div class="col-sm-6">
                 <br>
                 <label>Without Replacement</label>
-                <?= $form->field($model_cancellation, 'checkbox_replacement')->checkbox(['uncheck' => false, 'value' => true])?>
+                <?= $form->field($model_cancellation, 'checkbox_replacement')->checkbox(['id' => 'checkbox_replacement'.$index, 'uncheck' => false, 'value' => true])?>
             </div>
         <?php
         }
