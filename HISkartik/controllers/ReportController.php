@@ -68,7 +68,6 @@ class ReportController extends Controller
         ]);
     }
 
-
     public function actionReport2()
     {
         $model = new Report();

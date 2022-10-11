@@ -14,7 +14,7 @@ use kartik\date\DatePicker;
 /* @var $searchModel app\models\Pekeliling_importSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'SERAHAN WANG KUTIPAN(BULANAN)';
+$this->title = 'Report Serahan Wang Kutipan(Bulanan)';
 $this->params['breadcrumbs'][] = $this->title;
 $year = array();
 for($i=1960; $i<=2022; $i++)

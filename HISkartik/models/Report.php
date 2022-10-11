@@ -4,7 +4,7 @@ namespace app\models;
 use yii2tech\csvgrid\CsvGrid;
 use yii\data\ActiveDataProvider;
 use Yii;
-
+use yii\data\ArrayDataProvider;
 
 class Report extends \yii\db\ActiveRecord{
 
@@ -22,20 +22,29 @@ class Report extends \yii\db\ActiveRecord{
         ];
     }
 
-    public static function export_csv_report1($senarai_pada){
-        //Add one day
-        $time = strtotime($senarai_pada. ' + 1 days');
-        $new_senarai_pada = date('Y-m-d',$time);
+    public static function get_report1_query($senarai_pada)
+    {
         // first day of the current year
         $start_date = date('Y-m-d', strtotime('first day of january this year'));
+        //Add one day
+        $time = strtotime($senarai_pada. ' + 1 days');
+        $end_date = date('Y-m-d',$time);
 
-        $query = Receipt::find()
-        ->where(['between', 'receipt_content_datetime_paid', $start_date, $new_senarai_pada])
-        ->andWhere(['receipt_type' => 'deposit'])
-        ->groupBy(['receipt_serial_number', 'receipt_content_datetime_paid']);
-       
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+        $result = \yii::$app->db->createCommand("CALL report1_query(:startDate, :endDate)")
+        ->bindValue(':startDate' , $start_date)
+        ->bindValue(':endDate' , $end_date)
+        ->queryAll();
+
+        if(!empty($result))
+        return $result;
+
+    }
+
+    public static function export_csv_report1($senarai_pada){
+       $query =  (new Report()) ->get_report1_query($senarai_pada);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $query,
         ]);
 
         if($query != NULL)
@@ -46,7 +55,7 @@ class Report extends \yii\db\ActiveRecord{
                     [
                         'label' => 'Bil',
                         'value' => function($model, $index, $dataColumn) {
-                           return $dataColumn + 1;
+                           return is_null($model['receipt_uid']) ? null : $dataColumn + 1;
                         }
                     ],
                     [
@@ -56,7 +65,7 @@ class Report extends \yii\db\ActiveRecord{
                             $model_patient = Patient_information::findOne(['patient_uid' => $model_rn['patient_uid']]);
                             if(!empty($model_patient->name))
                             {
-                              return $model_patient->name;
+                              return is_null($model['receipt_uid']) ? null : $model_patient->name;
                             }
                             else return NULL;
                         }
@@ -64,19 +73,35 @@ class Report extends \yii\db\ActiveRecord{
                     [
                         'attribute' => 'receipt_serial_number',
                         'label' => 'No Rujukan',
+                        'value' => function($model) {
+                            return is_null($model['receipt_uid']) ? null : $model['receipt_serial_number'];
+                        }
                     ],
                     [
                         'attribute' => 'receipt_content_datetime_paid',
                         'label' => 'Tarikh Deposit',
+                        'value' => function($model) {
+                            return is_null($model['receipt_uid']) ? null : $model['receipt_content_datetime_paid'];
+                        }
                     ],
                     [
                         'attribute' => 'receipt_content_sum',
                         'label' => 'Baki / Amaun (RM)',
+                        'value' => function($model) {
+                            return is_null($model['receipt_uid']) ? null : $model['receipt_content_sum'];
+                        }
+                    ],
+                    [
+                        'attribute' => 'kod_akaun',
+                        'label' => 'Kod Akaun',
+                        'value' => function($model) {
+                            return is_null($model['receipt_uid']) ? null : $model['kod_akaun'];
+                        }
                     ],
 
                 ],
             ]);
-            $filename = $senarai_pada. '_report.csv'; 
+            $filename = 'report_senarai_baki_pendeposit.csv'; 
             return $exporter->export()->send($filename);
         }
     }
@@ -113,9 +138,8 @@ class Report extends \yii\db\ActiveRecord{
                     ],
                 ],
             ]);
-            $filename ='1.csv'; 
+            $filename ='report_serahan_wang_kutipan.csv'; 
             return $exporter->export()->send($filename);
         }
     }
-  
 }
