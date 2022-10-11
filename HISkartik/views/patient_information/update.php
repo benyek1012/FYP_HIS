@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Patient_information;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 use kartik\date\DatePicker;
@@ -32,6 +33,7 @@ $this->registerJs(
     });"
 );
 
+$url = Url::toRoute(['/patient_information/getdob']);
 ?>
 <div class="patient-information-update">
     <?php 
@@ -295,9 +297,13 @@ $this->registerJs(
             data: formData,
 
             success: function (data) {
-                if(data[0] == "s"){
-                    $.pjax.reload({container: '#pjax-patient-information-form'});
-                }
+                // if(data[0] == "s"){
+                    // $.pjax.reload({container: '#pjax-patient-information-form'});
+                    $.get('<?php echo $url ?>', {id : '<?php echo Yii::$app->request->get('id') ?>'}, function(data){
+                        var data = $.parseJSON(data);
+                        $('#DOB').attr('value', data.DOB);
+                    });
+                // }
             },
         });
     }

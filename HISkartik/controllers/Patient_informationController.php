@@ -35,6 +35,16 @@ class Patient_informationController extends Controller
         );
     }
 
+    public function actionGetdob($id){
+        $model = $this->findModel($id);
+        
+        if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
+        {
+            $model->DOB = $model->getDateForDatabase();
+        }
+        echo Json::encode($model);
+    }
+
     public function actionPatient()
     {
         $model = Patient_information::findOne(Yii::$app->request->get('id'));
