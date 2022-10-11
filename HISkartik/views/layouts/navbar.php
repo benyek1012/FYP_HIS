@@ -60,8 +60,8 @@ body {
                     style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/patient_information']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li>
+                    <!-- <li><a href="<?php echo Url::to(['/patient_information']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li> -->
                     <li><a href="<?php echo Url::to(['/site/admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
@@ -107,7 +107,24 @@ body {
         </div>
 
         <li class="nav-item dropdown">
-            <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a>
+            <!-- <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a> -->
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                class="nav-link dropdown-toggle"><?php echo Yii::t('app', "Reports"); ?></a>
+            <div class="dropdown-content">
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                    style="margin-top: 0px; margin-right: 20px ;">
+                    <li><a href="<?php echo Url::to(['/report/report1']);?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report Senarai Baki Pendeposit'); ?></a></li>
+                    <!-- <li><a href="<?php echo Url::to(['/report/report2']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report 2'); ?></a></li> -->
+                    <li><a href="<?php echo Url::to(['/report/report7']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan'); ?></a></li>
+                    <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li> -->
+                    <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
+                    class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
+                </ul>
+            </div>
         </li>
 
         <li class="nav-item dropdown">
