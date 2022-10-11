@@ -354,15 +354,15 @@ class SiteController extends Controller
         // $globalSearch = $model->nric;
         $globalSearch = Yii::$app->request->get('search');
         $model_admission_founded = (new Patient_admissionController(null, null)) -> findModel($globalSearch);
-        // RN is founded
-        if(!empty( $model_admission_founded)){
-            echo Json::encode($model_admission_founded);
-            // use this 
-            // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-            //     'rn' => $model_admission_founded->rn)); 
 
-            // return Yii::$app->getResponse()->redirect(array('/site/index', 
-            // 'id' => $model_admission_founded->patient_uid));
+        if((new Patient_admission()) -> checkRnFormat($globalSearch) == true){
+            // RN is founded
+            if(!empty( $model_admission_founded)){
+                echo Json::encode($model_admission_founded);
+            }
+            else{
+                return 'No';
+            }
         }
         else 
         {

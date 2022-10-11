@@ -54,6 +54,7 @@ if(!empty($row_bill))
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_status')
+->orderBy('length(status_code) ASC, status_code ASC')
 ->all();
 
 $dayly_ward_cost = "";
@@ -81,6 +82,7 @@ foreach($rows as $row){
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_treatment')
+->orderBy('length(treatment_code) ASC, treatment_code ASC')
 ->all();
 
 $treatment_code = array();
@@ -212,7 +214,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                     ])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($model ,"[$index]treatment_name")->textInput(['tabindex' => '-1', 'maxlength' => true, 'class' => 'treatmentName',
+                <td><?= $form->field($model ,"[$index]treatment_name")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'maxlength' => true, 'class' => 'treatmentName',
                         'readonly' => true, 'disabled' => empty($isGenerated) ? false : true, 'style' => 'width: 280px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -222,38 +224,38 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                         <?php 
                             if(empty( Yii::$app->request->get('bill_uid'))){ 
                                 if($initial_ward_class == "1a"){?>
-                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1',  'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1',  'disabled' => true,
                                         'class' => '1_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
                 
                                 else if($initial_ward_class == "1b"){?>
-                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'disabled' => true,
                                         'class' => '1_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
 
                                 else if($initial_ward_class == "1c"){?>
-                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'disabled' => true,
                                          'class' => '1_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
 
                                 else if($initial_ward_class == "2"){?>
-                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'disabled' => true,
                                         'class' => '2_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
 
                                 else if($initial_ward_class == "3"){?>
-                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['tabindex' => '-1', 'disabled' => true,
+                                    <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'disabled' => true,
                                         'class' => '3_unit_cost'])->label(false) ?>
                                 <?php 
                                 }
                             }
                             else{ ?>
                                 <?= $form->field($model, "[$index]item_per_unit_cost_rm")->textInput(
-                                    ['tabindex' => '-1', 'readonly' => true, 'disabled' => empty($isGenerated) || empty($isPrinted) ? false : true,])->label(false) ?>
+                                    ['autocomplete' =>'off', 'tabindex' => '-1', 'readonly' => true, 'disabled' => empty($isGenerated) || empty($isPrinted) ? false : true,])->label(false) ?>
                                 <?php    
                             }
                         ?>
@@ -262,11 +264,11 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
 
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($model, "[$index]item_count")->textInput(['class' => 'item_num',
+                    <?= $form->field($model, "[$index]item_count")->textInput(['autocomplete' =>'off', 'class' => 'item_num',
                         'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateItemTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($model, "[$index]item_total_unit_cost_rm")->textInput(['tabindex' => '-1', 'readonly' => true,
+                <td><?= $form->field($model, "[$index]item_total_unit_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'readonly' => true,
                         'disabled' => empty($isGenerated) ? false : true, 'class' => 'item_total_cost'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -428,9 +430,10 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                     $('#treatment_details-'+index+'-treatment_code').select2({
                         placeholder: '<?php echo Yii::t('app', 'Select treatment code'); ?>',
                         width: '220px',
-                        matcher: function(params, data) {
-                            return matchTreatment(params, data);
-                        },
+                        minimumInputLength: 2,
+                        // matcher: function(params, data) {
+                        //     return matchTreatment(params, data);
+                        // },
                     });
                 });
                 
@@ -558,9 +561,10 @@ $(document).ready(function() {
         $('#treatment_details-'+index+'-treatment_code').select2({
             placeholder: 'Select treatment code',
             width: '220px',
-            matcher: function(params, data) {
-                return matchTreatment(params, data);
-            },
+            minimumInputLength: 2,
+            // matcher: function(params, data) {
+            //     return matchTreatment(params, data);
+            // },
         });
     });
 });

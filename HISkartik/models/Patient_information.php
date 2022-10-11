@@ -54,7 +54,9 @@ class Patient_information extends \yii\db\ActiveRecord
             [['first_reg_date'], 'safe'],
             [['DOB'], 'date', 'format' => 'php:Y-m-d'],
           //  [['nric'], 'integer'],
-            [['phone_number'], 'integer'],
+            // [['phone_number'], 'integer'],
+            [['phone_number'], 'string', 'max' => 100],
+            ['phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app', 'Phone Number can only contain digit and "/", "-", ",", and " " character')],
             [['email'], 'email'],
             // [['nric', 'nationality', 'sex', 'job', 'race'], 'string', 'max' => 20],
             [['nric', 'job'], 'string', 'max' => 20],
@@ -86,7 +88,7 @@ class Patient_information extends \yii\db\ActiveRecord
             'address2' => 'Address 2',
             'address3' => 'Address 3',
             'job' => Yii::t('app','Job'),
-            'DOB' => 'DOB (yyyy-mm-dd)',
+            'DOB' => 'DOB',
         ];
     }
 

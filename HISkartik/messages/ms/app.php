@@ -16,7 +16,7 @@ return[
     "Payment" => 'Bayaran',
     'Print Transaction Records' => 'Cetak Rekod Transaksi',
     'NRIC/Passport' => 'NRIC/Pasport',
-    'Search IC/RN' => 'Cari IC/RN',
+    'Search IC/Passport/RN' => 'Cari IC/Pasport/RN',
     'Add New R/N' => 'Tambah R/N Baru',
     'Add New Labor R/N' => 'Tambah R/N Labor Baru',
     'Reminder Letters' => 'Surat Peringatan',
@@ -45,7 +45,7 @@ return[
     'Patient Information' => 'Butiran Pesakit',
     'Next of Kin Information' => 'Butiran Waris',
     'Patient record is not found' => 'Rekod pesakit tidak diasaskan',
-    'Entry Datetime' => 'Tarikh masuk',
+    'Entry Datetime' => 'Tarikh Masuk',
     'Patient Uid' => 'Pesakit Uid',
     'Initial Ward Code' => 'Kod Wad Permulaan',
     'Initial Ward Class' => 'Kelas Wad Permulaan',
@@ -363,6 +363,13 @@ return[
     'Please select year' => 'Silakan pilih tahun',
     'Please select month' => 'Silakan pilih bulan',
     'Generate' => 'Hasilkan',
-
+    'Please select reference' => 'Sila pilih rujukan',
+    'Receipt Cancellation Form' => 'Borang Pembatalan Resit',
+    'Latest Regular RN' => 'RN Biasa Terkini',
+    'Latest Labor RN' => 'RN Bersalin Terkini',
+    'Guarantor Phone Number can only contain digit, "/", "-", ",", and " " character' => 'Nombor Telefon Penjamin hanya boleh mengandungi digit, "/", "-", "," dan " " aksara',
+    'Phone Number can only contain digit and "/", "-", ",", and " " character' => 'Nombor Telefon hanya boleh mengandungi digit dan aksara "/", "-", "," dan " "',
+    'NOK Phone Number can only contain digit number and "/", "-", ",", and " " character' => 'Nombor Telefon NOK hanya boleh mengandungi nombor digit dan aksara "/", "-", "," dan " "',
+    "RN Doesn't Exist" => 'RN Tidak Wujud',
 ];
 ?>

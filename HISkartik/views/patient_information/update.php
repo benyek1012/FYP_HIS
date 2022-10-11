@@ -45,6 +45,7 @@ $this->registerJs(
         ->select('*')
         ->from('lookup_general')
         ->where(['category'=> 'Nationality'])
+        ->orderBy('length(code) ASC, code ASC')
         ->all();
         
         $countries = array();
@@ -73,6 +74,7 @@ $this->registerJs(
         ->select('*')
         ->from('lookup_general')
         ->where(['category'=> 'Race'])
+        ->orderBy('length(code) ASC, code ASC')
         ->all();
         
         $race = array();
@@ -100,13 +102,13 @@ $this->registerJs(
 
     <div class="row">
         <div class="col-sm-6">
-            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){ ?><?= $form->field($model, 'name')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("");']);} 
-            else { ?><?= $form->field($model, 'name')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){ ?><?= $form->field($model, 'name')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("");']);} 
+            else { ?><?= $form->field($model, 'name')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         </div>
         <div class="col-sm-6">
-            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?><?= $form->field($model, 'nric')->textInput(['maxlength' => true,'readonly' => true, 'id' => 'nric',
+            <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?><?= $form->field($model, 'nric')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'id' => 'nric',
              'value' => Yii::$app->request->get('ic'), 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-             else { ?><?= $form->field($model, 'nric')->textInput(['maxlength' => true, 'id' => 'nric',
+             else { ?><?= $form->field($model, 'nric')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'id' => 'nric',
                 'value' => Yii::$app->request->get('ic'), 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         </div>
         <div class="col-sm-6">
@@ -119,11 +121,13 @@ $this->registerJs(
                 // ],]);
 
                 $form->field($model, 'DOB')->textInput([
+                    'autocomplete' =>'off', 
                     'maxlength' => true,
                     'id' => 'DOB', 
                     'disabled' => 'disabled',
                     'onfocusout' => 'submitPatientInformationForm();',
                     'onfocus' => 'getFocusID("")',
+                    'placeholder' => 'yyyy-mm-dd', 
                 ]);
             }
             else{?>
@@ -135,17 +139,19 @@ $this->registerJs(
                 //     ],]);
 
                 $form->field($model, 'DOB')->textInput([
+                    'autocomplete' =>'off', 
                     'maxlength' => true,
                     'id' => 'DOB', 
                     'onfocusout' => 'submitPatientInformationForm();',
                     'onfocus' => 'getFocusID("")',
+                    'placeholder' => 'yyyy-mm-dd', 
                 ]);
             }?>
         </div>
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-sm">
-                    <?= $form->field($model, 'age')->textInput(['readonly' => true,'maxlength' => true,
+                    <?= $form->field($model, 'age')->textInput(['autocomplete' =>'off', 'readonly' => true,'maxlength' => true,
                         'id' => 'age', 'value' => $model->getAgeFromDatePicker(), 'tabindex' => '-1']);?>
                 </div>
                 <div class="col-sm align-self-center" style="padding-top:16px">
@@ -234,33 +240,33 @@ $this->registerJs(
         </div>
 
         <div class="col-sm-6">
-        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
          else {
-            ?> <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);
+            ?> <?= $form->field($model, 'phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);
          }?>
         </div>
 
         <div class="col-sm-6">
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address1')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address1')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address1')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'address1')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         <?php
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address2')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address2')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address3')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address3')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
          
         </div>
         
         <div class="col-sm-6">
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'email')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'email')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'email')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
 
         <?php 
-        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'job')->textInput(['maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'job')->textInput(['maxlength' => true, 'onfocusout' => ' submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'job')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
+        else {?> <?= $form->field($model, 'job')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => ' submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
 
         </div>
     </div>
@@ -289,7 +295,9 @@ $this->registerJs(
             data: formData,
 
             success: function (data) {
-                // $.pjax.reload({container: '#pjax-patient-information-form'});
+                if(data[0] == "s"){
+                    $.pjax.reload({container: '#pjax-patient-information-form'});
+                }
             },
         });
     }
@@ -351,9 +359,10 @@ $(document).ready(function() {
         allowClear: true,
         tags: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchInformation(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchInformation(params, data);
+        // },
     });
 });
 
@@ -363,9 +372,10 @@ $(document).ready(function() {
         allowClear: true,
         tags: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchInformation(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchInformation(params, data);
+        // },
     });
 });
 JS;

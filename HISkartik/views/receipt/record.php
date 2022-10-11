@@ -190,7 +190,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         else if(!empty($model_receipt->receipt_type)){
                             $type = 'Receipt';
-                            $title = '';
+                            $title = $model_receipt->receipt_content_description;
                             $class = 'badge-success';
                         }
                     }
@@ -203,7 +203,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         else{
                             $type = 'Bill';
-                            $title = '';
+                            $title = $model_bill->description;;
                             $class = 'badge-primary';
                         }
                     }

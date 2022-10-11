@@ -66,7 +66,7 @@ else{
 
     <div class ="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'username')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled]) ?>
         </div>
 
         <?php
@@ -111,16 +111,16 @@ else{
             <?= $form->field($model, 'role_guest_print')->checkbox(['checked'=> $role_guest_print, 'uncheck'=>'0', 'value' => '1', 'disabled' => $disabled]) ?>
         </div>
         <div class="col-sm-6" style="display:none;">
-            < <?= $form->field($model, 'Case_Note')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
-            <?= $form->field($model, 'Registration')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
-            <?= $form->field($model, 'Charge_Sheet')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?>
-            <?= $form->field($model, 'Sticker_Label')->textInput(['maxlength' => true, 'disabled' => $disabled]) ?> 
+            < <?= $form->field($model, 'Case_Note')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'Registration')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'Charge_Sheet')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled]) ?>
+            <?= $form->field($model, 'Sticker_Label')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled]) ?> 
         </div>
         <?php
         if(empty(Yii::$app->request->get('user_uid'))){
         ?>
             <div class="col-sm-6">
-                <?= $form->field($model, 'retire')->textInput(['value' => '1', 'disabled' => $disabled]) ?>
+                <?= $form->field($model, 'retire')->textInput(['autocomplete' =>'off', 'value' => '1', 'disabled' => $disabled]) ?>
             </div>
         <?php
         }

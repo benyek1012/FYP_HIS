@@ -51,6 +51,14 @@ foreach($rows_patient_nok as $row_patient_nok){
             ['class' => 'yii\grid\SerialColumn'],
 
             [
+                'class' => ActionColumn::className(),
+                'template' => '{delete}',
+                'urlCreator' => function ($action, $model, $key, $index, $column) {
+                    return Url::toRoute(['patient_next_of_kin/delete', 'id' => Yii::$app->request->get('id'), 'nok_uid' => $model->nok_uid]);
+                 }
+            ],
+
+            [
                 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'nok_name',
                 'refreshGrid' => true,

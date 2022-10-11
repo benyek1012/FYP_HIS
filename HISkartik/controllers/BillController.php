@@ -478,7 +478,7 @@ class BillController extends Controller
                         if($checkFormat){
                             $validDate = DateFormat::convert(Yii::$app->request->get('discharge'), 'datetime');
                             if($validDate){
-                                $model->discharge_date = Yii::$app->request->get('discharge');
+                                $model->discharge_date = Yii::$app->request->get('discharge') . ':00';
                             }
                             else{
                                 Yii::$app->session->setFlash('error_generate', '
@@ -490,7 +490,7 @@ class BillController extends Controller
 
                                 return Yii::$app->getResponse()->redirect(array('/bill/generate', 
                                     'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'billGeneration'));
-                                }
+                            }
                         }
                         else{
                             Yii::$app->session->setFlash('error_generate', '
@@ -660,6 +660,13 @@ class BillController extends Controller
 
         $model = $this->findModel($bill_uid);
         $model->deleted = 1;
+        // echo '<pre>';
+        // var_dump($model);
+        // echo '</pre>';
+        // exit;
+        // $model->validate();
+        // var_dump($model->errors);
+        // exit;
         $model->save();
 
         $model_cancellation = new Cancellation();

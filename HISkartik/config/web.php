@@ -24,6 +24,7 @@ $config = [
     ],
    // 'language' => 'ms',
     'sourceLanguage' => 'en',
+    'timeZone' => 'Asia/Kuala_Lumpur',
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use DateTime;
 use Yii;
 
 /**
@@ -54,7 +55,7 @@ class Bill extends \yii\db\ActiveRecord
             [['is_free', 'deleted'], 'integer'],
             // [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime', 'discharge_date'], 'safe'],
             [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime'], 'safe'],
-            [['discharge_date'], 'datetime', 'format' => 'php:Y-m-d H:i'],
+            [['discharge_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['bill_uid', 'generation_responsible_uid', 'bill_print_responsible_uid'], 'string', 'max' => 64],
             [['rn'], 'string', 'max' => 11],
             [['status_code', 'class', 'department_code', 'collection_center_code'], 'string', 'max' => 20],
@@ -94,7 +95,7 @@ class Bill extends \yii\db\ActiveRecord
             'bill_print_id' => Yii::t('app','Bill Print ID'),
             'deleted' => 'Deleted',
             'final_ward_datetime',
-            'discharge_date' => Yii::t('app', 'Discharge Date').' (yyyy-mm-dd hh:ii)',
+            'discharge_date' => Yii::t('app', 'Discharge Date'),
         ];
     }
 
@@ -532,7 +533,12 @@ class Bill extends \yii\db\ActiveRecord
             $discharge_date = Ward::find()->select('ward_end_datetime')->where(['bill_uid' => $bill_uid])
             ->orderBy('ward_end_datetime DESC')->limit(1)->one();
             if(!empty($discharge_date["ward_end_datetime"])){
-                $formatedDate = DateFormat::convert($discharge_date["ward_end_datetime"], 'datetime');
+                // $formatedDate = DateFormat::convert($discharge_date["ward_end_datetime"], 'datetime');
+                $formatedDate = DateTime::createFromFormat('Y-m-d H:i:s', $discharge_date["ward_end_datetime"]);
+                if($formatedDate){
+                    $formatedDate = $formatedDate->format('Y-m-d H:i');
+                }
+                // $formatedDate =  date($discharge_date["ward_end_datetime"]);
                 return $formatedDate;
             }
             else{

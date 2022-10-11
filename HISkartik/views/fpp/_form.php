@@ -54,6 +54,7 @@ if(!empty($row_bill))
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_status')
+->orderBy('length(status_code) ASC, status_code ASC')
 ->all();
 
 $dayly_ward_cost = "";
@@ -81,6 +82,7 @@ foreach($rows as $row){
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_fpp')
+->orderBy('length(kod) ASC, kod ASC')
 ->all();
 
 $fpp_kod = array();
@@ -200,32 +202,32 @@ else{
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP ,"[$index]name")->textInput(['tabindex' => '-1', 'maxlength' => true, 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP ,"[$index]name")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'maxlength' => true, 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <!-- <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?> -->
+                    <!-- <?= $form->field($modelFPP, "[$index]additional_details")->textInput(['autocomplete' =>'off', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?> -->
                     <?= $form->field($modelFPP, "[$index]additional_details")->textarea(['style' => 'width: 200px','class' => 'textarea-expand', 'title' => $modelFPP->additional_details, 'rows' => '1', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "calculateFPPTotalCost()"])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]min_cost_per_unit")->textInput(['tabindex' => '-1', 'class' => 'minCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]min_cost_per_unit")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'class' => 'minCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}'); calculateFPPTotalCost()",])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]cost_per_unit")->textInput(['autocomplete' =>'off', 'class' => 'costPerUnit', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => "checkCostRange('{$url}'); calculateFPPTotalCost()",])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]max_cost_per_unit")->textInput(['tabindex' => '-1', 'class' => 'maxCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]max_cost_per_unit")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'class' => 'maxCostPerUnit', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['style' => 'width: 100px', 'class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();'])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]number_of_units")->textInput(['autocomplete' =>'off', 'style' => 'width: 100px', 'class' => 'numberOfUnits', 'disabled' => empty($isGenerated) ? false : true, 'onchange' => 'calculateFPPTotalCost();'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <?= $form->field($modelFPP, "[$index]total_cost")->textInput(['tabindex' => '-1', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
+                    <?= $form->field($modelFPP, "[$index]total_cost")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td style="vertical-align: top;">
@@ -399,9 +401,10 @@ else{
                     $('#fpp-'+index+'-kod').select2({
                         placeholder: 'Select FPP Kod',
                         width: '220px',
-                        matcher: function(params, data) {
-                            return matchFpp(params, data);
-                        },
+                        minimumInputLength: 2,
+                        // matcher: function(params, data) {
+                        //     return matchFpp(params, data);
+                        // },
                     });
                 });
 
@@ -662,9 +665,10 @@ $(document).ready(function() {
         $('#fpp-'+index+'-kod').select2({
             placeholder: 'Select FPP Kod',
             width: '220px',
-            matcher: function(params, data) {
-                return matchFpp(params, data);
-            },
+            minimumInputLength: 2,
+            // matcher: function(params, data) {
+            //     return matchFpp(params, data);
+            // },
         });
     });
 });

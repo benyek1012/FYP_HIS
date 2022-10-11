@@ -55,6 +55,7 @@ if(!empty($row_bill))
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_status')
+->orderBy('length(status_code) ASC, status_code ASC')
 ->all();
 
 $dayly_ward_cost = "";
@@ -93,6 +94,7 @@ foreach($rows as $row){
 $rows_ward = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_ward')
+->orderBy('length(ward_code) ASC, ward_code ASC')
 ->all();
 
 $wardcode = array();
@@ -178,9 +180,9 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Name');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward Start Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
+                <td><?php echo Yii::t('app','Ward Start Datetime')?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward End Datetime').'<br>'.'<strong>(yyyy-mm-dd hh:ii)</strong>'?></td>
+                <td><?php echo Yii::t('app','Ward End Datetime')?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Number of Days');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -189,8 +191,40 @@ else{
 
             <?php foreach ($modelWard as $index => $modelWard) { 
                 if(!empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime)){
-                    $modelWard->ward_start_datetime = DateFormat::convert($modelWard->ward_start_datetime, 'datetime');
-                    $modelWard->ward_end_datetime = DateFormat::convert($modelWard->ward_end_datetime, 'datetime');
+                    // $modelWard->ward_start_datetime = DateFormat::convert($modelWard->ward_start_datetime, 'datetime');
+                    // $modelWard->ward_end_datetime = DateFormat::convert($modelWard->ward_end_datetime, 'datetime');
+
+                    $ward_start_sec = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_start_datetime);
+                    if($ward_start_sec){
+                        $ward_start_sec = $ward_start_sec->format('Y-m-d H:i');
+                        $modelWard->ward_start_datetime = $ward_start_sec;
+                    }
+                    else{
+                        $ward_start_datetime = DateTime::createFromFormat('Y-m-d H:i', $modelWard->ward_start_datetime);
+                        if($ward_start_datetime){
+                            $ward_start_datetime = $ward_start_datetime->format('Y-m-d H:i');
+                            $modelWard->ward_start_datetime = $ward_start_datetime;
+                        }
+                        else{
+                            
+                        }
+                    }
+
+                    $ward_end_sec = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_end_datetime);
+                    if($ward_end_sec){
+                        $ward_end_sec = $ward_end_sec->format('Y-m-d H:i');
+                        $modelWard->ward_end_datetime = $ward_end_sec;
+                    }
+                    else{
+                        $ward_end_datetime = DateTime::createFromFormat('Y-m-d H:i', $modelWard->ward_end_datetime);
+                        if($ward_end_datetime){
+                            $ward_end_datetime = $ward_end_datetime->format('Y-m-d H:i');
+                            $modelWard->ward_end_datetime = $ward_end_datetime;
+                        }
+                        else{
+                            
+                        }
+                    }
                 }
             ?>
             <tr id='ward-<?php echo $index ?>'>
@@ -253,13 +287,28 @@ else{
                     ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['tabindex' => '-1', 'maxlength' => true, 'class' => 'wardName',
+                <td><?= $form->field($modelWard, "[$index]ward_name")->textInput(['autocomplete' =>'off', 'tabindex' => '-1', 'maxlength' => true, 'class' => 'wardName',
                     'value'=>$modelWard->ward_name,  'readonly' => true, 'disabled' => empty($isGenerated) ? false : true, 'style' => 'width: 180px'])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
                     <?php 
-                    if($admission_model->initial_ward_code != "UNKNOWN" && empty($modelWard->ward_code) && $index == 0){
+                    if($admission_model->entry_datetime != "UNKNOWN" && empty($modelWard->ward_code) && $index == 0){
+                        $entry_sec = DateTime::createFromFormat('Y-m-d H:i:s', $admission_model->entry_datetime);
+                        if($entry_sec){
+                            $entry_sec = $entry_sec->format('Y-m-d H:i');
+                            $admission_model->entry_datetime = $entry_sec;
+                        }
+                        else{
+                            $entry_datetime = DateTime::createFromFormat('Y-m-d H:i', $admission_model->entry_datetime);
+                            if($entry_datetime){
+                                $entry_datetime = $entry_datetime->format('Y-m-d H:i');
+                                $admission_model->entry_datetime = $entry_datetime;
+                            }
+                            else{
+                                
+                            }
+                        }
                     ?>
                         <!-- <?= $form->field($modelWard, "[{$index}]ward_start_datetime")->widget(DateTimePicker::classname(),[
                         'options' => ['class' => 'start_date', 'disabled' => empty($isGenerated) ? false : true, 'value' => $admission_model->entry_datetime],
@@ -272,10 +321,12 @@ else{
                         ],])->label(false)?> -->
 
                     <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
+                            'autocomplete' =>'off', 
                             'class' => 'start_date', 
                             'disabled' => empty($isGenerated) ? false : true,
                             'value' => $admission_model->entry_datetime,
-                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                            'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                     <?php 
                     }
@@ -293,9 +344,11 @@ else{
                         ],])->label(false)?> -->
 
                         <?= $form->field($modelWard, "[$index]ward_start_datetime")->textInput([
+                            'autocomplete' =>'off', 
                             'class' => 'start_date', 
                             'disabled' => empty($isGenerated) ? false : true,
-                            'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                            'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                            'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                     <?php
                     }
@@ -306,14 +359,16 @@ else{
                    
 
                         <?= $form->field($modelWard, "[$index]ward_end_datetime")->textInput([
+                        'autocomplete' =>'off', 
                         'class' => 'end_date', 
                         'disabled' => empty($isGenerated) ? false : true,
-                        'onchange' => "calculateDays(); changeRowColor('{$index}');"
+                        'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                        'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-                <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['tabindex' => '-1','maxlength' => true,
+                <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['autocomplete' =>'off', 'tabindex' => '-1','maxlength' => true,
                         'class' => 'day', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -486,9 +541,10 @@ else{
                             placeholder: 'Select ward code',
                             width: '220px',
                             allowClear: false,
-                            matcher: function(params, data) {
-                                return matchWard(params, data);
-                            },
+                            minimumInputLength: 2,
+                            // matcher: function(params, data) {
+                            //     return matchWard(params, data);
+                            // },
                         });
                     // });
 
@@ -665,9 +721,10 @@ $(document).ready(function() {
             placeholder: 'Select ward code',
             width: '220px',
             allowClear: false,
-            matcher: function(params, data) {
-                return matchWard(params, data);
-            },
+            minimumInputLength: 2,
+            // matcher: function(params, data) {
+            //     return matchWard(params, data);
+            // },
         });
     });
 });

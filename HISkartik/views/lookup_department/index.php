@@ -58,13 +58,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
-            [
-                'class' => ActionColumn::className(),
-                'template' => '{delete}',
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'department_uid' => $model->department_uid]);
-                 }
-            ],
+            // [
+            //     'class' => ActionColumn::className(),
+            //     'template' => '{delete}',
+            //     'urlCreator' => function ($action, $model, $key, $index, $column) {
+            //         return Url::toRoute([$action, 'department_uid' => $model->department_uid]);
+            //      }
+            // ],
 
             [
                 // 'class' => '\kartik\grid\EditableColumn',
@@ -77,58 +77,58 @@ $this->params['breadcrumbs'][] = $this->title;
                 // ]
             ],
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'department_name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_department/department']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_department/department']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'phone_number',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_department/department']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_department/department']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'address1',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_department/department']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_department/department']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'address2',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_department/department']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_department/department']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'address3',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_department/department']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_department/department']],
+                // ]
             ],
         ],
     ]); ?>

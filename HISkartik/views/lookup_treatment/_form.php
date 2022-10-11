@@ -25,22 +25,22 @@ use GpsLab\Component\Base64UID\Base64UID;
     ?>
 <div class ="row">
     <div class="col-sm-6">
-        <?= $form->field($model, 'treatment_code')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'treatment_code')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'treatment_name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'treatment_name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_1_cost_per_unit')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_1_cost_per_unit')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_2_cost_per_unit')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_2_cost_per_unit')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_3_cost_per_unit')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_3_cost_per_unit')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
-        <?= $form->field($model, 'class_Daycare_FPP_per_unit')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'class_Daycare_FPP_per_unit')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
     </div>
     <div class="col-sm-6">
         <?= $form->field($model, 'treatment_uid')->hiddenInput(['readonly' => true, 'maxlength' => true, 'value' => $treatment_uid])->label(false)?>

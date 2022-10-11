@@ -25,6 +25,7 @@ use GpsLab\Component\Base64UID\Base64UID;
     ->select('*')
     ->from('lookup_general')
     ->where(['category'=> 'Relationship'])
+    ->orderBy('length(code) ASC, code ASC')
     ->all();
     
     $relationship = array();
@@ -42,7 +43,7 @@ use GpsLab\Component\Base64UID\Base64UID;
             <?= $form->field($model, 'patient_uid')->hiddenInput(['value'=> $value])->label(false); ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nok_name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'nok_name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
             <!-- <?= $form->field($model, 'nok_relationship')->dropDownList($relationship, 
@@ -58,13 +59,13 @@ use GpsLab\Component\Base64UID\Base64UID;
             ]); ?>
         </div>
         <div class="col-sm-6">
-            <?= $form->field($model, 'nok_phone_number')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'nok_email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'nok_phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
+            <?= $form->field($model, 'nok_email')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
         <div class="col-sm-6">
-        <?= $form->field($model, 'nok_address1')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'nok_address2')->textInput(['maxlength' => true])->label(false)?>
-        <?= $form->field($model, 'nok_address3')->textInput(['maxlength' => true])->label(false)?>
+        <?= $form->field($model, 'nok_address1')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
+        <?= $form->field($model, 'nok_address2')->textInput(['autocomplete' =>'off', 'maxlength' => true])->label(false)?>
+        <?= $form->field($model, 'nok_address3')->textInput(['autocomplete' =>'off', 'maxlength' => true])->label(false)?>
     </div>
     </div>
 
@@ -121,9 +122,10 @@ $(document).ready(function() {
         allowClear: true,
         tags: true,
         width: '100%',
-        matcher: function(params, data) {
-            return matchNok(params, data);
-        },
+        minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchNok(params, data);
+        // },
     });
 });
 JS;

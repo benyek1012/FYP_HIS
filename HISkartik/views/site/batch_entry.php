@@ -14,6 +14,25 @@ $this->title = Yii::t('app','Batch Entry');
 $model = new Patient_admission();
 $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
 
+$NormalID = "000001";
+$LaborID = "900001";
+// check RN Rules for starting on next year
+$normal_latest_rn = Patient_admission::find()
+->where(['type' => 'Normal'])
+->orderBy('entry_datetime DESC')
+->one();
+
+// check RN Rules for starting on next year
+$labor_latest_rn = Patient_admission::find()
+->where(['type' => 'Labor'])
+->orderBy('entry_datetime DESC')
+->one();
+
+if(empty($normal_latest_rn))
+    $NormalID = date('Y')."/".$NormalID;
+
+if(empty($labor_latest_rn)) 
+    $LaborID = date('Y')."/".$LaborID;
 
 ?>
 
@@ -80,6 +99,15 @@ $type = array( 'Normal' => 'Normal','Labor' => 'Labor');
                 ],
                 ]); 
         ?>
+
+        <div class="col-sm-6">
+            <label><?php echo Yii::t('app', 'Latest Regular RN').': '; echo !empty($normal_latest_rn) ? $normal_latest_rn['rn'] : $NormalID ?></label>
+        </div>
+
+        <div class="col-sm-6">
+            <label><?php echo Yii::t('app', 'Latest Labor RN').': '; echo !empty($labor_latest_rn) ? $labor_latest_rn['rn'] : $LaborID ?></label>
+        </div>
+        <br>
 
         <div class="col-sm-6">
             <?= $form->field($model, 'startrn')->textInput(['autocomplete' =>'off'])->label(yii::t('app',"Start RN :")) ?>

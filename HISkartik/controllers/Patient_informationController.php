@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Patient_information;
+use app\models\Patient_informationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -106,10 +107,11 @@ class Patient_informationController extends Controller
             }
         
             if($flag == true){
-                // if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
-                // {
-                //     $model->DOB = $model->getDateForDatabase();
-                // }
+                if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
+                {
+                    $model->DOB = $model->getDateForDatabase();
+                    echo 's';
+                }
                     
 
                 if($model->save())
@@ -131,6 +133,23 @@ class Patient_informationController extends Controller
             'model' => $model,
         ]);
     }
+
+    public function actionIndex()
+    {        
+        $searchModel = new Patient_informationSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        // echo '<pre>';
+        // var_dump(Yii::$app->request->queryParams);
+        // echo '</pre>';
+        // exit;
+    
+        return $this->render('search_patient_date', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    } 
 
     // pass DOB from datepicker, then ajax calculate age then render on Age textInput
     public function actionDob($dob, $id) {

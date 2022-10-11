@@ -42,13 +42,14 @@ class Patient_admission extends \yii\db\ActiveRecord
         return [
             [['rn', 'entry_datetime', 'patient_uid', 'type'], 'required'],
             // [['entry_datetime'], 'safe'],
-            [['entry_datetime'], 'datetime', 'format' => 'php:Y-m-d H:i'],
+            [['entry_datetime'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['medical_legal_code'], 'integer'],
             [['rn','startrn','endrn'], 'string', 'max' => 11, 'min' => 11],
             [['patient_uid'], 'string', 'max' => 64],
             [['initial_ward_code', 'initial_ward_class'], 'string', 'max' => 20],
             [['reference', 'guarantor_name'], 'string', 'max' => 200],
-            [['guarantor_phone_number'], 'integer'],
+            // [['guarantor_phone_number'], 'integer'],
+            [['guarantor_phone_number'], 'string', 'max' => 100],
             [['guarantor_nric'], 'integer'],
             [['guarantor_email'], 'email'],
             [['guarantor_email'], 'string', 'max' => 100],
@@ -58,6 +59,7 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['type'], 'string', 'max' => 20],
             [['rn'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
+            ['guarantor_phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app', 'Guarantor Phone Number can only contain digit, "/", "-", ",", and " " character')],
         ];
     }
 
@@ -68,7 +70,7 @@ class Patient_admission extends \yii\db\ActiveRecord
     {
         return [
             'rn' =>  Yii::t('app','Registration Number (R/N)'),
-            'entry_datetime' => Yii::t('app','Entry Datetime').' (yyyy-mm-dd hh:ii)',
+            'entry_datetime' => Yii::t('app','Entry Datetime'),
             'patient_uid' => Yii::t('app','Patient Uid'),
             'initial_ward_code' => Yii::t('app','Initial Ward Code'),
             'initial_ward_class' => Yii::t('app','Initial Ward Class'),
@@ -170,5 +172,26 @@ class Patient_admission extends \yii\db\ActiveRecord
     public function getFinalwardDate()
     {
         return $this->hasOne(Bill::className(), ['final_ward_datetime' => 'final_ward_datetime']);
+    }
+
+    public function checkRnFormat($checkRN){
+        $arr = str_split($checkRN, 4);
+
+        $SID = (string)$checkRN;
+
+        //2022/000001, 2022/900001
+        $SID = substr($SID,5,11); 
+        if($arr[0] ==  date('Y')){
+            $SID = str_pad($SID, 6, "0", STR_PAD_LEFT);
+        }
+
+        $rn = date('Y')."/".$SID;
+
+        if(preg_match("/^[0-9]{4}\/[0-9]{6}$/", $rn)) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

@@ -55,13 +55,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
-            [
-                'class' => ActionColumn::className(),
-                'template' => '{delete}',
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'kod' => $model->kod]);
-                }
-            ],
+            // [
+            //     'class' => ActionColumn::className(),
+            //     'template' => '{delete}',
+            //     'urlCreator' => function ($action, $model, $key, $index, $column) {
+            //         return Url::toRoute([$action, 'kod' => $model->kod]);
+            //     }
+            // ],
 
             [
                 // 'class' => '\kartik\grid\EditableColumn',
@@ -75,36 +75,36 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_fpp/fpp']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_fpp/fpp']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'min_cost_per_unit',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_fpp/fpp']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_fpp/fpp']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'max_cost_per_unit',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_fpp/fpp']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_fpp/fpp']],
+                // ]
             ],
         ],
     ]); ?>

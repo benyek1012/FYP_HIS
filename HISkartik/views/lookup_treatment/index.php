@@ -57,13 +57,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             
-            [
-                'class' => ActionColumn::className(),
-                'template' => '{delete}',
-                'urlCreator' => function ($action, $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'treatment_uid' => $model->treatment_uid]);
-                 }
-            ],
+            // [
+            //     'class' => ActionColumn::className(),
+            //     'template' => '{delete}',
+            //     'urlCreator' => function ($action, $model, $key, $index, $column) {
+            //         return Url::toRoute([$action, 'treatment_uid' => $model->treatment_uid]);
+            //      }
+            // ],
 
             [
                 // 'class' => '\kartik\grid\EditableColumn',
@@ -77,58 +77,58 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'treatment_name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_treatment/treatment']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_1_cost_per_unit',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_treatment/treatment']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_2_cost_per_unit',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_treatment/treatment']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_3_cost_per_unit',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_treatment/treatment']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
+                // ]
             ],
 
             [
-                'class' => '\kartik\grid\EditableColumn',
+                // 'class' => '\kartik\grid\EditableColumn',
                 'attribute' => 'class_Daycare_FPP_per_unit',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'editableOptions' =>  [                
-                    'asPopover' => false,
-                    'formOptions' => ['action' => ['/lookup_treatment/treatment']],
-                ]
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_treatment/treatment']],
+                // ]
             ],
         ],
     ]); ?>

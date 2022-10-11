@@ -24,19 +24,19 @@ use yii\widgets\ActiveForm;
 
     <div class ="row">
         <div class="col-sm-6">
-            <?= $form->field($model, 'kod')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'kod')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
             
         <div class="col-sm-6">
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'min_cost_per_unit')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'min_cost_per_unit')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'max_cost_per_unit')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'max_cost_per_unit')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
     </div>
 
