@@ -53,6 +53,13 @@ class Report extends \yii\db\ActiveRecord{
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     [
+                        'attribute' => 'kod_akaun',
+                        'label' => 'Page',
+                        'value' => function($model) {
+                            return is_null($model['receipt_uid']) ? null : $model['kod_akaun'];
+                        }
+                    ],
+                    [
                         'label' => 'Bil',
                         'value' => function($model, $index, $dataColumn) {
                            return is_null($model['receipt_uid']) ? null : $dataColumn + 1;
@@ -89,13 +96,6 @@ class Report extends \yii\db\ActiveRecord{
                         'label' => 'Baki / Amaun (RM)',
                         'value' => function($model) {
                             return is_null($model['receipt_uid']) ? null : $model['receipt_content_sum'];
-                        }
-                    ],
-                    [
-                        'attribute' => 'kod_akaun',
-                        'label' => 'Kod Akaun',
-                        'value' => function($model) {
-                            return is_null($model['receipt_uid']) ? null : $model['kod_akaun'];
                         }
                     ],
 
