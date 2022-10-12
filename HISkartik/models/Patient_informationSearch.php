@@ -47,53 +47,30 @@ class Patient_informationSearch extends Patient_information
      */
     public function search($params)
     {
-        // $query = Patient_information::find();
-
-        // // add conditions that should always apply here
-
-        // $dataProvider = new ActiveDataProvider([
-        //     'query' => $query,
-        // ]);
-
-        // $this->load($params);
-
-        // if (!$this->validate()) {
-        //     // uncomment the following line if you do not want to return any records when validation fails
-        //     // $query->where('0=1');
-        //     return $dataProvider;
-        // }
-
-        // // grid filtering conditions
-
-        // $query->andFilterWhere(['like', 'first_reg_date', $this->first_reg_date])
-        //     ->andFilterWhere(['like', 'patient_uid', $this->patient_uid])
-        //     ->andFilterWhere(['like', 'nric', $this->nric])
-        //     ->andFilterWhere(['like', 'nationality', $this->nationality])
-        //     ->andFilterWhere(['like', 'name', $this->name])
-        //     ->andFilterWhere(['like', 'sex', $this->sex])
-        //     ->andFilterWhere(['like', 'race', $this->race])
-        //     ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-        //     ->andFilterWhere(['like', 'email', $this->email])
-        //     ->andFilterWhere(['like', 'address1', $this->address1])
-        //     ->andFilterWhere(['like', 'address2', $this->address2])
-        //     ->andFilterWhere(['like', 'address3', $this->address3])
-        //     ->andFilterWhere(['like', 'job', $this->job]);
-        // return $dataProvider;
-
         $this->load($params);
-        
         $datetime = Patient_admission::find()
         ->select('MAX(entry_datetime)')
         ->from("patient_admission")
+        ->where(['CAST(entry_datetime as DATE)' => $this->entry_datetime])
         ->groupBy('patient_uid');
+
+        // echo "<pre>";
+        // var_dump($datetime->all());
+        // exit();
+        // echo "</pre>";
+   
 
         $query = Patient_admission::find()
         ->select('patient_admission.*')
         ->from('patient_admission')
         ->joinWith('patient_information',true)
-        ->where(['like', 'entry_datetime', $this->entry_datetime])
-        // ->andWhere(['name' => $this->name])
+        //->where(['in','entry_datetime',$datetime])
+        ->where(['in','entry_datetime',$datetime])
         ->groupBy(['patient_uid']);
+        //->orderBy(['entry_datetime' => SORT_DESC]);
+
+    //    var_dump($query->all());
+    //    exit;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -106,9 +83,9 @@ class Patient_informationSearch extends Patient_information
         // else{
         //     $query->andFilterWhere(['like', 'entry_datetime', $this->entry_datetime]);
         // }
-        if (!$this->validate()) {
-            return $dataProvider;
-        }
+        // if (!$this->validate()) {
+        //     return $dataProvider;
+        // }
  
         return $dataProvider;
     }

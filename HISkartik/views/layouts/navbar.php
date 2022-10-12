@@ -83,8 +83,8 @@ body {
                     style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
-                    <!-- <li><a href="<?php echo Url::to(['/patient_information']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li> -->
+                    <li><a href="<?php echo Url::to(['/patient_information']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li>
                 </ul>
             </div>
         </div>
