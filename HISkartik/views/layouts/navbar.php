@@ -51,7 +51,7 @@ body {
             }
             if(Yii::$app->controller->action->id != "guest_printer_dashboard"){
                 ?>
-        <div class="dropdown">
+        <?php /* <div class="dropdown">
             <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
@@ -64,8 +64,27 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li> -->
                     <li><a href="<?php echo Url::to(['/site/admission']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
+                    <!-- <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li> -->
+                </ul>
+            </div>
+        </div> */ ?>
+
+        <div class="dropdown">
+            <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
+        </div>
+
+        <div class="dropdown">
+            <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false"
+                class="nav-link dropdown-toggle"><?php echo Yii::t('app','Search'); ?></a>
+            <div class="dropdown-content">
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                    style="margin-top: 0px; margin-right: 20px ;">
+                    <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
+                    <!-- <li><a href="<?php echo Url::to(['/patient_information']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li> -->
                 </ul>
             </div>
         </div>
@@ -139,6 +158,8 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
                 </ul>
