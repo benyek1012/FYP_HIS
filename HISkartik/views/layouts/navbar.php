@@ -42,8 +42,7 @@ body {
 <nav class="main-header navbar navbar-expand navbar-white navbar-light ">
     <ul class="navbar-nav">
         <?php 
-            if((new SiteController(null,null)) -> accessControl() == true
-                || (Yii::$app->controller->id == 'patient_admission' && Yii::$app->controller->action->id == "index"))
+            if((new SiteController(null,null)) -> accessControl() == true)
             { 
                 echo '<li class="nav-item">
                         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -81,10 +80,12 @@ body {
             <div class="dropdown-content">
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
                     style="margin-top: 0px; margin-right: 20px ;">
-                    <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/patient_information']); ?>"
+                    <li><a href="<?php echo Url::to(['/patient_information/search_name']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Name'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/patient_information/search_date']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/patient_information/search_ward']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Ward'); ?></a></li>
                 </ul>
             </div>
         </div>

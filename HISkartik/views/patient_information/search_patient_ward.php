@@ -12,10 +12,10 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\Patient_admissionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Patient Admission');
+$this->title = Yii::t('app','Patient Information By Ward Code');
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $this->render('_search', ['model' => $searchModel]); 
+echo $this->render('_search_ward', ['model' => $searchModel]); 
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 ?>
@@ -37,7 +37,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
         <!-- /.card-header -->
         <div class="card-body">
                 <?php 
-                    if(empty(Yii::$app->request->get('Patient_admissionSearch')))
+                    if(empty(Yii::$app->request->get('Patient_informationSearch')))
                     {
                         echo Yii::t('app','Patient admission record is not founded');        
                     } 

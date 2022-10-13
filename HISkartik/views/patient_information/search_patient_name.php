@@ -12,10 +12,10 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\Patient_admissionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app','Patient Information By Entry Date');
+$this->title = Yii::t('app','Patient Information By Name');
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $this->render('_search_date', ['model' => $searchModel]); 
+echo $this->render('_search_name', ['model' => $searchModel]); 
 
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 ?>

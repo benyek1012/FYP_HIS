@@ -63,10 +63,6 @@ class Patient_admissionSearch extends Patient_admission
             'query' => $query,
         ]);
 
-        // echo "<pre>";
-        // var_dump($this->name);
-        // exit();
-        // echo "</pre>";
         if(empty($this->name)){
 
             $query->where(['name' => NULL]);
@@ -80,29 +76,6 @@ class Patient_admissionSearch extends Patient_admission
             return $dataProvider;
         }
       
-
-        // grid filtering conditions
-    
-            // $query->andFilterWhere([
-            //     'entry_datetime' => $this->entry_datetime,
-            //     'medical_legal_code' => $this->medical_legal_code,
-            //     'reminder_given' => $this->reminder_given,
-            // ]);
-
-            // $query->andFilterWhere(['like', 'rn', $this->rn])
-            //     ->andFilterWhere(['like', 'patient_uid', $this->patient_uid])
-            //     ->andFilterWhere(['like', 'initial_ward_code', $this->initial_ward_code])
-            //     ->andFilterWhere(['like', 'initial_ward_class', $this->initial_ward_class])
-            //     ->andFilterWhere(['like', 'reference', $this->reference])
-            //     ->andFilterWhere(['like', 'guarantor_name', $this->guarantor_name])
-            //     ->andFilterWhere(['like', 'guarantor_nric', $this->guarantor_nric])
-            //     ->andFilterWhere(['like', 'guarantor_phone_number', $this->guarantor_phone_number])
-            //     ->andFilterWhere(['like', 'guarantor_email', $this->guarantor_email])
-            //     ->andFilterWhere(['like', 'type', $this->type])
-            //     ->andFilterWhere(['like', 'name', $this->name])
-            //     ->andFilterWhere(['like', 'nric', $this->nric])
-            //     ->andFilterWhere(['like', 'sex', $this->sex])
-            //     ->andFilterWhere(['like', 'race', $this->race]);
         return $dataProvider;
     }
 }

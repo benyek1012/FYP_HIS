@@ -450,7 +450,7 @@ class SiteController extends Controller
     // Return true = controller ID equels url
     public function accessControl(){
         $flag = false;
-        $actions_sidebar = array("patient_admission", "bill", "receipt", "patient_information");
+        $actions_sidebar = array("patient_admission", "bill", "receipt");
         foreach ($actions_sidebar as $action) {
             if(Yii::$app->controller->id == "site" && (Yii::$app->controller->action->id == "admission" || Yii::$app->controller->action->id == "guest_printer_dashboard"))
             {
@@ -459,13 +459,7 @@ class SiteController extends Controller
             }
             if(Yii::$app->controller->id == $action)
             {
-
                 $flag = true;
-                if(Yii::$app->controller->id == 'patient_admission' && Yii::$app->controller->action->id == "index")
-                {
-                    $flag = false;
-                    break;
-                }
                 break;
             }
         }

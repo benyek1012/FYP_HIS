@@ -144,17 +144,41 @@ class Patient_informationController extends Controller
         ]);
     }
 
-    public function actionIndex()
+    public function actionSearch_name()
     {        
         $searchModel = new Patient_informationSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search_name(Yii::$app->request->queryParams);
+    
+        return $this->render('search_patient_name', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    } 
+
+    public function actionSearch_date()
+    {        
+        $searchModel = new Patient_informationSearch();
+        $dataProvider = $searchModel->search_date(Yii::$app->request->queryParams);
+
+        return $this->render('search_patient_date', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    } 
+
+    public function actionSearch_ward()
+    {        
+        $searchModel = new Patient_informationSearch();
+        $dataProvider = $searchModel->search_ward(Yii::$app->request->queryParams);
 
         // echo '<pre>';
         // var_dump(Yii::$app->request->queryParams);
         // echo '</pre>';
         // exit;
     
-        return $this->render('search_patient_date', [
+        return $this->render('search_patient_ward', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
