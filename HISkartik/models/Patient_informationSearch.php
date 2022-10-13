@@ -17,6 +17,7 @@ class Patient_informationSearch extends Patient_information
     public $entry_datetime;
     public $ward_code;
     public $medical_legal_code;
+    public $discharge_date;
 
     public function rules()
     {
@@ -26,7 +27,7 @@ class Patient_informationSearch extends Patient_information
             // [['email'], 'email'],
 
             [['name','nric','race','sex','rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference',
-                 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type', 'ward_code'], 'safe'],
+                 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type', 'ward_code', 'discharge_date'], 'safe'],
             [['medical_legal_code' ], 'integer'],
         ];
     }
@@ -148,6 +149,59 @@ class Patient_informationSearch extends Patient_information
         ->where(['deleted' => 0])
         ->andWhere( ['IS NOT', 'bill_generation_datetime', null])
         ->andWhere(['in','bill_uid',$ward_code_list]);
+
+        $query = Patient_admission::find()
+        ->select('patient_admission.*')
+        ->from('patient_admission')
+        ->joinWith('patient_information',true)
+        ->where(['in','rn',$rn_list])
+        ->groupBy(['patient_uid']);
+        //->orderBy(['entry_datetime' => SORT_DESC]);
+
+    //    var_dump($query->all());
+    //    exit;
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 30,
+            ],
+        ]);
+
+        // if(empty($this->entry_datetime)){
+
+        //     $query->where(['entry_datetime' => NULL]);
+        // }
+        // else{
+        //     $query->andFilterWhere(['like', 'entry_datetime', $this->entry_datetime]);
+        // }
+        if (!$this->validate()) {
+            return $dataProvider;
+        }
+ 
+        return $dataProvider;
+    }
+
+    public function search_discharge($params)
+    {
+        $this->load($params);
+        $rn_list = Bill::find()
+        ->select('rn')
+        ->from("bill")
+        ->where(['CAST(discharge_date as DATE)' => $this->discharge_date])
+        ->andWhere(['deleted' => 0])
+        ->andWhere( ['IS NOT', 'bill_generation_datetime', null]);
+
+        // echo '<pre>';
+        // var_dump($rn_list);
+        // echo '</pre>';
+        // exit;
+
+        // echo "<pre>";
+        // var_dump($datetime->all());
+        // exit();
+        // echo "</pre>";
+   
 
         $query = Patient_admission::find()
         ->select('patient_admission.*')

@@ -86,6 +86,8 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/patient_information/search_ward']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Patient by Ward'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/patient_information/search_discharge']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Discharge Date'); ?></a></li>
                 </ul>
             </div>
         </div>

@@ -249,30 +249,6 @@ class Patient_information extends \yii\db\ActiveRecord
         return Yii::t('app','Amount Due')." : ". Yii::$app->formatter->asCurrency($billable_sum);                
     }
 
-    public function getSideBarBalance($patient_uid)
-    { 
-        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
-
-        $adm = array();
-        foreach($info as $x)
-        {
-            $adm[] = $x->rn; 
-        }
-
-        $billable_sum = 0.0;
-        foreach($adm as $rn)
-        {
-            $billable_sum += (new Bill())  -> getAmtDued($rn);
-        }
-
-        if($billable_sum < 0)
-        {
-            $billable_sum = 0.0;           
-        }
-
-        return Yii::t('app','Amount Due')." : "."<br>". Yii::$app->formatter->asCurrency($billable_sum);                
-    }
-
     public function getBalanceRM($patient_uid)
     { 
         $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
@@ -314,25 +290,6 @@ class Patient_information extends \yii\db\ActiveRecord
         }
 
         return Yii::t('app','Unclaimed Balance')." : ". Yii::$app->formatter->asCurrency($unclaimed_sum);                
-    }
-
-    public function getSideBarUnclaimedBalance($patient_uid)
-    { 
-        $info = Patient_admission::findAll(['patient_uid' => $patient_uid]);
-     
-        $adm = array();
-        foreach($info as $x)
-        {
-            $adm[] = $x->rn; 
-        }
-
-        $unclaimed_sum = 0.0;
-        foreach($adm as $rn)
-        {
-            $unclaimed_sum += (new Bill())  -> getUnclaimed($rn);
-        }
-
-        return Yii::t('app','Unclaimed Balance')." : "."<br>". Yii::$app->formatter->asCurrency($unclaimed_sum);                
     }
 
     public function getUnclaimedBalanceRM($patient_uid)

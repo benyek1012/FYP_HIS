@@ -165,6 +165,11 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                 if(!empty($info)){
                     if($info->name == "") $temp_name = "Unknown";
                     else $temp_name = $info->name;
+
+                    $patient_name = wordwrap(Yii::t('app','Patient Name')." : ".$temp_name, 31, "<br>\n");
+                    $amount_due = wordwrap((new Patient_information()) -> getBalance($info->patient_uid), 12, "<br>\n");
+                    $unclaimed_balance = wordwrap((new Patient_information()) ->getUnclaimedBalance($info->patient_uid), 19, "<br>\n");
+
                     // if(Yii::$app->controller->action->id == "guest_printer_dashboard")
                     //  echo \hail812\adminlte\widgets\Menu::widget([
                     //     'items' => [['label' => $temp_name,'icon' => 'user',  'url' => ['site/guest_printer_dashboard', 'id' => $info->patient_uid]]]]);
@@ -178,7 +183,7 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                         <ul class="nav tabs">
                             <li class="nav-item">
                                 <a href="<?php echo Url::toRoute(['site/admission', 'id' => $info->patient_uid]) ?>">
-                                    <?php
+                                    <?php /*
                                     $name_length = strlen($temp_name);
                                     $count = (int)intval($name_length / 16);
                                     $name = array();
@@ -186,11 +191,16 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                                     $left = 0;
 
                                     if(strlen($temp_name) > 16){
-                                        $first = substr($temp_name, 0, 16);
-                                        $second = substr($temp_name, 17, strlen($temp_name));
+                                        // $first = substr($temp_name, 0, 16);
+                                        // $second = substr($temp_name, 17, strlen($temp_name));
 
                                         for($i = 0; $i < $count; $i++){
-                                                array_push($name, substr($temp_name, ((16 * $i)), (16 * ($i + 1))));
+                                            array_push($name, substr($temp_name, ((16 * $i)), (16 * ($i + 1))));
+                                            $left = strlen($temp_name) - (16 * ($i + 1));
+                                        }
+                                        
+                                        if($count == 1){
+                                            array_push($name, substr($temp_name, strlen($temp_name) - $left, strlen($temp_name)));
                                         }
 
                                         for($i = 0; $i < count($name); $i++){
@@ -201,19 +211,18 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                                         </p>
                                     <?php
                                     }
-                                    else if($count > 1){
+                                    else if($count < 1){
                                     ?>
                                         <p class="text-white" style="word-wrap: break-word;"><?php echo Yii::t('app','Patient Name')." : ".$temp_name;?>
                                         </p>
                                     <?php
-                                    }
+                                    } */
                                     ?>
-                                    <!-- <p class="text-white" style="word-wrap: break-word;"><?php echo Yii::t('app','Patient Name')." : ".$temp_name;?>
-                                    </p> -->
+                                    <p class="text-white" style="word-wrap: break-word;"><?php echo $patient_name;?>
+                                    </p>
                                     <p class="text-white"><?php echo Yii::t('app','Patient IC/Passport')." : "."<br>".$info->nric;?></p>
                                     <p class="text-light">
-                                        <?php echo (new Patient_information()) -> getSideBarBalance($info->patient_uid).
-                                "<br/>".(new Patient_information()) ->getSideBarUnclaimedBalance($info->patient_uid);?>
+                                        <?php echo $amount_due."<br/>".$unclaimed_balance;?>
                                     </p>
                                 </a>
                             </li>

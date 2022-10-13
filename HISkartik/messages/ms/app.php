@@ -371,5 +371,7 @@ return[
     'Phone Number can only contain digit and "/", "-", ",", and " " character' => 'Nombor Telefon hanya boleh mengandungi digit dan aksara "/", "-", "," dan " "',
     'NOK Phone Number can only contain digit number and "/", "-", ",", and " " character' => 'Nombor Telefon NOK hanya boleh mengandungi nombor digit dan aksara "/", "-", "," dan " "',
     "RN Doesn't Exist" => 'RN Tidak Wujud',
+    'Search Patient by Discharge Date' => 'Cari Pesakit mengikut Tarikh Keluar',
+    'Patient Information By Discharge Date' => 'Maklumat Pesakit Mengikut Tarikh Keluar',
 ];
 ?>

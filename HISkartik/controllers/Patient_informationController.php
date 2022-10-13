@@ -185,6 +185,23 @@ class Patient_informationController extends Controller
 
     } 
 
+    public function actionSearch_discharge()
+    {        
+        $searchModel = new Patient_informationSearch();
+        $dataProvider = $searchModel->search_discharge(Yii::$app->request->queryParams);
+
+        // echo '<pre>';
+        // var_dump(Yii::$app->request->queryParams);
+        // echo '</pre>';
+        // exit;
+    
+        return $this->render('search_patient_discharge', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+
+    } 
+
     // pass DOB from datepicker, then ajax calculate age then render on Age textInput
     public function actionDob($dob, $id) {
         $model = Patient_information::findOne($id);
