@@ -167,8 +167,16 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                     else $temp_name = $info->name;
 
                     $patient_name = wordwrap(Yii::t('app','Patient Name')." : ".$temp_name, 31, "<br>\n");
-                    $amount_due = wordwrap((new Patient_information()) -> getBalance($info->patient_uid), 12, "<br>\n");
-                    $unclaimed_balance = wordwrap((new Patient_information()) ->getUnclaimedBalance($info->patient_uid), 19, "<br>\n");
+                    
+
+                    if( Yii::$app->language == "en"){
+                        $amount_due = wordwrap((new Patient_information()) -> getBalance($info->patient_uid), 12, "<br>\n");
+                        $unclaimed_balance = wordwrap((new Patient_information()) ->getUnclaimedBalance($info->patient_uid), 19, "<br>\n");
+                    }
+                    else{
+                        $amount_due = wordwrap((new Patient_information()) -> getBalance($info->patient_uid), 15, "<br>\n");
+                        $unclaimed_balance = wordwrap((new Patient_information()) ->getUnclaimedBalance($info->patient_uid), 21, "<br>\n");
+                    }
 
                     // if(Yii::$app->controller->action->id == "guest_printer_dashboard")
                     //  echo \hail812\adminlte\widgets\Menu::widget([
