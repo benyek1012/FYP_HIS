@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Patient_information;
+use Yii;
 
 /**
  * Patient_informationSearch represents the model behind the search form of `app\models\Patient_information`.
@@ -29,6 +30,15 @@ class Patient_informationSearch extends Patient_information
             [['name','nric','race','sex','rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference',
                  'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type', 'ward_code', 'discharge_date'], 'safe'],
             [['medical_legal_code' ], 'integer'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'entry_datetime' => Yii::t('app','Entry Datetime'),
+            'ward_code' => Yii::t('app','Ward Code'),
+            'discharge_date' => Yii::t('app', 'Discharge Date'),
         ];
     }
 
