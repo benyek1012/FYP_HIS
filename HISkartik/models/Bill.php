@@ -230,7 +230,8 @@ class Bill extends \yii\db\ActiveRecord
         $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
         if(!empty($model_bill)  && Bill::isGenerated($rn))
             return (0 - Bill::calculateFinalFee($model_bill->bill_uid)) < 0 ? 0 : (0 - Bill::calculateFinalFee($model_bill->bill_uid));
-        else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) < 0 ? 0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn)) ;
+        else return (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn) + Bill::getException($rn)) < 0 ? 
+                    0 : (Bill::getDeposit($rn) + Bill::getRefund($rn) + Bill::getPayedAmt($rn) + Bill::getException($rn)) ;
     }
 
     // Get Amt Due
@@ -238,7 +239,8 @@ class Bill extends \yii\db\ActiveRecord
         $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
         if(!empty($model_bill) && Bill::isGenerated($rn))
             return Bill::calculateFinalFee($model_bill->bill_uid) < 0 ? 0 : Bill::calculateFinalFee($model_bill->bill_uid);
-        else return (0 - (Bill::getDeposit($rn) + Bill::getRefund($rn)+ Bill::getPayedAmt($rn)))  < 0 ? 0 : (0 -(Bill::getDeposit($rn) + Bill::getRefund($rn)+ Bill::getPayedAmt($rn))) ;
+        else return (0 - (Bill::getDeposit($rn) + Bill::getRefund($rn)+ Bill::getPayedAmt($rn) + Bill::getException($rn)))  < 0 ? 0 
+                        : (0 -(Bill::getDeposit($rn) + Bill::getRefund($rn)+ Bill::getPayedAmt($rn) + Bill::getException($rn))) ;
     }
 
     // Return Negative values
@@ -257,16 +259,6 @@ class Bill extends \yii\db\ActiveRecord
 
     // All Deposit
     public function getDeposit($rn){
-        // $sum_deposit = 0.0;
-        // $model_receipt = Receipt::findAll(['rn' => $rn]);
-        // foreach($model_receipt as $model)
-        // {
-        //     if($model->receipt_type == 'deposit')
-        //         $sum_deposit += $model->receipt_content_sum;
-        // }
-        // return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
-        
-
         $sum_deposit = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -278,18 +270,8 @@ class Bill extends \yii\db\ActiveRecord
         return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
     }
 
-     // All Deposit
+     // All Exception
      public function getException($rn){
-        // $sum_deposit = 0.0;
-        // $model_receipt = Receipt::findAll(['rn' => $rn]);
-        // foreach($model_receipt as $model)
-        // {
-        //     if($model->receipt_type == 'deposit')
-        //         $sum_deposit += $model->receipt_content_sum;
-        // }
-        // return $sum_deposit  < 0 ?  0.0 : $sum_deposit;
-        
-
         $sum_deposit = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -312,17 +294,6 @@ class Bill extends \yii\db\ActiveRecord
 
     // Get all Payed Amount
     public function getPayedAmt($rn){
-        // $payed_amt = 0.0;
-
-        // $info_receipt = Receipt::findAll(['rn' => $rn, 'receipt_type' => 'bill']);
-        // if(!empty($info_receipt))
-        // {
-        //     foreach($info_receipt as $r)
-        //     {
-        //         $payed_amt += $r->receipt_content_sum;
-        //     }
-        // }
-        // return $payed_amt;
 
         $payed_amt = 0.0;
 
@@ -342,18 +313,6 @@ class Bill extends \yii\db\ActiveRecord
 
     // Get all Refund Amount (Negative) 
     public function getRefund($rn){
-        // $sum_refund = 0.0;
-        // $model_receipt = Receipt::findAll(['rn' => $rn]);
-        // foreach($model_receipt as $model)
-        // {
-        //     if($model->receipt_type == 'refund')
-        //         $sum_refund += $model->receipt_content_sum;
-        // }
-        // // var_dump($sum_refund);
-        // // exit();
-
-        // return 0 - $sum_refund;
-
         $sum_refund = 0.0;
         $model_receipt = Receipt::findAll(['rn' => $rn]);
         foreach($model_receipt as $model)
@@ -362,8 +321,6 @@ class Bill extends \yii\db\ActiveRecord
             if($model->receipt_type == 'refund' && empty($model_cancellation))
                 $sum_refund += $model->receipt_content_sum;
         }
-        // var_dump($sum_refund);
-        // exit();
 
         return 0 - $sum_refund;
     }
