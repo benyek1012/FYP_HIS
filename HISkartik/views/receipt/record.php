@@ -167,7 +167,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'value'=>function ($data) {
-                    $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+                    // $model_receipt = Receipt::findOne(['receipt_serial_number' => $data['receipt_serial_number']]);
+                    $model_receipt = Receipt::findOne(['receipt_uid' => $data['receipt_uid']]);
                     // $model_bill = Bill::findOne(['final_ward_datetime' => $data['receipt_content_datetime_paid']]);
                     $model_bill = Bill::findOne(['bill_generation_datetime' => $data['receipt_content_datetime_paid']]);
 
