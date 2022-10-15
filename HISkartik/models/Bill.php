@@ -124,6 +124,12 @@ class Bill extends \yii\db\ActiveRecord
         return $this->hasMany(Treatment_details::className(), ['bill_uid' => 'bill_uid']);
     }
 
+    public function getReceipt()
+    {
+        return $this->hasMany(Receipt::className(), ['rn' => 'rn']);
+    }
+
+
     /**
      * Gets query for [[Wards]].
      *

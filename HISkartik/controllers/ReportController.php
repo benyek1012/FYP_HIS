@@ -68,17 +68,25 @@ class ReportController extends Controller
         ]);
     }
 
-    public function actionReport2()
+    public function actionReport5()
     {
         $model = new Report();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'batch_date' => $model->batch_date]);
-            }
-        }
+            if ($model->load($this->request->post())) {
+                if($this->request->isPost && isset($_POST['csv'])){
+                    $year = $model->year;
+                    $month = $model->month;
+                    Report::export_csv_report5($year, $month);
+                }
 
-        return $this->render('report2', [
+                if($this->request->isPost && isset($_POST['pdf'])){
+                    
+                }
+            }
+        } 
+
+        return $this->render('report5', [
             'model' => $model,
         ]);
     }

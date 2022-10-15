@@ -55,4 +55,10 @@ class Cancellation extends \yii\db\ActiveRecord
             'checkbox_replacement' => Yii::t('app', 'Without Replacement')
         ];
     }
+
+    
+    public function getReceipt() 
+    {
+        return $this->hasMany(Receipt::className(), ['receipt_uid' => 'cancellation_uid']);
+    }
 }

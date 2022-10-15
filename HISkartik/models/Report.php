@@ -37,11 +37,21 @@ class Report extends \yii\db\ActiveRecord{
 
         if(!empty($result))
         return $result;
+    }
 
+    public static function get_report5_query($year, $month)
+    {
+        $result = \yii::$app->db->createCommand("CALL report5_query(:year, :month)")
+        ->bindValue(':year' , $year)
+        ->bindValue(':month' , $month)
+        ->queryAll();
+
+        if(!empty($result))
+        return $result;
     }
 
     public static function export_csv_report1($senarai_pada){
-       $query =  (new Report()) ->get_report1_query($senarai_pada);
+        $query =  (new Report()) ->get_report1_query($senarai_pada);
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $query,
@@ -102,6 +112,62 @@ class Report extends \yii\db\ActiveRecord{
                 ],
             ]);
             $filename = 'report_senarai_baki_pendeposit.csv'; 
+            return $exporter->export()->send($filename);
+        }
+    }
+
+    public static function export_csv_report5($year, $month)
+    {
+        $query =  (new Report()) ->get_report5_query($year, $month);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $query,
+        ]);
+
+        if($query != NULL)
+        {
+            $exporter = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    [       
+                        'label' => 'JENIS',
+                        'value' => function($model, $index, $dataColumn) {
+                            switch ($dataColumn) {
+                                case 0:
+                                    return "PENUH";
+                                case 1:
+                                    return "SEBAHAGIAN";
+                                case 2:
+                                    return "KAKITANGAN KERAJAAN";
+                                case 3:
+                                    return "JUMLAH";
+                            }
+                        }
+                    ],
+                    [       
+                        'attribute' => 'rn',
+                        'label' => 'BIL PESAKIT',
+                        'value' => function($model) {
+                            return is_null($model['rn']) ? 0 : $model['rn'];
+                        }
+                    ],
+                    [
+                        'attribute' => 'bill_generation_billable_sum_rm',
+                        'label' => 'BAYARAN DIKENAKAN(RM)',
+                        'value' => function($model) {
+                            return is_null($model['bill_generation_billable_sum_rm']) ? 0 : $model['bill_generation_billable_sum_rm'];
+                        }
+                    ],
+                    [
+                        'attribute' => 'receipt_content_sum',
+                        'label' => 'AMUAN DIKECUALIKAN(RM)',
+                        'value' => function($model) {
+                            return is_null($model['receipt_content_sum']) ? 0 : $model['receipt_content_sum'];
+                        }
+                    ],
+                ],
+            ]);
+            $filename ='report_kutipan_hasil_bil.csv'; 
             return $exporter->export()->send($filename);
         }
     }

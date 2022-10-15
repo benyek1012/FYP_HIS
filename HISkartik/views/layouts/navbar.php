@@ -137,8 +137,8 @@ body {
                     style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/report/report1']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Report Senarai Baki Pendeposit'); ?></a></li>
-                    <!-- <li><a href="<?php echo Url::to(['/report/report2']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Report 2'); ?></a></li> -->
+                    <li><a href="<?php echo Url::to(['/report/report5']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report Kutipan Hasil Bil'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/report/report7']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan'); ?></a></li>
                     <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
