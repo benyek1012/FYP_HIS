@@ -49,6 +49,16 @@ class Report extends \yii\db\ActiveRecord{
         if(!empty($result))
         return $result;
     }
+    public static function get_report8_query($year, $month)
+    {
+        $result = \yii::$app->db->createCommand("CALL report8_query(:year, :month)")
+        ->bindValue(':year' , $year)
+        ->bindValue(':month' , $month)
+        ->queryAll();
+
+        if(!empty($result))
+        return $result;
+    }
 
     public static function export_csv_report1($senarai_pada){
         $query =  (new Report()) ->get_report1_query($senarai_pada);
@@ -205,6 +215,70 @@ class Report extends \yii\db\ActiveRecord{
                 ],
             ]);
             $filename ='report_serahan_wang_kutipan.csv'; 
+            return $exporter->export()->send($filename);
+        }
+    }
+    public static function export_csv_report8($year, $month)
+    {
+        $query =  (new Report()) ->get_report8_query($year, $month);
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $query,
+        ]);
+
+        if($query != NULL)
+        {
+            $exporter = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    [       
+                        'label' => 'JENIS',
+                        'value' => function($model, $index, $dataColumn) {
+                            switch ($dataColumn) {
+                                case 0:
+                                    return "TUNAI";
+                                case 1:
+                                    return "DEBIT/KREDIT KAD";
+                                case 2:
+                                    return "CEK";
+                                case 3:
+                                    return "WANG POS";
+                                case 4:
+                                    return "RESIT BATAL";
+                            }
+                        }
+                    ],
+                    [       
+                        'attribute' => 'no_receipt',
+                        'label' => 'NO RESIT',
+                        'value' => function($model) {
+                            return is_null($model['no_receipt']) ? 0 : $model['no_receipt'];
+                        }
+                    ],
+                    [
+                        'attribute' => 'kod_akaun',
+                        'label' => 'KOD TERIMAAN',
+                        'value' => function($model) {
+                            return is_null($model['kod_akaun']) ? 0 : $model['kod_akaun'];
+                        }
+                    ],
+                    [
+                        'attribute' => 'total_receipt_content_sum',
+                        'label' => 'AMAUN TERIMAAN(RM)',
+                        'value' => function($model) {
+                            return is_null($model['total_receipt_content_sum']) ? 0 : $model['total_receipt_content_sum'];
+                        }
+                    ],
+                    [
+                        'attribute' => 'total_receipt_content_sum',
+                        'label' => 'JUMLAH TERIMAAN(RM)',
+                        'value' => function($model) {
+                            return is_null($model['total_receipt_content_sum']) ? 0 : $model['total_receipt_content_sum'];
+                        }
+                    ],
+                ],
+            ]);
+            $filename ='report_kutipan_hasil_bil.csv'; 
             return $exporter->export()->send($filename);
         }
     }

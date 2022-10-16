@@ -112,6 +112,27 @@ class ReportController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionReport8()
+    {
+        $model = new Report();
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                if($this->request->isPost && isset($_POST['csv'])){
+                    $year = $model->year;
+                    $month = $model->month;
+                    Report::export_csv_report8($year, $month);
+                }
+
+                if($this->request->isPost && isset($_POST['pdf'])){
+                    
+                }
+            }
+        }
+
+        return $this->render('report8', [
+            'model' => $model,
+        ]);
+    }
 
     public function exportCSV($batch_date) //Teo fill export CSV code here
     {

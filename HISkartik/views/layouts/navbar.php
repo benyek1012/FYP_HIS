@@ -141,6 +141,8 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Report Kutipan Hasil Bil'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/report/report7']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/report/report8']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan Mengikut Keadeh Bayaran'); ?></a></li>
                     <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li> -->
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
