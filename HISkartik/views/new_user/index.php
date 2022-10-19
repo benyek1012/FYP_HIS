@@ -102,8 +102,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                    'data' => [0,1],                
+                    'inputType' =>  \kartik\editable\Editable::INPUT_CHECKBOX,
+                    'displayValueConfig' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -115,8 +115,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                    'data' => [0,1],                
+                    'inputType' =>  \kartik\editable\Editable::INPUT_CHECKBOX,
+                    'displayValueConfig' => [0,1],              
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -128,8 +128,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                    'data' => [0,1],                
+                    'inputType' =>  \kartik\editable\Editable::INPUT_CHECKBOX,
+                    'displayValueConfig' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -141,8 +141,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                    'data' => [0,1],                
+                    'inputType' =>  \kartik\editable\Editable::INPUT_CHECKBOX,
+                    'displayValueConfig' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -214,7 +214,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
-                    'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                    'inputType' =>  Editable::INPUT_CHECKBOX,
                     'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
