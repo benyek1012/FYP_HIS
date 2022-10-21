@@ -245,6 +245,6 @@ FROM
   patient_information A
   LEFT JOIN patient_admission b ON A.patient_uid = b.patient_uid
 WHERE
-  b.rn IS NULL AND A.nric = ' ' OR A.nric IS NULL
+  b.rn IS NULL AND (A.nric IS NULL OR A.nric = ' ')
 DELIMITER ;
 
