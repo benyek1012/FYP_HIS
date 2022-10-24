@@ -191,6 +191,7 @@ FROM
 DELIMITER ;
 
 
+DROP PROCEDURE IF EXISTS `report8_query`;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `report8_query`(IN `year` INT, IN `month` INT)
@@ -238,6 +239,9 @@ WHERE (EXTRACT(YEAR FROM `receipt_content_datetime_paid`)= 2022)
     AND (`receipt_uid` NOT IN (SELECT `cancellation_uid` FROM `cancellation`))
 	AND `receipt_content_payment_method` = 'RESIT BATAL'$$
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `delete_nric_rn`;
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` EVENT `delete_nric_rn` ON SCHEDULE EVERY 1 WEEK STARTS '2022-10-19 19:36:26' ON COMPLETION NOT PRESERVE ENABLE DO DELETE A
