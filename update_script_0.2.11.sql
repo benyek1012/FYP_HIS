@@ -248,3 +248,7 @@ WHERE
   b.rn IS NULL AND (A.nric IS NULL OR A.nric = ' ')
 DELIMITER ;
 
+
+INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('BP541YvaOmltox8t_u2gY5THA7Xw35CY', '018', 'Collection Center', 'Admission', '', '1');
+
+INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('KUGjTuuIi-eGERoEibtnmVfiHUelWLXA', '003', 'Collection Center', 'Outstation', '', '1');
