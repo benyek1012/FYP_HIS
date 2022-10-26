@@ -254,3 +254,15 @@ DELIMITER ;
 INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('BP541YvaOmltox8t_u2gY5THA7Xw35CY', '018', 'Collection Center', 'Admission', '', '1');
 
 INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('KUGjTuuIi-eGERoEibtnmVfiHUelWLXA', '003', 'Collection Center', 'Outstation', '', '1');
+
+CREATE TABLE `lookup_inpatient_treatment_cost`( `inpatient_treatment_uid` VARCHAR(64) NOT NULL, `kod` VARCHAR(64) NOT NULL, `cost_rm` DECIMAL(10, 2) NOT NULL DEFAULT 100.00 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+ALTER TABLE `lookup_inpatient_treatment_cost` ADD PRIMARY KEY(`inpatient_treatment_uid`);
+
+INSERT INTO `lookup_inpatient_treatment_cost` (`inpatient_treatment_uid`, `kod`, `cost_rm`) VALUES ('QPddM-5loXpE5O4Z-wIptO67U0GdGPOp\r\n', 'Inpatient Treatment', '100.00');
+
+CREATE TABLE `inpatient_treatment`( `inpatient_treatment_uid` VARCHAR(64) NOT NULL, `bill_uid` VARCHAR(64) NOT NULL, `inpatient_treatment_cost_rm` DECIMAL(10, 2) NOT NULL ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+ALTER TABLE `inpatient_treatment` ADD PRIMARY KEY(`inpatient_treatment_uid`);
+
+ALTER TABLE `inpatient_treatment` ADD INDEX(`bill_uid`);
