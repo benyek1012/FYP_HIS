@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Bill;
+use app\models\Inpatient_treatment;
 use app\models\Ward;
 use app\models\Model;
 use app\models\WardSearch;
@@ -51,6 +52,12 @@ class WardController extends Controller
         $discharge_date = array();
         $discharge_date['date'] = (new Bill()) -> getLastWardEndDateTime($bill_uid);
         echo Json::encode($discharge_date);
+    }
+
+    public function actionInpatient($bill_uid){
+        $inpatient = array();
+        $inpatient['inpatient'] = (new Bill()) -> getTotalInpatientTreatmentCost($bill_uid);
+        echo Json::encode($inpatient);
     }
 
     public function actionWardrow()
@@ -174,6 +181,19 @@ class WardController extends Controller
 
                             if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
                                 $modelWard->save();
+
+                                $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+                                if(!empty($modelInpatient)){
+                                    $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+                                    $modelInpatient->save();
+                                }
+                                else{
+                                    $modelInpatient = new Inpatient_treatment();
+                                    $modelInpatient->inpatient_treatment_uid = Base64UID::generate(32);
+                                    $modelInpatient->bill_uid = Yii::$app->request->get('bill_uid');
+                                    $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+                                    $modelInpatient->save();
+                                }
                                 echo 'success';
                             }
                         }
@@ -195,6 +215,20 @@ class WardController extends Controller
 
                                 if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
                                     $modelWard[$i - 1]->save();
+
+                                    $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+                                    if(!empty($modelInpatient)){
+                                        $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+                                        $modelInpatient->save();
+                                    }
+                                    else{
+                                        $modelInpatient = new Inpatient_treatment();
+                                        $modelInpatient->inpatient_treatment_uid = Base64UID::generate(32);
+                                        $modelInpatient->bill_uid = Yii::$app->request->get('bill_uid');
+                                        $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+                                        $modelInpatient->save();
+                                    }
+
                                     echo 'success';
                                 }
                                 else{
@@ -206,6 +240,11 @@ class WardController extends Controller
                                             foreach ($modelWardUpdate as $modelWardUpdate) {
                                                 $modelWardUpdate->save();
                                             }
+
+                                            $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+                                            $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+                                            $modelInpatient->save();
+
                                             echo 'success';
                                         }
                                     }

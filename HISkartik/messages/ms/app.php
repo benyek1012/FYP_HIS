@@ -379,6 +379,7 @@ return[
     'Patient Information By Name' => 'Maklumat Pesakit Mengikut Nama',
     'Patient Information By Entry Date' => 'Maklumat Pesakit Mengikut Tarikh Kemasukan', 
     'Patient Information By Ward Code' => 'Maklumat Pesakit Mengikut Kod Wad',
-    ''
+    'Inpatient Treatment Cost (RM)' => 'Kos Rawatan Pesakit Dalam (RM)',
+    
 ];
 ?>

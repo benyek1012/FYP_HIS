@@ -334,10 +334,10 @@ use app\models\Receipt;
         <?php if(empty($patient_nric)){
             ?><?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'disabled' => $disabled])?>
         <?php } ?>
-        <?= Html::button(Yii::t('app','Change Registration Number'), ['class' => 'btn btn-primary', 'id' => 'btnChange', 'disabled' => $disabled])?>
+        <!-- <?= Html::button(Yii::t('app','Change Registration Number'), ['class' => 'btn btn-primary', 'id' => 'btnChange', 'disabled' => $disabled])?> -->
         <?php
            // Modal for transfer patient
-            Modal::begin([
+           Modal::begin([
                 'title'=>'<h4>'.Yii::t('app','Transfer To New Patient').'</h4>',
                 'id'=>'modal',
                 'size'=>'modal-lg',
@@ -361,7 +361,7 @@ use app\models\Receipt;
             Modal::end();
 
             // Modal for change RN
-            Modal::begin([
+            /* Modal::begin([
                 'title'=>'<h4>'.Yii::t('app','Change To New Registration Number').'</h4>',
                 'id'=>'modal_change',
                 'size'=>'modal-lg',
@@ -388,7 +388,7 @@ use app\models\Receipt;
         <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
     </div>
 
-    <?php kartik\form\ActiveForm::end(); ?>
+    <?php kartik\form\ActiveForm::end(); */?>
 
 </div>
 <div>

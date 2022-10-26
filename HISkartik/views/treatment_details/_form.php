@@ -149,6 +149,7 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
 
 ?>
 
+<?= $this->render('/inpatient_treatment/_form', ['modelInpatient' => $modelInpatient]) ?>
 
 <a name="treatment">
     <?php Pjax::begin(['id' => 'pjax-treatment-form']); ?>

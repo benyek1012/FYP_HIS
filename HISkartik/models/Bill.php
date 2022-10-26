@@ -174,8 +174,27 @@ class Bill extends \yii\db\ActiveRecord
             $totalItemCost += $modelTreatment->item_total_unit_cost_rm;
         }
 
+        $totalItemCost = $totalItemCost + Bill::getTotalInpatientTreatmentCost($bill_uid);
+
         // return Yii::$app->formatter->asCurrency($totalItemCost);     
         return number_format((float)$totalItemCost, 2, '.', '');            
+    }
+
+    // Get Inpatient Treatment Total Cost
+    public function getTotalInpatientTreatmentCost($bill_uid){
+        $totalInpatient = 0.0;
+        $totalWardDays = 0;
+
+        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
+        $modelInpatientTreatment = Lookup_inpatient_treatment_cost::findOne(['kod' => 'Inpatient Treatment']);
+
+        foreach ($modelWard as $index => $modelWard){            
+            $totalWardDays += $modelWard->ward_number_of_days;
+        }
+
+        $totalInpatient = $modelInpatientTreatment->cost_rm * $totalWardDays;
+
+        return $totalInpatient;
     }
 
     // Get Fpp Total Cost
@@ -222,7 +241,7 @@ class Bill extends \yii\db\ActiveRecord
             $totalFPPCost += $modelFPP->total_cost;
         }
         
-        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost;
+        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost + Bill::getTotalInpatientTreatmentCost($bill_uid);
 
         if(!empty($modelBill) && $modelBill->is_free == 1)
             $billable = 0;

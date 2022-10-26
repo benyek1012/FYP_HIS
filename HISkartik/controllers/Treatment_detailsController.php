@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Bill;
+use app\models\Inpatient_treatment;
 use app\models\Model;
 use app\models\Lookup_treatment;
 use app\models\Treatment_details;
@@ -83,8 +84,11 @@ class Treatment_detailsController extends Controller
                 $modelTreatment[] = new Treatment_details();
             }
 
+            $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+
             return $this->renderPartial('/treatment_details/_form', [
                 'modelTreatment' => $modelTreatment,
+                'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
             ]);
         // }
     }

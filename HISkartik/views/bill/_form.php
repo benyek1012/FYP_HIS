@@ -11,6 +11,7 @@ use app\models\Receipt;
 use yii\helpers\Url;
 use app\models\Cancellation;
 use app\models\DateFormat;
+use app\models\Patient_information;
 use app\models\Variable;
 use yii\bootstrap4\Modal;
 
@@ -121,6 +122,18 @@ foreach($rows as $row){
     $department_code[$row['department_code']] = $row['department_code'] . ' - ' . $row['department_name'] ;
 } 
 
+$rows_collection_center = (new \yii\db\Query())
+->select('*')
+->from('lookup_general')
+->where(['category'=> 'Collection Center'])
+->orderBy('length(code) ASC, code ASC')
+->all();
+
+$collection_center = array();
+foreach($rows_collection_center as $row){
+    $collection_center[$row['code']] = $row['code'] . ' - ' . $row['name'] ;
+} 
+
 $rows_nurse = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_general')
@@ -132,6 +145,12 @@ $rows_bill = (new \yii\db\Query())
 ->from('bill')
 ->where(['rn'=> Yii::$app->request->get('rn')])
 ->all();
+
+foreach($rows_bill as $row_bill){
+    if(empty($collection_center[$row_bill['collection_center_code']])){
+        $collection_center[$row_bill['collection_center_code']] = $row_bill['collection_center_code'];
+    }            
+}
 
 // $nurse_responsible = array();
 // foreach($rows_nurse as $row_nurse){
@@ -235,6 +254,26 @@ $this->registerJs(
         });
     });"
 );
+
+$this->registerJs(
+    "if($('#statusCode') != null){
+        var statusCode = $('#statusCode').val();
+        var wardClass = $('#wardClass :selected').text();
+        $.get('". Url::toRoute(['/bill/status'])."', {status : statusCode}, function(data){
+            var data = $.parseJSON(data);
+            $('#status_des').attr('value', data.status_description);
+            if(wardClass == '1a') $('#ward_cost').attr('value', data.class_1a_ward_cost);
+            else if(wardClass == '1b') $('#ward_cost').attr('value', data.class_1b_ward_cost);
+            else if(wardClass == '1c') $('#ward_cost').attr('value', data.class_1c_ward_cost);
+            else if(wardClass == '2') $('#ward_cost').attr('value', data.class_2_ward_cost);
+            else if(wardClass == '3') $('#ward_cost').attr('value', data.class_3_ward_cost);
+    
+            // document.getElementById('ward_cost').style.backgroundColor = '#ffc107';
+            // document.getElementById('status_des').style.backgroundColor = '#ffc107';
+        });
+    }"
+);
+
 
 $this->registerJs(
     "$('#wardClass').change(function() {
@@ -440,6 +479,9 @@ if($admission_model->entry_datetime != "UNKNOWN"){
         $admission_model->entry_datetime = $entry_sec;
     }
 }
+
+$patient_model = Patient_information::findOne(['patient_uid' => $admission_model->patient_uid]);
+$modelBill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
 ?>
 
 <style>
@@ -507,6 +549,7 @@ textarea {
                             'prompt'=> Yii::t('app','Please select status code'),
                             'maxlength' => true, 
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                            'value' => $patient_model->hasValidIC() == true? 'PD' : 'PDOA'
                         ])?>
 
                         <!-- <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
@@ -602,7 +645,13 @@ textarea {
                     </div>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'collection_center_code')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
+                        <!-- <?= $form->field($model, 'collection_center_code')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?> -->
+                        <?= $form->field($model, 'collection_center_code')->dropDownList($collection_center, 
+                            [
+                                'id'=>'collection_center_code',
+                                'prompt'=> Yii::t('app','Please select collection center code'), 
+                                'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                            ]) ?>
                     </div>
                    
                     <?php
@@ -693,7 +742,7 @@ textarea {
             </div>
             <!-- /.card-header -->
             <div class="card-body" id="treatment-div">
-                <?= $this->render('/treatment_details/_form', ['modelTreatment' => $modelTreatment]) ?>
+                <?= $this->render('/treatment_details/_form', ['modelTreatment' => $modelTreatment, 'modelInpatient' => $modelInpatient]) ?>
             </div>
             <!-- /.card-body -->
         </div>
@@ -1095,6 +1144,11 @@ function matchBill(params, data) {
     // Else we return everything that is matching
     return data;
 }
+
+if('<?php echo $modelBill == null ?>'){
+    document.getElementById('ward_cost').style.backgroundColor = '#ffc107';
+    document.getElementById('status_des').style.backgroundColor = '#ffc107';
+}
 </script>
 
 <?php 
@@ -1132,6 +1186,23 @@ $(document).ready(function() {
         //     return matchBill(params, data);
         // },
     });
+});
+
+$(document).ready(function() {
+    $('#collection_center_code').select2({
+        placeholder: 'Please select collection center code',
+        allowClear: true,
+        width: '100%',
+        tags: true,
+        // minimumInputLength: 2,
+        // matcher: function(params, data) {
+        //     return matchBill(params, data);
+        // },
+    });
+});
+
+$('#collection_center_code').on('select2:open', function (e) {
+    document.querySelector('.select2-search__field').focus();
 });
 
 // $(document).ready(function() {

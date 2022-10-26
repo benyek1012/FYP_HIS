@@ -138,6 +138,7 @@ $urlSubmit = Url::toRoute(['/ward/update', 'bill_uid' => Yii::$app->request->get
 $urlWardRow = Url::toRoute(['/ward/wardrow', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' =>Yii::$app->request->get('rn')]);
 $urlWard = Url::toRoute(['/ward/ward']);
 $urlDischarge = Url::toRoute(['/ward/dischargedate']);
+$urlInpatient = Url::toRoute(['/ward/inpatient']);
 
 $cancellation = Cancellation::findAll(['cancellation_uid' => Yii::$app->request->get('rn')]);
 if(!empty($cancellation)){
@@ -487,6 +488,11 @@ else{
                         var data = $.parseJSON(data);                 
                         document.getElementById('bill-discharge_date').value = data.date;
                     });
+
+                    $.get('<?php echo "{$urlInpatient}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').value = data.inpatient;
+                    });
                     if(data == 'success'){
                         addWardRow('');
                     }
@@ -503,6 +509,11 @@ else{
                     $.get('<?php echo "{$urlDischarge}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
                         var data = $.parseJSON(data);                 
                         document.getElementById('bill-discharge_date').value = data.date;
+                    });
+
+                    $.get('<?php echo "{$urlInpatient}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
+                        var data = $.parseJSON(data);                 
+                        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').value = data.inpatient;
                     });
                     if(data == 'success'){
                         addWardRow('update');

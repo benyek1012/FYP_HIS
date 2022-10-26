@@ -9,6 +9,7 @@ use app\models\BillSearch;
 use app\models\Cancellation;
 use app\models\DateFormat;
 use app\models\Fpp;
+use app\models\Inpatient_treatment;
 use app\models\Lookup_department;
 use app\models\Lookup_fpp;
 use yii\web\Controller;
@@ -236,6 +237,7 @@ class BillController extends Controller
             'modelTreatment' =>(empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
             'modelFPP' =>(empty($modelFPP)) ? [new Fpp] : $modelFPP,
             'model_cancellation' => new Cancellation(),
+            'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
         ]);
     }
 
@@ -299,6 +301,7 @@ class BillController extends Controller
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
         $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
+        $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => $bill_uid]);
         
         // Update Bill
         if(Yii::$app->request->post('updateBill') == 'true') {
@@ -357,6 +360,7 @@ class BillController extends Controller
                 'modelTreatment' => $modelTreatment,
                 'model_cancellation' => (empty($model_cancellation)) ? [new Cancellation] : $model_cancellation,
                 'modelFPP' => (empty($modelFPP)) ? [new Fpp] : $modelFPP,
+                'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
             ]);
             // (new Treatment_detailsController(null, null))->actionTreatmentrow();
         }
@@ -403,6 +407,7 @@ class BillController extends Controller
                 'modelTreatment' => (empty($modelTreatment)) ? [new Treatment_details] : $modelTreatment,
                 'model_cancellation' => (empty($model_cancellation)) ? [new Cancellation] : $model_cancellation,
                 'modelFPP' => $modelFPP,
+                'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
             ]);
             // (new FppController(null, null))->actionFpprow();
         }
@@ -421,6 +426,7 @@ class BillController extends Controller
             'modelTreatment' => $modelTreatment,
             'modelFPP' => $modelFPP,
             'model_cancellation' => $model_cancellation,
+            'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
         ]); 
     }
 

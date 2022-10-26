@@ -29,7 +29,10 @@ else{
 
     <?php  
          // Once bill is generated, can't pay deposit. Only allow bill or refund
-        if(!empty($model_bill)  && (new Bill()) -> isGenerated($model_bill->rn))
+        // if(!empty($model_bill)  && (new Bill()) -> isGenerated($model_bill->rn))
+
+        // Once bill is printed, can't pay deposit. Only allow bill or refund
+        if(!empty($model_bill)  && (new Bill()) -> isPrinted($model_bill->rn))
         {
            // check receipt is refundable
             if(Receipt::checkRefunfable())
