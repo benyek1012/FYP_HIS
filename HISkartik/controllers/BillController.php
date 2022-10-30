@@ -575,6 +575,7 @@ class BillController extends Controller
         $modelrefund = Receipt::findAll(['rn'=> $model->rn, 'receipt_type' => 'refund']);
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
         $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
+        $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => $bill_uid]);
         
         if ($this->request->isPost && $model->load($this->request->post())) {
             if($model->validate() && $model->bill_print_id != "")
@@ -639,6 +640,7 @@ class BillController extends Controller
             'modelTreatment' => $modelTreatment,
             'model_cancellation' => new Cancellation(),
             'modelFPP' => $modelFPP,
+            'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
         ]);
     }
 

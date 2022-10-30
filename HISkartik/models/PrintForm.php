@@ -88,33 +88,36 @@ class PrintForm
 
     public function printElement($len, $value, $uppercase=false, $rightalign=false)
     {
-        if($uppercase)
-            $value = strtoupper($value);
+		if($value != "")
+		{
+			if($uppercase)
+				$value = strtoupper($value);
 
-        if($value == "\n"){
-            $this->printNewLine($len);
-        }
-        
-        if($rightalign)
-        {
-            $fixvalue = $len - strlen($value);
-            if($fixvalue < 0){
-                $fixvalue = 0;
-            }
-            
-            $this->printer -> text(str_repeat("\x20", $fixvalue));
-            $this->printer -> text(mb_strimwidth($value,0,$len));
-        }
-        else{        
-            $this->printer -> text(mb_strimwidth($value,0,$len));
+			if($value == "\n"){
+				$this->printNewLine($len);
+			}
+			
+			if($rightalign)
+			{
+				$fixvalue = $len - strlen($value);
+				if($fixvalue < 0){
+					$fixvalue = 0;
+				}
+				
+				$this->printer -> text(str_repeat("\x20", $fixvalue));
+				$this->printer -> text(mb_strimwidth($value,0,$len));
+			}
+			else{        
+				$this->printer -> text(mb_strimwidth($value,0,$len));
 
-            $blanklen = $len - strlen($value);
+				$blanklen = $len - strlen($value);
 
-            if($blanklen < 0)
-                $blanklen = 0;
+				if($blanklen < 0)
+					$blanklen = 0;
 
-            $this->printer -> text(str_repeat("\x20", $blanklen)); 
-        }
+				$this->printer -> text(str_repeat("\x20", $blanklen)); 
+			}
+		}
     }
 
     public function printElementArray($array)
