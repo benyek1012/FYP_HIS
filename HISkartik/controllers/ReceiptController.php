@@ -197,7 +197,8 @@ class ReceiptController extends Controller
         //     ->orderBy(['receipt_content_datetime_paid' => SORT_DESC]),
         //     'pagination'=>['pageSize'=>5],
         // ]);
-        $dataProvider = $searchModel->transactionRecords($this->request->queryParams);
+
+        // $dataProvider = $searchModel->transactionRecords($this->request->queryParams);
 
         // Print all record from customer
         $searchModel = new ReceiptSearch();
@@ -222,7 +223,7 @@ class ReceiptController extends Controller
         }
         return $this->render('record', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            // 'dataProvider' => $dataProvider,
         ]);
         
     }

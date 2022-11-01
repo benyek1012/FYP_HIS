@@ -250,6 +250,45 @@ class Bill extends \yii\db\ActiveRecord
         return $billable;
     }
 
+    // Calculate Billable for Transaction Records
+    public function calculateBillableRN($rn) {
+        $totalWardDays = 0;
+        $dailyWardCost = 0.0;
+        $totalTreatmentCost = 0.0;
+        $totalFPPCost = 0.0;
+        $billable = 0.0;
+
+        $modelBill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
+        $modelWard = Ward::findAll(['bill_uid' => $modelBill->bill_uid]);
+        $modelTreatment = Treatment_details::findAll(['bill_uid' => $modelBill->bill_uid]);
+        $modelFPP = Fpp::findAll(['bill_uid' => $modelBill->bill_uid]);
+
+        if($modelBill != ""){
+            $dailyWardCost = $modelBill->daily_ward_cost;
+        }
+        
+        foreach ($modelWard as $index => $modelWard){            
+            $totalWardDays += $modelWard->ward_number_of_days;
+        }
+
+        foreach($modelTreatment as $index => $modelTreatment){
+            $totalTreatmentCost += $modelTreatment->item_total_unit_cost_rm;
+        }
+
+        foreach($modelFPP as $index => $modelFPP){
+            $totalFPPCost += $modelFPP->total_cost;
+        }
+        
+        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost + Bill::getTotalInpatientTreatmentCost($modelBill->bill_uid);
+
+        if(!empty($modelBill) && $modelBill->is_free == 1)
+            $billable = 0;
+
+        $billable = number_format((float) $billable, 2, '.', '');
+        // return $billable;
+        return Yii::t('app','Billable Total')." : ". Yii::$app->formatter->asCurrency($billable);
+    }
+
      // Get Unclaimed balance 
      public function getUnclaimed($rn) {
         $model_bill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
@@ -382,9 +421,10 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Call Procedure of receipt and bill 
-    public function getProcedureTransactions($pid){
-        $result = \Yii::$app->db->createCommand("CALL transaction_records(:pid)") 
+    public function getProcedureTransactions($pid, $rn){
+        $result = \Yii::$app->db->createCommand("CALL transaction_records(:pid, :rn)") 
         ->bindValue(':pid' , $pid )
+        ->bindValue(':rn', $rn)
         ->queryAll();
         
         if(!empty($result))

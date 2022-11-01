@@ -106,11 +106,10 @@ class ReceiptSearch extends Receipt
      *
      * @return ActiveDataProvider
      */
-    public function transactionRecords($params)
+    public function transactionRecords($rn)
     {
         // This is showing all RN from payment 
         $model_adm = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
-        
 
         if(empty($model_adm))
            $model_adm = Patient_admission::findOne(['patient_uid' => Yii::$app->request->get('id')]);
@@ -128,7 +127,9 @@ class ReceiptSearch extends Receipt
 
         // $rn_array = (implode(",", $rn_array));
 
-        $query = (new Bill()) -> getProcedureTransactions($model_adm->patient_uid);
+        // $query = (new Bill()) -> getProcedureTransactions($model_adm->patient_uid);
+
+        $query = (new Bill()) -> getProcedureTransactions($model_adm->patient_uid, $rn);
 
         // echo '<pre>';
         // var_dump($query);
