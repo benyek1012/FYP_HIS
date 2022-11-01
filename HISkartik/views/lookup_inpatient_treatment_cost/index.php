@@ -10,33 +10,42 @@ use yii\grid\GridView;
 /** @var app\models\Lookup_inpatient_treatment_costSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Lookup Inpatient Treatment Costs';
+$this->title = Yii::t('app', 'Lookup Inpatient Treatment');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="lookup-inpatient-treatment-cost-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Lookup Inpatient Treatment Cost', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
+<?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            return [
+                // data-key in gridview
+                'data' => ['key' => $index],
+            ];
+        },
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'inpatient_treatment_uid',
-            'kod',
-            'cost_rm',
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Lookup_inpatient_treatment_cost $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'inpatient_treatment_uid' => $model->inpatient_treatment_uid]);
-                 }
+                // 'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'kod',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_fpp/fpp']],
+                // ]
+            ],
+
+            [
+                // 'class' => '\kartik\grid\EditableColumn',
+                'attribute' => 'cost_rm',
+                'headerOptions'=>['style'=>'max-width: 100px;'],
+                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                // 'editableOptions' =>  [                
+                //     'asPopover' => false,
+                //     'formOptions' => ['action' => ['/lookup_fpp/fpp']],
+                // ]
             ],
         ],
     ]); ?>

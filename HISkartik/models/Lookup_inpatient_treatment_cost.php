@@ -42,7 +42,7 @@ class Lookup_inpatient_treatment_cost extends \yii\db\ActiveRecord
         return [
             'inpatient_treatment_uid' => 'Inpatient Treatment Uid',
             'kod' => 'Kod',
-            'cost_rm' => 'Cost Rm',
+            'cost_rm' => Yii::t('app', 'Cost (RM)'),
         ];
     }
 }

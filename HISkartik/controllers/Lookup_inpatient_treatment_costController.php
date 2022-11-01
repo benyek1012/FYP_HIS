@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Lookup_inpatient_treatment_cost;
 use app\models\Lookup_inpatient_treatment_costSearch;
+use app\models\New_user;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -38,8 +39,11 @@ class Lookup_inpatient_treatment_costController extends Controller
      */
     public function actionIndex()
     {
+        $model = new Lookup_inpatient_treatment_cost();
         $searchModel = new Lookup_inpatient_treatment_costSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        if(!(new New_user()) -> isCashierorAdminorClerk()) echo $this->render('/site/no_access');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
