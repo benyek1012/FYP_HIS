@@ -848,6 +848,7 @@ class PrintForm
 		if (Yii::$app->params['printerstatus'] != "true")
 			return Yii::t('app','Printing was not enabled');
 
+
 		#$patientInformation = $patientAdmission->getPatient_information()->one();
 			
 		$form = new PrintForm(PrintForm::Receipt);
@@ -964,121 +965,17 @@ class PrintForm
 		}
 		//	throw new Exception("Printing was not enabled");
 
-		if (!is_null($bill->bill_print_id))
-			return Yii::t('app','Bill has been printed for receipt').$bill->bill_print_id.Yii::t('app',', only 1 bill allowed');
+		// temperary comment
+		// if (!is_null($bill->bill_print_id))
+		// 	return Yii::t('app','Bill has been printed for receipt').$bill->bill_print_id.Yii::t('app',', only 1 bill allowed');
 		
 		if ($bill->deleted)
 			return Yii::t('app','Bill is no longer valid');
 		
 		$patientAdmission = Patient_admission::findOne(["rn"=>$bill->rn]);
 		$patientInformation = $patientAdmission->getPatient_information()->one();
-			
-		$form = new PrintForm(PrintForm::Bill);
-		
-		// Begin Print
-		$form->escp2ResetPaper();
-		$form->escp2SetTypeface(0);
-		$form->printNewLine(9); // mayb 8
-		
-		$form->printElementArray(
-			[
-				[62, "\x20"],
-				[10, date_format(new \datetime($bill->bill_generation_datetime), "d/m/Y")],
-			]
-		);           
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[11, $bill->rn],
-			]
-		);     
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[35, $patientInformation->name,true],
-			]
-		);
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[35, $patientInformation->address1,true],
-			]
-		);
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[35, $patientInformation->address2,true],
-			]
-		);
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[35, $patientInformation->address3,true],
-			]
-		);
-		$form->printNewLine(10);
-		
-		$hasWards = Ward::find()->where(["bill_uid"=>$bill_uid])->exists();
-		
-	
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[32, "Caj Duduk Wad  (Tarikh Masuk  : "],
-				[10, $hasWards?date_format(new \datetime(Ward::find()->where(["bill_uid"=>$bill_uid])->min("ward_start_datetime")), "d/m/Y"):"N/A"],
-				[2," )"],
 
-			]
-		);
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[22, "\x20"],
-				[17, "(Tarikh Keluar : "],
-				[10, $hasWards?date_format(new \datetime(Ward::find()->where(["bill_uid"=>$bill_uid])->max("ward_end_datetime")), "d/m/Y"):"N/A"],
-				[2," )"],
-
-			]
-		);
-		$form->printNewLine(2);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[7, "Kelas  "],
-				[2, $bill->class],
-				[4," :  "],
-				[5, $wardNumOfDays = ($hasWards?Ward::find()->where(["bill_uid"=>$bill_uid])->sum("ward_number_of_days"):"0")],
-				[1," "],
-				[4, "hari"],
-				[26, "\x20"],
-				[9, $bill->daily_ward_cost,false,true],
-				[2, "\x20"],
-				[9, number_format(($wardNumOfDays*$bill->daily_ward_cost),2, '.', ''),false,true],
-			]
-		);
-		$form->printNewLine(2);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[28, "Caj Pemeriksaan/Ujian Makmal"],
-			]
-		);
-		$form->printNewLine(1);
-		$form->printElementArray(
-			[
-				[7, "\x20"],
-				[28, "-----------------------------"],
-			]
-		);
-		
-		$form->printNewLine(1);
-		
-		//Printing treatment details section
+		// check overflow lines in here
 		#if exists no previous payment, can fit 11 (after check, it's probably 14)
 		#if exists previous payment, can fit 8 + 3 (1 payment minimum takes 3 lines)
 		
@@ -1115,86 +1012,287 @@ class PrintForm
 			$paymentRowsRequired = $countPreviousPayments;			
 		}
 		
-		//Begin Printing Treatment Details
 		$rowCounter = 0;
+		$index = 0;
+		$overflowSum = 0;
+		$page_no = 1;
+		$page_no_counter = 1;
+		$ct = 0;
+		$left_over = $countTreatmentDetails;
+
+
 		if($treatmentDetailsOverflow)
+		{
 			$treatmentDetailRowsRequired = $treatmentDetailRowsRequired - 1; //reduce number of automated loop
-		$overflowSum = 0;
-		
-		foreach($treatmentDetails as $treatmentDetail)
-		{
-			$rowCounter++;
-			if($rowCounter <= $treatmentDetailRowsRequired)
-				$form->printBillTreatmentRow($treatmentDetail);
-			else
-				$overflowSum = $overflowSum + $treatmentDetail->item_total_unit_cost_rm;
+			$page_no = ceil($countTreatmentDetails / $treatmentDetailRowsRequired);
 		}
-		
-		if($treatmentDetailsOverflow)
-			$form->printBillTreatmentRowOverflow($overflowSum);//print overflow line
-		
-		
-		if($countPreviousPayments == 0)
-			$form->printCajRawatenHarian();
-		else
-			$form->printBillDailyTreatment($bill->bill_generation_billable_sum_rm);
-		
-		
-		//Begin Printing Past Payments
-		$rowCounter = 0;
-		if($paymentOverflow)
-			$paymentRowsRequired = $paymentRowsRequired - 1; //reduce number of automated loop
-		$overflowSum = 0;
-		
-		foreach($previousPayments as $previousPayment)//previous payment is actually 'Receipt' model
+
+		// for($i = 0; $i < $page_no; $i++)
+		// {
+		// 	foreach ($treatmentDetails as $treatmentDetail) {
+		// 		if($index <= $treatmentDetailRowsRequired)
+		// 		{
+		// 			echo "<pre>";
+		// 			var_dump($treatmentDetail->treatment_name);
+		// 			echo "</pre>";
+		// 			$index++;
+		// 		}
+		// 	}
+
+		// 	if($page_no_counter > 1)
+		// 	{
+		// 		if($ct == 0)
+		// 		{
+		// 			foreach(array_slice($treatmentDetails, $index) as $treatmentDetail){
+		// 				// do what ever you want here
+		// 				if($ct <= $treatmentDetailRowsRequired)
+		// 				{
+		// 					echo "<pre>";
+		// 					var_dump($treatmentDetail->treatment_name);
+		// 					echo "</pre>";
+		// 					$ct++;
+		// 				}
+		// 			}
+		// 			$left_over = $left_over - $index - $ct;
+		// 		}
+
+		// 		// var_dump($ct);
+		// 		// var_dump($treatmentDetailRowsRequired);
+
+		// 		if($ct - 1 > $treatmentDetailRowsRequired)
+		// 		{
+		// 			$index = 0;
+		// 			// Remove the array by index
+		// 			$newArr = array_splice($treatmentDetails, $countTreatmentDetails - $left_over );
+		// 			foreach($newArr as $treatmentDetail){
+		// 				// do what ever you want here
+		// 				if($index <= $treatmentDetailRowsRequired)
+		// 				{
+		// 					echo "<pre>";
+		// 					var_dump($treatmentDetail->treatment_name);
+		// 					echo "</pre>";
+		// 					$index++;
+		// 				}
+		// 			}
+		// 			$left_over = $left_over - $index;
+		// 		}
+		// 		else $ct++;
+		// 	}
+		// 	$page_no_counter++;
+		// 	echo "---------------------------------------------------------------";
+		// }
+		// exit;
+
+		for($i = 0; $i < $page_no; $i++)
 		{
-			$rowCounter++;
-  
-			if($rowCounter <= $paymentRowsRequired)
-				$form->printBillPreviousPaymentRow($previousPayment);//print payment row
-			else if($previousPayment->receipt_type == "refund")
-				$overflowSum = $overflowSum - $previousPayment->receipt_content_sum;
+
+			$form = new PrintForm(PrintForm::Bill);
+			
+			// Begin Print
+			$form->escp2ResetPaper();
+			$form->escp2SetTypeface(0);
+			$form->printNewLine(9); // mayb 8
+			
+			$form->printElementArray(
+				[
+					[62, "\x20"],
+					[10, date_format(new \datetime($bill->bill_generation_datetime), "d/m/Y")],
+				]
+			);           
+			$form->printNewLine(1);
+			$form->printElementArray(
+				[
+					[7, "\x20"],
+					[11, $bill->rn],
+				]
+			);     
+			$form->printNewLine(1);
+			$form->printElementArray(
+				[
+					[7, "\x20"],
+					[35, $patientInformation->name,true],
+				]
+			);
+			$form->printNewLine(1);
+			$form->printElementArray(
+				[
+					[7, "\x20"],
+					[35, $patientInformation->address1,true],
+				]
+			);
+			$form->printNewLine(1);
+			$form->printElementArray(
+				[
+					[7, "\x20"],
+					[35, $patientInformation->address2,true],
+				]
+			);
+			$form->printNewLine(1);
+			$form->printElementArray(
+				[
+					[7, "\x20"],
+					[35, $patientInformation->address3,true],
+				]
+			);
+			$form->printNewLine(10);
+
+			if($page_no_counter == 1)
+				$form->printCajDudukWad($bill_uid, $bill);
+			else $form->printNewLine(4);
+		
+			//Printing treatment details section
+
+			foreach ($treatmentDetails as $treatmentDetail) {
+				if($index <= $treatmentDetailRowsRequired)
+				{
+					$form->printBillTreatmentRow($treatmentDetail);
+					$index++;
+				}
+			}
+
+			if($page_no_counter > 1)
+			{
+				if($ct == 0)
+				{
+					foreach(array_slice($treatmentDetails, $index) as $treatmentDetail){
+						// do what ever you want here
+						if($ct <= $treatmentDetailRowsRequired)
+						{
+							$form->printBillTreatmentRow($treatmentDetail);
+							$ct++;
+						}
+					}
+					$left_over = $left_over - $index - $ct;
+				}
+
+				// var_dump($ct);
+				// var_dump($treatmentDetailRowsRequired);
+
+				if($ct - 1 > $treatmentDetailRowsRequired)
+				{
+					$index = 0;
+					// Remove the array by index
+					$newArr = array_splice($treatmentDetails, $countTreatmentDetails - $left_over );
+					foreach($newArr as $treatmentDetail){
+						// do what ever you want here
+						if($index <= $treatmentDetailRowsRequired)
+						{
+							$form->printBillTreatmentRow($treatmentDetail);
+							$index++;
+						}
+					}
+					$left_over = $left_over - $index;
+				}
+				else $ct++;
+			}
+			
+			if($countPreviousPayments == 0)
+				$form->printCajRawatenHarian();
 			else
-				$overflowSum = $overflowSum + $previousPayment->receipt_content_sum;
+				$form->printBillDailyTreatment($bill->bill_generation_billable_sum_rm);
+			
+			
+			//Begin Printing Past Payments
+			$rowCounter = 0;
+			if($paymentOverflow)
+				$paymentRowsRequired = $paymentRowsRequired - 1; //reduce number of automated loop
+			$overflowSum = 0;
+			
+			foreach($previousPayments as $previousPayment)//previous payment is actually 'Receipt' model
+			{
+				$rowCounter++;
+	
+				if($rowCounter <= $paymentRowsRequired)
+					$form->printBillPreviousPaymentRow($previousPayment);//print payment row
+				else if($previousPayment->receipt_type == "refund")
+					$overflowSum = $overflowSum - $previousPayment->receipt_content_sum;
+				else
+					$overflowSum = $overflowSum + $previousPayment->receipt_content_sum;
+			}
+			
+			if($paymentOverflow)
+				$form->printBillPreviousPaymentRowOverflow($overflowSum);//print overflow line		
+			
+			//fill in spaces
+			//calculation
+			$newlinesRequired = $maxRowThatCanFit - $treatmentDetailRowsRequired - $paymentRowsRequired;
+			$newlinesRequired = $newlinesRequired - ($treatmentDetailsOverflow?1:0) - ($paymentOverflow?1:0);
+			$newlinesRequired = $newlinesRequired - (($countPreviousPayments==0)?0:2);
+			$form->printNewLine($newlinesRequired);
+			
+			
+			$form->printElementArray(
+				[
+					[28, "\x20"],
+					[29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
+					[10,"\x20"],
+					[9,$bill->bill_generation_final_fee_rm,false,true],
+				]
+			);
+
+			$page_no_counter++;
+			
+			$form->escp2EjectPaper();
+			$form->close();
 		}
+    }
+
+	public function printCajDudukWad($bill_uid, $bill)
+	{
+		$hasWards = Ward::find()->where(["bill_uid"=>$bill_uid])->exists();
 		
-		if($paymentOverflow)
-			$form->printBillPreviousPaymentRowOverflow($overflowSum);//print overflow line		
-		
-		//fill in spaces
-		//calculation
-		$newlinesRequired = $maxRowThatCanFit - $treatmentDetailRowsRequired - $paymentRowsRequired;
-		$newlinesRequired = $newlinesRequired - ($treatmentDetailsOverflow?1:0) - ($paymentOverflow?1:0);
-		$newlinesRequired = $newlinesRequired - (($countPreviousPayments==0)?0:2);
-        $form->printNewLine($newlinesRequired);
-		
-		
-		$form->printElementArray(
+		$this->printElementArray(
 			[
-				[28, "\x20"],
-				[29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
-				[10,"\x20"],
-				[9,$bill->bill_generation_final_fee_rm,false,true],
+				[7, "\x20"],
+				[32, "Caj Duduk Wad  (Tarikh Masuk  : "],
+				[10, $hasWards?date_format(new \datetime(Ward::find()->where(["bill_uid"=>$bill_uid])->min("ward_start_datetime")), "d/m/Y"):"N/A"],
+				[2," )"],
+
 			]
 		);
-		
-		$form->escp2EjectPaper();
-		$form->close();
-		/*
-        else{
-            if(!(new Bill()) -> isPrinted(Yii::$app->request->get('rn')))
-            {
-                $model->bill_print_id = SerialNumber::getSerialNumber("bill");
-            }
-        }
+		$this->printNewLine(1);
+		$this->printElementArray(
+			[
+				[22, "\x20"],
+				[17, "(Tarikh Keluar : "],
+				[10, $hasWards?date_format(new \datetime(Ward::find()->where(["bill_uid"=>$bill_uid])->max("ward_end_datetime")), "d/m/Y"):"N/A"],
+				[2," )"],
 
-        return $this->render('print', [
-            'model' => $model,
-            'modelWard' => $modelWard,
-            'modelTreatment' => $modelTreatment,
-        ]);*/
-    }
-	
+			]
+		);
+		$this->printNewLine(2);
+		$this->printElementArray(
+			[
+				[7, "\x20"],
+				[7, "Kelas  "],
+				[2, $bill->class],
+				[4," :  "],
+				[5, $wardNumOfDays = ($hasWards?Ward::find()->where(["bill_uid"=>$bill_uid])->sum("ward_number_of_days"):"0")],
+				[1," "],
+				[4, "hari"],
+				[26, "\x20"],
+				[9, $bill->daily_ward_cost,false,true],
+				[2, "\x20"],
+				[9, number_format(($wardNumOfDays*$bill->daily_ward_cost),2, '.', ''),false,true],
+			]
+		);
+		$this->printNewLine(2);
+		$this->printElementArray(
+			[
+				[7, "\x20"],
+				[28, "Caj Pemeriksaan/Ujian Makmal"],
+			]
+		);
+		$this->printNewLine(1);
+		$this->printElementArray(
+			[
+				[7, "\x20"],
+				[28, "-----------------------------"],
+			]
+		);
+		$this->printNewLine(1);
+	}
+
     public function printBillTreatmentRow($treatmentDetails){
         $this->printElementArray(
             [
@@ -1210,7 +1308,6 @@ class PrintForm
                 [8, $treatmentDetails->item_per_unit_cost_rm,false,true],
                 [2,"\x20"],
                 [9, $treatmentDetails->item_total_unit_cost_rm,false,true],
-
             ]
         );
         $this->printNewLine(1);
