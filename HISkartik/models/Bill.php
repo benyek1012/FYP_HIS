@@ -187,13 +187,17 @@ class Bill extends \yii\db\ActiveRecord
 
         $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
         $modelInpatientTreatment = Lookup_inpatient_treatment_cost::findOne(['kod' => 'Inpatient Treatment']);
+        $modelBill = Bill::findone(['bill_uid' => $bill_uid]);
 
-        foreach ($modelWard as $index => $modelWard){            
-            $totalWardDays += $modelWard->ward_number_of_days;
+        if(!empty($modelBill->status_code)){
+            if($modelBill->status_code == 'PDOA'){
+                foreach ($modelWard as $index => $modelWard){            
+                    $totalWardDays += $modelWard->ward_number_of_days;
+                }
+
+                $totalInpatient = $modelInpatientTreatment->cost_rm * $totalWardDays;
+            }
         }
-
-        $totalInpatient = $modelInpatientTreatment->cost_rm * $totalWardDays;
-
         return $totalInpatient;
     }
 

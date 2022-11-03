@@ -1149,6 +1149,8 @@ if('<?php echo $modelBill == null ?>'){
     document.getElementById('ward_cost').style.backgroundColor = '#ffc107';
     document.getElementById('status_des').style.backgroundColor = '#ffc107';
 }
+
+document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').value = '<?php echo (new Bill()) -> getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid')); ?>';
 </script>
 
 <?php 
