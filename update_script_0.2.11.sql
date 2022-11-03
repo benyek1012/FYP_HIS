@@ -241,14 +241,15 @@ WHERE (EXTRACT(YEAR FROM `receipt_content_datetime_paid`)= 2022)
 DELIMITER ;
 
 
-DELIMITER $$
+SET GLOBAL event_scheduler=ON;
+
 CREATE DEFINER=`root`@`localhost` EVENT `delete_nric_rn` ON SCHEDULE EVERY 1 WEEK STARTS '2022-10-19 19:36:26' ON COMPLETION NOT PRESERVE ENABLE DO DELETE A
 FROM
   patient_information A
   LEFT JOIN patient_admission b ON A.patient_uid = b.patient_uid
 WHERE
   b.rn IS NULL AND (A.nric IS NULL OR A.nric = ' ')
-DELIMITER ;
+;
 
 
 INSERT INTO `lookup_general` (`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('BP541YvaOmltox8t_u2gY5THA7Xw35CY', '018', 'Collection Center', 'Admission', '', '1');
