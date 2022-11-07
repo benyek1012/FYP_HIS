@@ -36,6 +36,7 @@ use Yii;
  */
 class Bill extends \yii\db\ActiveRecord
 {
+    public $printer_choices;
     /**
      * {@inheritdoc}
      */

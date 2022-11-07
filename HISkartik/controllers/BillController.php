@@ -83,6 +83,16 @@ class BillController extends Controller
         return SerialNumber::getSerialNumber("bill");
     }
 
+    public function actionGet_printer_1()
+    {
+        return SerialNumber::getSerialNumber("bill");
+    }
+
+    public function actionGet_printer_2()
+    {
+        return SerialNumber::getSerialNumber("bill2");
+    }
+
     public function actionStatus($status) {
         $model = Lookup_status::findOne( ['status_code' => $status]);
         echo Json::encode($model);
@@ -566,6 +576,8 @@ class BillController extends Controller
      */
     public function actionPrint($bill_uid)
     {        
+        $session = Yii::$app->session;
+        
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
         $model = $this->findModel($bill_uid);
@@ -579,7 +591,12 @@ class BillController extends Controller
         
         if ($this->request->isPost && $model->load($this->request->post())) {
             if($model->validate() && $model->bill_print_id != "")
-            {
+            {    
+                // set bill printer session
+                $data = Yii::$app->request->post();
+                $choice = $data['Bill']['printer_choices'];
+                $session->set('bill_printer_session', $choice);
+
 				$error = PrintForm::printBill($bill_uid);
 				#would have thrown exception by this point if there was any issue
                 if(!empty($error))
@@ -588,9 +605,17 @@ class BillController extends Controller
                     <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
                 }
                           
-                if($model->bill_print_id != SerialNumber::getSerialNumber("bill"))
+                if($choice == 'Printer 1')
+                    $serial_no =  $this->actionGet_printer_1();
+                else if($choice == 'Printer 2')
+                $serial_no =  $this->actionGet_printer_2();
+
+                if($model->bill_print_id != $serial_no)
                 {
-                    $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                    if($choice == 'Printer 1')
+                        $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                    else if($choice == 'Printer 2')
+                        $model_serial = SerialNumber::findOne(['serial_name' => "bill2"]);
 
                     $str = $model->bill_print_id;
                     $only_integer = preg_replace('/[^0-9]/', '', $str);
@@ -601,7 +626,10 @@ class BillController extends Controller
                     $model_serial->save();    
                 }
                 else{
-                    $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                    if($choice == 'Printer 1')
+                        $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                    else if($choice == 'Printer 2')
+                        $model_serial = SerialNumber::findOne(['serial_name' => "bill2"]);
                     $model_serial->running_value =  $model_serial->running_value + 1;
                     $model_serial->save();    
                 }
@@ -624,13 +652,21 @@ class BillController extends Controller
                     'print_empty' => true,
                     'model_cancellation' => new Cancellation(),
                     'modelFPP' => $modelFPP,
+                    'modelInpatient' => (empty($modelInpatient))? new Inpatient_treatment() : $modelInpatient,
                 ]);
             }
         }
         else{
             if(!(new Bill()) -> isPrinted(Yii::$app->request->get('rn')))
             {
-                $model->bill_print_id = SerialNumber::getSerialNumber("bill");
+                if ($session->has('bill_printer_session')) {
+                    $choice = $session->get('bill_printer_session');
+
+                    if($choice == 'Printer 1')
+                        $model->bill_print_id = $this->actionGet_printer_1();
+                    else if($choice == 'Printer 2')
+                        $model->bill_print_id = $this->actionGet_printer_2();
+                }
             }
         }
 

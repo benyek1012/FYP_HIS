@@ -28,7 +28,10 @@ use yii\bootstrap4\Modal;
     //     var_dump('treu');
     //     exit();
     // }
+$session = Yii::$app->session;
+
 $url = Url::toRoute(['bill/refresh']);
+
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $modelWardDate = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
@@ -228,6 +231,8 @@ foreach($rows_bill as $row_bill){
     $lockedStatusCode[$row_bill['status_code']] = $row_bill['status_code'] . ' - ' . $row_bill['status_description'];
     $lockedDepartmentCode[$row_bill['department_code']] = $row_bill['department_code'] . ' - ' . $row_bill['department_name'];
 }
+
+$printer_choices = array("Printer 1" => "Printer 1", "Printer 2" => "Printer 2");
 
 $billuid = Base64UID::generate(32);
 
@@ -431,6 +436,11 @@ if($print_readonly)
     );
 }
 
+if($isPrinted)
+    $this->registerJs(
+        "$('#choose_printer_div').hide();"
+    );
+
 $checkFPP = Fpp::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
 if(empty($checkFPP)){
     $this->registerJs(
@@ -506,10 +516,10 @@ textarea {
 
 .btn:focus {
     outline-color: transparent;
-    outline-style:solid;
+    outline-style: solid;
     box-shadow: 0 0 0 4px #5a01a7;
     transition: 0.2s;
-  }
+}
 </style>
 
 <div class="bill-form">
@@ -653,7 +663,7 @@ textarea {
                                 'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             ]) ?>
                     </div>
-                   
+
                     <?php
                     /*
                     <div class="col-sm-6">
@@ -666,7 +676,7 @@ textarea {
                         ]) ?>
 
 
-                        <!-- <?= $form->field($model, 'nurse_responsible')->widget(kartik\select2\Select2::classname(), [
+                    <!-- <?= $form->field($model, 'nurse_responsible')->widget(kartik\select2\Select2::classname(), [
                             'data' => $nurse_responsible,
                             'disabled' => $print_readonly == false? $disabled : $print_readonly,
                             'options' => ['placeholder' => Yii::t('app','Please select nurse responsible'), 'id' => 'nurse_responsible',],
@@ -675,108 +685,110 @@ textarea {
                                 'tags' => true
                             ],
                         ]); ?> -->
-                    </div>
-                    */
-                    ?>
-                   
-
-                    <div class="col-sm-6">
-                        <?= $form->field($model, 'description')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
-                    </div>
                 </div>
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');", 'disabled' => $disabled]) ?>
-                <?php }else{ ?>
-                <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');", 'disabled' => $disabled]) ?>
-                <?php } ?>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-        <?php kartik\form\ActiveForm::end(); ?>
-    </a>
+                */
+                ?>
 
-    <a name="ward">
-        <div class="card" id="ward_div" style="display:none;">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Ward Details').'&nbsp;&nbsp;&nbsp;&nbsp;'; echo Yii::t('app', 'Entry Datetime').': '.$admission_model->entry_datetime?></h3>
-                <div class="d-flex justify-content-end">
-                    <?php
+
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'description')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
+                </div>
+            </div>
+            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+            <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
+            <?= Html::submitButton(Yii::t('app','Update'), ['name' => 'updateBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');", 'disabled' => $disabled]) ?>
+            <?php }else{ ?>
+            <?= Html::submitButton(Yii::t('app','Save'), ['name' => 'saveBill', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "getDailyWardCost('{$urlStatus}');", 'disabled' => $disabled]) ?>
+            <?php } ?>
+        </div>
+        <!-- /.card-body -->
+</div>
+<!-- /.card -->
+<?php kartik\form\ActiveForm::end(); ?>
+</a>
+
+<a name="ward">
+    <div class="card" id="ward_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title">
+                <?php echo Yii::t('app','Ward Details').'&nbsp;&nbsp;&nbsp;&nbsp;'; echo Yii::t('app', 'Entry Datetime').': '.$admission_model->entry_datetime?>
+            </h3>
+            <div class="d-flex justify-content-end">
+                <?php
                     if(!empty($model))
                         echo "<div id='wardTotal'>". Yii::t('app','Total')." : ". (new Bill) -> getTotalWardCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                     ?>
-                    <div class="card-tools">
-                        <!-- Collapse Button -->
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
-                    </div>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
                 </div>
-                <!-- /.card-tools -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body" id="ward-div">
-                <?= $this->render('/ward/_form', ['modelWard' => $modelWard]) ?>
-            </div>
-            <!-- /.card-body -->
+            <!-- /.card-tools -->
         </div>
-    </a>
-    <!-- /.card -->
+        <!-- /.card-header -->
+        <div class="card-body" id="ward-div">
+            <?= $this->render('/ward/_form', ['modelWard' => $modelWard]) ?>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</a>
+<!-- /.card -->
 
-    <a name="treatment">
-        <div class="card" id="treatment_div" style="display:none;">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Treatment Details');?></h3>
-                <div class="d-flex justify-content-end">
-                    <?php
+<a name="treatment">
+    <div class="card" id="treatment_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Treatment Details');?></h3>
+            <div class="d-flex justify-content-end">
+                <?php
                     if(!empty($model))
                         echo "<div id='treatmentTotal'>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalTreatmentCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                     ?>
-                    <div class="card-tools">
-                        <!-- Collapse Button -->
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
-                    </div>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
                 </div>
-                <!-- /.card-tools -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body" id="treatment-div">
-                <?= $this->render('/treatment_details/_form', ['modelTreatment' => $modelTreatment, 'modelInpatient' => $modelInpatient]) ?>
-            </div>
-            <!-- /.card-body -->
+            <!-- /.card-tools -->
         </div>
-    </a>
-    <!-- /.card -->
+        <!-- /.card-header -->
+        <div class="card-body" id="treatment-div">
+            <?= $this->render('/treatment_details/_form', ['modelTreatment' => $modelTreatment, 'modelInpatient' => $modelInpatient]) ?>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</a>
+<!-- /.card -->
 
-    <a name="fpp">
-        <div class="card" id="fpp_div" style="display:none;">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Full Paying Patient Details');?></h3>
-                <div class="d-flex justify-content-end">
-                    <?php
+<a name="fpp">
+    <div class="card" id="fpp_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Full Paying Patient Details');?></h3>
+            <div class="d-flex justify-content-end">
+                <?php
                     if(!empty($model))
                         echo "<div id='fppTotal'>". Yii::t('app','Total')." : ". (new Bill()) -> getTotalFPPCost(Yii::$app->request->get('bill_uid'))."&nbsp&nbsp&nbsp&nbsp&nbsp"."</div>";
                     ?>
-                    <div class="card-tools">
-                        <!-- Collapse Button -->
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
-                    </div>
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
                 </div>
-                <!-- /.card-tools -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body" id="fpp-div">
-                <?= $this->render('/fpp/_form', ['modelFPP' => $modelFPP]) ?>
-            </div>
-            <!-- /.card-body -->
+            <!-- /.card-tools -->
         </div>
-    </a>
-    <!-- /.card -->
+        <!-- /.card-header -->
+        <div class="card-body" id="fpp-div">
+            <?= $this->render('/fpp/_form', ['modelFPP' => $modelFPP]) ?>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</a>
+<!-- /.card -->
 
-    <a name="billGeneration">
-        <?php $form = kartik\form\ActiveForm::begin([
+<a name="billGeneration">
+    <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'bill-generation-form',
         'type' => 'vertical',
         'action' => Url::toRoute(['bill/generatebill', 'bill_uid' => Yii::$app->request->get('bill_uid')]),
@@ -786,24 +798,24 @@ textarea {
         ],
     ]); 
     ?>
-        <div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
+    <div class="card" id="bill_div" <?php if(empty($generate)){ echo 'style="display:none;"'; }
             else echo 'style="display:block;"';
     ?>>
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Bill Generation Details');?></h3>
-                <div class="card-tools">
-                    <!-- Collapse Button -->
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i></button>
-                </div>
-                <!-- /.card-tools -->
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Bill Generation Details');?></h3>
+            <div class="card-tools">
+                <!-- Collapse Button -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                        class="fas fa-minus"></i></button>
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
 
-                <div class="row">
-                    <div class="col-sm-6">
-                        <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
+            <div class="row">
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'bill_generation_billable_sum_rm')->textInput(
                         [
                             'autocomplete' =>'off', 
                             'readonly' => true, 
@@ -813,10 +825,10 @@ textarea {
                             'value' => (new Bill()) -> calculateBillable(Yii::$app->request->get('bill_uid')),
                             'tabindex' => '-1'
                         ]) ?>
-                    </div>
+                </div>
 
-                    <div class="col-sm-6">
-                        <?php
+                <div class="col-sm-6">
+                    <?php
                         if($isGenerated)
                         {
                             echo $form->field($model, 'bill_generation_final_fee_rm')->textInput(
@@ -844,10 +856,10 @@ textarea {
                             ]);
                         }
                     ?>
-                    </div>
+                </div>
 
-                    <div class="col-sm-6">
-                        <?php
+                <div class="col-sm-6">
+                    <?php
                         if($isGenerated)
                         {
                             $discharge_sec = DateTime::createFromFormat('Y-m-d H:i:s', $model->discharge_date);
@@ -896,31 +908,30 @@ textarea {
                                 ]);
                         }
                         ?>
-                    </div>
-
                 </div>
-                <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
-                <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-                <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee('{$urlBillableAndFinalFee}');", 'disabled' => $disabled]) ?>
-                <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
-                <!-- <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
-                <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-                <!-- <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?> -->
-                <?php } ?>
             </div>
-            <!-- /.card-body -->
+            <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+            <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
+            <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee('{$urlBillableAndFinalFee}');", 'disabled' => $disabled]) ?>
+            <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
+            <!-- <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
+            <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
+            <!-- <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()'])?> -->
+            <?php } ?>
         </div>
-        <!-- /.card -->
-        <?php kartik\form\ActiveForm::end(); ?>
-        <?php if(Yii::$app->session->hasFlash('error_generate')):?>
-            <div id = "flashError">
-                <?= Yii::$app->session->getFlash('error_generate') ?>
-            </div>
-        <?php endif; ?>
-    </a>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <?php kartik\form\ActiveForm::end(); ?>
+    <?php if(Yii::$app->session->hasFlash('error_generate')):?>
+    <div id="flashError">
+        <?= Yii::$app->session->getFlash('error_generate') ?>
+    </div>
+    <?php endif; ?>
+</a>
 
-    <a name="printing">
-        <?php $form = kartik\form\ActiveForm::begin([
+<a name="printing">
+    <?php $form = kartik\form\ActiveForm::begin([
         'id' => 'bill-print-form',
         'type' => 'vertical',
         'fieldConfig' => [
@@ -929,86 +940,94 @@ textarea {
         ],
     ]); 
     ?>
-        <div class="card" id="print_div" style="display:none;">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
-                <div class="card-tools">
-                    <!-- Collapse Button -->
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                            class="fas fa-minus"></i></button>
-                </div>
-                <!-- /.card-tools -->
+    <div class="card" id="print_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Printing Details');?></h3>
+            <div class="card-tools">
+                <!-- Collapse Button -->
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                        class="fas fa-minus"></i></button>
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <!-- <?= $form->field($model, 'bill_print_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?> -->
-                        <?= $form->field($model, 'bill_print_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'readonly' => true, 'id' => 'serial_number']) ?>
-                    </div>
+            <!-- /.card-tools -->
+        </div>
+
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12" id="choose_printer_div">
+                    <?= $form->field($model, 'printer_choices')->radioList($printer_choices, 
+                    ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 
+                    'value' => $session->get('bill_printer_session'), 'onChange'=>'choosePrinter();']) ?>
                 </div>
-                <?php 
+                <div class="col-sm-12">
+                    <!-- <?= $form->field($model, 'bill_print_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => (new Bill())  -> isPrinted(Yii::$app->request->get('rn'))]) ?> -->
+                    <?= $form->field($model, 'bill_print_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'readonly' => true, 'id' => 'serial_number']) ?>
+                </div>
+            </div>
+            <?php 
+                //   echo Html::a(Yii::t('app','Print Test'), ['/bill/print_only', 'bill_uid' => Yii::$app->request->get('bill_uid')]
+                //     , ['class'=>'btn btn-info']);
                 if( !$isPrinted ){
             ?>
-                <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
-                <!-- <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
-                <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> 
-                <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
+            <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
+            <!-- <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
+            <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>
+            <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
                     'onclick' => '(function ( $event ) {
                         document.getElementById("serial_number").readOnly = false; 
                         document.getElementById("serial_number").value = "";
                         document.getElementById("serial_number").focus();
                     })();' , 'disabled' => $disabled]) ?>
-                <?= Html::button(Yii::t('app', 'Refresh'), 
-                        ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}')", 'disabled' => $disabled]) ?>
-                <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
+            <?= Html::button(Yii::t('app', 'Refresh'), 
+                        ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "choosePrinter()", 'disabled' => $disabled]) ?>
+            <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-                    <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
-                <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
+            <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
+            <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
 
-                <!-- If the flash message existed, show it  -->
-                <?php if(Yii::$app->session->hasFlash('msg')):?>
-                <div id="flashError">
-                    <?= Yii::$app->session->getFlash('msg') ?>
-                </div>
-                <?php endif; ?>
-                <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
-                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-                    <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
-                <?php } ?>
+            <!-- If the flash message existed, show it  -->
+            <?php if(Yii::$app->session->hasFlash('msg')):?>
+            <div id="flashError">
+                <?= Yii::$app->session->getFlash('msg') ?>
             </div>
-            <!-- /.card-body -->
+            <?php endif; ?>
+            <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
+                     'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
+            <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
+            <?php } ?>
         </div>
-        <!-- /.card -->
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
 
-        <?php kartik\form\ActiveForm::end(); ?>
-    </a>
+    <?php kartik\form\ActiveForm::end(); ?>
+</a>
 
-    <a name="cancellation">
-        <div class="card" id="cancellation_div" style="display:none;">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Cancellation');?></h3>
-                <div class="d-flex justify-content-end">
-                    <div class="card-tools">
-                        <!-- Collapse Button -->
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
-                    </div>
+<a name="cancellation">
+    <div class="card" id="cancellation_div" style="display:none;">
+        <div class="card-header text-white bg-primary">
+            <h3 class="card-title"><?php echo Yii::t('app','Cancellation');?></h3>
+            <div class="d-flex justify-content-end">
+                <div class="card-tools">
+                    <!-- Collapse Button -->
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
                 </div>
-                <!-- /.card-tools -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body" id="cancellation-div">
-                <?= $this->render('/cancellation/create', [
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body" id="cancellation-div">
+            <?= $this->render('/cancellation/create', [
                     'model_admission' => null,
                     'model_cancellation' => $model_cancellation,
                     'type' => 'bill',
                 ]) ?>
-            </div>
-            <!-- /.card-body -->
         </div>
-    </a>
-    <!-- /.card -->
+        <!-- /.card-body -->
+    </div>
+</a>
+<!-- /.card -->
 
 </div>
 
@@ -1025,18 +1044,46 @@ document.getElementById("print_div").style.display = "block";
 document.getElementById('card_div').style.display = "block";
 <?php } ?>
 
-function cancellation(){
-    if(document.getElementById("cancellation_div").style.display == "none"){
-        document.getElementById("cancellation_div").style.display = "block";
+// auto refresh the bill print ID based on printer chosen
+function choosePrinter() {
+    var choice = $('input[name="Bill[printer_choices]"]:checked').val();
+    const xhttp = new XMLHttpRequest();
+    if (choice == 'Printer 1') {
+        var url = '<?php echo Url::toRoute(['bill/get_printer_1']); ?>'
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                document.getElementById("serial_number").value = this.responseText;
+                document.getElementById("serial_number").readOnly = true;
+            }
+        }
+        xhttp.open("GET", url, true);
+        xhttp.send();
+    } else if (choice == 'Printer 2') {
+        var url = '<?php echo Url::toRoute(['bill/get_printer_2']); ?>'
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                document.getElementById("serial_number").value = this.responseText;
+                document.getElementById("serial_number").readOnly = true;
+            }
+        }
+        xhttp.open("GET", url, true);
+        xhttp.send();
     }
-    else{
+}
+
+function cancellation() {
+    if (document.getElementById("cancellation_div").style.display == "none") {
+        document.getElementById("cancellation_div").style.display = "block";
+    } else {
         document.getElementById("cancellation_div").style.display = "none";
     }
 }
 
 function getBillableAndFinalFee(url) {
-    $.get(url, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
-        var data = $.parseJSON(data);                 
+    $.get(url, {
+        bill_uid: '<?php echo Yii::$app->request->get('bill_uid') ?>'
+    }, function(data) {
+        var data = $.parseJSON(data);
 
         $('#bill-bill_generation_billable_sum_rm').val(data.billAble);
         $('#bill-bill_generation_final_fee_rm').val(data.finalFee);
@@ -1085,18 +1132,6 @@ function confirmAction(url) {
 }
 <?php } ?>
 
-function refreshButton(url) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (xhttp.readyState == 4 && xhttp.status == 200) {
-            document.getElementById("serial_number").value = this.responseText;
-            document.getElementById("serial_number").readOnly = true;
-        }
-    }
-    xhttp.open("GET", url, true);
-    xhttp.send();
-}
-
 function generateBill(url) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -1129,7 +1164,7 @@ function matchBill(params, data) {
     var regex_text = '.*';
     regex_text += (params.term).split('').join('.*');
     regex_text += '.*'
-    
+
     // Case insensitive
     var regex = new RegExp(regex_text, "i");
 
@@ -1138,19 +1173,17 @@ function matchBill(params, data) {
 
     // If no match is found we return nothing
     if (!regex.test(code[0])) {
-    return null;
+        return null;
     }
 
     // Else we return everything that is matching
     return data;
 }
 
-if('<?php echo $modelBill == null ?>'){
+if ('<?php echo $modelBill == null ?>') {
     document.getElementById('ward_cost').style.backgroundColor = '#ffc107';
     document.getElementById('status_des').style.backgroundColor = '#ffc107';
 }
-
-document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').value = '<?php echo (new Bill()) -> getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid')); ?>';
 </script>
 
 <?php 
