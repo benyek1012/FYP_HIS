@@ -125,27 +125,27 @@ $this->params['breadcrumbs'][] = $this->title;
                     ] );
                 },
             ],
-            [
-                'attribute' => 'scheduled_datetime',
-                'headerOptions'=>['style'=>'max-width: 100px;'],
-                'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                "format"=>"raw",
-                'value'=>function ($data) {
-                    if(empty($data['scheduled_datetime'])) return $data['scheduled_datetime'];
-                    else
-                    {
-                        $date = new DateTime($data['scheduled_datetime']);
-                        $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
-                            // title
-                            'title' => $date->format('Y-m-d H:i A') ,
-                            'data-placement' => 'top' ,
-                            'data-toggle'=>'tooltip',
-                            'style' => 'white-space:pre;'
-                        ] );
-                        return $tag;
-                    }
-                },
-            ],
+            // [
+            //     'attribute' => 'scheduled_datetime',
+            //     'headerOptions'=>['style'=>'max-width: 100px;'],
+            //     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            //     "format"=>"raw",
+            //     'value'=>function ($data) {
+            //         if(empty($data['scheduled_datetime'])) return $data['scheduled_datetime'];
+            //         else
+            //         {
+            //             $date = new DateTime($data['scheduled_datetime']);
+            //             $tag = Html::tag ( 'span' , $date->format('Y-m-d') , [
+            //                 // title
+            //                 'title' => $date->format('Y-m-d H:i A') ,
+            //                 'data-placement' => 'top' ,
+            //                 'data-toggle'=>'tooltip',
+            //                 'style' => 'white-space:pre;'
+            //             ] );
+            //             return $tag;
+            //         }
+            //     },
+            // ],
             [
                 'attribute' => 'executed_datetime',
                 'headerOptions'=>['style'=>'max-width: 100px;'],

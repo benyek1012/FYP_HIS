@@ -57,6 +57,7 @@ class WardController extends Controller
     public function actionInpatient($bill_uid){
         $inpatient = array();
         $inpatient['inpatient'] = (new Bill()) -> getTotalInpatientTreatmentCost($bill_uid);
+        $inpatient['treatmentTotal'] = (new Bill()) -> getTotalTreatmentCost($bill_uid);
         echo Json::encode($inpatient);
     }
 

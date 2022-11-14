@@ -382,6 +382,25 @@ class Patient_admissionController extends Controller
         ]);
        
     }
+
+    public function actionPrintall($rn){
+        $model = $this->findModel($rn); 
+
+        // if($model->validate()) {
+        //     (new Patient_admissionController(null, null))->actionPrint1($rn);
+        //     (new Patient_admissionController(null, null))->actionPrint2($rn);
+        //     (new Patient_admissionController(null, null))->actionPrint3($rn);
+        //     (new Patient_admissionController(null, null))->actionPrint4($rn);
+
+			return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+				'rn' => $model->rn));  
+		// }
+
+        // return $this->render('update', [
+		// 	'model' => $model,
+		// ]);
+    }
+
 	public function actionPrint1($rn)
     {
 		$model = $this->findModel($rn);  

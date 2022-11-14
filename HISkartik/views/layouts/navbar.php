@@ -111,8 +111,10 @@ body {
                     <li><a href="<?php echo Url::to(['/lookup_general']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                     </li>
-                    <li><a href="<?php echo Url::to(['/new_user']); ?>"
+                    <?php if((new New_user()) -> isAdmin()) { ?>
+                        <li><a href="<?php echo Url::to(['/new_user']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
+                    <?php } ?>
                     <li><a href="<?php echo Url::to(['/lookup_ward']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Ward Codes'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/lookup_status']); ?>"
@@ -145,7 +147,15 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/report/report8']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan Mengikut Keadeh Bayaran'); ?></a></li>
-                    <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
+                    <li><a href="#"
+                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Bill Pesakit'); ?></a></li>
+                    <li><a href="#"
+                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Bulanan Kutipan dan PATI dan PADI'); ?></a></li>
+                    <li><a href="#"
+                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Senarai Terperinci Bill Hospital'); ?></a></li>
+                    <li><a href="#"
+                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Penyata Akaun Belum Terima'); ?></a></li>
+                            <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li> -->
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
@@ -161,10 +171,14 @@ body {
                     style="margin-top: 0px; margin-right: 20px ;">
                     <li><a href="<?php echo Url::to(['/reminder']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
+                    <?php if((new New_user()) -> isAdmin()) { ?>
+                        <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
+                    <?php } ?>
+                    <?php if((new New_user()) -> isAdmin()) { ?>
+                        <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li>
+                    <?php } ?>
                     <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"

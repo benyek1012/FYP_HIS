@@ -77,6 +77,8 @@ class Patient_informationController extends Controller
         if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
         {
             $model->DOB = $model->getDateForDatabase();
+            $model->sex = $model->getGender();
+            $model->nationality = $model->getNationality();
         }
 
         $model->save();
@@ -120,6 +122,8 @@ class Patient_informationController extends Controller
                 if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
                 {
                     $model->DOB = $model->getDateForDatabase();
+                    $model->sex = $model->getGender();
+                    // $model->nationality = $model->getNationality();
                     echo 's';
                 }
                     
@@ -205,7 +209,7 @@ class Patient_informationController extends Controller
     // pass DOB from datepicker, then ajax calculate age then render on Age textInput
     public function actionDob($dob, $id) {
         $model = Patient_information::findOne($id);
-        echo Json::encode($model->calculateDob($dob));
+        echo Json::encode($model->calculateDob($model->DOB));
     }
 
     // pass DOB from datepicker, then ajax calculate age then render on Age textInput
@@ -215,6 +219,17 @@ class Patient_informationController extends Controller
         echo Json::encode($model->getDateForDatabase());
     }
 
+    public function actionGender($nric, $id) {
+        $model = Patient_information::findOne($id);
+        $model->nric = $nric;
+        echo Json::encode($model->getGender());
+    }
+
+    public function actionNationality($id){
+        $model = Patient_information::findOne($id);
+
+        echo Json::encode($model->getNationality());
+    }
 
     /**
      * Finds the Patient_information model based on its primary key value.

@@ -605,41 +605,51 @@ class BillController extends Controller
                     <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
                 }
                           
-                if($choice == 'Printer 1')
-                    $serial_no =  $this->actionGet_printer_1();
-                else if($choice == 'Printer 2')
-                $serial_no =  $this->actionGet_printer_2();
-
-                if($model->bill_print_id != $serial_no)
-                {
-                    if($choice == 'Printer 1')
-                        $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
-                    else if($choice == 'Printer 2')
-                        $model_serial = SerialNumber::findOne(['serial_name' => "bill2"]);
-
-                    $str = $model->bill_print_id;
-                    $only_integer = preg_replace('/[^0-9]/', '', $str);
-                    $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
-                    $model_serial->digit_length = strlen($only_integer);
-                    $model_serial->running_value = $only_integer;
-
-                    $model_serial->save();    
+                if($choice == ""){
+                    Yii::$app->session->setFlash('error_print', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Printer Choice Error!').' <br/></strong> 
+                        '.Yii::t('app', "At least choice one printer to print").'</div>'
+                    );
                 }
                 else{
                     if($choice == 'Printer 1')
-                        $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                        $serial_no =  $this->actionGet_printer_1();
                     else if($choice == 'Printer 2')
-                        $model_serial = SerialNumber::findOne(['serial_name' => "bill2"]);
-                    $model_serial->running_value =  $model_serial->running_value + 1;
-                    $model_serial->save();    
-                }
-                
-                $model->bill_print_datetime =  $date->format('Y-m-d H:i:s');
-                $model->bill_uid = Yii::$app->request->get('bill_uid');
-                $model->bill_print_responsible_uid = Yii::$app->user->identity->getId();
-                $model->save();
-                return Yii::$app->getResponse()->redirect(array('/bill/print', 
-                'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         
+                    $serial_no =  $this->actionGet_printer_2();
+
+                    if($model->bill_print_id != $serial_no)
+                    {
+                        if($choice == 'Printer 1')
+                            $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                        else if($choice == 'Printer 2')
+                            $model_serial = SerialNumber::findOne(['serial_name' => "bill2"]);
+
+                        $str = $model->bill_print_id;
+                        $only_integer = preg_replace('/[^0-9]/', '', $str);
+                        $model_serial->prepend = preg_replace('/[^a-zA-Z]/', '', $str);
+                        $model_serial->digit_length = strlen($only_integer);
+                        $model_serial->running_value = $only_integer;
+
+                        $model_serial->save();    
+                    }
+                    else{
+                        if($choice == 'Printer 1')
+                            $model_serial = SerialNumber::findOne(['serial_name' => "bill"]);
+                        else if($choice == 'Printer 2')
+                            $model_serial = SerialNumber::findOne(['serial_name' => "bill2"]);
+                        $model_serial->running_value =  $model_serial->running_value + 1;
+                        $model_serial->save();    
+                    }
+                    
+                    $model->bill_print_datetime =  $date->format('Y-m-d H:i:s');
+                    $model->bill_uid = Yii::$app->request->get('bill_uid');
+                    $model->bill_print_responsible_uid = Yii::$app->user->identity->getId();
+                    $model->save();
+                    return Yii::$app->getResponse()->redirect(array('/bill/print', 
+                    'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));       
+                }  
             }
             else
             {

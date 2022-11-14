@@ -163,13 +163,14 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
     ?>
         <table id="inpatient-treatment-table">
             <tr>
-                <td><?php echo Yii::t('app','Inpatient Treatment Cost (RM)');?></td>
+                <td><div id="inpatient_treatment-inpatient_treatment_cost_rm"><?php echo Yii::t('app','Inpatient Treatment Cost (RM)')." : ".$modelInpatient->inpatient_treatment_cost_rm; ?></div></td>
             </tr>
             <tr>
-                <td>
+                <!-- <td>
                     <?= $form->field($modelInpatient, "inpatient_treatment_cost_rm")->textInput(['autocomplete' =>'off', 'tabindex' => '-1',  'disabled' => true,])->label(false) ?>
-                </td>
+                </td> -->
             </tr>
         </table>
+        <br>
     <?php kartik\form\ActiveForm::end(); ?>
 </a>

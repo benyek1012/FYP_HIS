@@ -391,6 +391,13 @@ use app\models\Receipt;
     <?php kartik\form\ActiveForm::end(); */?>
 
 </div>
+
+<div>
+    <?= Html::a(Yii::t('app', 'Print All'), ['/patient_admission/printall', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
+</div>
+
+<br>
+    
 <div>
     <?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
     <?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>

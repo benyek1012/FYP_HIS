@@ -34,6 +34,9 @@ $this->registerJs(
 );
 
 $url = Url::toRoute(['/patient_information/getdob']);
+$urlGender = Url::toRoute(['/patient_information/gender']);
+$urlAge = Url::toRoute(['/patient_information/dob']);
+$urlNationality = Url::toRoute(['/patient_information/nationality']);
 ?>
 <div class="patient-information-update">
     <?php 
@@ -231,7 +234,7 @@ $url = Url::toRoute(['/patient_information/getdob']);
                                 getFocusID('nationality');
                                 submitPatientInformationForm();
                             }",
-                        ]
+                        ],
                     ]);
                 }?>
         </div>
@@ -254,10 +257,10 @@ $url = Url::toRoute(['/patient_information/getdob']);
         else {?> <?= $form->field($model, 'address1')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
         <?php
         if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        else {?> <?= $form->field($model, 'address2')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'])->label(false);}?>
         <?php 
         if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true,'readonly' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}
-        else {?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")']);}?>
+        else {?> <?= $form->field($model, 'address3')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'onfocusout' => 'submitPatientInformationForm();', 'onfocus' => 'getFocusID("")'])->label(false);}?>
          
         </div>
         
@@ -303,6 +306,42 @@ $url = Url::toRoute(['/patient_information/getdob']);
                         var data = $.parseJSON(data);
                         $('#DOB').attr('value', data.DOB);
                     });
+
+                    $.get('<?php echo $urlGender ?>', {nric: $('#nric').val(), id : '<?php echo Yii::$app->request->get('id') ?>'}, function(data){
+                        var data = $.parseJSON(data);
+
+                        if($('#patient-information-sex--0').val() == data){
+                            $('#patient-information-sex--0').prop('checked', true);
+                        }
+
+                        if($('#patient-information-sex--1').val() == data){
+                            $('#patient-information-sex--1').prop('checked', true);
+                        }
+                    });
+
+                    $.get('<?php echo $urlAge ?>', {dob : $('#DOB').val(), id : '<?php echo Yii::$app->request->get('id') ?>'}, function(data){
+                        var data = $.parseJSON(data);
+                        $('#age').attr('value', data);
+                    });
+
+                    // $.get('<?php echo $urlNationality ?>', {id : '<?php echo Yii::$app->request->get('id') ?>'}, function(data){
+                    //     var data = $.parseJSON(data);
+                    //     console.log(data);
+                    //     // $("#nationality").val(data).trigger('change').trigger('close');
+                    //     if(data == true){
+                    //         $('#nationality').val("Malaysia");
+                    //         $('#nationality').select2({
+                    //             placeholder: 'Please select nationality',
+                    //             allowClear: true,
+                    //             tags: true,
+                    //             width: '100%',
+                    //             minimumInputLength: 2,
+                    //             // matcher: function(params, data) {
+                    //             //     return matchInformation(params, data);
+                    //             // },
+                    //         });
+                    //     }
+                    // });
                 // }
             },
         });

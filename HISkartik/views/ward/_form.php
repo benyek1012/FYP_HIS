@@ -513,7 +513,8 @@ else{
 
                     $.get('<?php echo "{$urlInpatient}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
                         var data = $.parseJSON(data);                 
-                        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').value = data.inpatient;
+                        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').innerHTML = '<?php echo Yii::t('app','Inpatient Treatment Cost (RM)') ?>'+ ' : ' + data.inpatient;
+                        document.getElementById('treatmentTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.treatmentTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
                     });
                     if(data == 'success'){
                         addWardRow('update');

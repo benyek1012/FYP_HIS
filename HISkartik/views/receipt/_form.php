@@ -220,6 +220,12 @@ else{
         </div>
 
         <div class="col-sm-6">
+            <?= $form->field($model, 'receipt_serial_number', 
+                ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['autocomplete' =>'off', 'maxlength' => true, 
+                    'readonly' => true, 'id' => 'serial_number'.$index]) ?>
+        </div>
+
+        <div class="col-sm-6">
             <?php if($cancellation == false){ ?>
             <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
                     ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'value' => 'cash']) ?>
@@ -227,17 +233,15 @@ else{
                 <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
                     ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'id' => 'payment_method'.$index ,'value' => $model->receipt_content_payment_method]) ?>
             <?php } ?>
-        </div>
-
-        <div class="col-sm-6">
+        
             <?= $form->field($model, 'payment_method_number')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
 
-        <div class="col-sm-6">
+        <!-- <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number', 
                 ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['autocomplete' =>'off', 'maxlength' => true, 
                     'readonly' => true, 'id' => 'serial_number'.$index]) ?>
-        </div>
+        </div> -->
 
         <?php
         if($cancellation == true)
@@ -245,6 +249,8 @@ else{
         ?>
             <?php $model_cancellation = new Cancellation();?>
 
+            <div class="col-sm-6"></div>
+            
             <div class="col-sm-6">
                 <?= $form->field($model_cancellation, 'cancellation_uid')->hiddenInput(['maxlength' => true, 'value' => $model->receipt_uid])->label(false); ?>
                 <?= $form->field($model_cancellation, 'table')->hiddenInput(['maxlength' => true, 'value' => 'receipt'])->label(false); //'value' => 'receipt - ' . $model->receipt_type ?>

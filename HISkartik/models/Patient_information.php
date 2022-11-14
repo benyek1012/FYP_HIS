@@ -179,14 +179,58 @@ class Patient_information extends \yii\db\ActiveRecord
 			return "N/A";
 	}
 
-      // caluculate age from paramter DOB
-      public function calculateDob($dob)
-      {
-            $startDate = new \DateTime($dob);
-            $endDate = new \DateTime();
-            $difference = $endDate->diff($startDate);
-            return $difference->format("%yyrs%mmth%dday");
-      }
+    // caluculate age from paramter DOB
+    public function calculateDob($dob)
+    {
+        $startDate = new \DateTime($dob);
+        $endDate = new \DateTime();
+        $difference = $endDate->diff($startDate);
+        return $difference->format("%yyrs%mmth%dday");
+    }
+
+    // Get gender from IC
+    public function getGender(){
+        if($this->hasValidIC())
+		{
+            $male = array("1", "3", "5", "7", "9");
+            $female = array("2", "4", "6", "8", "0");
+            $gender = $this->sex;
+
+			$targetString = (explode('-', $this->nric))[2];
+			$targetString = substr($targetString, -1);
+
+            for($i = 0; $i < count($male); $i++){
+                if($targetString == $male[$i]){
+                    $gender = "Male";
+                    break;
+                }
+                
+            }
+
+            for($i = 0; $i < count($female); $i++){
+                if($targetString == $female[$i]){
+                    $gender = "Female";
+                    break;
+                }
+            }
+			return $gender;
+		}
+        else{
+            return false;
+        }
+    }
+
+    // Get nationality if ic valid
+    public function getNationality(){
+        if($this->hasValidIC()){
+            $this->nationality = "Malaysia";
+            $this->save();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     // get age from datapicker yyyy-mm-dd
     public function getAgeFromDatePicker()

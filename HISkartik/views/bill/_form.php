@@ -971,7 +971,7 @@ textarea {
             ?>
             <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
             <!-- <?= Html::submitButton(Yii::t('app','Print Lampiran'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
-            <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>
+            <!-- <?= Html::submitButton(Yii::t('app','Print Dummy Bill'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?> -->
             <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
                     'onclick' => '(function ( $event ) {
                         document.getElementById("serial_number").readOnly = false; 
@@ -999,6 +999,11 @@ textarea {
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
+    <?php if(Yii::$app->session->hasFlash('error_print')):?>
+    <div id="flashError">
+        <?= Yii::$app->session->getFlash('error_print') ?>
+    </div>
+    <?php endif; ?>
 
     <?php kartik\form\ActiveForm::end(); ?>
 </a>
@@ -1074,6 +1079,7 @@ function choosePrinter() {
 function cancellation() {
     if (document.getElementById("cancellation_div").style.display == "none") {
         document.getElementById("cancellation_div").style.display = "block";
+        document.getElementById('cancellation_div').scrollIntoView();
     } else {
         document.getElementById("cancellation_div").style.display = "none";
     }

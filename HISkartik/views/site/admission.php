@@ -164,6 +164,7 @@ function hiddenForm() {
 
 function showDiv() {
     document.getElementById('NOk_Div').style.display = "block";
+    document.getElementById('NOk_Div').scrollIntoView();
 }
 
 function addNormal(url, urlPatientAdmission) {
