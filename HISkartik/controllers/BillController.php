@@ -566,6 +566,21 @@ class BillController extends Controller
         }
     }
 
+    // print test 
+    // public function actionPrint_only($bill_uid)
+    // {
+    //     $model = $this->findModel($bill_uid);
+
+    //     $error = PrintForm::printBill($bill_uid);
+    //     #would have thrown exception by this point if there was any issue
+    //     if(!empty($error))
+    //     {
+    //         Yii::$app->session->setFlash('msg', '
+    //         <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
+    //     }
+    //     return Yii::$app->getResponse()->redirect(array('/bill/print', 
+    //     'bill_uid' => $bill_uid, 'rn' => $model->rn, '#' => 'printing'));         
+    // }
     
       /**
      * Updates an existing Bill model.
@@ -794,137 +809,3 @@ class BillController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
-
-                                                    // $connector = new WindowsPrintConnector("smb://JOSH2-LAPTOP/EPSON");
-
-                                                        //                 $connector = new WindowsPrintConnector("smb://DESKTOP-7044BNO/Epson");
-                                                                //                 $printer = new Printer($connector);
-                                                
-                                                            //                 $printer -> text("\n\n\x20\n\x20\n\x20\n\x20\n\n\n"); // \n = 0.4cm
-                                                            //$printer -> text($billdate);
-                                                            //                 $printer -> text(date("d/m/Y" , strtotime($model->bill_generation_datetime)) . "\n");
-                                                            //                 //$printer -> text(date("d/m/Y" , strtotime($printbilldate)) . "\n");
-                                                            //                 $printer -> text($billname);
-                                                            //                 $printer -> text($model->rn."\n"); // receipt number
-                                                            //                 $printer -> text($billname);
-                                                            //                 $printer -> text(strtoupper($modelpatient->name). "\n"); // patientname
-                                                            //   $printer -> text($billadd1);
-                                                            //   $printer -> text(strtoupper($modelpatient->address1)."\n"); // date
-                                                            //   $printer -> text($billadd2);
-                                                            //   $printer -> text(strtoupper($modelpatient->address2)."\n"); //r/n
-                                                            //   $printer -> text($billadd3);
-                                                            //   $printer -> text(strtoupper($modelpatient->address3)); // time
-                                                                //   $printer -> text($blankmiddle);
-                                                                //   $printer -> text($billmasuk);
-                                                                //   $printer -> text("Caj Duduk Wad  (Tarikh Masuk  : ".date("d/m/Y" , strtotime($printstartdate))." )"."\n"); //tarikh masuk
-                                                                //   $printer -> text($billkeluar);
-                                                                //   $printer -> text("(Tarikh Keluar : ".date("d/m/Y" , strtotime($printlastenddate))." )"."\n\n\n"); // tarikh keluar
-                                                                //   $printer -> text($billmasuk);
-                                                                //   $printer -> text("Kelas  ".$modelwardfind->ward_code." :"."  ".$modelwardfind->ward_number_of_days." Hari"); // class and day 
-                                                                //   $printer -> text($billkelas);
-                                                                //   $printer -> text($model->daily_ward_cost.str_repeat("\x20", 9- strlen($model->daily_ward_cost)). Bill::getTotalWardCost(Yii::$app->request->get('bill_uid')) ."\n\n"); // kelas price x total days in ward, hvnt add in total day ward cose
-                                                                
-                                                                //   $printer -> text($fixfront);
-                                                                //   $printer -> text("Caj Pemeriksaan/Ujian Makmal"."\n"); // 
-                                                                //   $printer -> text($fixfront);
-                                                                //   $printer -> text("-----------------------------"."\n");
-                                                                //   /*
-                                                                //   $printer -> text($billkumpulan);
-
-                                                                //   $printer -> text("1G"."    "."UJIAN MAKMAL KUMPULAN G"."        x"."  "."64"."           "."128.00\n");
-                                                                //   $printer -> text($billkumpulan);
-                                                                //   $printer -> text("1D"."    "."UJIAN MAKMAL KUMPULAN D"."        x"."  "."1"."             "."10.00\n");
-                                                                //   $printer -> text($billkumpulan);
-                                                                //   $printer -> text("15D"."    "."PEMBEDAHAN D"."                  x"."  "."1"."             "."20.00\n\n");
-                                                                //   */
-                                                                //   //$printer -> text("1G"."    ".mb_strimwidth($description,0, 30) ."      x"."  "."days".""); // need restrict length, might need loop
-
-                                                                //   $printer -> text($treatmentitem);
-                                                                //   if($ncounter==4 && $ct >= 4)
-                                                                //   {
-                                                                // $printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 4 - $ncounter));
-                                                                //   }
-                                                                //   if($ncounter==5 && $ct >= 3)
-                                                                //   {
-                                                                // $printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 5 - $ncounter));
-                                                                //   }
-                                                                //   if($ncounter==5)
-                                                                //   {
-                                                                // //$printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 5 - $ncounter)); // originally ncounter >= 4, "\n", 5-1-ncounter
-                                                                //   }
-                                                                //   if($ncounter==6 && $ct >= 2)
-                                                                //   {
-                                                                // $printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 6 - $ncounter));
-                                                                //   }
-                                                                //   if($ncounter==6)
-                                                                //   {
-                                                                // //$printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 6 - $ncounter));
-                                                                //   }
-                                                                //   if($ncounter==7 && $ct >= 1)
-                                                                //   {
-                                                                // $printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 7 - $ncounter));
-                                                                //   if($ncounter==7)
-                                                                //   {
-                                                                // //$printer -> text(str_repeat("\x20", 6). "...."."\n");
-                                                                // $printer->text(str_repeat("\n", 7 - $ncounter));
-                                                                //   }
-                                                                //   }
-                                                                //   if($ncounter<4)
-                                                                //   {
-                                                                //     $printer->text(str_repeat("\n", 5 - $ncounter));
-                                                                //   }
-                                                                
-                                                                //   //$printer -> text("\n\n"); // if fix breaktop cant get value from ncounter, change to 2. thn remove \n\n at the back
-                                                                //   $printer -> text($fixfront);
-                                                                //   $printer -> text("Caj Rawatan Harian"."\n");
-                                                                //   $printer -> text($fixfront);
-                                                                //   $printer -> text("------------------");
-                                                                //   $printer -> text(str_repeat("\x20" , 46)."  "."\n");
-                                                                //   $printer -> text(str_repeat("\x20" , 67)."----------\n");
-                                                                //   $printer -> text(str_repeat("\x20" , 68).$model->bill_generation_billable_sum_rm."\n");
-                                                                //   $printer -> text($cagaranitem);
-                                                                //  // if($rcounter>3)
-                                                                // //  {
-                                                                //   //    $printer ->text($fixfront."...."."\n");
-                                                                //   //   $printer -> text(str_repeat("\n", 8-1 - $rcounter)); // else 8-rcounter
-                                                                //  // }
-                                                                //   if ($ct==0)
-                                                                //  //else 
-                                                                //   {
-                                                                //     $printer -> text(str_repeat("\n", 8 - $rcounter));
-                                                                //   }
-                                                                //   if ($ct==1)
-                                                                //  //else 
-                                                                //   {
-                                                                //     $printer -> text(str_repeat("\n", 7 - $rcounter));
-                                                                //   }
-                                                                //   if ($ct==2)
-                                                                //  //else 
-                                                                //   {
-                                                                //     $printer -> text(str_repeat("\n",  6- $rcounter));
-                                                                //   }
-                                                                //   if ($ct==3)
-                                                                //  //else 
-                                                                //   {
-                                                                //     $printer -> text(str_repeat("\n", 6 - $rcounter));
-                                                                //   }
-                                                                
-                                                                //   if ($ct==4)
-                                                                //   //else 
-                                                                //    {
-                                                                //     $printer ->text($fixfront."...."."\n");
-                                                                //      $printer -> text(str_repeat("\n", 6 - $rcounter));
-                                                                //    }
-
-                                                                //   $printer -> text(str_repeat("\x20" , 28)."JUMLAH YANG PERLU DIBAYAR ==>");
-                                                                //   $printer -> text(str_repeat("\x20" , 11).$model->bill_generation_final_fee_rm);
-                                                                //   $printer -> text("\n\n\n\n\n");
-
-                                                                //   $printer ->close();
-                                                               

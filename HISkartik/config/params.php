@@ -18,7 +18,13 @@ return [
     'receipt' => 'smb://LT-CPTING/EPSON',
     'bill' => 'smb://LT-CPTING/EPSON',
 
+    'borangdafter_offset' => 0, 
+    'chargesheet_offset' => 0,
+    'casehistory_offset' => 0,
+    'sticker_offset' => 0,
+    'receipt_offset' => 0,
+    'bill_offset' => 0,
 
     'printerstatus' => 'false',  // anything beside true will not print
-
+    'printeroverwritefont' => 'false', // set font of printer
 ];

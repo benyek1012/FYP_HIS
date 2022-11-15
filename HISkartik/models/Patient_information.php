@@ -137,6 +137,19 @@ class Patient_information extends \yii\db\ActiveRecord
         else return null;
     }
 
+        // get date for  dd/mm/yyyy
+        public function getDOB_format()
+        {
+            if($this->hasValidIC())
+            {
+               
+                $timestamp = strtotime($this->getDOB());
+                $date_formated = date('d/m/Y', $timestamp);
+                return $date_formated;
+            }
+            else return null;
+        }
+
     // get date yyyy/mm/dd (validate is 0, 5, 6, 7)
     public function getStartDate()
 	{
@@ -245,7 +258,7 @@ class Patient_information extends \yii\db\ActiveRecord
 	
 	public function getLatestNOK()
 	{
-		return Patient_next_of_kin::find()->where(['patient_uid' => $this->patient_uid])->orderBy('nok_datetime_updated ASC')->one();
+		return Patient_next_of_kin::find()->where(['patient_uid' => $this->patient_uid])->orderBy('nok_datetime_updated DESC')->one();
 	}
 
 

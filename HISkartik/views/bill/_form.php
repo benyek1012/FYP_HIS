@@ -965,8 +965,8 @@ textarea {
                 </div>
             </div>
             <?php 
-                //   echo Html::a(Yii::t('app','Print Test'), ['/bill/print_only', 'bill_uid' => Yii::$app->request->get('bill_uid')]
-                //     , ['class'=>'btn btn-info']);
+                // echo  Html::a(Yii::t('app','Print Test'), ['/bill/print_only', 'bill_uid' => Yii::$app->request->get('bill_uid')]
+                // , ['class'=>'btn btn-info']) ;
                 if( !$isPrinted ){
             ?>
             <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'disabled' => $disabled]) ?>
@@ -1079,7 +1079,6 @@ function choosePrinter() {
 function cancellation() {
     if (document.getElementById("cancellation_div").style.display == "none") {
         document.getElementById("cancellation_div").style.display = "block";
-        document.getElementById('cancellation_div').scrollIntoView();
     } else {
         document.getElementById("cancellation_div").style.display = "none";
     }

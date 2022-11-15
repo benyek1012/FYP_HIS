@@ -90,41 +90,43 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' =>  ActionColumn::className(),
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                'template' => '{getReminderCalculate}{batchCreate}{downloadcsv}{exportPdf}{print}',
+                'template' => '{getReminderCalculate}{batchCreate}{downloadcsv}{exportPdf}',
                 'buttons' => [
                     'getReminderCalculate' => function ($url, $model, $key) {
                         return ($model->batch_date == Reminder::placeholder) ? 
                                 HTML::a('Regenerate', ['index', 'function' => 'getReminderCalculate'],
-                                        ['class' => 'btn btn-success btn-xs'])
+                                        ['class' => 'btn btn-success btn-xs mr-1 mb-1'])
                                 : HTML::a('Regenerate', ['index', 'function' => 'getReminderCalculate'],
-                                        ['class' => 'd-none btn btn-success btn-xs']);
+                                        ['class' => 'd-none btn btn-success btn-xs mr-1 mb-1']);
                     },
                     'batchCreate' => function ($url, $model, $key) {
                         return ($model->batch_date == Reminder::placeholder) ? 
-                            HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'btn btn-success btn-xs'])
-                        : HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'd-none btn btn-success btn-xs']);
+                            HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'btn btn-success btn-xs mr-1 mb-1'])
+                        : HTML::a('Create Batch', ['index', 'function' => 'batchCreate'], ['class' => 'd-none btn btn-success btn-xs mr-1 mb-1']);
                     },
                     'downloadcsv' => function ($url, $model, $key) {
                         return ($model->batch_date != Reminder::placeholder) ? 
-                            HTML::a('Export CSV', ['index', 'function' => 'downloadcsv', 'batch_date' => $model->batch_date],
-                                ['class' => 'btn btn-success btn-xs'])
-                        : HTML::a('Export CSV', ['index', 'function' => 'downloadcsv', 'batch_date' => $model->batch_date],
-                                ['class' => 'd-none btn btn-success btn-xs']);
+                            HTML::a('CSV', ['index', 'function' => 'downloadcsv', 'batch_date' => $model->batch_date],
+                                ['class' => 'btn btn-success btn-xs mr-1'])
+                        : HTML::a('CSV', ['index', 'function' => 'downloadcsv', 'batch_date' => $model->batch_date],
+                                ['class' => 'd-none btn btn-success btn-xs mr-1']);
                     },
+                   
                     'exportPdf' => function ($url, $model, $key) {
                         return ($model->batch_date != Reminder::placeholder) ? 
-                            HTML::a('Export Pdf', ['index', 'function' => 'exportPdf', 'batch_date' => $model->batch_date],
-                                ['class' => 'btn btn-success btn-xs'])
-                        :  HTML::a('Export Pdf', ['index', 'function' => 'exportPdf', 'batch_date' => $model->batch_date],
-                        ['class' => 'd-none btn btn-success btn-xs']);
+                            HTML::a('PDF', ['index', 'function' => 'exportPdf', 'batch_date' => $model->batch_date],
+                                ['class' => 'btn btn-success btn-xs mr-1'])
+                        :  HTML::a('PDF', ['index', 'function' => 'exportPdf', 'batch_date' => $model->batch_date],
+                        ['class' => 'd-none btn btn-success btn-xs mr-1']);
                     },
-                    'print' => function ($url, $model, $key) {
-                        return ($model->batch_date != Reminder::placeholder) ? 
-                            HTML::a('Print', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
-                                ['class' => 'btn btn-success btn-xs'])
-                        :  HTML::a('Print', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
-                        ['class' => 'd-none btn btn-success btn-xs']);
-                    },
+                    
+                    // 'print' => function ($url, $model, $key) {
+                    //     return ($model->batch_date != Reminder::placeholder) ? 
+                    //         HTML::a('Print', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
+                    //             ['class' => 'btn btn-success btn-xs'])
+                    //     :  HTML::a('Print', ['index', 'function' => 'print', 'batch_date' => $model->batch_date],
+                    //     ['class' => 'd-none btn btn-success btn-xs']);
+                    // },
                 ]
             ],
             
