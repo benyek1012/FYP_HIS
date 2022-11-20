@@ -11,19 +11,21 @@ return [
     'ms' => 'Bahasa Melayu'
     ],
 
-    'borangdafter' => 'smb://LT-CPTING/EPSON',  //smb://JOSH2-LAPTOP/EPSON    , smb://DESKTOP-7044BNO/Epson JOSH-PC/EPSON
-    'chargesheet' => 'smb://LT-CPTING/EPSON',
-    'casehistory' => 'smb://LT-CPTING/EPSON',
-    'sticker' => 'smb://LT-CPTING/EPSON',
-    'receipt' => 'smb://LT-CPTING/EPSON',
-    'bill' => 'smb://LT-CPTING/EPSON',
+    'borangdafter' => 'smb://LAPTOP-FO6A8DRV/BORANGDAFTAR',
+    'chargesheet' => 'smb://LAPTOP-FO6A8DRV/CHARGESHEET',
+    'casehistory' => 'smb://LAPTOP-FO6A8DRV/CASENOTE',
+    'sticker' => 'smb://LAPTOP-FO6A8DRV/STICKER',
+    'receipt' => 'smb://LAPTOP-FO6A8DRV/RECEIPT',
+    'bill' => 'smb://LAPTOP-FO6A8DRV/OFFICIALBILL',
+	'bill2' => 'smb://LAPTOP-FO6A8DRV/BILLRECEIPT',
 
-    'borangdafter_offset' => 0, 
-    'chargesheet_offset' => 0,
-    'casehistory_offset' => 0,
+
+    'borangdafter_offset' => 1, 
+    'chargesheet_offset' => 2,
+    'casehistory_offset' => 57,
     'sticker_offset' => 0,
-    'receipt_offset' => 0,
-    'bill_offset' => 0,
+    'receipt_offset' => 1,
+    'bill_offset' => 1,
 
     'printerstatus' => 'false',  // anything beside true will not print
     'printeroverwritefont' => 'false', // set font of printer

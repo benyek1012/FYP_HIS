@@ -14,21 +14,23 @@ use Exception;
 
 class PrintForm
 {
-    const BorangDaftarMasuk = 0;
+    const BorangDaftarMasuk = 1;
    //const printerStringForBorangDaftarMasuk = "smb://DESKTOP-7044BNO/Epson"; //"smb://DESKTOP-7044BNO/Epson" Yii::$app->params['borangdafter']
 
-    const BorangCajSheet= 0;
+    const BorangCajSheet= 2;
    // const printerStringForBorangCajSheet = "smb://DESKTOP-7044BNO/Epson"; //smb://JOSH2-LAPTOP/Epson
 
-    const BorangCaseNote= 0;
+    const BorangCaseNote= 3;
     //const printerStringForBorangCaseNote = "smb://DESKTOP-7044BNO/Epson";
 
-    const BorangSticker= 0;
+    const BorangSticker= 4;
     //const printerSticker = "smb://DESKTOP-7044BNO/Epson";
-    const Receipt= 0;
+    const Receipt= 5;
     //const printerStringForReceipt= "smb://DESKTOP-7044BNO/Epson";
 
-    const Bill= 0;
+    const Bill= 6;
+	
+	const Bill2= 7;
    // const printerStringForBill= "smb://DESKTOP-7044BNO/Epson";
 
     public $formtype = null;
@@ -46,12 +48,15 @@ class PrintForm
 
     public function __construct($formtype)
     {
-        $printerStringForBorangDaftarMasuk = Yii::$app->params['borangdafter'];
+        //Yii::$app->params['borangdafter'] = Yii::$app->params['borangdafter'];
         $printerStringForBorangCajSheet = Yii::$app->params['chargesheet'];
         $printerStringForBorangCaseNote = Yii::$app->params['casehistory'];
         $printerSticker = Yii::$app->params['sticker'];
         $printerStringForReceipt = Yii::$app->params['receipt'];
         $printerStringForBill = Yii::$app->params['bill'];
+		
+		// test printer bill
+		$printerStringForBill2 = Yii::$app->params['bill2'];
 
 		$this->borangdafter_offset = Yii::$app->params['borangdafter_offset'];
 		$this->chargesheet_offset = Yii::$app->params['chargesheet_offset'];
@@ -62,47 +67,47 @@ class PrintForm
 
         $this->connector = null;
         $this->formtype = $formtype;
-
+				
         if($formtype == PrintForm::BorangDaftarMasuk){
-            $this->connector = new WindowsPrintConnector($printerStringForBorangDaftarMasuk);
-            
+            $this->connector = new WindowsPrintConnector(Yii::$app->params['borangdafter']);
         }
-        $this->printer = new Printer($this->connector);
-
-
+       
         if($formtype == PrintForm::BorangCajSheet){
             $this->connector = new WindowsPrintConnector($printerStringForBorangCajSheet);
         }
-        $this->printer = new Printer($this->connector);
-
-
+		
         if($formtype == PrintForm::BorangCaseNote){
             $this->connector = new WindowsPrintConnector($printerStringForBorangCaseNote);
-           
         }
-        $this->printer = new Printer($this->connector);
 
         if($formtype == PrintForm::BorangSticker){
             $this->connector = new WindowsPrintConnector($printerSticker);
-          
         }
-        $this->printer = new Printer($this->connector);
+        //$this->printer = new Printer($this->connector);
         if($formtype == PrintForm::Receipt){
             $this->connector = new WindowsPrintConnector($printerStringForReceipt);
-            // $this->printer = new Printer($this->connector);
         }
-        $this->printer = new Printer($this->connector);
+       // $this->printer = new Printer($this->connector);
         if($formtype == PrintForm::Bill){
             $this->connector = new WindowsPrintConnector($printerStringForBill);
-            // $this->printer = new Printer($this->connector);
         }
-        $this->printer = new Printer($this->connector);
-
-
+		
+		if($formtype == PrintForm::Bill2){
+            $this->connector = new WindowsPrintConnector($printerStringForBill2);
+        }
+		
+		$this->printer = new Printer($this->connector);
     }
 
     public function printElement($len, $value, $uppercase=false, $rightalign=false)
     {
+		if(is_null($value)){
+			$value = " ";
+		}
+		if($value == ""){
+			$value = " ";
+		}
+
 		if($value != "")
 		{
 			if($uppercase)
@@ -225,11 +230,14 @@ class PrintForm
 			
 		$form = new PrintForm(PrintForm::BorangDaftarMasuk);
 		
+		//var_dump(Yii::$app->params['borangdafter']);
+		//exit;
+		
 		// Begin Print
 		$form->escp2ResetPaper();
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$form->escp2SetTypeface(0);
-		$form->printNewLine(5);
+		$form->printNewLine(2);
 
 		// (name and rn)
 		if(strlen($patientInformation->name) > 32){
@@ -453,7 +461,7 @@ class PrintForm
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$form->escp2SetTypeface(0);
 		
-		$form->printNewLine(6);
+		$form->printNewLine(4);
 		$form->printElementArray(
 				[
 					[$form->chargesheet_offset, "\x20"],
@@ -582,7 +590,7 @@ class PrintForm
 
 		$patientInformation = $patientAdmission->getPatient_information()->one();
 			
-		$form = new PrintForm(PrintForm::BorangCajSheet);
+		$form = new PrintForm(PrintForm::BorangCaseNote);
 		
 		// Begin Print
 		$form->escp2ResetPaper();
@@ -590,7 +598,7 @@ class PrintForm
 			$form->escp2SetTypefaceDraft();
 		
 		
-		$form->printNewLine(4);
+		//$form->printNewLine(4);
 		$form->printElementArray(
 			[
 				//case history note line 1, name and rn
@@ -598,7 +606,7 @@ class PrintForm
 				[21, "\x20"], // from 22->20
 				[36, $patientInformation->name,true],
 				[9,"\x20"],
-				[14, $patientAdmission->rn],
+				[12, $patientAdmission->rn],
 			]
 		);
 		$form->printNewLine(1);
@@ -618,8 +626,6 @@ class PrintForm
 				//case history note line 3,address2 , ic
 				[21, "\x20"], // from 22->20
 				[36, $patientInformation->address2,true],
-				[9,"\x20"],
-				[14, $patientInformation->nric],
 			]
 		);
 		$form->printNewLine(1);
@@ -629,9 +635,11 @@ class PrintForm
 				//case history note line 4,address3
 				[21, "\x20"], // from 22->20
 				[36, $patientInformation->address3,true],
+				[5,"\x20"],
+				[14, $patientInformation->nric],
 			]
 		);
-		$form->printNewLine(2);
+		$form->printNewLine(1);
 		$form->printElementArray(
 			[
 				[$form->casehistory_offset, "\x20"],
@@ -781,18 +789,19 @@ class PrintForm
 		
 		// Begin Print
 		$form->escp2ResetPaper();
-		if(Yii::$app->params['printeroverwritefont'] == "true")
-		{
-			$form->escp2SetTypefaceDraft();
-			$form->escp2SetTiny();
-		}
+		
+		$form->escp2SetTypefaceDraft();
+		$form->escp2SetTiny();
+		
 		
 		$ageString = $patientInformation->getAge("%yyrs %mmth%dday");
 		$wardDesc = Lookup_ward::findOne(["ward_code"=>$patientAdmission->initial_ward_code])->ward_name; 
 		
+		$rows = 6;
+		
 		for($i=1; $i<=1; $i++)  
 		{
-			for($k=1; $k<=6; $k++)  //$k<=6 
+			for($k=1; $k<= $rows; $k++)  //$k<=6 
 			{
 				$form->printElementArray(
 					[
@@ -810,7 +819,7 @@ class PrintForm
 						
 						[24, $patientInformation->name,true],
 						[1,"\x20"],
-						[16, $ageString]
+						[17, $ageString]
 					]
 				);
 				$form->printNewLine(1);
@@ -845,7 +854,7 @@ class PrintForm
 						[11, $patientAdmission->rn],
 						[1, "\x20"],
 						[4,"JAN:"],
-						[1, $patientInformation->sex, true]
+						[2, $patientInformation->sex, true]
 					]
 				);
 				$form->printNewLine(1);
@@ -876,7 +885,7 @@ class PrintForm
 						[7,"Katil: "],
 						[6,"\x20"],
 						[4, "BAN:"],
-						[2,$patientInformation->race,true]
+						[3,$patientInformation->race,true]
 
 						
 					]
@@ -890,7 +899,7 @@ class PrintForm
 						[6, "\x20"],
 						[41, "Sarawak General Hospital, 93586, Kuching"],
 						[6, "\x20"],
-						[41, "Sarawak General Hospital, 93586, Kuching"]
+						[42, "Sarawak General Hospital, 93586, Kuching"]
 					]
 				);
 				$form->printNewLine(3);
@@ -898,10 +907,9 @@ class PrintForm
 			}
 		}
 			
-		$form->escp2EjectPaper();	
+	//	$form->escp2EjectPaper();	
 
-		if(Yii::$app->params['printeroverwritefont'] == "true")
-			$form->escp2UnsetTiny();
+		$form->escp2UnsetTiny();
 
 		$form->close();
 	}
@@ -918,7 +926,9 @@ class PrintForm
 
 		#$patientInformation = $patientAdmission->getPatient_information()->one();
 			
-		$form = new PrintForm(PrintForm::Receipt);
+		//$form = new PrintForm(PrintForm::Receipt);
+		
+		$form = new PrintForm(PrintForm::Bill2);
 		
 		// Begin Print
 		$form->escp2ResetPaper();
@@ -931,7 +941,7 @@ class PrintForm
 				[
 					[$form->receipt_offset, "\x20"],
 					//receiptline 1, receipt serial number, ic
-					[16, "\x20"],
+					[15, "\x20"],
 					[10, $receipt->receipt_serial_number,true],
 					[33,"\x20"],
 					[14, $patientInformation->nric],
@@ -942,7 +952,7 @@ class PrintForm
 				[
 					[$form->receipt_offset, "\x20"],
 					//line2 , pay date, rn
-					[16, "\x20"],
+					[15, "\x20"],
 					[10, date_format(new \datetime($receipt->receipt_content_datetime_paid), "d/m/Y")],
 					[33, "\x20"],
 					[11, $receipt->rn],
@@ -956,7 +966,7 @@ class PrintForm
 			[
 				[$form->receipt_offset, "\x20"],
 				//line 3, pay time, bil number
-				[16, "\x20"],
+				[15, "\x20"],
 				[5, date_format(new \datetime($receipt->receipt_content_datetime_paid), "H:i:s")],
 				[36, "\x20"],
 				[8, $receipt->receipt_content_bill_id, true],
@@ -968,7 +978,7 @@ class PrintForm
 			[
 				[$form->receipt_offset, "\x20"],
 				//line 4 akaun, total 
-				[16, "\x20"],
+				[15, "\x20"],
 				[10, $receipt->kod_akaun,true],
 				[31, "\x20"],
 				[9, number_format(($receipt->receipt_content_sum),2, '.', '')],
@@ -979,7 +989,7 @@ class PrintForm
 			[
 				[$form->receipt_offset, "\x20"],
 				// line 5, OP mayb phase 2?
-				[16, "\x20"],
+				[15, "\x20"],
 				[1, " "],
 			]
 		);
@@ -988,9 +998,9 @@ class PrintForm
 				[
 					[$form->receipt_offset, "\x20"],
 					//line 6, cagaran and nama pembayar
-					[24, "\x20"],
+					[23, "\x20"],
 					[8, "",true],
-					[33, "\x20"],
+					[25, "\x20"],
 					[23, $receipt->receipt_content_payer_name,true],
 				]
 			);
@@ -999,7 +1009,7 @@ class PrintForm
 			[
 				[$form->receipt_offset, "\x20"],
 				//line 7, patient name, payment method 25,15 42-8
-				[16, "\x20"],
+				[15, "\x20"],
 				[25, $patientInformation->name,true],
 				[16, "\x20"],
 				[17, $receipt->receipt_content_payment_method,true],
@@ -1010,7 +1020,7 @@ class PrintForm
 			[
 				[$form->receipt_offset, "\x20"],
 				//line 8, penjelasan, descripton
-				[8, "\x20"],
+				[7, "\x20"],
 				[13, "Penjelasan : "],
 				[50, $receipt->receipt_content_description,true],
 				
@@ -1045,6 +1055,7 @@ class PrintForm
 			->andWhere(["<", "receipt_content_datetime_paid", $bill->bill_generation_datetime])
 			->all();
 		
+		
 		$treatmentDetails = Treatment_details::find()->where(["bill_uid"=>$bill->bill_uid])->all();
 		$fppDetails = Fpp::find()->where(["bill_uid"=>$bill->bill_uid])->all();
 
@@ -1069,8 +1080,27 @@ class PrintForm
 			// print 1 line from buffer
 			// otherwise, nextpage(linecount = 0, print header)
 		// print footer(linecount)
-	
-		$form = new PrintForm(PrintForm::Bill);
+		
+		$session = Yii::$app->session;
+		$form_type = null;
+		$printer_choice = $session->get('bill_printer_session');
+		
+		/*
+		if ($session->has('bill_printer_session')) {
+			$printer_choice = $session->get('bill_printer_session');
+			if($printer_choice == 'Printer 1')
+				$form_type = PrintForm::Bill;
+			else if($printer_choice == 'Printer 2')
+				$form_type = PrintForm::Bill2;
+			
+		}
+		else $form_type = PrintForm::Bill;
+		*/
+		
+					
+		$form_type = PrintForm::Bill2;
+		
+		$form = new PrintForm($form_type);
 
 		// adding queue
 		$MyQueue = new Queue();
@@ -1082,12 +1112,12 @@ class PrintForm
 		foreach ($fppDetails as $fppDetail) {
 			$form->printBillFppRow($fppDetail, $MyQueue);
 		}
-		$form->printBillDailyTreatment($bill, $MyQueue);
+		$form->printBillDailyTreatment($bill, $MyQueue, $previousPayments);
 		foreach ($previousPayments as $payment) {
 			$form->printBillPreviousPaymentRow($payment, $MyQueue);
 		}
 
-		$windowLimit = 24; 
+		$windowLimit = 23; 
 		$lineCounter = 0;
 
 		// print bill content in here
@@ -1113,7 +1143,7 @@ class PrintForm
 		$form->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[28, "\x20"],
+				[27, "\x20"],
 				[29, "JUMLAH YANG PERLU DIBAYAR ==>"], //$model->bill_generation_final_fee_rm
 				[10,"\x20"],
 				[9,  $bill->bill_generation_final_fee_rm,false,true],
@@ -1132,6 +1162,7 @@ class PrintForm
 			$this->escp2SetTypeface(0);
 		$this->printNewLine($line); 
 		$this->printBillAddress($bill, $patientInformation, $form);
+		$this->printNewLine(1); 
 	}
 
 	public function printBillAddress($bill, $patientInformation, $form)
@@ -1139,7 +1170,7 @@ class PrintForm
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[62, "\x20"],
+				[61, "\x20"],
 				[10, date_format(new \datetime($bill->bill_generation_datetime), "d/m/Y")],
 			]
 		);           
@@ -1147,7 +1178,7 @@ class PrintForm
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[11, $bill->rn],
 			]
 		);     
@@ -1155,7 +1186,7 @@ class PrintForm
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[35, $patientInformation->name,true],
 			]
 		);
@@ -1163,7 +1194,7 @@ class PrintForm
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[35, $patientInformation->address1,true],
 			]
 		);
@@ -1171,7 +1202,7 @@ class PrintForm
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[35, $patientInformation->address2,true],
 			]
 		);
@@ -1179,7 +1210,7 @@ class PrintForm
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[35, $patientInformation->address3,true],
 			]
 		);
@@ -1193,7 +1224,7 @@ class PrintForm
 		$queue->EnQueue(			
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[32, "Caj Duduk Wad  (Tarikh Masuk  : "],
 				[10, $hasWards?date_format(new \datetime(Ward::find()->where(["bill_uid"=>$bill->bill_uid])->min("ward_start_datetime")), "d/m/Y"):"N/A"],
 				[2," )"],
@@ -1202,7 +1233,7 @@ class PrintForm
 		$queue->EnQueue(			
 			[
 				[$form->bill_offset, "\x20"],
-				[22, "\x20"],
+				[21, "\x20"],
 				[17, "(Tarikh Keluar : "],
 				[10, $hasWards?date_format(new \datetime(Ward::find()->where(["bill_uid"=>$bill->bill_uid])->max("ward_end_datetime")), "d/m/Y"):"N/A"],
 				[2," )"],
@@ -1213,7 +1244,7 @@ class PrintForm
 		$queue->EnQueue(			
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[7, "Kelas  "],
 				[2, $bill->class],
 				[3,":  "],
@@ -1230,14 +1261,14 @@ class PrintForm
 		$queue->EnQueue(			
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[28, "Caj Pemeriksaan/Ujian Makmal"],
 				[1,"\n"]
 			]);
 		$queue->EnQueue(			
 			[
 				[$form->bill_offset, "\x20"],
-				[7, "\x20"],
+				[6, "\x20"],
 				[28, "-----------------------------"],
 				[1,"\n"]
 			]);
@@ -1248,7 +1279,7 @@ class PrintForm
 		$queue->EnQueue(
             [
 				[$form->bill_offset, "\x20"],
-                [7, "\x20"],
+                [6, "\x20"],
                 [5, $treatmentDetails->treatment_code, true],
                 [1,"\x20"],
                 [30, $treatmentDetails->treatment_name,true],
@@ -1270,7 +1301,7 @@ class PrintForm
 		$queue->EnQueue(
             [
 				[$form->bill_offset, "\x20"],
-                [7, "\x20"],
+                [6, "\x20"],
                 [5, $fppDetails->kod, true],
                 [1,"\x20"],
                 [30, $fppDetails->name,true],
@@ -1287,7 +1318,7 @@ class PrintForm
         );
     }
 	
-	public function printBillDailyTreatment($bill, $queue){
+	public function printBillDailyTreatment($bill, $queue, $previousPayments){
 		$form = new PrintForm(PrintForm::Bill);
 		$modelInpatient = Inpatient_treatment::findOne(['bill_uid' => $bill->bill_uid]);
 
@@ -1295,7 +1326,7 @@ class PrintForm
     	$queue->EnQueue(
             [
 				[$form->bill_offset, "\x20"],
-                [7, "\x20"],
+                [6, "\x20"],
                 [24, "Caj Rawatan Harian"],
 				[1,"\n"]
             ]
@@ -1303,32 +1334,37 @@ class PrintForm
 		$queue->EnQueue(
             [
 				[$form->bill_offset, "\x20"],
-                [7, "\x20"],
+                [6, "\x20"],
                 [18, "---------------------"],
                 [45, "\x20"],
                 [6, (!empty($modelInpatient) ? $modelInpatient->inpatient_treatment_cost_rm : 
-					number_format(0,2, '.', ''))], 
+					number_format(0,2, '.', '')), false, true], 
 				[1,"\n"]
             ]
         );
-       
-		$queue->EnQueue(
+		
+       if(!empty($previousPayments))
+	   {
+		   $queue->EnQueue(
             [
 				[$form->bill_offset, "\x20"],
-                [69, "\x20"],
+                [68, "\x20"],
                 [10, "--------"],
 				[1,"\n"]
             ]
-        );
-      
-		$queue->EnQueue(
-            [
-				[$form->bill_offset, "\x20"],
-                [67, "\x20"],
-                [9, $bill->bill_generation_billable_sum_rm,false,true],
-				[1,"\n"]
-            ]
-        );
+			);
+		  
+			$queue->EnQueue(
+				[
+					[$form->bill_offset, "\x20"],
+					[66, "\x20"],
+					[9, $bill->bill_generation_billable_sum_rm,false,true],
+					[1,"\n"]
+				]
+			);
+	   }
+	   
+		
     }
 	
 	public function printBillPreviousPaymentRow($receipt, $queue){
@@ -1336,7 +1372,7 @@ class PrintForm
 		$queue->EnQueue(
             [
 				[$form->bill_offset, "\x20"],
-                [7, "\x20"],
+                [6, "\x20"],
                 [23, (($receipt->receipt_type=="refund")?"Tambah Cagaran":"Tolak Cagaran")." ". $receipt->receipt_serial_number],
                 [37,"\x20"],
                 [9, $receipt->receipt_content_sum,false,true],
