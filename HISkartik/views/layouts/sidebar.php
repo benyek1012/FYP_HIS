@@ -256,8 +256,8 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                     echo '<div class="mt-2"></div><div class="user-panel">'.
                         \hail812\adminlte\widgets\Menu::widget(['items' => 
                             [   
-                                ['label' => Yii::t('app','Print Transaction Records'), 'iconClass' => '',
-                                'url' => ['receipt/record', 'rn' =>  $model_rn->rn, 'id' => $model_rn->patient_uid]]
+                                ['label' => Yii::t('app','Print Transaction History'), 'iconClass' => '',
+                                'url' => ['receipt/record', 'id' => $model_rn->patient_uid]]
                             ]
                         ]). '</div><div class="mt-2"></div>';
                     }

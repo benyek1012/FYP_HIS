@@ -21,36 +21,46 @@ if(!empty($temp))
     $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 else $temp2 = Patient_information::findOne(['patient_uid'=> Yii::$app->request->get('id')]);
 
-$this->title = Yii::t('app','Transaction Records');
+$this->title = Yii::t('app','Transaction History');
 if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 else 
     $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = $this->title;
 
-$modelBill = (new \yii\db\Query())
-->select('bill.rn')
-->from('bill')
-->join('INNER JOIN', 'patient_admission', 'patient_admission.rn = bill.rn')
-->join('INNER JOIN', 'patient_information', 'patient_information.patient_uid = patient_admission.patient_uid')
-->where(['patient_information.patient_uid' => Yii::$app->request->get('id')])
-->andWhere('bill.bill_generation_datetime is not null')
-->distinct();
+// $modelBill = (new \yii\db\Query())
+// ->select('bill.rn')
+// ->from('bill')
+// ->join('INNER JOIN', 'patient_admission', 'patient_admission.rn = bill.rn')
+// ->join('INNER JOIN', 'patient_information', 'patient_information.patient_uid = patient_admission.patient_uid')
+// ->where(['patient_information.patient_uid' => Yii::$app->request->get('id')])
+// ->andWhere('bill.bill_generation_datetime is not null')
+// ->distinct();
+
+// $modelReceipt = (new \yii\db\Query())
+// ->select('receipt.rn')
+// ->from('receipt')
+// ->join('INNER JOIN', 'patient_admission', 'patient_admission.rn = receipt.rn')
+// ->join('INNER JOIN', 'patient_information', 'patient_information.patient_uid = patient_admission.patient_uid')
+// ->where(['patient_information.patient_uid' => Yii::$app->request->get('id')])
+// ->union($modelBill)
+// ->distinct()
+// ->all();
 
 $modelReceipt = (new \yii\db\Query())
-->select('receipt.rn')
-->from('receipt')
-->join('INNER JOIN', 'patient_admission', 'patient_admission.rn = receipt.rn')
-->join('INNER JOIN', 'patient_information', 'patient_information.patient_uid = patient_admission.patient_uid')
-->where(['patient_information.patient_uid' => Yii::$app->request->get('id')])
-->union($modelBill)
-->distinct()
+->select('rn')
+->from('patient_admission')
+->where(["patient_uid" => Yii::$app->request->get('id')])
 ->all();
 ?>
 
 <div class="receipt-index">
 
 <?php
+// echo '<pre>';
+// var_dump($modelReceipt_v1);
+// echo '</pre>';
+// exit;
 foreach($modelReceipt as $model){
     $dataProvider = $searchModel->transactionRecords($model["rn"]);
 ?>

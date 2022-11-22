@@ -425,6 +425,16 @@ $this->registerJs(
 ?>
 
 <script>
+    // console.log(document.getElementById('initial_ward_code').value);
+    // console.log(document.getElementById('initial_ward_class').value);
+// if (document.getElementById('initial_ward_code').value == "") {
+//         document.getElementById('initial_ward_code').style.backgroundColor = '#ffc107';
+// }
+
+// if('<?php echo $model->initial_ward_class == "UNKNOWN" ?>' || '<?php echo $model->initial_ward_class == null ?>'){
+//     docuemnt.getElementById('initial_ward_class').style.backgroundColor = '#ffc107';
+// }
+
 function testing(url) {
     var wardForm = $('#patient-admission-form');
     var formData = wardForm.serialize();
