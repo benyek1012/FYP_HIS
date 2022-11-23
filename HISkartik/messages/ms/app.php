@@ -383,5 +383,8 @@ return[
     'Inpatient Treatment Lookup' => 'Carian Rawatan Pesakit Dalam',
     'Cost (RM)' => 'Kos (RM)',
     'Lookup Inpatient Treatment' => 'Cari Rawatan Pesakit Dalam',
+    'DOB' => 'Tarikh Lahir',
+    'Transaction History' => 'Sejarah Transaksi'
+
 ];
 ?>

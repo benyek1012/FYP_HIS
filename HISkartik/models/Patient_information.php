@@ -88,7 +88,7 @@ class Patient_information extends \yii\db\ActiveRecord
             'address2' => 'Address 2',
             'address3' => 'Address 3',
             'job' => Yii::t('app','Job'),
-            'DOB' => 'DOB',
+            'DOB' => Yii::t('app','DOB'),
         ];
     }
 

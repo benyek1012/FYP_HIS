@@ -797,7 +797,7 @@ class PrintForm
 		$ageString = $patientInformation->getAge("%yyrs %mmth%dday");
 		$wardDesc = Lookup_ward::findOne(["ward_code"=>$patientAdmission->initial_ward_code])->ward_name; 
 		
-		$rows = 6;
+		$rows = 3;
 		
 		for($i=1; $i<=1; $i++)  
 		{
@@ -907,7 +907,7 @@ class PrintForm
 			}
 		}
 			
-	//	$form->escp2EjectPaper();	
+		$form->escp2EjectPaper();	
 
 		$form->escp2UnsetTiny();
 

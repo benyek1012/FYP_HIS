@@ -52,25 +52,26 @@ body {
                 ?>
         <?php /* <div class="dropdown">
             <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false"
-                class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
-            <div class="dropdown-content">
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
-                    style="margin-top: 0px; margin-right: 20px ;">
-                    <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
-                    <!-- <li><a href="<?php echo Url::to(['/patient_information']); ?>"
+        aria-haspopup="true" aria-expanded="false"
+        class="nav-link dropdown-toggle"><?php echo Yii::t('app','Admission'); ?></a>
+        <div class="dropdown-content">
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow"
+                style="margin-top: 0px; margin-right: 20px ;">
+                <li><a href="<?php echo Url::to(['/patient_admission']); ?>"
+                        class="dropdown-item"><?php echo Yii::t('app','Search Admission'); ?></a></li>
+                <!-- <li><a href="<?php echo Url::to(['/patient_information']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Patient by Entry Date'); ?></a></li> -->
-                    <li><a href="<?php echo Url::to(['/site/admission']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
-                    <!-- <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
+                <li><a href="<?php echo Url::to(['/site/admission']); ?>"
+                        class="dropdown-item"><?php echo Yii::t('app','Patient Admission Summary'); ?></a></li>
+                <!-- <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li> -->
-                </ul>
-            </div>
+            </ul>
+        </div>
         </div> */ ?>
 
         <div class="dropdown">
-            <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>" class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
+            <a id="admission" href="<?php echo Url::to(['/site/admission']); ?>"
+                class="nav-link"><?php echo Yii::t('app','Admission'); ?></a>
         </div>
 
         <div class="dropdown">
@@ -87,7 +88,8 @@ body {
                     <li><a href="<?php echo Url::to(['/patient_information/search_ward']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Search Patient by Ward'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/patient_information/search_discharge']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Discharge Date'); ?></a></li>
+                            class="dropdown-item"><?php echo Yii::t('app','Search Patient by Discharge Date'); ?></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -112,7 +114,7 @@ body {
                             class="dropdown-item"><?php echo Yii::t('app','General Lookup'); ?></a>
                     </li>
                     <?php if((new New_user()) -> isAdmin()) { ?>
-                        <li><a href="<?php echo Url::to(['/new_user']); ?>"
+                    <li><a href="<?php echo Url::to(['/new_user']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','User Management'); ?></a></li>
                     <?php } ?>
                     <li><a href="<?php echo Url::to(['/lookup_ward']); ?>"
@@ -124,8 +126,10 @@ body {
                     </li>
                     <li><a href="<?php echo Url::to(['/lookup_department']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Department Codes'); ?></a></li>
-                    <li><a href="<?php echo Url::to(['/lookup_fpp']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','FPP Lookup'); ?></a></li>
+                    <?php if(Yii::$app->params['hide_fpp'] != "true"){ ?>
+                            <li><a href="<?php echo Url::to(['/lookup_fpp']); ?>"
+                                    class="dropdown-item"><?php echo Yii::t('app','FPP Lookup'); ?></a></li>
+                    <?php } ?>
                     <li><a href="<?php echo Url::to(['/lookup_inpatient_treatment_cost']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Inpatient Treatment Lookup'); ?></a></li>
                 </ul>
@@ -146,16 +150,20 @@ body {
                     <li><a href="<?php echo Url::to(['/report/report7']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan'); ?></a></li>
                     <li><a href="<?php echo Url::to(['/report/report8']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan Mengikut Keadeh Bayaran'); ?></a></li>
-                    <li><a href="#"
-                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Bill Pesakit'); ?></a></li>
-                    <li><a href="#"
-                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Bulanan Kutipan dan PATI dan PADI'); ?></a></li>
-                    <li><a href="#"
-                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Senarai Terperinci Bill Hospital'); ?></a></li>
-                    <li><a href="#"
-                            class="dropdown-item" style="color: grey"><?php echo Yii::t('app','Report Penyata Akaun Belum Terima'); ?></a></li>
-                            <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Report Serahan Wang Kutipan Mengikut Keadeh Bayaran'); ?></a>
+                    </li>
+                    <li><a href="#" class="dropdown-item"
+                            style="color: grey"><?php echo Yii::t('app','Report Bill Pesakit'); ?></a></li>
+                    <li><a href="#" class="dropdown-item"
+                            style="color: grey"><?php echo Yii::t('app','Report Bulanan Kutipan dan PATI dan PADI'); ?></a>
+                    </li>
+                    <li><a href="#" class="dropdown-item"
+                            style="color: grey"><?php echo Yii::t('app','Report Senarai Terperinci Bill Hospital'); ?></a>
+                    </li>
+                    <li><a href="#" class="dropdown-item"
+                            style="color: grey"><?php echo Yii::t('app','Report Penyata Akaun Belum Terima'); ?></a>
+                    </li>
+                    <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li> -->
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
@@ -172,11 +180,11 @@ body {
                     <li><a href="<?php echo Url::to(['/reminder']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Reminder Letters'); ?></a></li>
                     <?php if((new New_user()) -> isAdmin()) { ?>
-                        <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
+                    <li><a href="<?php echo Url::to(['/pekeliling_import']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Pekeliling Imports'); ?></a></li>
                     <?php } ?>
                     <?php if((new New_user()) -> isAdmin()) { ?>
-                        <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
+                    <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
                             class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li>
                     <?php } ?>
                     <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
@@ -192,14 +200,15 @@ body {
             }
             ?>
     </ul>
-    <!-- Right navbar links -->        
+    <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
         <?php 
         if(!(new New_user()) -> isAdmin())
         {
         ?>
         <li class="nav-item dropdown">
-            <a id="password" href="<?php echo Url::to(['/new_user/change_password']); ?>" class="nav-link"><?php echo Yii::t('app', 'Change Password') ?></a>
+            <a id="password" href="<?php echo Url::to(['/new_user/change_password']); ?>"
+                class="nav-link"><?php echo Yii::t('app', 'Change Password') ?></a>
         </li>
         <?php
         }

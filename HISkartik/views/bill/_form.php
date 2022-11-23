@@ -761,6 +761,7 @@ textarea {
 </a>
 <!-- /.card -->
 
+<?php if(Yii::$app->params['hide_fpp'] != "true"){ ?>
 <a name="fpp">
     <div class="card" id="fpp_div" style="display:none;">
         <div class="card-header text-white bg-primary">
@@ -786,6 +787,7 @@ textarea {
     </div>
 </a>
 <!-- /.card -->
+<?php } ?>
 
 <a name="billGeneration">
     <?php $form = kartik\form\ActiveForm::begin([
