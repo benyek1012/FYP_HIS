@@ -30,3 +30,39 @@ ALTER TABLE `patient_admission`
     DROP COLUMN `guarantor_address1`, 
     DROP COLUMN `guarantor_address2`, 
     DROP COLUMN `guarantor_address3`;
+
+
+
+DROP PROCEDURE IF EXISTS `reminder_select_number`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reminder_select_number`(IN `batch_date` VARCHAR(16)) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER 
+BEGIN
+
+SELECT rn, nric, race, address1, address2, address3, guarantor_nric,  guarantor_address1,guarantor_address2,guarantor_address3, entry_datetime, reminder_no AS 'Reminder Number', reminder_batch_date AS 'Batch date', final_ward_datetime AS 'Discharge Date', bill_generation_billable_sum_rm AS 'Billable Fee'
+FROM (
+SELECT bill.rn, patient_information.nric, patient_information.race, patient_information.address1, patient_information.address2, patient_information.address3, bill.guarantor_nric, bill.guarantor_address1,bill.guarantor_address2,bill.guarantor_address3, patient_admission.entry_datetime, 'reminder1' reminder_no, reminder1 reminder_batch_date, bill.final_ward_datetime, bill.deleted, bill.bill_generation_billable_sum_rm
+    FROM patient_admission 
+	LEFT JOIN patient_information ON patient_admission.patient_uid = patient_information.patient_uid
+	LEFT JOIN bill ON patient_admission.rn = bill.rn
+    WHERE bill.bill_generation_datetime is not null
+    union all 
+    
+SELECT bill.rn, patient_information.nric, patient_information.race, patient_information.address1, patient_information.address2, patient_information.address3, bill.guarantor_nric, bill.guarantor_address1,bill.guarantor_address2,bill.guarantor_address3, patient_admission.entry_datetime, 'reminder2' reminder_no, reminder2 reminder_batch_date, bill.final_ward_datetime, bill.deleted, bill.bill_generation_billable_sum_rm
+    FROM patient_admission
+	LEFT JOIN patient_information ON patient_admission.patient_uid = patient_information.patient_uid
+	LEFT JOIN bill ON patient_admission.rn = bill.rn
+    WHERE bill.bill_generation_datetime is not null
+	union all 
+    
+SELECT bill.rn, patient_information.nric, patient_information.race, patient_information.address1, patient_information.address2, patient_information.address3, bill.guarantor_nric, bill.guarantor_address1,bill.guarantor_address2,bill.guarantor_address3, patient_admission.entry_datetime, 'reminder3' reminder_no, reminder3 reminder_batch_date, bill.final_ward_datetime, bill.deleted, bill.bill_generation_billable_sum_rm
+    FROM patient_admission
+	LEFT JOIN patient_information ON patient_admission.patient_uid = patient_information.patient_uid
+	LEFT JOIN bill ON patient_admission.rn = bill.rn
+    WHERE bill.bill_generation_datetime is not null
+)  dummy_name
+WHERE reminder_batch_date is not null AND deleted = 0 AND reminder_batch_date <= batch_date 
+ORDER BY reminder_no, rn;
+
+END$$
+DELIMITER ;
