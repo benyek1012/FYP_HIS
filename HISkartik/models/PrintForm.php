@@ -582,6 +582,7 @@ class PrintForm
 	public static function printCaseHistorySheet($rn)
 	{
 		$patientAdmission = Patient_admission::findOne(["rn"=>$rn]);
+		$bill = Bill::find()->where(["rn"=>$rn, "deleted" => 0])->one();
 		if (is_null($patientAdmission))
 			return Yii::t('app',"RN can't be found in database");
 		
@@ -669,7 +670,7 @@ class PrintForm
 				[$form->casehistory_offset, "\x20"],
 				//case history note line 7, employername
 				[21, "\x20"], // from 22->20
-				[13, $patientAdmission->guarantor_name,true],// phase2 change to be selective
+				[13, $bill->guarantor_name,true],// phase2 change to be selective
 			]
 		);
 		$form->printNewLine(2);

@@ -22,7 +22,7 @@ class Patient_admissionSearch extends Patient_admission
     public function rules()
     {
         return [
-            [['name','nric','race','sex','rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference', 'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email','type'], 'safe'],
+            [['name','nric','race','sex','rn', 'entry_datetime', 'patient_uid', 'initial_ward_code', 'initial_ward_class', 'reference','type'], 'safe'],
             [['medical_legal_code' ], 'integer'],
         ];
     }

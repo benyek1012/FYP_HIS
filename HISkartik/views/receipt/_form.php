@@ -80,11 +80,13 @@ else{
         else $checked_name = "Unknown";
         
         $rows = (new \yii\db\Query())
-        ->select(['`patient_information`.`name`,`patient_admission`.`guarantor_name`'])
-        ->from('patient_information,  patient_admission')
+        ->select(['`patient_information`.`name`,`bill`.`guarantor_name`'])
+        ->from('patient_information,  patient_admission, bill')
         ->where(['patient_information.patient_uid' => $temp->patient_uid])
         ->andWhere(['patient_admission.rn' => Yii::$app->request->get('rn')])
         ->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
+        ->andWhere('`bill`.`rn` = `patient_admission`.`rn`')
+        ->andWhere(['=', '`bill`.`deleted`', 0])
         ->all();
         
         $names = array();

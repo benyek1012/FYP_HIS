@@ -96,7 +96,7 @@ use yii\helpers\Url;
             //     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
             // ],
             [
-                'attribute' =>  'guarantor_name',
+                'attribute' =>  'bill.guarantor_name',
                 'headerOptions'=>['style'=>'max-width: 100px;'],
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
             ], 
@@ -285,7 +285,7 @@ use yii\helpers\Url;
                 //     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 // ],
                 [
-                    'attribute' =>  'guarantor_name',
+                    'attribute' =>  'bill.guarantor_name',
                     'headerOptions'=>['style'=>'max-width: 100px;'],
                     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 ], 

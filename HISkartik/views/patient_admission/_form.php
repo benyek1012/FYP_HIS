@@ -298,28 +298,11 @@ use app\models\Receipt;
                 ]); 
             ?>
         </div>
+        
         <div class="col-sm-6">
             <?= $form->field($model, 'medical_legal_code')->textInput(['autocomplete' =>'off', 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
         </div>
 
-    </div>
-<hr/>
-    <div class="row">
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_name')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_nric')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_address1')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-            <?= $form->field($model, 'guarantor_address2')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-            <?= $form->field($model, 'guarantor_address3')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-        </div>
-        <div class="col-sm-6">
-            <?= $form->field($model, 'guarantor_phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-            <?= $form->field($model, 'guarantor_email')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
-        </div>
     </div>
 
     <div class="form-group">

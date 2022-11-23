@@ -18,7 +18,14 @@ use Yii;
  * @property string|null $department_name
  * @property int $is_free
  * @property string|null $collection_center_code
- * @property string|null $nurse_responsible
+ * @property string|null $guarantor_name
+ * @property string|null $guarantor_nric
+ * @property string|null $guarantor_phone_number
+ * @property string|null $guarantor_email
+ * @property string|null $guarantor_address1
+ * @property string|null $guarantor_address2
+ * @property string|null $guarantor_address3
+ * @property string|null $guarantor_comment
  * @property string|null $bill_generation_datetime
  * @property string|null $generation_responsible_uid
  * @property float|null $bill_generation_billable_sum_rm
@@ -26,10 +33,12 @@ use Yii;
  * @property string|null $description
  * @property string|null $bill_print_responsible_uid
  * @property string|null $bill_print_datetime
- * @property string|null $bill_print_id
- * @property int $deleted
  * @property string|null $final_ward_datetime
- *@property string|null $discharge_date
+ * @property string|null $bill_print_id
+ * @property int|null $deleted
+ * @property string|null $discharge_date
+ *
+ * @property Fpp[] $fpps
  * @property PatientAdmission $rn0
  * @property TreatmentDetails[] $treatmentDetails
  * @property Ward[] $wards
@@ -62,9 +71,15 @@ class Bill extends \yii\db\ActiveRecord
             [['status_code', 'class', 'department_code', 'collection_center_code'], 'string', 'max' => 20],
             [['status_description'], 'string', 'max' => 100],
             [['department_name'], 'string', 'max' => 50],
-            [['description'], 'string', 'max' => 200],
-           // [['bill_print_id'], 'integer'],
-         //   [['bill_print_id'], 'match', 'pattern' => '/^\d{7}$/', 'message' => 'Field must contain exactly 7 digits.'],
+            [['description', 'guarantor_name', 'guarantor_comment'], 'string', 'max' => 200],
+            [['guarantor_phone_number'], 'string', 'max' => 100],
+            [['guarantor_nric'], 'integer'],
+            [['guarantor_email'], 'email'],
+            [['guarantor_email'], 'string', 'max' => 100],
+            [['guarantor_address1'],'string', 'max' => 100],
+            [['guarantor_address2'],'string', 'max' => 100],
+            [['guarantor_address3'],'string', 'max' => 100],
+            ['guarantor_phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app', 'Guarantor Phone Number can only contain digit, "/", "-", ",", and " " character')],
             [['bill_print_id'], 'unique'],
             [['rn'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_admission::className(), 'targetAttribute' => ['rn' => 'rn']],
         ];
@@ -97,6 +112,14 @@ class Bill extends \yii\db\ActiveRecord
             'deleted' => 'Deleted',
             'final_ward_datetime',
             'discharge_date' => Yii::t('app', 'Discharge Date'),
+            'guarantor_name' => Yii::t('app','Guarantor Name'),
+            'guarantor_nric' => Yii::t('app','Guarantor NRIC/Passport'),
+            'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
+            'guarantor_email' => Yii::t('app','Guarantor Email'),
+            'guarantor_address1' => Yii::t('app','Guarantor Address1'),
+            'guarantor_address2' => Yii::t('app','Guarantor Address2'),
+            'guarantor_address3' => Yii::t('app','Guarantor Address3'),
+            'guarantor_comment' => Yii::t('app','Guarantor Comment'),
         ];
     }
 

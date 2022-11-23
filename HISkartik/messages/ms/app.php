@@ -384,7 +384,8 @@ return[
     'Cost (RM)' => 'Kos (RM)',
     'Lookup Inpatient Treatment' => 'Cari Rawatan Pesakit Dalam',
     'DOB' => 'Tarikh Lahir',
-    'Transaction History' => 'Sejarah Transaksi'
+    'Transaction History' => 'Sejarah Transaksi',
+    'Guarantor Comment' => 'Catitan Penjamin',
 
 ];
 ?>

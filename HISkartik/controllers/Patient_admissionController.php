@@ -3,6 +3,7 @@
 namespace app\controllers;
 require 'vendor/autoload.php';
 
+use app\models\Bill;
 use Yii;
 use app\models\Cancellation;
 use app\models\DateFormat;

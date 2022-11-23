@@ -690,8 +690,35 @@ textarea {
                 ?>
 
 
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <?= $form->field($model, 'description')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $print_readonly == false? $disabled : $print_readonly,]) ?>
+                    <hr />
+                </div>
+
+
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'guarantor_name')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled,
+                     'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")', 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
+                </div>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'guarantor_nric')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled, 
+                    'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")', 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
+                </div>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'guarantor_address1')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'disabled' => $disabled,
+                     'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")', 'disabled' => $print_readonly == false? $disabled : $print_readonly]) ?>
+                    <?= $form->field($model, 'guarantor_address2')->textInput(['autocomplete' =>'off', 'maxlength' => true,
+                    'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+                    <?= $form->field($model, 'guarantor_address3')->textInput(['autocomplete' =>'off', 'maxlength' => true,
+                    'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+                </div>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'guarantor_phone_number')->textInput(['autocomplete' =>'off', 'maxlength' => true,
+                     'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+                    <?= $form->field($model, 'guarantor_email')->textInput(['autocomplete' =>'off', 'maxlength' => true, 
+                    'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
+                    <?= $form->field($model, 'guarantor_comment')->textInput(['autocomplete' =>'off', 'maxlength' => true, 
+                    'disabled' => $print_readonly == false? $disabled : $print_readonly, 'onfocusout' => ' submitPatientAdmissionForm();', 'onfocus' => 'getFocusID("")']) ?>
                 </div>
             </div>
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>

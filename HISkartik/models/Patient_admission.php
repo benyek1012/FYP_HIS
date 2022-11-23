@@ -10,14 +10,14 @@ use Yii;
  * @property string $rn
  * @property string $entry_datetime
  * @property string $patient_uid
- * @property string|null $initial_ward_code
- * @property string|null $initial_ward_class
+ * @property string $initial_ward_code
+ * @property string $initial_ward_class
  * @property string|null $reference
  * @property int|null $medical_legal_code
- * @property string|null $guarantor_name
- * @property string|null $guarantor_nric
- * @property string|null $guarantor_phone_number
- * @property string|null $guarantor_email
+ * @property string $type
+ * @property string|null $reminder1
+ * @property string|null $reminder2
+ * @property string|null $reminder3
  *
  * @property Bill[] $bills
  * @property PatientInformation $patientU
@@ -47,19 +47,10 @@ class Patient_admission extends \yii\db\ActiveRecord
             [['rn','startrn','endrn'], 'string', 'max' => 11, 'min' => 11],
             [['patient_uid'], 'string', 'max' => 64],
             [['initial_ward_code', 'initial_ward_class'], 'string', 'max' => 20],
-            [['reference', 'guarantor_name'], 'string', 'max' => 200],
-            // [['guarantor_phone_number'], 'integer'],
-            [['guarantor_phone_number'], 'string', 'max' => 100],
-            [['guarantor_nric'], 'integer'],
-            [['guarantor_email'], 'email'],
-            [['guarantor_email'], 'string', 'max' => 100],
-            [['guarantor_address1'],'string', 'max' => 100],
-            [['guarantor_address2'],'string', 'max' => 100],
-            [['guarantor_address3'],'string', 'max' => 100],
+            [['reference'], 'string', 'max' => 200],
             [['type'], 'string', 'max' => 20],
             [['rn'], 'unique'],
             [['patient_uid'], 'exist', 'skipOnError' => true, 'targetClass' => Patient_information::className(), 'targetAttribute' => ['patient_uid' => 'patient_uid']],
-            ['guarantor_phone_number', 'match', 'pattern' => '/^[0-9\/\-\,\s]+$/i', 'message' => Yii::t('app', 'Guarantor Phone Number can only contain digit, "/", "-", ",", and " " character')],
         ];
     }
 
@@ -76,13 +67,6 @@ class Patient_admission extends \yii\db\ActiveRecord
             'initial_ward_class' => Yii::t('app','Initial Ward Class'),
             'reference' => Yii::t('app','Reference'),
             'medical_legal_code' => Yii::t('app','Medical Legal Code'),
-            'guarantor_name' => Yii::t('app','Guarantor Name'),
-            'guarantor_nric' => Yii::t('app','Guarantor NRIC/Passport'),
-            'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
-            'guarantor_email' => Yii::t('app','Guarantor Email'),
-            'guarantor_address1' => Yii::t('app','Guarantor Address1'),
-            'guarantor_address2' => Yii::t('app','Guarantor Address2'),
-            'guarantor_address3' => Yii::t('app','Guarantor Address3'),
             'type' => Yii::t('app','Type'),
             'nric' => 'NRIC',
             'name' => Yii::t('app','Name'),

@@ -17,7 +17,10 @@ class BillSearch extends Bill
     public function rules()
     {
         return [
-            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'department_code', 'department_name', 'collection_center_code', 'nurse_responsible', 'bill_generation_datetime', 'generation_responsible_uid', 'description', 'bill_print_responsible_uid', 'bill_print_datetime', 'bill_print_id'], 'safe'],
+            [['bill_uid', 'rn', 'status_code', 'status_description', 'class', 'department_code', 'department_name',
+                 'collection_center_code', 'nurse_responsible', 'bill_generation_datetime', 'generation_responsible_uid',
+                  'description', 'bill_print_responsible_uid', 'bill_print_datetime', 'bill_print_id',
+                  'guarantor_name', 'guarantor_nric', 'guarantor_phone_number', 'guarantor_email'], 'safe'],
             [['daily_ward_cost', 'bill_generation_billable_sum_rm', 'bill_generation_final_fee_rm'], 'number'],
             [['is_free'], 'integer'],
         ];

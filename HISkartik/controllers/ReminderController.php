@@ -358,10 +358,10 @@ class ReminderController extends Controller
                 $amount_due = "RM ".((new Reminder()) -> calculateAmountdue($q['rn'],$q['Billable Fee'],$remindate));
                 $amount = "RM ".$q['Billable Fee'];
                 $bill_No = (Bill::findOne(['rn' => $rn]))->bill_print_id;
-                $guarantor_name = (Patient_admission::findOne(['rn' => $rn]))->guarantor_name;
-                $guarantor_address1 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address1;
-                $guarantor_address2 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address2;
-                $guarantor_address3 = (Patient_admission::findOne(['rn' => $rn]))->guarantor_address3;
+                $guarantor_name = (Bill::findOne(['rn' => $rn]))->guarantor_name;
+                $guarantor_address1 = (Bill::findOne(['rn' => $rn]))->guarantor_address1;
+                $guarantor_address2 = (Bill::findOne(['rn' => $rn]))->guarantor_address2;
+                $guarantor_address3 = (Bill::findOne(['rn' => $rn]))->guarantor_address3;
                 $status_kod = (Bill::findOne(['rn' => $rn])->status_description);
                 // reminder 1
                 if($q['Reminder Number'] == 'reminder1'){
