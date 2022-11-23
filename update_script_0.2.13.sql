@@ -66,3 +66,6 @@ ORDER BY reminder_no, rn;
 
 END$$
 DELIMITER ;
+
+
+ALTER TABLE `bill` ADD `guarantor_comment` VARCHAR(200) NULL DEFAULT NULL AFTER `guarantor_address3`;
