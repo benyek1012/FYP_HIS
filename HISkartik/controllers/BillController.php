@@ -422,7 +422,7 @@ class BillController extends Controller
             // (new FppController(null, null))->actionFpprow();
         }
 
-        $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all();   
+        $modelWard = Ward::find()->where(['bill_uid' => $bill_uid])->orderby(['ward_start_datetime' => SORT_ASC])->all(); 
         $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
         $model_cancellation = new Cancellation();
         $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);

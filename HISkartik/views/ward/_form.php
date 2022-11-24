@@ -149,6 +149,9 @@ else{
     $disabled = false;
     $linkDisabled = '';
 }
+
+$date = new \DateTime();
+$date->setTimezone(new \DateTimeZone('+0800')); //GMT
 ?>
 
 <a name="ward">
@@ -183,7 +186,11 @@ else{
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Start Datetime')?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><?php echo Yii::t('app','Ward End Datetime')?></td>
+                <!-- <td><?php echo Yii::t('app','Ward End Datetime')?></td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+                <td><?php echo Yii::t('app','Ward End Date')?></td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><?php echo Yii::t('app','Ward End Time')?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?php echo Yii::t('app','Ward Number of Days');?></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -211,20 +218,32 @@ else{
                         }
                     }
 
-                    $ward_end_sec = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_end_datetime);
-                    if($ward_end_sec){
-                        $ward_end_sec = $ward_end_sec->format('Y-m-d H:i');
-                        $modelWard->ward_end_datetime = $ward_end_sec;
-                    }
-                    else{
-                        $ward_end_datetime = DateTime::createFromFormat('Y-m-d H:i', $modelWard->ward_end_datetime);
-                        if($ward_end_datetime){
-                            $ward_end_datetime = $ward_end_datetime->format('Y-m-d H:i');
-                            $modelWard->ward_end_datetime = $ward_end_datetime;
-                        }
-                        else{
+                    // $ward_end_sec = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_end_datetime);
+                    // if($ward_end_sec){
+                    //     $ward_end_sec = $ward_end_sec->format('Y-m-d H:i');
+                    //     $modelWard->ward_end_datetime = $ward_end_sec;
+                    // }
+                    // else{
+                    //     $ward_end_datetime = DateTime::createFromFormat('Y-m-d H:i', $modelWard->ward_end_datetime);
+                    //     if($ward_end_datetime){
+                    //         $ward_end_datetime = $ward_end_datetime->format('Y-m-d H:i');
+                    //         $modelWard->ward_end_datetime = $ward_end_datetime;
+                    //     }
+                    //     else{
                             
-                        }
+                    //     }
+                    // }
+
+                    $ward_end_date = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_end_datetime);
+                    $ward_end_time = DateTime::createFromFormat('Y-m-d H:i:s', $modelWard->ward_end_datetime);
+                    if($ward_end_date){
+                        $ward_end_date = $ward_end_date->format('Y-m-d');
+                        $modelWard->ward_end_date = $ward_end_date;
+                    }
+            
+                    if($ward_end_time){
+                        $ward_end_time = $ward_end_time->format('H:i');
+                        $modelWard->ward_end_time = $ward_end_time;
                     }
                 }
             ?>
@@ -356,7 +375,7 @@ else{
                     ?>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>
+                <!-- <td>
                    
 
                         <?= $form->field($modelWard, "[$index]ward_end_datetime")->textInput([
@@ -367,8 +386,28 @@ else{
                         'placeholder' => 'yyyy-mm-dd hh:ii', 
                         ])->label(false) ?>
                 </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+                <td>
+                    <?= $form->field($modelWard, "[$index]ward_end_date")->textInput([
+                    'autocomplete' =>'off', 
+                    'class' => 'end_date', 
+                    'disabled' => empty($isGenerated) ? false : true,
+                    'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                    'placeholder' => 'yyyy-mm-dd', 
+                    'value' => empty($modelWard->ward_end_datetime)? $date->format('Y-m-d') : $modelWard->ward_end_date,
+                    ])->label(false) ?>
+                </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-
+                <td>
+                    <?= $form->field($modelWard, "[$index]ward_end_time")->textInput([
+                    'autocomplete' =>'off', 
+                    'class' => 'end_time', 
+                    'disabled' => empty($isGenerated) ? false : true,
+                    'onchange' => "calculateDays(); changeRowColor('{$index}');",
+                    'placeholder' => 'hh:ii', 
+                    ])->label(false) ?>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td><?= $form->field($modelWard, "[$index]ward_number_of_days")->textInput(['autocomplete' =>'off', 'tabindex' => '-1','maxlength' => true,
                         'class' => 'day', 'readonly' => true, 'disabled' => empty($isGenerated) ? false : true,])->label(false) ?>
                 </td>
@@ -398,6 +437,7 @@ else{
     <?php Pjax::end(); ?>
 </a>
 
+
 <script>
     function calculateDays() {
         var countWard = $("#countWard").val();
@@ -406,7 +446,9 @@ else{
             var numberOfDay = $('#ward-' + i + '-ward_number_of_days').val();
 
             var date1 = new Date($("#ward-" + i + "-ward_start_datetime").val());
-            var date2 = new Date($("#ward-" + i + "-ward_end_datetime").val());
+            // var date2 = new Date($("#ward-" + i + "-ward_end_datetime").val());
+            var end_datetime = $("#ward-" + i + "-ward_end_date").val() + " " + $("#ward-" + i + "-ward_end_time").val();
+            var date2 =new Date(end_datetime);
 
             var SDT = date1.getDate() + "/" + (date1.getMonth() + 1) + "/" + date1.getFullYear();
             var EDT = date2.getDate() + "/" + (date2.getMonth() + 1) + "/" + date2.getFullYear();
@@ -475,6 +517,7 @@ else{
 
             success: function (data) {
                 flag = 0;
+                console.log(data);
 
                 if(type == 'insert'){
                     $.get(urlWard, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
@@ -586,20 +629,24 @@ else{
                 var ward_code = document.querySelector('#ward-'+i+'-ward_code');
                 var ward_name = document.querySelector('#ward-'+i+'-ward_name');
                 var start_date = document.querySelector('#ward-'+i+'-ward_start_datetime');
-                var end_date = document.querySelector('#ward-'+i+'-ward_end_datetime');
+                // var end_date = document.querySelector('#ward-'+i+'-ward_end_datetime');
+                var end_date = document.querySelector('#ward-'+i+'-ward_end_date');
+                var end_time = document.querySelector('#ward-'+i+'-ward_end_time');
                 var days = document.querySelector('#ward-'+i+'-ward_number_of_days');
 
                 if(document.activeElement == ward_code || 
                     document.activeElement == ward_name || 
                     document.activeElement == start_date || 
                     document.activeElement == end_date || 
+                    document.activeElement == end_time || 
                     document.activeElement == days){
 
                     calculateDays();
 
                     if(document.getElementById('ward-'+(countWard - 1)+'-ward_code').value == '' || 
                         document.getElementById('ward-'+(countWard - 1)+'-ward_start_datetime').value == '' || 
-                        document.getElementById('ward-'+(countWard - 1)+'-ward_end_datetime').value == ''){
+                        document.getElementById('ward-'+(countWard - 1)+'-ward_end_date').value == '' || 
+                        document.getElementById('ward-'+(countWard - 1)+'-ward_end_time').value == ''){
                         submitWardForm('<?php echo "{$urlSubmit}" ?>', '<?php echo "{$urlWard}" ?>', '<?php echo "update" ?>');
                     }
                     else{

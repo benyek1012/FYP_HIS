@@ -99,7 +99,7 @@ class WardController extends Controller
                 $modelWard = $dbWard;
                 $modelWard[] = new Ward();
             }
-
+            
             return $this->renderPartial('/ward/_form', [
                 'modelWard' => $modelWard,
             ]);
@@ -170,15 +170,17 @@ class WardController extends Controller
             $dbWard = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
             $modelWard = Model::createMultiple(Ward::className());
 
+            // insert first row
             if(empty($dbWard)) {
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
                     $valid = Model::validateMultiple($modelWard);
                     
                     
-                    if($valid ) {                    
+                    if($valid) {                    
                         foreach ($modelWard as $modelWard) {
                             $modelWard->ward_uid = Base64UID::generate(32);
                             $modelWard->bill_uid = Yii::$app->request->get('bill_uid');
+                            $modelWard->ward_end_datetime = $modelWard->ward_end_date . " " . $modelWard->ward_end_time;
 
                             if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
                                 $modelWard->save();
@@ -201,20 +203,23 @@ class WardController extends Controller
                     }
                 }
             }
+            // insert another row
             else {
                 $countWard = count(Yii::$app->request->post('Ward', []));
                 $countdb = count($dbWard);
 
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
                     $valid = Model::validateMultiple($modelWard);
-                    
                     if($valid) {         
                         if($countWard > $countdb){
+                            $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+                            
                             for($i = $countWard; $i > $countdb; $i--) {
                                 $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
                                 $modelWard[$i - 1]->bill_uid = Yii::$app->request->get('bill_uid');
+                                $modelWard[$i - 1]->ward_end_datetime = $modelWard[$i - 1]->ward_end_date . " " . $modelWard[$i - 1]->ward_end_time;
 
-                                if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_datetime) && !empty($modelWard[$i - 1]->ward_number_of_days)){
+                                if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_date) && !empty($modelWard[$i - 1]->ward_end_time) && !empty($modelWard[$i - 1]->ward_number_of_days)){
                                     $modelWard[$i - 1]->save();
 
                                     $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
@@ -232,12 +237,24 @@ class WardController extends Controller
 
                                     echo 'success';
                                 }
+                                // update 
                                 else{
                                     $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
-                                    if( Model::loadMultiple($modelWardUpdate, Yii::$app->request->post())) {
+                                    $data = Yii::$app->request->post();
+                                    array_pop($data["Ward"]);
+                                    for($i = 0; $i < count($data["Ward"]); $i++){
+                                        if(!empty($data['Ward'][$i]['ward_end_date']) && !empty($data['Ward'][$i]['ward_end_time'])){
+                                            $data['Ward'][$i]['ward_end_datetime'] = $data['Ward'][$i]['ward_end_date'] . " " . $data['Ward'][$i]['ward_end_time'];
+                                        }
+                                        else{
+                                            $data['Ward'][$i]['ward_end_datetime'] = "";
+                                        }
+                                    }
+                                        
+                                    if( Model::loadMultiple($modelWardUpdate, $data)) {                                        
                                         $valid = Model::validateMultiple($modelWardUpdate);
                                         
-                                        if($valid) {            
+                                        if($valid) {     
                                             foreach ($modelWardUpdate as $modelWardUpdate) {
                                                 $modelWardUpdate->save();
                                             }

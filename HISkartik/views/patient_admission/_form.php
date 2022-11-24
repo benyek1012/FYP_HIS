@@ -147,6 +147,7 @@ use app\models\Receipt;
     }
 
     $url = Url::toRoute(['/patient_admission/update', 'rn'=> Yii::$app->request->get('rn')]);
+    $urlWardCode = Url::toRoute(['/patient_admission/code']);
 
     // $model->entry_datetime = DateFormat::convert($model->entry_datetime, 'datetime');
     // $model->entry_datetime = new \DateTime($model->entry_datetime);
@@ -204,7 +205,7 @@ use app\models\Receipt;
             <?= $form->field($model, 'type')->hiddenInput(['readonly' => true,'maxlength' => true, 'value' => Yii::$app->request->get('type')])->label(false) ?>
         </div> -->
 
-        <div class="col-sm-6">
+        <div class="col-sm-6" id="div_ward_code">
             <?= $form->field($model, 'initial_ward_code')->dropDownList($ward_code,
                 [
                     'id' => 'initial_ward_code',
@@ -233,7 +234,7 @@ use app\models\Receipt;
             ]); ?> -->
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-6" id="div_ward_class">
             <?= $form->field($model, 'initial_ward_class')->dropDownList($ward_class, 
                 [
                     'id' => 'initial_ward_class',
@@ -307,10 +308,10 @@ use app\models\Receipt;
 
     <div class="form-group">
         <?php
-        if($model->initial_ward_class == "UNKNOWN" || $model->initial_ward_code == "UNKNOWN" || 
-            $model->initial_ward_class == null || $model->initial_ward_code == null){
-            echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
-        }
+        // if($model->initial_ward_class == "UNKNOWN" || $model->initial_ward_code == "UNKNOWN" || 
+        //     $model->initial_ward_class == null || $model->initial_ward_code == null){
+        //     echo "<span class='badge badge-danger'>".Yii::t('app','Initial Ward Code and Initial Ward Class cannot be blank')."</span> <br/><br/>";
+        // }
         ?>
 
         <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled, 'style' => 'display: none;']) ?>
@@ -408,15 +409,13 @@ $this->registerJs(
 ?>
 
 <script>
-    // console.log(document.getElementById('initial_ward_code').value);
-    // console.log(document.getElementById('initial_ward_class').value);
-// if (document.getElementById('initial_ward_code').value == "") {
-//         document.getElementById('initial_ward_code').style.backgroundColor = '#ffc107';
-// }
+if('<?php echo $model->initial_ward_code == "UNKNOWN" ?>' || '<?php echo $model->initial_ward_code == null ?>'){
+    document.getElementById('div_ward_code').style.backgroundColor = '#ffc107';
+}
 
-// if('<?php echo $model->initial_ward_class == "UNKNOWN" ?>' || '<?php echo $model->initial_ward_class == null ?>'){
-//     docuemnt.getElementById('initial_ward_class').style.backgroundColor = '#ffc107';
-// }
+if('<?php echo $model->initial_ward_class == "UNKNOWN" ?>' || '<?php echo $model->initial_ward_class == null ?>'){
+    document.getElementById('div_ward_class').style.backgroundColor = '#ffc107';
+}
 
 function testing(url) {
     var wardForm = $('#patient-admission-form');
@@ -446,6 +445,23 @@ function submitPatientAdmissionForm() {
         data: formData,
 
         success: function(data) {
+            $.get('<?php echo $urlWardCode?>', {rn : '<?php echo Yii::$app->request->get('rn') ?>'}, function(data){
+                var data = $.parseJSON(data);                 
+                
+                if(data['initial_ward_code'] == "UNKNOWN" || data['initial_ward_code'] == null){
+                    document.getElementById('div_ward_code').style.backgroundColor = '#ffc107';
+                }
+                else{
+                    document.getElementById('div_ward_code').style.backgroundColor = 'transparent';
+                }
+
+                if(data['initial_ward_class'] == "UNKNOWN" || data['initial_ward_class'] == null){
+                    document.getElementById('div_ward_class').style.backgroundColor = '#ffc107';
+                }
+                else{
+                    document.getElementById('div_ward_class').style.backgroundColor = 'transparent';
+                }
+            });
             // $.pjax.reload({container: '#pjax-patient-admission-form'});
         },
     });

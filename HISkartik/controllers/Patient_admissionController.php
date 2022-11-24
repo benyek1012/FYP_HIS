@@ -52,6 +52,11 @@ class Patient_admissionController extends Controller
         );
     }
 
+    public function actionCode($rn){
+        $model = Patient_admission::findOne(['rn' => $rn]);
+        echo Json::encode($model);
+    }
+
     public function actionCancellation($rn)
     {
         $model_cancellation = new Cancellation();
@@ -202,8 +207,11 @@ class Patient_admissionController extends Controller
             $model->initial_ward_class = '3';
             $model->save();
 
-            return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
-            'rn' => $model->rn));          
+            // return Yii::$app->getResponse()->redirect(array('/patient_admission/update', 
+            // 'rn' => $model->rn));         
+            
+            return Yii::$app->getResponse()->redirect(array('/site/admission', 
+            'id' => $model->patient_uid));   
         }
         else 
             return false;
