@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
                     'inputType' =>  Editable::INPUT_DROPDOWN_LIST, //Editable::INPUT_CHECKBOX,
-                    'displayValueConfig' => [0,1],                
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
                     'inputType' =>  Editable::INPUT_DROPDOWN_LIST, //Editable::INPUT_CHECKBOX,
-                    'displayValueConfig' => [0,1],              
+                    'data' => [0,1],              
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -129,7 +129,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
                     'inputType' =>  Editable::INPUT_DROPDOWN_LIST, //Editable::INPUT_CHECKBOX,
-                    'displayValueConfig' => [0,1],                
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
@@ -142,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 'editableOptions' =>  [
                     'inputType' =>  Editable::INPUT_DROPDOWN_LIST, //Editable::INPUT_CHECKBOX,
-                    'displayValueConfig' => [0,1],                
+                    'data' => [0,1],                
                     'asPopover' => false,
                     'formOptions' => ['action' => ['/new_user/user']],
                 ]
