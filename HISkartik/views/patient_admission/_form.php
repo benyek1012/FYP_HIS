@@ -10,6 +10,7 @@ use app\models\Bill;
 use app\models\DateFormat;
 use app\models\Patient_information;
 use app\models\Receipt;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
@@ -183,15 +184,16 @@ use app\models\Receipt;
         }
     }
    
+    Pjax::begin(['id' => 'pjax-patient-admission-form']);
     $form = kartik\form\ActiveForm::begin([
             'id' => 'patient-admission-form',
             'type' => 'vertical',
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+                'showErrors' => true,
             ],
-        ]); 
-
+        ]);
     ?>
 
 
@@ -370,9 +372,10 @@ use app\models\Receipt;
              Modal::end();
         ?>
         <!-- <?= Html::submitButton(Yii::t('app','Save & Print All Forms'), ['class' => 'btn btn-success' , 'name' => 'actionPrint', 'value' => 'submit1']) ?> -->
-    </div>
+    </div> */
 
-    <?php kartik\form\ActiveForm::end(); */?>
+    kartik\form\ActiveForm::end(); 
+    Pjax::end();?>
 
 </div>
 
@@ -445,6 +448,31 @@ function submitPatientAdmissionForm() {
         data: formData,
 
         success: function(data) {
+            console.log(data);
+            if(data == 'success'){
+                if(focusID == "patient_admission-medical_legal_code"){
+                    document.getElementById('patient_admission-medical_legal_code').classList.remove("is-invalid");
+                    document.getElementById('patient_admission-medical_legal_code').classList.add("is-valid");
+                }
+
+                if(focusID == "patient_admission-entry_datetime"){
+                    document.getElementById('patient_admission-entry_datetime').classList.remove("is-invalid");
+                    document.getElementById('patient_admission-entry_datetime').classList.add("is-valid");
+                }
+            }
+
+            if(data == 'error'){
+                if(focusID == "patient_admission-medical_legal_code"){
+                    document.getElementById('patient_admission-medical_legal_code').classList.remove("is-valid");
+                    document.getElementById('patient_admission-medical_legal_code').classList.add("is-invalid");
+                }
+
+                if(focusID == "patient_admission-entry_datetime"){
+                    document.getElementById('patient_admission-entry_datetime').classList.remove("is-valid");
+                    document.getElementById('patient_admission-entry_datetime').classList.add("is-invalid");
+                }
+             }
+
             $.get('<?php echo $urlWardCode?>', {rn : '<?php echo Yii::$app->request->get('rn') ?>'}, function(data){
                 var data = $.parseJSON(data);                 
                 
@@ -464,6 +492,9 @@ function submitPatientAdmissionForm() {
             });
             // $.pjax.reload({container: '#pjax-patient-admission-form'});
         },
+        error: function(data){
+            console.log('as');
+        }
     });
 }
 

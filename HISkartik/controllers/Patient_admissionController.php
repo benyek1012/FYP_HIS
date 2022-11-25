@@ -354,22 +354,30 @@ class Patient_admissionController extends Controller
                     $model->entry_datetime = $model->entry_datetime . ':' .$date->format('s');
 
                     if($model->save()){
-                        return $this->render('update', [
-                            'model' => $model,
-                            'modelpatient' => $modelpatient,
-                            'model_change_rn' => $model_change_rn
-                        ]);
+                        return 'success';
+                        // return $this->render('update', [
+                        //     'model' => $model,
+                        //     'modelpatient' => $modelpatient,
+                        //     'model_change_rn' => $model_change_rn
+                        // ]);
                     }   
+                    else{
+                        return 'error';
+                    }
                 }
             }
 
             if($model->save()){
-                return $this->render('update', [
-                    'model' => $model,
-                    'modelpatient' => $modelpatient,
-                    'model_change_rn' => $model_change_rn
-                ]);
+                return 'success';
+                // return $this->render('update', [
+                //     'model' => $model,
+                //     'modelpatient' => $modelpatient,
+                //     'model_change_rn' => $model_change_rn
+                // ]);
             }   
+            else{
+                return 'error';
+            }
 
             // $model->validate();
             // var_dump($model->errors);
