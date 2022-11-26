@@ -534,7 +534,9 @@ $date->setTimezone(new \DateTimeZone('+0800')); //GMT
 
                     $.get('<?php echo "{$urlInpatient}" ?>', {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
                         var data = $.parseJSON(data);                 
-                        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').value = data.inpatient;
+                        console.log(data);
+                        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').innerHTML = '<?php echo Yii::t('app','Inpatient Treatment Cost (RM)') ?>'+ ' : ' + data.inpatient;
+                        document.getElementById('treatmentTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.treatmentTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
                     });
                     if(data == 'success'){
                         addWardRow('');
@@ -543,7 +545,8 @@ $date->setTimezone(new \DateTimeZone('+0800')); //GMT
                 
                 if(type == 'update'){
                     $.get(urlWard, {bill_uid : '<?php echo Yii::$app->request->get('bill_uid') ?>'}, function(data){
-                        var data = $.parseJSON(data);                 
+                        var data = $.parseJSON(data);     
+                        console.log(data);            
                         document.getElementById('wardTotal').innerHTML = '<?php echo Yii::t('app','Total') ?>' + ' : ' + data.wardTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
                         document.getElementById('bill-bill_generation_billable_sum_rm').value = data.billAble;
                         document.getElementById('bill-bill_generation_final_fee_rm').value = data.finalFee;

@@ -553,14 +553,26 @@ textarea {
                     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false) ?>
 
                     <div class="col-sm-6">
-                        <?= $form->field($model, 'status_code')->dropDownList($print_readonly == false? $status_code : $lockedStatusCode,
-                        [
-                            'id'=>'statusCode',
-                            'prompt'=> Yii::t('app','Please select status code'),
-                            'maxlength' => true, 
-                            'disabled' => $print_readonly == false? $disabled : $print_readonly,
-                            'value' => $patient_model->hasValidIC() == true? 'PD' : 'PDOA'
-                        ])?>
+                        <?php 
+                        if(empty($model->status_code)){
+                        ?>
+                            <?= $form->field($model, 'status_code')->dropDownList($print_readonly == false? $status_code : $lockedStatusCode,
+                            [
+                                'id'=>'statusCode',
+                                'prompt'=> Yii::t('app','Please select status code'),
+                                'maxlength' => true, 
+                                'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                                'value' => $patient_model->hasValidIC() == true? 'PD' : 'PDOA'
+                            ])?>
+                        <?php } else{ ?>
+                            <?= $form->field($model, 'status_code')->dropDownList($print_readonly == false? $status_code : $lockedStatusCode,
+                            [
+                                'id'=>'statusCode',
+                                'prompt'=> Yii::t('app','Please select status code'),
+                                'maxlength' => true, 
+                                'disabled' => $print_readonly == false? $disabled : $print_readonly,
+                            ])?>
+                        <?php } ?>
 
                         <!-- <?= $form->field($model, 'status_code')->widget(kartik\select2\Select2::classname(), [
                             'data' => $print_readonly == false? $status_code : $lockedStatusCode,

@@ -221,6 +221,9 @@ class Bill extends \yii\db\ActiveRecord
 
                 $totalInpatient = $modelInpatientTreatment->cost_rm * $totalWardDays;
             }
+            else{
+                $totalInpatient = 0.00;
+            }
         }
         return $totalInpatient;
     }

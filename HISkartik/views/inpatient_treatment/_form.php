@@ -163,7 +163,13 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
     ?>
         <table id="inpatient-treatment-table">
             <tr>
-                <td><div id="inpatient_treatment-inpatient_treatment_cost_rm"><?php echo Yii::t('app','Inpatient Treatment Cost (RM)')." : ".$modelInpatient->inpatient_treatment_cost_rm; ?></div></td>
+                <td>
+                    <div id="inpatient_treatment-inpatient_treatment_cost_rm">
+                        <?php 
+                            echo Yii::t('app','Inpatient Treatment Cost (RM)')." : 0.00"; 
+                        ?>
+                    </div>
+                </td>
             </tr>
             <tr>
                 <!-- <td>
