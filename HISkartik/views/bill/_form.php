@@ -31,6 +31,7 @@ use yii\bootstrap4\Modal;
 $session = Yii::$app->session;
 
 $url = Url::toRoute(['bill/refresh']);
+$urlInpatient = Url::toRoute(['/ward/inpatient']);
 
 
 $admission_model = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
@@ -331,6 +332,14 @@ $this->registerJs(
 
             document.getElementById('departmentName').style.backgroundColor = '#ffc107';
         });
+    });"
+);
+
+$this->registerJS(
+    "$.get('".$urlInpatient."', {bill_uid : '".Yii::$app->request->get('bill_uid')."'}, function(data){
+        var data = $.parseJSON(data);                 
+        document.getElementById('inpatient_treatment-inpatient_treatment_cost_rm').innerHTML = '".Yii::t('app','Inpatient Treatment Cost (RM)')."'+ ' : ' + data.inpatient;
+        document.getElementById('treatmentTotal').innerHTML = '".Yii::t('app','Total')."' + ' : ' + data.treatmentTotal + '&nbsp&nbsp&nbsp&nbsp&nbsp';
     });"
 );
 
