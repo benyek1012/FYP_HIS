@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\Patient_information;
 use app\controllers\Patient_informationController;
+use app\models\AdjustPrint;
 use app\models\Patient_next_of_kin;
 use Exception;
 use kartik\grid\EditableColumnAction;
@@ -19,6 +20,7 @@ use yii\helpers\Json;
 use app\models\Patient_admission;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\New_user;
+use app\models\PrintForm;
 
 class SiteController extends Controller
 {
@@ -464,5 +466,14 @@ class SiteController extends Controller
             }
         }
         return $flag;
+    }
+
+    public function actionAdjust_print()
+    {
+        if ($this->request->isPost) {
+            PrintForm::printTest();
+        } 
+
+        return $this->render('print');
     }
 }

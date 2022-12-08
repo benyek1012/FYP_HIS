@@ -172,8 +172,7 @@ class PrintForm
     
 	public function escp2ResetPaper()
 	{
-		$this->printer->connector->write( "\x1b" . "\x19" . "B"); //or F
-		
+		$this->printer->connector->write( "\x1b" . "\x19" . "F"); //or F
 	}
 	public function escp2EjectPaper()
 	{
@@ -182,12 +181,12 @@ class PrintForm
 	}
 	public function escp2SetTypeface($int)
 	{
-		$this->printer->connector->write( "\x1b" . "x" . 1);
-		$this->printer->connector->write( "\x1b" . "k" . $int);
+		$this->printer->connector->write( "\x1b" . "x" . chr(1));
+		$this->printer->connector->write( "\x1b" . "k" . chr($int));
 	}
 	public function escp2SetTypefaceDraft()
 	{
-		$this->printer->connector->write( "\x1b" . "x" . 0);
+		$this->printer->connector->write( "\x1b" . "x" . chr(0));
 	}
 	public function escp2SetTiny()
 	{
@@ -200,22 +199,65 @@ class PrintForm
 	
     public function close()
     {
-        
         $this->printer->close();
     }
 
+	public function escp2SetFontSize()
+	{
+		$this->printer->connector->write( "\x1b" . "\x58" . chr(0) . chr(21) . chr(0));
+	}
+	
+	public function escp2SetStickerPrintingArea()
+	{
+		$this->printer->connector->write( "\x1b" . "(U" . chr(1) . chr(0) . chr(5)); // ESC ( U
+		$this->printer->connector->write( "\x1b" . "\x28" . "\x43" . chr(2) . chr(0) . chr(110) . chr(8)); // ESC ( C
+	}
+	
+	public function escp2SetReceiptPrintingArea()
+	{
+		$this->printer->connector->write( "\x1b" . "(U" . chr(1) . chr(0) . chr(5)); // ESC ( U
+		$this->printer->connector->write( "\x1b" . "\x28" . "\x43" . chr(2) . chr(0) . chr(40) . chr(5)); // ESC ( C
+	}
 
-    public function printMore($totalCost){
-        $this->printElementArray(
-            [
-                [8, "\x20"],
-                [4, "...."],
-                [55, "\x20"],
-                [9, number_format((float)$totalCost, 2, '.', ''),false,true],
-            ]
-     
-        );
-    }
+	public function escp2SetVerticalPrintPosition($L, $H)
+	{
+		$this->printer->connector->write( "\x1b" . "(V" . chr(2) . chr(0) . chr($L) . chr($H)); // ESC ( V
+	}
+	public function escp2CancelMargin()
+	{
+		$this->printer->connector->write( "\x1b" . "\x4f");
+	}
+
+	// public static function printTest()
+    // {
+	// 	$form = new PrintForm(PrintForm::BorangDaftarMasuk);
+
+	// 	// Begin Print
+	// 	$form->escp2ResetPaper();
+	// 	$form->escp2SetReceiptPrintingArea();
+	// 	$form->printElementArray(
+	// 		[
+	// 			[$form->borangdafter_offset, "\x20"],
+	// 			[11, "\x20"],
+	// 			[32, "testing printing alignment", true],
+	// 			[20,"\x20"]
+	// 		]
+	// 	);
+	// 	$form->printNewLine(1);
+	// //	$form->escp2SetVerticalPrintPosition();
+	// 	$form->printElementArray(
+	// 		[
+	// 			[$form->borangdafter_offset, "\x20"],
+	// 			[11, "\x20"],
+	// 			[32, "testing printing alignment absolute", true],
+	// 			[20,"\x20"]
+	// 		]
+	// 	);
+	// 	$form->printNewLine(1);
+	
+	// 	$form->escp2EjectPaper();	
+	// 	$form->close();
+	// }
 
 	public static function printAdmissionForm($rn)
     {
@@ -670,7 +712,7 @@ class PrintForm
 				[$form->casehistory_offset, "\x20"],
 				//case history note line 7, employername
 				[21, "\x20"], // from 22->20
-				[13, $bill->guarantor_name,true],// phase2 change to be selective
+				[13, !empty($bill->guarantor_name) ? $bill->guarantor_name : " ", true],// phase2 change to be selective
 			]
 		);
 		$form->printNewLine(2);
@@ -790,7 +832,7 @@ class PrintForm
 		
 		// Begin Print
 		$form->escp2ResetPaper();
-		
+		$form->escp2SetStickerPrintingArea();
 		$form->escp2SetTypefaceDraft();
 		$form->escp2SetTiny();
 		
@@ -798,7 +840,7 @@ class PrintForm
 		$ageString = $patientInformation->getAge("%yyrs %mmth%dday");
 		$wardDesc = Lookup_ward::findOne(["ward_code"=>$patientAdmission->initial_ward_code])->ward_name; 
 		
-		$rows = 3;
+		$rows = 6;
 		
 		for($i=1; $i<=1; $i++)  
 		{
@@ -813,6 +855,8 @@ class PrintForm
 						[16, $ageString],
 						[6,"\x20"],//47
 						
+						[1, "\x20"],
+
 						[24, $patientInformation->name,true],
 						[1,"\x20"],
 						[16, $ageString],
@@ -838,6 +882,8 @@ class PrintForm
 						[1, $patientInformation->sex, true],
 						[6, "\x20"],// 47
 						
+						[1, "\x20"],
+
 						[4, "KP:"],
 						[14,$patientInformation->nric],
 						[2, "\x20"],
@@ -871,6 +917,8 @@ class PrintForm
 						[2,$patientInformation->race,true],
 						[6,"\x20"],//47
 						
+						[1, "\x20"],
+
 						[3, $patientAdmission->initial_ward_code,true],
 						[1, "\x20"],
 						[18, $wardDesc],
@@ -898,18 +946,22 @@ class PrintForm
 						//sticker line 4 , hospital address
 						[41, "Sarawak General Hospital, 93586, Kuching"],
 						[6, "\x20"],
+
+						[1, "\x20"],
+
 						[41, "Sarawak General Hospital, 93586, Kuching"],
 						[6, "\x20"],
 						[42, "Sarawak General Hospital, 93586, Kuching"]
 					]
 				);
-				$form->printNewLine(3);
-				// $form->printNewLine(2);
+				if($k != 6)
+					$form->printNewLine(3);
+				else $form->printNewLine(1);
 			}
 		}
-			
-		$form->escp2EjectPaper();	
-
+		
+		$form->escp2CancelMargin();
+		$form->escp2EjectPaper();
 		$form->escp2UnsetTiny();
 
 		$form->close();
@@ -933,10 +985,12 @@ class PrintForm
 		
 		// Begin Print
 		$form->escp2ResetPaper();
+		$form->escp2SetReceiptPrintingArea();
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$form->escp2SetTypefaceDraft(0);
 		
-		$form->printNewLine(6);
+		$form->printNewLine(1);
+		$form->escp2SetVerticalPrintPosition(125, 1);
 		
 		$form->printElementArray(
 				[
@@ -1005,7 +1059,7 @@ class PrintForm
 					[23, $receipt->receipt_content_payer_name,true],
 				]
 			);
-		$form->printNewLine(1);
+		$form->printNewLine(2);
 		$form->printElementArray(
 			[
 				[$form->receipt_offset, "\x20"],
@@ -1086,18 +1140,6 @@ class PrintForm
 		$form_type = null;
 		$printer_choice = $session->get('bill_printer_session');
 		
-		/*
-		if ($session->has('bill_printer_session')) {
-			$printer_choice = $session->get('bill_printer_session');
-			if($printer_choice == 'Printer 1')
-				$form_type = PrintForm::Bill;
-			else if($printer_choice == 'Printer 2')
-				$form_type = PrintForm::Bill2;
-			
-		}
-		else $form_type = PrintForm::Bill;
-		*/
-		
 					
 		$form_type = PrintForm::Bill2;
 		
@@ -1140,7 +1182,7 @@ class PrintForm
 		}
 		$newlinesRequired = $windowLimit - $lineCounter;
 		$form->printNewLine($newlinesRequired);
-			
+		$form->printNewLine(1); 
 		$form->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
@@ -1161,13 +1203,17 @@ class PrintForm
 		$this->escp2ResetPaper();
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$this->escp2SetTypeface(0);
-		$this->printNewLine($line); 
+		//$this->printNewLine($line); 
 		$this->printBillAddress($bill, $patientInformation, $form);
 		$this->printNewLine(1); 
 	}
 
 	public function printBillAddress($bill, $patientInformation, $form)
 	{
+		$form->escp2SetVerticalPrintPosition(0, 2);
+		//$form->escp2SetVerticalPrintPosition(8, 1);
+		// return true if contain guarantor name 
+		$checkGuarantor = !empty($bill->guarantor_name);
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
@@ -1175,7 +1221,7 @@ class PrintForm
 				[10, date_format(new \datetime($bill->bill_generation_datetime), "d/m/Y")],
 			]
 		);           
-		$this->printNewLine(2);
+		$this->printNewLine(1);
 		$this->printElementArray(
 			[
 				[$form->bill_offset, "\x20"],
@@ -1184,38 +1230,84 @@ class PrintForm
 			]
 		);     
 		$this->printNewLine(1);
-		$this->printElementArray(
-			[
-				[$form->bill_offset, "\x20"],
-				[6, "\x20"],
-				[35, $patientInformation->name,true],
-			]
-		);
-		$this->printNewLine(1);
-		$this->printElementArray(
-			[
-				[$form->bill_offset, "\x20"],
-				[6, "\x20"],
-				[35, $patientInformation->address1,true],
-			]
-		);
-		$this->printNewLine(1);
-		$this->printElementArray(
-			[
-				[$form->bill_offset, "\x20"],
-				[6, "\x20"],
-				[35, $patientInformation->address2,true],
-			]
-		);
-		$this->printNewLine(1);
-		$this->printElementArray(
-			[
-				[$form->bill_offset, "\x20"],
-				[6, "\x20"],
-				[35, $patientInformation->address3,true],
-			]
-		);
-		$this->printNewLine(10);
+		if($checkGuarantor)
+		{
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $bill->guarantor_name,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $bill->guarantor_address1,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $bill->guarantor_address2,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $bill->guarantor_address3,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $bill->guarantor_comment,true],
+				]
+			);
+			$this->printNewLine(9);
+		}
+		else
+		{
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $patientInformation->name,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $patientInformation->address1,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $patientInformation->address2,true],
+				]
+			);
+			$this->printNewLine(1);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[35, $patientInformation->address3,true],
+				]
+			);
+			$this->printNewLine(10);
+		}
 	}
 
 	public function printCajDudukWad($bill, $queue)
