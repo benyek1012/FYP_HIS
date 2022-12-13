@@ -402,10 +402,10 @@ function confirmAction(index) {
 }
 <?php }else{?>
 // The function below will start the confirmation  dialog
-function confirmAction() {
+function confirmAction(index) {
     var answer = confirm("Adakah anda pasti mencetak resit?");
     if (answer) {
-        submitReceiptForm();
+        submitReceiptForm(index);
     }
 }
 <?php } ?>
