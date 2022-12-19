@@ -120,4 +120,21 @@ class Receipt extends \yii\db\ActiveRecord
             if(!empty($row_receipt))
                 return !empty($row_receipt['receipt_content_datetime_paid']) ? $row_receipt['receipt_content_datetime_paid'] : false;
     }
+
+    public function verifyKodAkaun($type, $rn){
+        $temp = Patient_admission::findOne(['rn'=> $rn]);
+        $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
+        
+        if($type == 'deposit'){
+            if($temp2->hasValidIC() == true){
+                return '018/76302';
+            }
+            else{
+                return '018/76303';
+            }
+        }
+        else{
+            
+        }
+    }
 }

@@ -70,8 +70,8 @@ else{
         $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
         $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-        if($temp2->hasValidIC() == true) $account_code= '018/76303';
-        else $account_code = '018/76302';
+        // if($temp2->hasValidIC() == true) $account_code= '018/76303';
+        // else $account_code = '018/76302';
 
 
         $checked_name = "";
@@ -158,7 +158,8 @@ else{
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
-    <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true, 'value' => $account_code]); ?>
+
+    <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?>
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
 
@@ -358,6 +359,12 @@ function myfunctionforType(val, index, cancellation) {
         document.getElementById("bill_div"+index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
     }
+
+    $.get('<?php echo Url::toRoute(['/receipt/kod_akaun']); ?>', {type: val, rn: '<?php echo Yii::$app->request->get('rn') ?>'}, function(data) {
+        var data = $.parseJSON(data);
+
+        document.getElementById('receipt-kod_akaun').value = data;
+    });
 }
 
 function refreshButton(url, index) {

@@ -14,7 +14,16 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'entry_datetime')->textInput(['autocomplete' =>'off', 'value' => date('Y-m-d')]) ?>
+    <?php
+    if(empty($model->entry_datetime)){
+        $value = date('Y-m-d');
+    }
+    else{
+        $value = $model->entry_datetime;
+    }
+    ?>
+
+    <?= $form->field($model, 'entry_datetime')->textInput(['autocomplete' =>'off', 'value' => $value]) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>

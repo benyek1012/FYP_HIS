@@ -24,6 +24,7 @@ use yii\helpers\ArrayHelper;
 use app\models\PrintForm;
 use app\models\Serial;
 use app\models\SerialNumber;
+use yii\helpers\Json;
 
 /**
  * ReceiptController implements the CRUD actions for Receipt model.
@@ -46,6 +47,12 @@ class ReceiptController extends Controller
                 ],
             ]
         );
+    }
+
+    public function actionKod_akaun($type, $rn){
+        $kod_akaun = (new Receipt) -> verifyKodAkaun($type, $rn);
+        
+        echo Json::encode($kod_akaun);
     }
 
     public function actionCancellation()

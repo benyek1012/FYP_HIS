@@ -788,6 +788,12 @@ $(document).ready(function() {
         });
     });
 });
+
+$(document).ready(function() {    
+    if('$admission_model->initial_ward_code' != "UNKNOWN" && '$modelWard->ward_code' == "" && '$index' == 0){
+        document.getElementById('ward-0').style.backgroundColor = '#ffc107';
+    }
+});
 JS;
 $this->registerJS($script);
 ?>

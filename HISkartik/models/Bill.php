@@ -116,7 +116,7 @@ class Bill extends \yii\db\ActiveRecord
             'guarantor_nric' => Yii::t('app','Guarantor NRIC/Passport'),
             'guarantor_phone_number' => Yii::t('app','Guarantor Phone Number'),
             'guarantor_email' => Yii::t('app','Guarantor Email'),
-            'guarantor_address1' => Yii::t('app','Guarantor Address1'),
+            'guarantor_address1' => Yii::t('app','Guarantor Address'),
             'guarantor_address2' => Yii::t('app','Guarantor Address2'),
             'guarantor_address3' => Yii::t('app','Guarantor Address3'),
             'guarantor_comment' => Yii::t('app','Guarantor Comment'),
