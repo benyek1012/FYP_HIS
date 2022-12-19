@@ -111,3 +111,10 @@ ORDER BY reminder_no, rn;
 
 END$$
 DELIMITER ;
+
+
+INSERT INTO `patient_information` (`patient_uid`, `first_reg_date`, `nric`, `nationality`, `name`, `sex`, `race`, `phone_number`, `email`, `address1`, `address2`, `address3`, `job`, `DOB`) VALUES
+('m-vPBL8igioXLRSnMSBsF6awk4jOgM0C', '1950-01-01', 'PESAKITLAINLAIN', 'Malaysia', 'Pesakit Lain Lain ', 'Male', 'MA', '', NULL, NULL, NULL, NULL, NULL, '1950-01-01');
+
+INSERT INTO `patient_admission` (`rn`, `entry_datetime`, `patient_uid`, `initial_ward_code`, `initial_ward_class`, `reference`, `medical_legal_code`, `type`, `reminder1`, `reminder2`, `reminder3`) VALUES
+('LAINLAIN', '1950-01-01 00:00:00', 'm-vPBL8igioXLRSnMSBsF6awk4jOgM0C', '01', '3', 'Default', 0, 'Normal', NULL, NULL, NULL);
