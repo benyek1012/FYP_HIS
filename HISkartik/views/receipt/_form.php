@@ -72,30 +72,6 @@ else{
 
         // if($temp2->hasValidIC() == true) $account_code= '018/76303';
         // else $account_code = '018/76302';
-        
-        // IF Deposit Payment THEN
-
-        // IF warganegara Malaysia THEN
-
-        // 76302
-
-        // ELSE ‘76303’ END IF
-
-        // ELSE
-
-        // Kod Akaun can be selected from general lookup
-
-        // END IF
-
-        if($receipt_type == 'Deposit'){
-            if($temp2->hasValidIC() == true){
-                $account_code= '018/76302';
-            }
-            else $account_code= '018/76303';
-        }
-        // else{
-            
-        // }
 
 
         $checked_name = "";
