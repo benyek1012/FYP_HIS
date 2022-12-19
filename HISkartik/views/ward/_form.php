@@ -51,7 +51,6 @@ if(!empty($row_bill))
    $isPrinted =  (new Bill()) -> isPrinted($row_bill['rn']);
 }
 
-
 $rows = (new \yii\db\Query())
 ->select('*')
 ->from('lookup_status')
@@ -790,8 +789,10 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {    
-    if('$admission_model->initial_ward_code' != "UNKNOWN" && '$modelWard->ward_code' == "" && '$index' == 0){
-        document.getElementById('ward-0').style.backgroundColor = '#ffc107';
+    if('$isGenerated' == ""){
+        if('$admission_model->initial_ward_code' != "UNKNOWN"){
+            document.getElementById('ward-0').style.backgroundColor = '#ffc107';
+        }
     }
 });
 JS;
