@@ -186,7 +186,7 @@ else{
 
     <?php if($cancellation == false) { ?>
     <?= $form->field($model, 'kod_akaun')->dropDownList($account_code, ['prompt'=> Yii::t('app','Please select kod akaun'), 
-        'maxlength' => true, 'readonly' => $cancellation? true : false]) ?>
+        'maxlength' => true]) ?>
     <?php } else{ ?>
         <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?>
     <?php } ?>

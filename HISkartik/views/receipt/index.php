@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= Html::a(Yii::t('app','Create Other Payment'),
                     ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
                 
-                <?=  Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?>
+                <!-- <?=  Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?> -->
         <?php
             }
             else{
