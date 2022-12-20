@@ -49,6 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <p>
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?>
+=======
+>>>>>>> Stashed changes
         <?php
             if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
             {
@@ -59,6 +66,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 echo Html::a(Yii::t('app','Create Payment'),
                     ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']);
         ?>
+<<<<<<< Updated upstream
+=======
+>>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
+>>>>>>> Stashed changes
     </p>
 
 
