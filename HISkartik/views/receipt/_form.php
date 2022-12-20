@@ -55,6 +55,11 @@ else{
                 'exception' =>Yii::t('app','Exception'),
                 'other' =>Yii::t('app','Other')
             );
+        
+        if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
+            $receipt = array(
+                'other' =>Yii::t('app','Other')
+            );
 
         // $account_code = array(
         //     '018/76303'=> '018/76303',
@@ -196,8 +201,12 @@ else{
         <div class="col-sm-6">
             <?php if($cancellation == false){ ?>
             <?php  if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}', '{$checkPayment}')"]) ?>
+            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, [
+                'prompt'=> Yii::t('app','Please select receipt'),
+                'maxlength' => true, 'id' => 'receipt-receipt_type'.$index,
+             'options'=>['other'=>['Selected'=> Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'] ? true : false]],
+             'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}', '{$checkPayment}')",
+             ]) ?>
 
             <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
                 'data' => $receipt,
@@ -209,9 +218,11 @@ else{
                     'allowClear' => true,
                     'minimumResultsForSearch' => 'Infinity',
                 ],
+               
             ]); ?> -->
             <?php }else{ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
+            'options'=>['other'=>['Selected'=> Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'] ? true : false]],
             'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}', '{$checkPayment}')"]) ?>
 
             <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
