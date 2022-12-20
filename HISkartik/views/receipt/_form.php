@@ -55,7 +55,25 @@ else{
                 'exception' =>Yii::t('app','Exception'),
                 'other' =>Yii::t('app','Other')
             );
-        
+
+        // $account_code = array(
+        //     '018/76303'=> '018/76303',
+        //     '018/76302'=>  '018/76302',
+        //     '018/76304' => '018/76304',
+        // );
+
+        $rows_kod_akaun = (new \yii\db\Query())
+        ->select('*')
+        ->from('lookup_general')
+        ->where(['category'=> 'Kod Akaun'])
+        ->orderBy(['code' => SORT_ASC])
+        ->all();
+
+        $account_code = array();
+        foreach($rows_kod_akaun as $row_kod_akaun){
+        $account_code[$row_kod_akaun['code']] = $row_kod_akaun['code'];
+        } 
+
         $rows_payment = (new \yii\db\Query())
         ->select('*')
         ->from('lookup_general')
@@ -118,6 +136,8 @@ else{
         // removes duplicate values from an array
         $names = array_unique($names);
         $names = array_filter($names);
+
+        $checkPayment = Yii::$app->request->get('outside');
     
         $form = kartik\form\ActiveForm::begin([
         'id' => 'receipt-form'.$index,
@@ -159,8 +179,14 @@ else{
 
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
+    <?php if($cancellation == false) { ?>
+    <?= $form->field($model, 'kod_akaun')->dropDownList($account_code, ['prompt'=> Yii::t('app','Please select kod akaun'), 
+        'maxlength' => true, 'readonly' => $cancellation? true : false]) ?>
+    <?php } else{ ?>
+        <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?>
+    <?php } ?>
 
-    <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?>
+    <!-- <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?> -->
 
     <?= $form->field($model, 'rn')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Yii::$app->request->get('rn')])->label(false); ?>
 
@@ -171,7 +197,7 @@ else{
             <?php if($cancellation == false){ ?>
             <?php  if(!empty($model_bill)){ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
+            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}', '{$checkPayment}')"]) ?>
 
             <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
                 'data' => $receipt,
@@ -186,7 +212,7 @@ else{
             ]); ?> -->
             <?php }else{ ?>
             <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
+            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}', '{$checkPayment}')"]) ?>
 
             <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
                 'data' => $receipt,
@@ -248,12 +274,6 @@ else{
         </div>
 
         <div class="col-sm-6">
-            <?= $form->field($model, 'receipt_serial_number', 
-                ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['autocomplete' =>'off', 'maxlength' => true, 
-                    'readonly' => true, 'id' => 'serial_number'.$index]) ?>
-        </div>
-
-        <div class="col-sm-6">
             <?php if($cancellation == false){ ?>
             <?= $form->field($model, 'receipt_content_payment_method')->radioList($method, 
                     ['maxlength' => true, 'id' => 'radio', 'custom' => true, 'inline' => true, 'value' => 'cash']) ?>
@@ -263,6 +283,31 @@ else{
             <?php } ?>
 
             <?= $form->field($model, 'payment_method_number')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
+        </div>
+
+        <?php if(!empty(Yii::$app->request->get('outside'))){ 
+            $custome_sec = DateTime::createFromFormat('Y-m-d H:i:s', $model->receipt_content_datetime_paid);
+            if($custome_sec){
+                $custome_sec = $custome_sec->format('Y-m-d');
+                $model->receipt_content_datetime_paid = $custome_sec;
+            }
+            else{
+                $custom_date = DateTime::createFromFormat('Y-m-d H:i', $model->receipt_content_datetime_paid);
+                if($custom_date){
+                    $custom_date = $custom_date->format('Y-m-d H:i');
+                    $model->receipt_content_datetime_paid = $custom_date;
+                }
+            }
+        ?>
+            <div class="col-sm-6">
+                    <?= $form->field($model, 'receipt_content_datetime_paid')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'placeholder' => '(yyyy-mm-dd hh:ii)', ]) ?>
+            </div>
+        <?php } ?>
+
+        <div class="col-sm-6">
+            <?= $form->field($model, 'receipt_serial_number', 
+                ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['autocomplete' =>'off', 'maxlength' => true, 
+                    'readonly' => true, 'id' => 'serial_number'.$index]) ?>
         </div>
 
         <!-- <div class="col-sm-6">
@@ -299,7 +344,19 @@ else{
     <div class="form-group" id="div_print">
         <!-- <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?> -->
 
+<<<<<<< Updated upstream
         <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
+=======
+<<<<<<< HEAD
+            <?php if(empty(Yii::$app->request->get('outside'))){ ?>
+                <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
+            <?php } else{ ?>
+                <?= Html::submitButton(Yii::t('app','Save'), ['id' => 'save', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+            <?php } ?>
+=======
+        <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
+>>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
+>>>>>>> Stashed changes
         <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
             'onclick' => "(function () {
                  document.getElementById('serial_number'+{$index}).readOnly = false; 
@@ -325,7 +382,7 @@ if (document.getElementById('receipt-receipt_type<?php echo $index?>').value == 
     document.getElementById("serial_number<?php echo $index?>").readOnly = false;
 }
 
-function myfunctionforType(val, index, cancellation) {
+function myfunctionforType(val, index, cancellation, checkPayment) {
 
     if (val == "refund" || val == "exception") {
         document.getElementById("receipt_label" + index).innerHTML = '<?php echo Yii::t('app','Document Number');?>';
@@ -343,7 +400,16 @@ function myfunctionforType(val, index, cancellation) {
                 '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
         }
         // show bill receipt ID 
+<<<<<<< Updated upstream
         document.getElementById("bill_div" + index).style.display = "block";
+=======
+<<<<<<< HEAD
+        document.getElementById("bill_div"+index).style.display = "block";
+
+=======
+        document.getElementById("bill_div" + index).style.display = "block";
+>>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
+>>>>>>> Stashed changes
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else if (val == "refund") {
         if (cancellation == false) {
@@ -351,23 +417,53 @@ function myfunctionforType(val, index, cancellation) {
                 '<?php echo (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))?>';
         }
         // hide bill receipt ID 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        document.getElementById("bill_div"+index).style.display = "none";
+        if(checkPayment == ""){
+            document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
+        }
+=======
+>>>>>>> Stashed changes
         document.getElementById("bill_div" + index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
+>>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
     } else if (val == "deposit") {
         if (cancellation == false) {
             document.getElementById("receipt_sum").value =
                 '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
         }
         // hide bill receipt ID 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        document.getElementById("bill_div"+index).style.display = "none";
+        if(checkPayment == ""){
+            document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
+        }
+=======
+>>>>>>> Stashed changes
         document.getElementById("bill_div" + index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
+>>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
     } else {
         if (cancellation == false) {
             document.getElementById("receipt_sum").value = 0;
         }
         // hide bill receipt ID 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        document.getElementById("bill_div"+index).style.display = "none";
+        if(checkPayment == ""){
+            document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
+        }
+=======
+>>>>>>> Stashed changes
         document.getElementById("bill_div" + index).style.display = "none";
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
+>>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
     }
 
     $.get('<?php echo Url::toRoute(['/receipt/kod_akaun']); ?>', {
@@ -376,7 +472,16 @@ function myfunctionforType(val, index, cancellation) {
     }, function(data) {
         var data = $.parseJSON(data);
 
-        document.getElementById('receipt-kod_akaun').value = data;
+        // document.getElementById('receipt-kod_akaun').value = data;
+        $('#receipt-kod_akaun').val(data);
+        $('#receipt-kod_akaun').trigger('change');
+        
+        if(val == 'deposit'){
+            document.getElementById('receipt-kod_akaun').readOnly = true;
+        }
+        else{
+            document.getElementById('receipt-kod_akaun').readOnly = false;
+        }
     });
 }
 
@@ -447,3 +552,15 @@ function confirmAction(index) {
 //     });
 // });
 </script>
+
+<?php 
+$script = <<< JS
+$(document).ready(function() {
+    $('#receipt-kod_akaun').select2({
+        placeholder: 'Select kod akaun',
+        allowClear: true,
+    });
+});
+JS;
+$this->registerJS($script);
+?>
