@@ -49,27 +49,27 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <p>
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-        <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?>
-=======
->>>>>>> Stashed changes
+        <!-- <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?> -->
+        <!-- <?= Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?> -->
         <?php
             if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
             {
-                echo Html::a(Yii::t('app','Create Other Payment'),
-                    ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']);
-            }
-            else
-                echo Html::a(Yii::t('app','Create Payment'),
-                    ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']);
         ?>
-<<<<<<< Updated upstream
-=======
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
->>>>>>> Stashed changes
+                <?= Html::a(Yii::t('app','Create Other Payment'),
+                    ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
+                
+                <?=  Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?>
+        <?php
+            }
+            else{
+        ?>
+                <?= Html::a(Yii::t('app','Create Payment'),
+                    ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
+
+                <?= Html::a(Yii::t('app','Payment Outside SGH'), ['create', 'rn' =>  Yii::$app->request->get('rn'), 'outside' => true], ['class' => 'btn btn-success']) ?>
+        <?php
+            }
+        ?>
     </p>
 
 

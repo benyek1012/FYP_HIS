@@ -9,9 +9,6 @@ if($cancellation == false){
     $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
     $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     if(empty(Yii::$app->request->get('outside'))){
         $this->title = Yii::t('app','Create Payment').' : '.Yii::$app->request->get('rn');
         if($temp2->name != "")
@@ -36,8 +33,7 @@ if($cancellation == false){
     //     $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
     // $this->params['breadcrumbs'][] = ['label' => Yii::t('app','Payments'), 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
     // $this->params['breadcrumbs'][] = Yii::t('app','Create Payment');
-=======
->>>>>>> Stashed changes
+
     if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
         $this->title = Yii::t('app','Create Other Payment').' : '.Yii::$app->request->get('rn');
     else $this->title = Yii::t('app','Create Payment').' : '.Yii::$app->request->get('rn');
@@ -57,11 +53,6 @@ if($cancellation == false){
         $this->params['breadcrumbs'][] = ['label' => Yii::t('app','Payments'), 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
         $this->params['breadcrumbs'][] = Yii::t('app','Create Payment');
     }
-    
-<<<<<<< Updated upstream
-=======
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
->>>>>>> Stashed changes
 }
 
 ?>

@@ -344,19 +344,12 @@ else{
     <div class="form-group" id="div_print">
         <!-- <?= Html::submitButton(Yii::t('app', 'Print'), ['class' => 'btn btn-success', 'id' => 'print']) ?> -->
 
-<<<<<<< Updated upstream
-        <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
-=======
-<<<<<<< HEAD
-            <?php if(empty(Yii::$app->request->get('outside'))){ ?>
-                <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
-            <?php } else{ ?>
-                <?= Html::submitButton(Yii::t('app','Save'), ['id' => 'save', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success']) ?>
-            <?php } ?>
-=======
-        <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
->>>>>>> Stashed changes
+        <?php if(empty(Yii::$app->request->get('outside'))){ ?>
+            <?= Html::button(Yii::t('app','Print'), ['id' => 'print', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "confirmAction('{$index}');"]) ?>
+        <?php } else{ ?>
+            <?= Html::submitButton(Yii::t('app','Save'), ['id' => 'save', 'name' => 'print', 'value' => 'true', 'class' => 'btn btn-success']) ?>
+        <?php } ?>
+
         <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
             'onclick' => "(function () {
                  document.getElementById('serial_number'+{$index}).readOnly = false; 
@@ -400,16 +393,7 @@ function myfunctionforType(val, index, cancellation, checkPayment) {
                 '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
         }
         // show bill receipt ID 
-<<<<<<< Updated upstream
         document.getElementById("bill_div" + index).style.display = "block";
-=======
-<<<<<<< HEAD
-        document.getElementById("bill_div"+index).style.display = "block";
-
-=======
-        document.getElementById("bill_div" + index).style.display = "block";
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
->>>>>>> Stashed changes
         document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
     } else if (val == "refund") {
         if (cancellation == false) {
@@ -417,53 +401,29 @@ function myfunctionforType(val, index, cancellation, checkPayment) {
                 '<?php echo (new Bill()) -> getUnclaimed(Yii::$app->request->get('rn'))?>';
         }
         // hide bill receipt ID 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-        document.getElementById("bill_div"+index).style.display = "none";
+        document.getElementById("bill_div" + index).style.display = "none";
         if(checkPayment == ""){
             document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
         }
-=======
->>>>>>> Stashed changes
-        document.getElementById("bill_div" + index).style.display = "none";
-        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
     } else if (val == "deposit") {
         if (cancellation == false) {
             document.getElementById("receipt_sum").value =
                 '<?php echo (new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))?>';
         }
         // hide bill receipt ID 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-        document.getElementById("bill_div"+index).style.display = "none";
+        document.getElementById("bill_div" + index).style.display = "none";
         if(checkPayment == ""){
             document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
         }
-=======
->>>>>>> Stashed changes
-        document.getElementById("bill_div" + index).style.display = "none";
-        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Print');?>';
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
     } else {
         if (cancellation == false) {
             document.getElementById("receipt_sum").value = 0;
         }
         // hide bill receipt ID 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-        document.getElementById("bill_div"+index).style.display = "none";
+        document.getElementById("bill_div" + index).style.display = "none";
         if(checkPayment == ""){
             document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
         }
-=======
->>>>>>> Stashed changes
-        document.getElementById("bill_div" + index).style.display = "none";
-        document.getElementById("print").innerHTML = '<?php echo Yii::t('app','Save');?>';
->>>>>>> 82c41c941be2609f43e256bddc8363a5fbefa544
     }
 
     $.get('<?php echo Url::toRoute(['/receipt/kod_akaun']); ?>', {
