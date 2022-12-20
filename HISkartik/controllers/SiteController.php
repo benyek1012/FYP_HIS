@@ -21,6 +21,7 @@ use app\models\Patient_admission;
 use GpsLab\Component\Base64UID\Base64UID;
 use app\models\New_user;
 use app\models\PrintForm;
+use app\models\Bill;
 
 class SiteController extends Controller
 {
@@ -486,4 +487,22 @@ class SiteController extends Controller
 
     //     return $this->render('print');
     // }
+
+    public function actionForgive_bill()
+    {
+        $model = new Bill();
+        if ($this->request->isPost){
+            $action=Yii::$app->request->post('action');
+            $selection=(array)Yii::$app->request->post('selection');
+            foreach($selection as $rn){
+                // update bill_forgive_date
+                $model = Bill::findone(['rn' => $rn]);
+                $date = new \DateTime();
+                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                $model->bill_forgive_date = $date->format('Y-m-d H:i:s');
+                $model->save();
+            }
+        }
+        return $this->render('forgive_bill',['model' => $model]);
+    }
 }
