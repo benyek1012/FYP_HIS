@@ -55,7 +55,7 @@ return[
     'Guarantor NRIC/Passport' => 'NRIC/Pasport Penjamin',
     'Guarantor Phone Number' => 'Nombor Telefon Penjamin',
     'Guarantor Email' => 'Emel Penjamin',
-    'Guarantor Address1' => 'Alamat Penjamin1',
+    'Guarantor Address' => 'Alamat Penjamin',
     'Guarantor Address2' => 'Alamat Penjamin2',
     'Guarantor Address3' => 'Alamat Penjamin3',
     'Type' => 'Jenis',
@@ -386,6 +386,8 @@ return[
     'DOB' => 'Tarikh Lahir',
     'Transaction History' => 'Sejarah Transaksi',
     'Guarantor Comment' => 'Catitan Penjamin',
-
+    'Please select kod akaun' => 'Sila pilih kod akaun',
+    'Select kod akaun' => 'Pilih kod akaun',
+    'Payment Outside SGH' => 'Bayaran Di Luar SGH',
 ];
 ?>
