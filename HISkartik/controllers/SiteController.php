@@ -357,6 +357,16 @@ class SiteController extends Controller
         $globalSearch = Yii::$app->request->get('search');
         $model_admission_founded = (new Patient_admissionController(null, null)) -> findModel($globalSearch);
 
+        if($globalSearch == Yii::$app->params['other_payment_rn'])
+        {
+            if(!empty( $model_admission_founded)){
+                echo Json::encode($model_admission_founded);
+            }
+            else{
+                return 'No';
+            }
+        }
+
         if((new Patient_admission()) -> checkRnFormat($globalSearch) == true){
             // RN is founded
             if(!empty( $model_admission_founded)){
@@ -468,12 +478,12 @@ class SiteController extends Controller
         return $flag;
     }
 
-    public function actionAdjust_print()
-    {
-        if ($this->request->isPost) {
-            PrintForm::printTest();
-        } 
+    // public function actionAdjust_print()
+    // {
+    //     if ($this->request->isPost) {
+    //         PrintForm::printTest();
+    //     } 
 
-        return $this->render('print');
-    }
+    //     return $this->render('print');
+    // }
 }

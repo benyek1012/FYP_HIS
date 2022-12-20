@@ -29,5 +29,6 @@ return [
 
     'printerstatus' => 'false',  // anything beside true will not print
     'printeroverwritefont' => 'false', // set font of printer
-    'hide_fpp' => 'false'
+    'hide_fpp' => 'false',
+    'other_payment_rn' => 'LAINLAIN'
 ];

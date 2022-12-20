@@ -164,6 +164,7 @@ class Patient_admissionController extends Controller
             // check RN Rules for starting on next year
             $model_latest_rn = Patient_admission::find()
             ->where(['type' => Yii::$app->request->get('type')])
+            ->andWhere(['!=','rn', Yii::$app->params['other_payment_rn']])
             ->orderBy('rn DESC')
             ->one();
          

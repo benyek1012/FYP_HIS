@@ -15,7 +15,7 @@ if (Yii::$app->user->isGuest){  ?>
     display: none;
 }
 
-.link:hover{
+.link:hover {
     cursor: all-scroll;
 }
 </style>
@@ -72,11 +72,18 @@ function items($rn)
         ['label' => '' .  $rn .'','iconClass' => '', 'url' => ['patient_admission/update', 'rn' =>  $rn]]);
 
         if($rn == Yii::$app->request->get('rn'))
-        {
-            array_push($items,['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
-            'bill_uid' =>  $model_bill->bill_uid,  'rn' => $rn]]);
-            array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
-            'url' => ['receipt/index', 'rn' =>  $rn]]);
+        {   
+            if($rn == Yii::$app->params['other_payment_rn'])
+                array_push($items, ['label' => Yii::t('app','Other Payments'), 'iconClass' => '',
+                    'url' => ['receipt/index', 'rn' =>  $rn]]);
+            else
+            {
+                array_push($items,['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
+                    'bill_uid' =>  $model_bill->bill_uid,  'rn' => $rn]]);
+                array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
+                    'url' => ['receipt/index', 'rn' =>  $rn]]);
+            }
+                
         }
     }
     else{
@@ -85,10 +92,16 @@ function items($rn)
 
         if($rn == Yii::$app->request->get('rn'))
         {
-            array_push($items, ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
+            if($rn == Yii::$app->params['other_payment_rn'])
+                array_push($items, ['label' => Yii::t('app','Other Payments'), 'iconClass' => '',
+                    'url' => ['receipt/index', 'rn' =>  $rn]]);
+            else
+            {
+                array_push($items, ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
                         'url' => ['bill/create', 'rn' =>  $rn]]);
-            array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
-            'url' => ['receipt/index', 'rn' =>  $rn]]);
+                array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
+                    'url' => ['receipt/index', 'rn' =>  $rn]]);
+            }
         }
     }
 
@@ -215,20 +228,23 @@ $urlPatientAdmission = Url::toRoute(['patient_admission/update']);
                                             $str .= $name[$i]."<br>";
                                         }
                                     ?>
-                                        <p class="text-white" style="word-wrap: break-word;"><?php echo Yii::t('app','Patient Name')." : ".$str;?>
-                                        </p>
+                                    <p class="text-white" style="word-wrap: break-word;">
+                                        <?php echo Yii::t('app','Patient Name')." : ".$str;?>
+                                    </p>
                                     <?php
                                     }
                                     else if($count < 1){
                                     ?>
-                                        <p class="text-white" style="word-wrap: break-word;"><?php echo Yii::t('app','Patient Name')." : ".$temp_name;?>
-                                        </p>
+                                    <p class="text-white" style="word-wrap: break-word;">
+                                        <?php echo Yii::t('app','Patient Name')." : ".$temp_name;?>
+                                    </p>
                                     <?php
                                     } */
                                     ?>
                                     <p class="text-white" style="word-wrap: break-word;"><?php echo $patient_name;?>
                                     </p>
-                                    <p class="text-white"><?php echo Yii::t('app','Patient IC/Passport')." : "."<br>".$info->nric;?></p>
+                                    <p class="text-white">
+                                        <?php echo Yii::t('app','Patient IC/Passport')." : "."<br>".$info->nric;?></p>
                                     <p class="text-light">
                                         <?php echo $amount_due."<br/>".$unclaimed_balance;?>
                                     </p>
@@ -291,18 +307,16 @@ function sidebar(url, urlAdmission, urlPatientAdmission) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-            if(this.responseText == 'No'){
+            if (this.responseText == 'No') {
                 alert("<?php echo Yii::t('app', "RN Doesn't Exist"); ?>");
-            }
-            else if (this.responseText != false) {
+            } else if (this.responseText != false) {
                 var data = $.parseJSON(this.responseText);
                 if (data.rn != null) {
                     location.href = urlPatientAdmission + "&rn=" + data.rn;
                 } else if (data.patient_uid != null) {
                     location.href = urlAdmission + "&id=" + data.patient_uid;
                 }
-            }
-            else {
+            } else {
                 confirmActionPatient();
             }
         }

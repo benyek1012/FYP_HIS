@@ -189,6 +189,8 @@ body {
                     <?php } ?>
                     <li><a href="<?php echo Url::to(['/site/batch_entry']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Batch Entry'); ?></a></li>
+                    <li><a href="<?php echo Url::to(['/receipt/index', 'rn' => 'LAINLAIN']);?>"
+                            class="dropdown-item"><?php echo Yii::t('app','Other Payments'); ?></a></li>
                     <!-- <li><a href="<?php echo Url::to(['/site/adjust_print']);?>"
                             class="dropdown-item"><?php echo Yii::t('app','Adjust Print'); ?></a></li> -->
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"

@@ -19,7 +19,12 @@ use app\models\SerialNumber;
 $temp = Patient_admission::findOne(['rn'=> Yii::$app->request->get('rn')]);
 $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 
-$this->title = Yii::t('app','Payments');
+if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
+    $this->title = Yii::t('app','Other Payments');
+else
+    $this->title = Yii::t('app','Payments');
+
+
 if($temp2->name != "")
     $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 else 
@@ -29,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="receipt-index">
     <div class="row">
         <div class="col-lg-12">
-        <?php 
+            <?php 
             if(!empty(Yii::$app->request->get('rn'))){
         ?>
             <?= \hail812\adminlte\widgets\Callout::widget([
@@ -39,12 +44,21 @@ $this->params['breadcrumbs'][] = $this->title;
                '<br/><b>'.Yii::t('app','Amount Due').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getAmtDued(Yii::$app->request->get('rn'))).
                '<br/><b>'.Yii::t('app','Unclaimed Balance').'</b>: '.Yii::$app->formatter->asCurrency((new Bill()) -> getUnclaimed(Yii::$app->request->get('rn')))
             ]) ?>
-        <?php } ?>
+            <?php } ?>
         </div>
     </div>
 
     <p>
-        <?= Html::a(Yii::t('app','Create Payment'), ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
+        <?php
+            if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
+            {
+                echo Html::a(Yii::t('app','Create Other Payment'),
+                    ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']);
+            }
+            else
+                echo Html::a(Yii::t('app','Create Payment'),
+                    ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']);
+        ?>
     </p>
 
 
@@ -58,11 +72,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php if(Yii::$app->session->hasFlash('cancellation_error')):?>
-        <div id = "flashError">
-            <?= Yii::$app->session->getFlash('cancellation_error') ?>
-        </div>
+    <div id="flashError">
+        <?= Yii::$app->session->getFlash('cancellation_error') ?>
+    </div>
     <?php endif; ?>
-    
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
