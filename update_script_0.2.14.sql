@@ -112,6 +112,9 @@ ORDER BY reminder_no, rn;
 END$$
 DELIMITER ;
 
+INSERT INTO `lookup_general`(`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('hyIQRT4FpJK_7de71t2p2X1cptGMSXfI','018/76303','Kod Akaun','018/76303','018/76303','1');
+
+INSERT INTO `lookup_general`(`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('ub8iwKDzSStLx2llag97qUtXKl2WgeeX','018/76302','Kod Akaun','018/76302','018/76302','1');
 
 INSERT INTO `patient_information` (`patient_uid`, `first_reg_date`, `nric`, `nationality`, `name`, `sex`, `race`, `phone_number`, `email`, `address1`, `address2`, `address3`, `job`, `DOB`) VALUES
 ('m-vPBL8igioXLRSnMSBsF6awk4jOgM0C', '1950-01-01', 'PESAKITLAINLAIN', 'Malaysia', 'Pesakit Lain Lain ', 'Male', 'MA', '', NULL, NULL, NULL, NULL, NULL, '1950-01-01');
