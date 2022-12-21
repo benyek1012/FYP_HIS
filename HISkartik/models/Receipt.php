@@ -39,7 +39,7 @@ class Receipt extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_sum', 'receipt_content_datetime_paid', 'receipt_content_payer_name', 'receipt_content_payment_method', 'receipt_responsible', 'kod_akaun'], 'required'],
+            [['receipt_uid', 'rn', 'receipt_type', 'receipt_content_sum', 'receipt_content_payer_name', 'receipt_content_payment_method', 'receipt_responsible', 'kod_akaun'], 'required'],
             [['receipt_content_sum'], 'number'],
             [['receipt_content_datetime_paid'], 'safe'],
             [['receipt_uid', 'rn', 'receipt_responsible'], 'string', 'max' => 64],

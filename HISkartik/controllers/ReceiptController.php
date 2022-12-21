@@ -88,9 +88,14 @@ class ReceiptController extends Controller
                 }
             }
             else{
-                if(empty($model->receipt_content_datetime_paid))
-                {
-                    $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
+                if(Yii::$app->request->get('outside') == 'false'){
+                    // if(empty($model->receipt_content_datetime_paid))
+                    // {
+                        $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
+                    // }
+                }
+                else{
+                    $model->receipt_serial_number = null;
                 }
                 
                 $model_cancellation->responsible_uid = Yii::$app->user->identity->getId();
@@ -124,13 +129,15 @@ class ReceiptController extends Controller
                     $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
 
                     // Print Bill / Deposit 
-                    if(($model->receipt_type !='refund') && ($model->receipt_type !='exception'))
-                    {
-                        $error = PrintForm::printReceipt($model, $modelpatient);
-                        if(!empty($error))
+                    if(Yii::$app->request->get('outside') == 'false'){
+                        if(($model->receipt_type !='refund') && ($model->receipt_type !='exception'))
                         {
-                            Yii::$app->session->setFlash('msg', '
-                            <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
+                            $error = PrintForm::printReceipt($model, $modelpatient);
+                            if(!empty($error))
+                            {
+                                Yii::$app->session->setFlash('msg', '
+                                <span class="badge badge-warning"><h6>'.$error.' !</h6></span> <br/><br/>');
+                            }
                         }
                     }
 
@@ -260,13 +267,16 @@ class ReceiptController extends Controller
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
 
         if ($this->request->isPost && $model->load($this->request->post())) {
-            if(empty(Yii::$app->request->get('outside'))){
-                if(empty($model->receipt_content_datetime_paid))
-                {
+            if(Yii::$app->request->get('outside') == 'false'){
+                // if(empty($model->receipt_content_datetime_paid))
+                // {
                     $date = new \DateTime();
                     $date->setTimezone(new \DateTimeZone('+0800')); //GMT
                     $model->receipt_content_datetime_paid =  $date->format('Y-m-d H:i:s');
-                }
+                // }
+            }
+            else{
+                $model->receipt_serial_number = null;
             }
 
             if($model->validate() && $model->save()){
@@ -295,7 +305,7 @@ class ReceiptController extends Controller
                 $modelpatient = Patient_information::findOne(['patient_uid' => $modeladmission->patient_uid]);
 
                 // Print Bill / Deposit 
-                if(empty(Yii::$app->request->get('outside'))){
+                if(Yii::$app->request->get('outside') == 'false'){
                     if(($model->receipt_type !='refund') && ($model->receipt_type !='exception'))
                     {
                         $error = PrintForm::printReceipt($model, $modelpatient);
