@@ -3,17 +3,20 @@
 use app\controllers\BillController;
 use app\controllers\Patient_informationController;
 use app\controllers\ReceiptController;
+use yii\bootstrap4\Html;
 
 ?>
 
 <?= kartik\grid\GridView::widget([
+    //'pjax' => true,
     'dataProvider' => $dataProvider,
     'columns' => [
         [ 'class' => 'yii\grid\CheckboxColumn',
             'checkboxOptions' =>
             function($model) {
                 return ['value' => $model->rn, 'class' => 'checkbox-row', 'id' => 'checkbox'];
-            }
+            },
+            'visible' => ($check != 'false') ? true : false
         ],
         [
             'attribute' =>  'name',
@@ -25,16 +28,23 @@ use app\controllers\ReceiptController;
         ], 
         [
             'attribute' =>  'nric',
+            'format' => 'raw',
             'headerOptions'=>['style'=>'max-width: 100px;'],
             'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
             'value' => function($data){
-                return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->nric;
+                $ic = ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->nric;
+                return  Html::a($ic, \yii\helpers\Url::to(['/site/admission', 'id' => $data['patient_uid'], '#' => 'patient']));
             },
+            'label' => Yii::t('app','NRIC/Passport')
         ], 
         [
             'attribute' =>  'rn',
+            'format' => 'raw',
             'headerOptions'=>['style'=>'max-width: 100px;'],
             'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+            'value' => function($data){
+                return Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+            },
         ], 
         [
             'attribute' =>  'bill_generation_final_fee_rm',
@@ -56,7 +66,7 @@ use app\controllers\ReceiptController;
             'attribute' =>  'initial_ward_code',
             'headerOptions'=>['style'=>'max-width: 100px;'],
             'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-            
+            'label' => Yii::t('app','Ward Code')
         ],
         [
             'attribute' =>  'receipt_content_description',
@@ -68,10 +78,13 @@ use app\controllers\ReceiptController;
         ],
         [
             'attribute' =>  'bill_print_id',
+            'format' => 'raw',
             'headerOptions'=>['style'=>'max-width: 100px;'],
             'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
             'value' => function($data){
-                return  ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_print_id;
+                $bill_print_id = ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_print_id;
+                $bill_uid = ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_uid;
+                return Html::a($bill_print_id, \yii\helpers\Url::to(['/bill/print','bill_uid' => $bill_uid, 'rn' => $data['rn']]));
             },
         ],
         [
@@ -83,5 +96,6 @@ use app\controllers\ReceiptController;
             },
         ],
     ]
-    ]);
+]);
+
 ?>

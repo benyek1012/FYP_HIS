@@ -536,6 +536,6 @@ class SiteController extends Controller
             'pagination'=>['pageSize'=>5],
         ]);
         
-        return $this->renderPartial('/site/forgive_bill_gridview', ['dataProvider'=>$dataProvider]);   
+        return $this->renderPartial('/site/forgive_bill_gridview', ['dataProvider'=>$dataProvider, 'check' => 'false']);   
     }
 }
