@@ -476,6 +476,8 @@ class SiteController extends Controller
                 break;
             }
         }
+        if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
+            $flag = false;
         return $flag;
     }
 

@@ -104,7 +104,7 @@ class ReceiptController extends Controller
                 
                 if($model->validate() && $model_cancellation->validate()){
 
-                    if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit')
+                    if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit' || $model->receipt_type == 'other')
                     {
                         if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
                         {
@@ -280,7 +280,7 @@ class ReceiptController extends Controller
             }
 
             if($model->validate() && $model->save()){
-                if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit')
+                if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit' || $model->receipt_type == 'other')
                 {
                     if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
                     {

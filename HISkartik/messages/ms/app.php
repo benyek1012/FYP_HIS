@@ -393,5 +393,8 @@ return[
     "Receipt Serial Number will not save to 'Payment outside SGH'" => "Nombor Siri Resit tidak akan disimpan ke 'Pembayaran di luar SGH'",
     'Please Enter Valid Payment Date' => 'Sila Masukkan Tarikh Pembayaran yang Sah',
     'Payment Date (yyyy-mm-dd)' => 'Tarikh Pembayaran (yyyy-mm-dd)',
+    'Other Payments' => 'Bayaran Lain Lain',
+    'Create Other Payment' => 'Buat Bayaran Lain Lain',
+    'Other' => 'Lain Lain'
 ];
 ?>
