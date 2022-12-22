@@ -182,9 +182,8 @@ $dataProvider2 = new ActiveDataProvider([
                     ]); 
                 ?>
                 <div class="bill-view">
-                <?php Pjax::begin(); ?>
                 <?= kartik\grid\GridView::widget([
-                    'pjax' => true,
+                    //'pjax' => true,
                     'dataProvider' => $dataProvider,
                     'columns' => [
                         [ 'class' => 'yii\grid\CheckboxColumn',
@@ -274,7 +273,6 @@ $dataProvider2 = new ActiveDataProvider([
                 ]);
                 
                 ?>
-                 <?php Pjax::end(); ?>
                             <div class="row">
                                 <div class="col-sm-12">
                                     <?= $form->field($model_forgive, 'comment')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
