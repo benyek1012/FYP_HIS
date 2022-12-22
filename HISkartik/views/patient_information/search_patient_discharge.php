@@ -20,6 +20,7 @@ echo $this->render('_search_discharge', ['model' => $searchModel]);
 $model = Patient_information::findOne(Yii::$app->request->get('id'));
 ?>
 
+<?php if(!empty(Yii::$app->request->get('Patient_informationSearch'))){ ?>
 <body>
     <br/>
     <div class="card">
@@ -218,7 +219,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-
+<?php } ?>
 
 
 <?php

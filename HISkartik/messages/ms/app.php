@@ -389,5 +389,9 @@ return[
     'Please select kod akaun' => 'Sila pilih kod akaun',
     'Select kod akaun' => 'Pilih kod akaun',
     'Payment Outside SGH' => 'Bayaran Di Luar SGH',
+    'Without Replacement (Press Print Button)' => 'Tanpa Penggantian (Tekan Butang Cetak)',
+    "Receipt Serial Number will not save to 'Payment outside SGH'" => "Nombor Siri Resit tidak akan disimpan ke 'Pembayaran di luar SGH'",
+    'Please Enter Valid Payment Date' => 'Sila Masukkan Tarikh Pembayaran yang Sah',
+    'Payment Date (yyyy-mm-dd)' => 'Tarikh Pembayaran (yyyy-mm-dd)',
 ];
 ?>
