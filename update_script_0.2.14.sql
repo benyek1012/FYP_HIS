@@ -124,3 +124,6 @@ INSERT INTO `patient_admission` (`rn`, `entry_datetime`, `patient_uid`, `initial
 
 
 ALTER TABLE `bill` ADD `bill_forgive_date` DATETIME NULL DEFAULT NULL AFTER `discharge_date`;
+
+
+CREATE TABLE `sghis`.`bill_forgive` (`bill_forgive_date` DATETIME NOT NULL , `comment` VARCHAR(200) NOT NULL , PRIMARY KEY (`bill_forgive_date`)) ENGINE = InnoDB;
