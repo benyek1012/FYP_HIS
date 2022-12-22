@@ -605,4 +605,5 @@ class Bill extends \yii\db\ActiveRecord
             return $date->format('Y-m-d H:i');
         }
     }
+    
 }

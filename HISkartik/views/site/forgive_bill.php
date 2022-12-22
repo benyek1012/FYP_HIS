@@ -1,5 +1,6 @@
 <?php
 
+use app\controllers\BillController;
 use app\controllers\SiteController;
 use app\models\Patient_admission;
 use app\models\Patient_information;
@@ -8,6 +9,8 @@ use yii\data\ActiveDataProvider;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
 use app\models\Bill;
+use app\controllers\Patient_informationController;
+use app\controllers\ReceiptController;
 
 //get rn array where bill_forgive_date = NULL
 $rn_array = array();
@@ -132,10 +135,9 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
             <div class="card-body">
         <?php
             if(!empty($model2))
-            {
-               
+            {       
                 $dataProvider = new ActiveDataProvider([
-                    'query'=> Bill::find()->where(['in', 'rn', $rn]),
+                    'query'=> Patient_admission::find()->select('patient_admission.*, patient_information.*, bill.*')->from('patient_admission')->joinWith('bill',true)->joinWith('receipt',true)->joinWith('patient_information',true)->where(['in', 'bill.rn', $rn]),
                     // ->joinWith('bill',true)
                     'pagination'=>['pageSize'=>5],
                 ]);
@@ -160,20 +162,72 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
                         }
                         ],
                         [
+                            'attribute' =>  'name',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                            'value' => function($data){
+                                return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->name;
+                            },
+                        ], 
+                        [
+                            'attribute' =>  'nric',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                            'value' => function($data){
+                                return  ((new Patient_informationController(null,null)) -> findModel($data->patient_uid))->nric;
+                            },
+                        ], 
+                        [
                             'attribute' =>  'rn',
                             'headerOptions'=>['style'=>'max-width: 100px;'],
                             'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                         ], 
                         [
-                            'attribute' =>  'bill_generation_datetime',
-                            'headerOptions'=>['style'=>'max-width: 100px;'],
-                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                        ],
-                        [
                             'attribute' =>  'bill_generation_final_fee_rm',
                             'headerOptions'=>['style'=>'max-width: 100px;'],
                             'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                        ]
+                            'value' => function($data){
+                                return  ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_generation_final_fee_rm;
+                            },
+                        ],
+                        [
+                            'attribute' =>  'class',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                            'value' => function($data){
+                                return  ((new BillController(null,null)) -> findModelByRn($data->rn))->class;
+                            },
+                        ],
+                        [
+                            'attribute' =>  'initial_ward_code',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                           
+                        ],
+                        [
+                            'attribute' =>  'receipt_content_description',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                            'value' => function($data){
+                                return  ((new ReceiptController(null,null)) -> findModelByRn($data->rn))->receipt_content_description;
+                            },
+                        ],
+                        [
+                            'attribute' =>  'bill_print_id',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                            'value' => function($data){
+                                return  ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_print_id;
+                            },
+                        ],
+                        [
+                            'attribute' =>  'bill_print_datetime',
+                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                            'value' => function($data){
+                                return  ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_print_datetime;
+                            },
+                        ],
                     ]
                 ]);
                 ?>
