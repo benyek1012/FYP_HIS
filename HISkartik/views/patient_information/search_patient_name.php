@@ -21,8 +21,9 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
 ?>
 
 <?php if(!empty(Yii::$app->request->get('Patient_informationSearch'))){ ?>
+
 <body>
-    <br/>
+    <br />
     <div class="card">
         <div class="card-header text-white bg-primary">
             <h3 class="card-title"><?php echo Yii::t('app','Patient Result');?></h3>
@@ -37,15 +38,15 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-                <?php 
+            <?php 
                     if(empty(Yii::$app->request->get('Patient_informationSearch')))
                     {
                         echo Yii::t('app','Patient admission record is not founded');        
                     } 
                     else{
                         ?>
-                        <!-- This is the gridview that shows patient admission summary-->
-                        <?= kartik\grid\GridView::widget([
+            <!-- This is the gridview that shows patient admission summary-->
+            <?= kartik\grid\GridView::widget([
                                 'dataProvider' => $dataProvider,
                             // 'filterModel' => $searchModel,
                                 'showOnEmpty' => false,
@@ -159,7 +160,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                         ],
                                     ],
                             ]) ?>
-                    <?php }
+            <?php }
                ?>
         </div>
         <!-- /.card-body -->
@@ -186,11 +187,11 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
         <!-- /.card-header -->
         <div class="card-body" id="patient-admission-summary">
             <?php 
-                    if(empty($model))
-                    {
-                        echo Yii::t('app','Patient admission record is not found');        
-                    } 
-                ?>
+                if(empty($model))
+                {
+                    echo Yii::t('app','Patient admission record is not found');        
+                } 
+            ?>
         </div>
         <!-- /.card-body -->
     </div>
@@ -219,10 +220,10 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-<?php } ?>
+    <?php } ?>
 
 
-<?php
+    <?php
 $js = <<<SCRIPT
     /* To initialize BS3 tooltips set this below */
     $(function () { 
@@ -236,26 +237,26 @@ SCRIPT;
 $this->registerJs ( $js );
 ?>
 
-<script>
-function patientAdmission(url) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange  = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200){
-            document.getElementById("patient-admission-summary").innerHTML = this.responseText;
+    <script>
+    function patientAdmission(url) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                document.getElementById("patient-admission-summary").innerHTML = this.responseText;
+            }
         }
+        xhttp.open("GET", url, true);
+        xhttp.send();
     }
-    xhttp.open("GET", url, true);
-    xhttp.send();
-}
 
-function patientInformation(url) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange  = function() {
-        if(xhttp.readyState == 4 && xhttp.status == 200){
-            document.getElementById("patient-information").innerHTML = this.responseText;
+    function patientInformation(url) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                document.getElementById("patient-information").innerHTML = this.responseText;
+            }
         }
+        xhttp.open("GET", url, true);
+        xhttp.send();
     }
-    xhttp.open("GET", url, true);
-    xhttp.send();
-}
-</script>
+    </script>
