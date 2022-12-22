@@ -404,4 +404,5 @@ class Patient_information extends \yii\db\ActiveRecord
       
     
     }
+
 }
