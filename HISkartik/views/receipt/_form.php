@@ -180,7 +180,7 @@ else{
     }
     ?>
 
-    <?= $form->field($model, 'receipt_content_datetime_paid')->hiddenInput(['id' => 'receipt_content_datetime_paid'.$index, 'autocomplete' =>'off', 'placeholder' => 'yyyy-mm-dd']);?>
+    <?= $form->field($model, 'receipt_content_datetime_paid')->hiddenInput(['id' => 'receipt_content_datetime_paid'.$index, 'autocomplete' =>'off', 'placeholder' => 'yyyy-mm-dd'])->label(false);?>
     
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
