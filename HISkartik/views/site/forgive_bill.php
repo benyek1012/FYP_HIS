@@ -12,6 +12,7 @@ use app\models\Bill;
 use app\controllers\Patient_informationController;
 use app\controllers\ReceiptController;
 
+$this->title = Yii::t('app','Biil Forgive');
 //get rn array where bill_forgive_date = NULL
 $rn_array = array();
 $rn = array();
@@ -37,31 +38,33 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
 
 
 <body>
-<nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Tab 1</a>
-    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Tab 2</a>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-<br/><br/>
-<div id="card1" class="container-fluid">
-        <div class="card">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Bill Forgived');?></h3>
-                <div class="d-flex justify-content-end">
-                    <div class="card-tools">
-                        <!-- Collapse Button -->
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                aria-controls="nav-home" aria-selected="true">Tab 1</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+                aria-controls="nav-profile" aria-selected="false">Tab 2</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <br /><br />
+            <div id="card1" class="container-fluid">
+                <div class="card">
+                    <div class="card-header text-white bg-primary">
+                        <h3 class="card-title"><?php echo Yii::t('app','Bill Forgived');?></h3>
+                        <div class="d-flex justify-content-end">
+                            <div class="card-tools">
+                                <!-- Collapse Button -->
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <!-- /.card-tools -->
                     </div>
-                </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-        <?php
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <?php
             if(!empty($model))
             {
                 $dataProvider = new ActiveDataProvider([
@@ -78,9 +81,9 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
                     ],
                     ]); 
                 ?>
-                <div class="bill-view">
+                        <div class="bill-view">
 
-                <?= kartik\grid\GridView::widget([
+                            <?= kartik\grid\GridView::widget([
                     'dataProvider' => $dataProvider,
                     'columns' => [
                         [ 'class' => 'yii\grid\SerialColumn',
@@ -103,43 +106,43 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
                     ]
                 ]);
                 ?>
-                </div>
-                <?php kartik\form\ActiveForm::end(); ?>
-        <?php
+                        </div>
+                        <?php kartik\form\ActiveForm::end(); ?>
+                        <?php
             } 
             else echo Yii::t('app','Bill record is not found');
         ?>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-  </div>
-
-  </div>
-  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
- <br/><br/>
-    <div id="card1" class="container-fluid">
-        <div class="card">
-            <div class="card-header text-white bg-primary">
-                <h3 class="card-title"><?php echo Yii::t('app','Bill');?></h3>
-                <div class="d-flex justify-content-end">
-                    <div class="card-tools">
-                        <!-- Collapse Button -->
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
                     </div>
+                    <!-- /.card-body -->
                 </div>
-                <!-- /.card-tools -->
+                <!-- /.card -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-        <?php
+
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <br /><br />
+            <div id="card1" class="container-fluid">
+                <div class="card">
+                    <div class="card-header text-white bg-primary">
+                        <h3 class="card-title"><?php echo Yii::t('app','Bill');?></h3>
+                        <div class="d-flex justify-content-end">
+                            <div class="card-tools">
+                                <!-- Collapse Button -->
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <?php
             if(!empty($model2))
             {       
                 $dataProvider = new ActiveDataProvider([
                     'query'=> Patient_admission::find()->select('patient_admission.*, patient_information.*, bill.*')->from('patient_admission')->joinWith('bill',true)->joinWith('receipt',true)->joinWith('patient_information',true)->where(['in', 'bill.rn', $rn]),
                     // ->joinWith('bill',true)
-                    'pagination'=>['pageSize'=>5],
+                  //  'pagination'=>['pageSize'=> 20],
                 ]);
                 $form = kartik\form\ActiveForm::begin([
                     'id' => 'patient-admission-form',
@@ -150,9 +153,9 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
                     ],
                     ]); 
                 ?>
-                <div class="bill-view">
+                        <div class="bill-view">
 
-                <?= kartik\grid\GridView::widget([
+                            <?= kartik\grid\GridView::widget([
                     'dataProvider' => $dataProvider,
                     'columns' => [
                         [ 'class' => 'yii\grid\CheckboxColumn',
@@ -231,19 +234,24 @@ $model2 = Bill::find()->where(['in', 'rn', $rn]);
                     ]
                 ]);
                 ?>
-                <div class="form-group">
-                        <?= Html::submitButton(Yii::t('app','Forgive'), ['class' => 'btn btn-success']) ?>
-                </div>
-                </div>
-                <?php kartik\form\ActiveForm::end(); ?>
-        <?php
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <?= $form->field($model_forgive, 'comment')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <?= Html::submitButton(Yii::t('app','Forgive'), ['class' => 'btn btn-success']) ?>
+                            </div>
+                        </div>
+                        <?php kartik\form\ActiveForm::end(); ?>
+                        <?php
             } 
             else echo Yii::t('app','Bill record is not found');
         ?>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
-  </div>
-</div>
 </body>

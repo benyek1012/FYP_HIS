@@ -22,6 +22,7 @@ use GpsLab\Component\Base64UID\Base64UID;
 use app\models\New_user;
 use app\models\PrintForm;
 use app\models\Bill;
+use app\models\BillForgive;
 
 class SiteController extends Controller
 {
@@ -493,18 +494,26 @@ class SiteController extends Controller
     public function actionForgive_bill()
     {
         $model = new Bill();
-        if ($this->request->isPost){
-            $action=Yii::$app->request->post('action');
-            $selection=(array)Yii::$app->request->post('selection');
-            foreach($selection as $rn){
-                // update bill_forgive_date
-                $model = Bill::findone(['rn' => $rn]);
-                $date = new \DateTime();
-                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                $model->bill_forgive_date = $date->format('Y-m-d H:i:s');
-                $model->save();
+        $model_forgive = new BillForgive();
+        if ($this->request->isPost &&  $model_forgive->load($this->request->post())) { 
+            $date = new \DateTime();
+            $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+            $model_forgive->bill_forgive_date = $date->format('Y-m-d H:i:s');
+            if($model_forgive->validate())
+            {
+                $action=Yii::$app->request->post('action');
+                $selection=(array)Yii::$app->request->post('selection');
+                foreach($selection as $rn){
+                    // update bill_forgive_date
+                    $model = Bill::findone(['rn' => $rn]);
+                    $date = new \DateTime();
+                    $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                    $model->bill_forgive_date = $date->format('Y-m-d H:i:s');
+                    $model->save();
+                }
+                $model_forgive->save();
             }
         }
-        return $this->render('forgive_bill',['model' => $model]);
+        return $this->render('forgive_bill',['model' => $model, 'model_forgive' => $model_forgive]);
     }
 }
