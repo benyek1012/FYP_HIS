@@ -112,6 +112,36 @@ ORDER BY reminder_no, rn;
 END$$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS `report4_query`;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `report4_query`(IN `year` INT, IN `month` INT)
+
+BEGIN
+SELECT bill_view.rn, bill_view.name,bill_view.nric, bill_view.malaysian,bill_view.initial_ward_class, bill_view.Address,
+ bill_print_id,bill_generation_datetime, COALESCE(bill_generation_final_fee_rm,0) AS bill_final_fee,COALESCE(payment_sum, 0) AS payment_sum,
+  COALESCE(bill_generation_final_fee_rm,0)- COALESCE(payment_view.payment_sum,0) AS amount_owe, reminder1, reminder2,reminder3 FROM 
+
+(    
+(SELECT patient_admission.rn, bill.bill_print_id, bill.bill_generation_final_fee_rm, DATE(bill.bill_generation_datetime) AS bill_generation_date, bill.bill_generation_datetime, 
+patient_admission.reminder1,patient_admission.reminder2,patient_admission.reminder3,patient_admission.initial_ward_class,
+patient_information.patient_uid, patient_information.name,patient_information.nric, patient_information.nric REGEXP '^[0-9]{6}-[0-9]{2}-[0-9]{4}$' AS malaysian,
+CONCAT(patient_information.address1,patient_information.address2, patient_information.address3) AS Address 
+FROM patient_admission
+	INNER JOIN bill ON patient_admission.rn = bill.rn
+ 	INNER JOIN patient_information ON patient_admission.patient_uid = patient_information.patient_uid
+    where (bill.deleted = 0) 
+    AND (EXTRACT(YEAR FROM bill.bill_generation_datetime)= year) 
+    AND (EXTRACT(MONTH FROM bill.bill_generation_datetime)= month)
+    ) AS bill_view 
+LEFT JOIN
+(SELECT RN, sum(CASE WHEN receipt_type = 'Refund' THEN -receipt_content_sum ELSE receipt_content_sum END) AS payment_sum FROM receipt WHERE receipt.receipt_uid NOT IN (SELECT cancellation_uid FROM cancellation) GROUP BY RN) AS payment_view
+    ON bill_view.RN = payment_view.RN
+    )ORDER BY bill_view.bill_generation_date, bill_view.bill_generation_datetime;
+
+	END$$
+DELIMITER ;
+
 INSERT INTO `lookup_general`(`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('hyIQRT4FpJK_7de71t2p2X1cptGMSXfI','018/76303','Kod Akaun','018/76303','018/76303','1');
 
 INSERT INTO `lookup_general`(`lookup_general_uid`, `code`, `category`, `name`, `long_description`, `recommend`) VALUES ('ub8iwKDzSStLx2llag97qUtXKl2WgeeX','018/76302','Kod Akaun','018/76302','018/76302','1');
