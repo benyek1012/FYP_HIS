@@ -22,6 +22,8 @@ use GpsLab\Component\Base64UID\Base64UID;
 use app\models\New_user;
 use app\models\PrintForm;
 use app\models\Bill;
+use app\models\BillForgive;
+use yii\data\ActiveDataProvider;
 
 class SiteController extends Controller
 {
@@ -493,18 +495,47 @@ class SiteController extends Controller
     public function actionForgive_bill()
     {
         $model = new Bill();
-        if ($this->request->isPost){
-            $action=Yii::$app->request->post('action');
-            $selection=(array)Yii::$app->request->post('selection');
-            foreach($selection as $rn){
-                // update bill_forgive_date
-                $model = Bill::findone(['rn' => $rn]);
-                $date = new \DateTime();
-                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                $model->bill_forgive_date = $date->format('Y-m-d H:i:s');
-                $model->save();
+        $model_forgive = new BillForgive();
+        if ($this->request->isPost &&  $model_forgive->load($this->request->post())) { 
+            $date = new \DateTime();
+            $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+            $model_forgive->bill_forgive_date = $date->format('Y-m-d H:i:s');
+            if($model_forgive->validate())
+            {
+                $action=Yii::$app->request->post('action');
+                $selection=(array)Yii::$app->request->post('selection');
+                foreach($selection as $rn){
+                    // update bill_forgive_date
+                    $model = Bill::findone(['rn' => $rn]);
+                    $date = new \DateTime();
+                    $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+                    $model->bill_forgive_date = $date->format('Y-m-d H:i:s');
+                    $model->save();
+                }
+                $model_forgive->save();
             }
         }
-        return $this->render('forgive_bill',['model' => $model]);
+        return $this->render('forgive_bill',['model' => $model, 'model_forgive' => $model_forgive]);
+    }
+
+    public function actionRender_gridview()
+    {
+
+        // $query = Bill::find()->select('date(bill_forgive_date) as bill_forgive_date')   
+        //   ->where(['<>', 'bill_forgive_date', date(Yii::$app->request->get('id'))]);
+
+        $query =  Patient_admission::find()
+            ->select('patient_admission.*, patient_information.*, bill.*, date(bill.bill_forgive_date) as bill_forgive_date')
+            ->from('patient_admission')->joinWith('bill',true)->joinWith('receipt',true)
+            ->joinWith('patient_information',true)
+            ->where(['>=', 'bill_forgive_date', date(Yii::$app->request->get('id'))]);
+        
+        $dataProvider = new ActiveDataProvider([
+            'query'=> $query,
+            // ->joinWith('bill',true)
+            'pagination'=>['pageSize'=>5],
+        ]);
+        
+        return $this->renderPartial('/site/forgive_bill_gridview', ['dataProvider'=>$dataProvider, 'check' => 'false']);   
     }
 }
