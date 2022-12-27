@@ -152,8 +152,6 @@ INSERT INTO `patient_information` (`patient_uid`, `first_reg_date`, `nric`, `nat
 INSERT INTO `patient_admission` (`rn`, `entry_datetime`, `patient_uid`, `initial_ward_code`, `initial_ward_class`, `reference`, `medical_legal_code`, `type`, `reminder1`, `reminder2`, `reminder3`) VALUES
 ('LAINLAIN', '1950-01-01 00:00:00', 'm-vPBL8igioXLRSnMSBsF6awk4jOgM0C', '01', '3', 'Default', 0, 'Normal', NULL, NULL, NULL);('LAINLAIN', '1950-01-01 00:00:00', 'm-vPBL8igioXLRSnMSBsF6awk4jOgM0C', '01', '3', 'Default', 0, 'Normal', NULL, NULL, NULL);
 
-
 ALTER TABLE `bill` ADD `bill_forgive_date` DATETIME NULL DEFAULT NULL AFTER `discharge_date`;
 
-
-CREATE TABLE `sghis`.`bill_forgive` (`bill_forgive_date` DATETIME NOT NULL , `comment` VARCHAR(200) NOT NULL , PRIMARY KEY (`bill_forgive_date`)) ENGINE = InnoDB;
+CREATE TABLE `sghis`.`bill_forgive` (`bill_forgive_uid` VARCHAR(64) NOT NULL , `bill_forgive_date` DATE NOT NULL , `comment` VARCHAR(200) NOT NULL , PRIMARY KEY (`bill_forgive_uid`)) ENGINE = InnoDB;
