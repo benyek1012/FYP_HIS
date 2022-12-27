@@ -196,7 +196,7 @@ body {
                     <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
                     class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
                     <li><a href="<?php echo Url::to(['/site/forgive_bill']);?>"
-                            class="dropdown-item"><?php echo Yii::t('app',' Hapuskira Bill'); ?></a></li>
+                            class="dropdown-item"><?php echo Yii::t('app','Biil Forgive'); ?></a></li>
                    
             </div>
         </li>

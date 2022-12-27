@@ -495,11 +495,18 @@ class SiteController extends Controller
     public function actionForgive_bill()
     {
         $model = new Bill();
-        $model_forgive = new BillForgive();
-        if ($this->request->isPost &&  $model_forgive->load($this->request->post())) { 
-            $date = new \DateTime();
-            $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-            $model_forgive->bill_forgive_date = $date->format('Y-m-d H:i:s');
+
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('+0800')); //GMT
+        $model_forgive = BillForgive::find()->where(['bill_forgive_date' => $date->format('Y-m-d')])->one();
+        if(empty($model_forgive))
+        {
+            $model_forgive = new BillForgive();
+            $model_forgive->bill_forgive_uid = Base64UID::generate(32);
+            $model_forgive->bill_forgive_date = $date->format('Y-m-d');
+        }
+
+        if ($this->request->isPost && $model_forgive->load($this->request->post())) { 
             if($model_forgive->validate())
             {
                 $action=Yii::$app->request->post('action');
@@ -512,7 +519,15 @@ class SiteController extends Controller
                     $model->bill_forgive_date = $date->format('Y-m-d H:i:s');
                     $model->save();
                 }
-                $model_forgive->save();
+                if(!empty($selection))
+                    $model_forgive->save();
+                else
+                    Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                        <strong>'.Yii::t('app', 'Bill Forgive Execution Failed!').'  </strong>'.
+                            Yii::t('app', 'No items selected!').'</div>'
+                    );
             }
         }
         return $this->render('forgive_bill',['model' => $model, 'model_forgive' => $model_forgive]);

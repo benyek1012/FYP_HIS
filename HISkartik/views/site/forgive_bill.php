@@ -40,25 +40,23 @@ foreach($rows as $row){
 $model2 = Bill::find()->where(['in', 'rn', $rn]);
 
 $query_dataProvider2 = BillForgive::find()
-    ->select('date(bill_forgive_date) as bill_forgive_date')->distinct()
-    ->orderBy(['bill_forgive_date'=>'ASC']);
+    ->select('*')
+    ->orderBy(['bill_forgive_date'=> SORT_DESC]);
 
 $dataProvider2 = new ActiveDataProvider([
     'query'=> $query_dataProvider2,
     // ->joinWith('bill',true)
     'pagination'=>['pageSize'=>10],
 ]);
-
 ?>
-
 
 <body>
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-item nav-link " id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
-                aria-controls="nav-home" aria-selected="true">Tab 1</a>
+                aria-controls="nav-home" aria-selected="true"><?php echo Yii::t('app','View Bill Forgive') ?></a>
             <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
-                aria-controls="nav-profile" aria-selected="false">Tab 2</a>
+                aria-controls="nav-profile" aria-selected="false"><?php echo Yii::t('app','Perform Bill Forgive') ?></a>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -67,7 +65,7 @@ $dataProvider2 = new ActiveDataProvider([
 
             <div class="card">
                 <div class="card-header text-white bg-primary">
-                    <h3 class="card-title"><?php echo Yii::t('app','Bill Forgived Summary');?></h3>
+                    <h3 class="card-title"><?php echo Yii::t('app','Forgived Bill By Date Forgiven');?></h3>
                     <div class="d-flex justify-content-end">
                         <div class="card-tools">
                             <!-- Collapse Button -->
@@ -121,7 +119,7 @@ $dataProvider2 = new ActiveDataProvider([
             <div id="card1" class="container-fluid">
                 <div class="card">
                     <div class="card-header text-white bg-primary">
-                        <h3 class="card-title"><?php echo Yii::t('app','Bill Forgived');?></h3>
+                        <h3 class="card-title"><?php echo Yii::t('app','Forgived Bill Summary');?></h3>
                         <div class="d-flex justify-content-end">
                             <div class="card-tools">
                                 <!-- Collapse Button -->
@@ -151,7 +149,7 @@ $dataProvider2 = new ActiveDataProvider([
             <div id="card1" class="container-fluid">
                 <div class="card">
                     <div class="card-header text-white bg-primary">
-                        <h3 class="card-title"><?php echo Yii::t('app','Bill');?></h3>
+                        <h3 class="card-title"><?php echo Yii::t('app','Patient Result');?></h3>
                         <div class="d-flex justify-content-end">
                             <div class="card-tools">
                                 <!-- Collapse Button -->
@@ -169,7 +167,7 @@ $dataProvider2 = new ActiveDataProvider([
                                 $dataProvider = new ActiveDataProvider([
                                     'query'=> Patient_admission::find()->select('patient_admission.*, patient_information.*, bill.*')->from('patient_admission')->joinWith('bill',true)->joinWith('receipt',true)->joinWith('patient_information',true)->where(['in', 'bill.rn', $rn]),
                                     // ->joinWith('bill',true)
-                                //'pagination'=>['pageSize'=> 2],
+                                    //'pagination'=>['pageSize'=> 2],
                                 ]);
                                 $form = kartik\form\ActiveForm::begin([
                                     'id' => 'patient-admission-form',
@@ -187,8 +185,15 @@ $dataProvider2 = new ActiveDataProvider([
                             </div>
                         </div>
                         <div class="form-group">
-                            <?= Html::submitButton(Yii::t('app','Forgive'), ['class' => 'btn btn-success']) ?>
+                            <?= Html::button(Yii::t('app','Forgive'), ['class' => 'btn btn-success', 'onclick' => "confirmAction();"]) ?>
                         </div>
+
+                        <!-- If the flash message existed, show it  -->
+                        <?php if(Yii::$app->session->hasFlash('msg')):?>
+                        <div id="flashError">
+                            <?= Yii::$app->session->getFlash('msg') ?>
+                        </div>
+                        <?php endif; ?>
 
                         <?php kartik\form\ActiveForm::end(); ?>
                         <?php
@@ -219,6 +224,34 @@ $this->registerJs ( $js );
 ?>
 
 <script>
+
+<?php if( Yii::$app->language == "en"){ ?>
+// The function below will start the confirmation  dialog
+function confirmAction() {
+    var answer = confirm("Are you sure to forgive selected bills?");
+    if (answer) {
+        // window.location.href = url + '&confirm=true';
+        submitReceiptForm();
+    }
+}
+<?php }else{?>
+// The function below will start the confirmation  dialog
+function confirmAction() {
+    var answer = confirm("Adakah anda pasti memaafkan bil yang dipilih?");
+    if (answer) {
+        submitReceiptForm();
+    }
+}
+<?php } ?>
+
+function submitReceiptForm() {
+    var form = $('#patient-admission-form');
+    var formData = form.serialize();
+
+    form.attr("action", '<?php echo Url::toRoute(['site/forgive_bill']) ?>');
+    form.submit();
+}
+
 function renderGridview(url) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -230,4 +263,5 @@ function renderGridview(url) {
     xhttp.send();
 }
 </script>
+
 </body>

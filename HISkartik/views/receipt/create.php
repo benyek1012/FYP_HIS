@@ -11,10 +11,6 @@ if($cancellation == false){
 
     if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn']){
         $this->title = Yii::t('app','Create Other Payment').' : '.Yii::$app->request->get('rn');
-        if($temp2->name != "")
-            $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
-        else 
-            $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
         
         if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
         {
@@ -23,6 +19,10 @@ if($cancellation == false){
         }
         else
         {
+            if($temp2->name != "")
+                $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
+            else 
+                $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
             $this->params['breadcrumbs'][] = ['label' => Yii::t('app','Payments'), 'url' => ['index', 'rn'=> Yii::$app->request->get('rn')]];
             $this->params['breadcrumbs'][] = Yii::t('app','Create Payment');
         }

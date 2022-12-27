@@ -22,16 +22,18 @@ $temp2 = Patient_information::findOne(['patient_uid'=> $temp->patient_uid]);
 if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
     $this->title = Yii::t('app','Other Payments');
 else
+{
     $this->title = Yii::t('app','Payments');
+    if($temp2->name != "")
+        $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
+    else 
+        $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
+}
 
-
-if($temp2->name != "")
-    $this->params['breadcrumbs'][] = ['label' => $temp2->name, 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
-else 
-    $this->params['breadcrumbs'][] = ['label' => "Unknown", 'url' => ['site/admission', 'id' => $temp2->patient_uid]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="receipt-index">
+    <?php if(Yii::$app->request->get('rn') != Yii::$app->params['other_payment_rn']){?>
     <div class="row">
         <div class="col-lg-12">
             <?php 
@@ -47,19 +49,20 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php } ?>
         </div>
     </div>
+    <?php } ?>
 
     <p>
         <?php
             if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
             {
         ?>
-                <?= Html::a(Yii::t('app','Create Other Payment'),
+        <?= Html::a(Yii::t('app','Create Other Payment'),
                     ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
         <?php
             }
             else{
         ?>
-                <?= Html::a(Yii::t('app','Create Payment'),
+        <?= Html::a(Yii::t('app','Create Payment'),
                     ['create', 'rn' =>  Yii::$app->request->get('rn')], ['class' => 'btn btn-success']) ?>
         <?php
             }

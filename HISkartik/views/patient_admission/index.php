@@ -1,5 +1,7 @@
 <?php
 
+use app\controllers\BillController;
+use app\models\Bill;
 use kartik\grid\GridView;
 use app\models\Cancellation;
 use app\models\Patient_admission;
@@ -16,12 +18,12 @@ use yii\helpers\Url;
 <div class="patient-admission-index">
 
     <?php if(Yii::$app->session->hasFlash('cancellation_error')):?>
-        <div id = "flashError">
-            <?= Yii::$app->session->getFlash('cancellation_error') ?>
-        </div>
+    <div id="flashError">
+        <?= Yii::$app->session->getFlash('cancellation_error') ?>
+    </div>
     <?php endif; ?>
-    <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?> 
-        <?= kartik\grid\GridView::widget([
+    <?php if(Yii::$app->controller->action->id == "guest_printer_dashboard"){?>
+    <?= kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'showOnEmpty' => false,
         'emptyText' => Yii::t('app','Patient admission record is not founded'),
@@ -140,8 +142,8 @@ use yii\helpers\Url;
         ],
     ]);
     } 
-    else{?> 
-        <?= kartik\grid\GridView::widget([
+    else{?>
+    <?= kartik\grid\GridView::widget([
             'dataProvider' => $dataProvider,
             'showOnEmpty' => false,
             'emptyText' => Yii::t('app','Patient admission record is not founded'),
@@ -260,14 +262,12 @@ use yii\helpers\Url;
                     },
                 ],
                 [
-                    'attribute' => 'initial_ward_code',
+                    'label' => Yii::t('app','Initial Ward'),
                     'headerOptions'=>['style'=>'max-width: 100px;'],
                     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
-                ],
-                [
-                    'attribute' => 'initial_ward_class',
-                    'headerOptions'=>['style'=>'max-width: 100px;'],
-                    'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                    'value'=>function ($data) {
+                        return $data['initial_ward_code']. ' ( ' . $data['initial_ward_class'] . ' ) ';
+                    },
                 ],
                 [
                     'attribute' =>  'reference',
@@ -289,6 +289,21 @@ use yii\helpers\Url;
                     'headerOptions'=>['style'=>'max-width: 100px;'],
                     'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
                 ], 
+                [
+                    'attribute' =>  'bill_print_id',
+                    'format' => 'raw',
+                    'headerOptions'=>['style'=>'max-width: 100px;'],
+                    'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                    'value' => function($data){
+                        if((new Bill())->isPrinted($data->rn))
+                        {
+                            $bill_print_id = ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_print_id;
+                            $bill_uid = ((new BillController(null,null)) -> findModelByRn($data->rn))->bill_uid;
+                            return Html::a($bill_print_id, \yii\helpers\Url::to(['/bill/print','bill_uid' => $bill_uid, 'rn' => $data['rn']]));
+                        }       
+                    },
+                    'label' => Yii::t('app','Receipt Bill ID')
+                ],
                 [
                     'attribute' => 'billable_sum',
                     'label' => Yii::t('app','Billable Total').' (RM)',

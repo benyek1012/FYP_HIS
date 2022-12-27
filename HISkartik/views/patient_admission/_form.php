@@ -317,9 +317,9 @@ use yii\widgets\Pjax;
         ?>
 
         <?= Html::submitButton(Yii::t('app','Update'), ['class' => 'btn btn-success', 'disabled' => $disabled, 'style' => 'display: none;']) ?>
-        <?php if(empty($patient_nric)){
+        <!-- <?php if(empty($patient_nric)){
             ?><?= Html::button(Yii::t('app','Transfer'), ['class' => 'btn btn-info', 'id' => 'btnTransfer', 'disabled' => $disabled])?>
-        <?php } ?>
+        <?php } ?> -->
         <!-- <?= Html::button(Yii::t('app','Change Registration Number'), ['class' => 'btn btn-primary', 'id' => 'btnChange', 'disabled' => $disabled])?> -->
         <?php
            // Modal for transfer patient

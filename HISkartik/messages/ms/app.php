@@ -395,6 +395,17 @@ return[
     'Payment Date (yyyy-mm-dd)' => 'Tarikh Pembayaran (yyyy-mm-dd)',
     'Other Payments' => 'Bayaran Lain Lain',
     'Create Other Payment' => 'Buat Bayaran Lain Lain',
-    'Other' => 'Lain Lain'
+    'Other' => 'Lain Lain',
+    'Biil Forgive' => 'Hapuskira Bil',
+    'View Bill Forgive' => 'Memaparkan Hapuskira Bil',
+    'Perform Bill Forgive' => 'Melaksanakan Hapuskira Bil',
+    'Forgived Bill Summary' => 'Ringkasan Hapuskira Bil',
+    'Forgived Bill By Date Forgiven' => 'Hapuskira Bil Mengikut Tarikh Diampunkan',
+    'Date Forgiven' => 'Tarikh Diampuni',
+    'Comment' => 'Catitan',
+    'Forgive' => 'Hapuskira',
+    'Bill Forgive Execution Failed!' => 'Pelaksanaan Hapuskira Bil Gagal!',
+    'No items selected!' => 'Tiada item yang dipilih!',
+    'Initial Ward' => 'Wad Permulaan',
 ];
 ?>
