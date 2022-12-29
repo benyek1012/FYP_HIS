@@ -86,7 +86,7 @@ foreach($modelReceipt as $model){
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'showOnEmpty' => false,
-                    'emptyText' => Yii::t('app','Payment record is not found'),
+                    'emptyText' => Yii::t('app','Transaction history is not found !'),
                 //  'filterModel' => $searchModel,
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],

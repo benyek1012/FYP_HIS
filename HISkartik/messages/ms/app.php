@@ -407,5 +407,7 @@ return[
     'Bill Forgive Execution Failed!' => 'Pelaksanaan Hapuskira Bil Gagal!',
     'No items selected!' => 'Tiada item yang dipilih!',
     'Initial Ward' => 'Wad Permulaan',
+    'Transaction history is not found !' => 'Sejarah transaksi tidak diasaskan !',
+    'Print Transaction History' => 'Cetak Sejarah Transaksi',
 ];
 ?>
