@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Patient_information;
+use app\models\Bill;
 use app\models\Patient_informationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -209,6 +210,32 @@ class Patient_informationController extends Controller
         ]);
 
     } 
+
+	public function actionSearch_by_bill_number()
+	{
+		$bill_print_id = null;
+		$result = null;
+		
+		if($this->request->isPost){
+			
+			
+			$bill_print_id = ($_POST['bill_print_id']);
+			
+			$model = Bill::find()->where(['bill_print_id'=>$_POST['bill_print_id']])->one();
+			if(empty($model))
+				$result = 'Bill not found';
+			else
+				$result = $model->rn;
+			
+			
+			//do something to fill $result
+		}
+		
+		return $this->render('search_by_bill_number', [
+			'bill_print_id' => $bill_print_id,
+            'result' => $result
+        ]);
+	}
 
     // pass DOB from datepicker, then ajax calculate age then render on Age textInput
     public function actionDob($dob, $id) {
