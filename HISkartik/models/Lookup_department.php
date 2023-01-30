@@ -59,4 +59,14 @@ class Lookup_department extends \yii\db\ActiveRecord
             'address3' => Yii::t('app','Address 3'),
         ];
     }
+	
+	static function getNaturalSortArgs()
+	{
+		return ['length(department_code)' => SORT_ASC,
+			'CAST(REGEXP_SUBSTR(department_code,"[0-9]+") AS UNSIGNED)'=>SORT_ASC, 
+			'department_code'=>SORT_ASC
+			]; 
+	}
+	
+	
 }

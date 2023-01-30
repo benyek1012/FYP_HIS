@@ -49,7 +49,7 @@ class Treatment_detailsController extends Controller
     public function actionTreatmentrow()
     {
         // if (Yii::$app->request->post('addTreatmentRow') == 'true') {
-            $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+            $dbTreatment =Treatment_details::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderBy(Treatment_details::getNaturalSortArgs())->all();
 
             // if(empty($dbTreatment)) {
             //     $count = count(Yii::$app->request->post('Treatment_details', []));

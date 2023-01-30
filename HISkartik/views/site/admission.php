@@ -71,7 +71,7 @@ if(!empty($model)){
                     <?= Html::button(Yii::t('app','Add New Admission'), ['class' => 'btn btn-outline-primary align-self-start', 'onclick' => "addNormal('{$urlNormal}', '{$urlPatientAdmission}')"]) ?>
                     &nbsp;&nbsp;
                     <!-- <?= Html::a(Yii::t('app','Add New Labor Admission'),['site/admission', 'id' => $model->patient_uid, 'type' => 'Labor'], ['class' => 'btn btn-outline-primary align-self-start']) ?> -->
-                    <?= Html::button(Yii::t('app','Add New Labor Admission'), ['class' => 'btn btn-outline-primary align-self-start', 'onclick' => "addNormal('{$urlLabor}', '{$urlPatientAdmission}')"]) ?>
+                    <?= Html::button(Yii::t('app','Add New Labor Admission'), ['class' => 'btn btn-info align-self-start', 'onclick' => "addNormal('{$urlLabor}', '{$urlPatientAdmission}')"]) ?>
                 </div>
         <?php
             } 

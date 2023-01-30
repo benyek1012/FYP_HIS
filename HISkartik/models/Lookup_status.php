@@ -58,4 +58,12 @@ class Lookup_status extends \yii\db\ActiveRecord
             'class_3_ward_cost' => Yii::t('app','Class 3 Ward Cost'),
         ];
     }
+		
+	static function getNaturalSortArgs()
+	{
+		return ['length(status_code)' => SORT_ASC,
+			'CAST(REGEXP_SUBSTR(status_code,"[0-9]+") AS UNSIGNED)'=>SORT_ASC, 
+			'status_code'=>SORT_ASC
+			]; 
+	}
 }

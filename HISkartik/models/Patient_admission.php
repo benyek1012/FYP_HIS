@@ -75,11 +75,26 @@ class Patient_admission extends \yii\db\ActiveRecord
         ];
     }
 
+	public function getCancelled(){
+		$bill_model = Bill::find()->where(['rn' => $this->rn, 'deleted' => 0])->one();
+		if(empty($bill_model))
+			return false;
+		if($bill_model->status_code == 'AC'||$bill_model->status_code == 'ACOA'||$bill_model->department_code == 'AC')
+			return true;
+		return false;
+	}
 
     public function get_bill($rn){
-        if( (new Bill())  -> getUnclaimed($rn) < 0 )
-            return Yii::t('app','-')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getAmtDued($rn));
-        else return Yii::t('app','+')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getUnclaimed($rn));
+		//return (new Bill())  -> getUnclaimed($rn).':'.(new Bill())  -> getAmtDued($rn);
+		
+        if( (new Bill())  -> getAmtDued($rn) <= 0 ){
+			$unclaimed_ret = (new Bill())  -> getUnclaimed($rn);
+			if($unclaimed_ret == 0)
+				return Yii::$app->formatter->asCurrency($unclaimed_ret);
+			else
+				return Yii::t('app','+')." ".Yii::$app->formatter->asCurrency($unclaimed_ret);
+		}
+        else return Yii::t('app','-')." ".Yii::$app->formatter->asCurrency((new Bill())  -> getAmtDued($rn));
 
         return null;
     }

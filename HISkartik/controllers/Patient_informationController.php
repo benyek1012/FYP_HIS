@@ -74,11 +74,15 @@ class Patient_informationController extends Controller
 
         // var_dump($model->hasValidIC());
         // exit();
-        if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
+        if($model->hasValidIC())
         {
-            $model->DOB = $model->getDateForDatabase();
+			
             $model->sex = $model->getGender();
             $model->nationality = $model->getNationality();
+			if($model->Date_validate($model->getStartDate()))
+			{
+				$model->DOB = $model->getDateForDatabase();
+			}
         }
 
         $model->save();
@@ -121,8 +125,8 @@ class Patient_informationController extends Controller
             if($flag == true){
                 if($model->hasValidIC() && $model->Date_validate($model->getStartDate()))
                 {
-                    $model->DOB = $model->getDateForDatabase();
-                    $model->sex = $model->getGender();
+                    //$model->DOB = $model->getDateForDatabase();
+                    //$model->sex = $model->getGender();
                     // $model->nationality = $model->getNationality();
                     echo 's';
                 }
@@ -222,7 +226,10 @@ class Patient_informationController extends Controller
     public function actionGender($nric, $id) {
         $model = Patient_information::findOne($id);
         $model->nric = $nric;
-        echo Json::encode($model->getGender());
+		if(empty($model->sex))
+			echo Json::encode($model->getGender());
+		else	
+			echo Json::encode($model->sex);
     }
 
     public function actionNationality($id){

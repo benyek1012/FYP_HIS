@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use app\models\Bill;
+use app\models\Lookup_fpp;
 
 /**
  * This is the model class for table "fpp".
@@ -61,4 +63,31 @@ class Fpp extends \yii\db\ActiveRecord
             'total_cost' => Yii::t('app', 'Total Cost'),
         ];
     }
+	
+	public function refreshInfoAndRecalculate(){
+			
+		$bill_model = Bill::find()->where(['bill_uid'=>$this->bill_uid])->one();
+	
+		$lookup_fpp_model = Lookup_fpp::find()->where(['kod'=>$this->kod])->one();
+		
+		if(empty($lookup_fpp_model))
+			throw new Exception("Fpp code does not exist");
+			
+		$this->name = $lookup_fpp_model->name;
+		$this->min_cost_per_unit = $lookup_fpp_model->min_cost_per_unit;
+		$this->max_cost_per_unit = $lookup_fpp_model->max_cost_per_unit;
+		
+		$this->total_cost = ((float)$this->cost_per_unit) * ((float)$this->number_of_units);
+		
+		return $this->total_cost;
+	}
+	
+	
+	static function getNaturalSortArgs()
+	{
+		return ['CAST(REGEXP_SUBSTR(kod,"[0-9]+") AS UNSIGNED)'=>SORT_ASC, 
+			'length(kod)' => SORT_ASC,
+			'kod'=>SORT_ASC]; 
+	}
+	
 }

@@ -54,4 +54,13 @@ class Lookup_ward extends \yii\db\ActiveRecord
             'max_age' => Yii::t('app','Max Age')
         ];
     }
+	
+	
+	static function getNaturalSortArgs()
+	{
+		return ['length(ward_code)' => SORT_ASC,
+			'CAST(REGEXP_SUBSTR(ward_code,"[0-9]+") AS UNSIGNED)'=>SORT_ASC, 
+			'ward_code'=>SORT_ASC
+			]; 
+	}
 }

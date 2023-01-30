@@ -143,9 +143,11 @@ class New_userController extends Controller
         if ($this->request->isPost && $model->load($this->request->post())){
 
             $checkDuplicatedUser = New_user::findOne(['username' => $model->username, 'user_uid' => $model->user_uid]);
-            // $model->validate();
-            // var_dump($model->getFirstErrors());
-            // exit;
+            
+			 //$model->validate();
+             //var_dump($model->getFirstErrors());
+             //var_dump($model);
+			 //exit;
             if($model->validate() && empty($checkDuplicatedUser))
             {
                 $model->user_password = New_user::hashPassword($model->user_password); // Hash the password before you save it.
@@ -200,6 +202,11 @@ class New_userController extends Controller
         $searchModel = new New_userSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+		 //$model->load($this->request->post());
+		 //echo $model->admin_password;
+		 //var_dump(Yii::$app->user->identity->getId());
+		 //exit;
+		 
         if($this->request->isPost && $model->load($this->request->post()) && $model->validate()) {
             if(empty($model->new_password) || empty($model->confirm_new_password)){
                 Yii::$app->session->setFlash('error_user', '
@@ -214,7 +221,7 @@ class New_userController extends Controller
                 Yii::$app->session->setFlash('error_user', '
                     <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-                    '.Yii::t('app', 'You have successfully changed your password.').'</div>'
+                    '.Yii::t('app', 'You have successfully changed the password.').'</div>'
                 );
                 return $this->refresh();
             }

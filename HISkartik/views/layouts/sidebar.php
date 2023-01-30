@@ -66,6 +66,8 @@ function items($rn)
         $url_bill = 'bill/generate';
     else $url_bill = 'bill/print';
 
+									
+
     if(!empty($model_bill))
     {
         array_push($items, 
@@ -73,12 +75,18 @@ function items($rn)
 
         if($rn == Yii::$app->request->get('rn'))
         {   
+			//clement was here
+			array_push($items, ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
+									'url' => \yii\helpers\Url::to(['bill/index2', 'rn'=>$model_bill->rn])]);
+	
+			//end clement was here				
+	
             if($rn == Yii::$app->params['other_payment_rn'])
                 array_push($items, ['label' => Yii::t('app','Other Payments'), 'iconClass' => '',
                     'url' => ['receipt/index', 'rn' =>  $rn]]);
             else
             {
-                array_push($items,['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
+                array_push($items,['label' => Yii::t('app','Bill (Old)'), 'iconClass' => '', 'url' => [$url_bill, 
                     'bill_uid' =>  $model_bill->bill_uid,  'rn' => $rn]]);
                 array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
                     'url' => ['receipt/index', 'rn' =>  $rn]]);
@@ -92,12 +100,17 @@ function items($rn)
 
         if($rn == Yii::$app->request->get('rn'))
         {
+			
+			//clement was here
+			array_push($items, ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
+									'url' => \yii\helpers\Url::to(['bill/index2', 'rn'=>$rn])]);
+			//end clement was here				
             if($rn == Yii::$app->params['other_payment_rn'])
                 array_push($items, ['label' => Yii::t('app','Other Payments'), 'iconClass' => '',
                     'url' => ['receipt/index', 'rn' =>  $rn]]);
             else
             {
-                array_push($items, ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
+                array_push($items, ['label' => Yii::t('app','Bill (Old)'), 'iconClass' => '', 
                         'url' => ['bill/create', 'rn' =>  $rn]]);
                 array_push($items, ['label' => Yii::t('app','Payment'), 'iconClass' => '',
                     'url' => ['receipt/index', 'rn' =>  $rn]]);

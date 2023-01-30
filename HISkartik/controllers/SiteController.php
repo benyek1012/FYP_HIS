@@ -135,22 +135,7 @@ class SiteController extends Controller
         $flag = 0;
         if ($this->request->isPost){
             if ($model->load($this->request->post())){
-                $model_patient = new Patient_information();
-                $model_patient->patient_uid = Base64UID::generate(32);
-                $model_patient->nric = "";
-                $model_patient->first_reg_date = date("Y-m-d");
-                $model_patient->nationality = "";
-                $model_patient->name = NULL;
-                $model_patient->sex = "";
-                $model_patient->race = "";
-                $model_patient->phone_number = "";
-                $model_patient->email = "";
-                $model_patient->address1 = "";
-                $model_patient->address2 = "";
-                $model_patient->address3 = "";
-                $model_patient->job = "";
-                $model_patient->DOB = "";
-                $model_patient->save();
+
 
                 //check empty
                 if($model->startrn != "" && $model->endrn != ""){
@@ -166,36 +151,80 @@ class SiteController extends Controller
                                     $startrn  = preg_replace('/\D/', '', $model->startrn);
                                     $endrn  = preg_replace('/\D/', '', $model->endrn);
                                     if($endrn >= $startrn){
-                                        for($i = $startrn; $i <= $endrn; $i++){
-                                            $rn = substr($i, 0, 4)."/". substr($i, 4,9);
-                                            // var_dump($rn);
-                                            // exit;
-                                            $model_admission = Patient_admission::findOne(['rn' => $rn]);
-                                            if(empty($model_admission)){
-                                                $flag = 1;
-                                               // print_r($rn);
-                                                $admission = new Patient_admission();
-                                                $date = new \DateTime();
-                                                $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-                                                $admission->rn = $rn;
-                                                $admission->patient_uid = $model_patient->patient_uid;
-                                                $admission->entry_datetime = $date->format('Y-m-d H:i:s');
-                                                if(substr($rn,-6,1) == '0')     $admission->type = "Normal";
-                                                else if(substr($rn,-6,1) == '9') $admission->type = "Labor";
-                        
-                                                $admission->initial_ward_class = "UNKNOWN";
-                                                $admission->initial_ward_code = "UNKNOWN";
-                                                $admission->save();
-                                                // $model->validate();
-                                                // var_dump($model->errors);
-                                                // exit;
-                                            }
-                                            else {
-                                                $flag = 0;
-                                                break;
-                                            }
-                                        }
-                                        
+										
+										$connection = \Yii::$app->db;
+										$transaction = $connection->beginTransaction();;
+										try {
+											for($i = $startrn; $i <= $endrn; $i++){
+												$rn = substr($i, 0, 4)."/". substr($i, 4,9);
+												// var_dump($rn);
+												// exit;
+												
+
+												
+												
+												
+												
+												$model_admission = Patient_admission::findOne(['rn' => $rn]);
+												if(empty($model_admission)){
+													$flag = 1;
+												   // print_r($rn);
+												   
+													$model_patient = new Patient_information();
+													$model_patient->patient_uid = Base64UID::generate(32);
+													$model_patient->nric = "";
+													$model_patient->first_reg_date = date("Y-m-d");
+													$model_patient->nationality = "";
+													$model_patient->name = NULL;
+													$model_patient->sex = "";
+													$model_patient->race = "";
+													$model_patient->phone_number = "";
+													$model_patient->email = "";
+													$model_patient->address1 = "";
+													$model_patient->address2 = "";
+													$model_patient->address3 = "";
+													$model_patient->job = "";
+													$model_patient->DOB = "";
+													$model_patient->save();
+												   
+												   
+													$admission = new Patient_admission();
+													$date = new \DateTime();
+													$date->setTimezone(new \DateTimeZone('+0800')); //GMT
+													$admission->rn = $rn;
+													$admission->patient_uid = $model_patient->patient_uid;
+													$admission->entry_datetime = $date->format('Y-m-d H:i:s');
+													if(substr($rn,-6,1) == '0')     $admission->type = "Normal";
+													else if(substr($rn,-6,1) == '9') $admission->type = "Labor";
+							
+													$admission->initial_ward_class = "UNKNOWN";
+													$admission->initial_ward_code = "UNKNOWN";
+													$admission->save();
+													// $model->validate();
+													// var_dump($model->errors);
+													// exit;
+												}
+												else {
+													$flag = 0;
+													break;
+												}
+											}
+											if($flag = 1)
+												$transaction->commit();
+										} catch (\Exception $e) {
+											$transaction->rollBack();
+											return $e->getMessage();
+											//var_dump( $e);
+											return;
+										} catch (\Throwable $e) {
+											$transaction->rollBack();
+											return $e->getMessage();
+											//var_dump( $e);
+											return;
+										}
+										
+										
+										
                                     }
                                     else{
                                         $flag = 1;

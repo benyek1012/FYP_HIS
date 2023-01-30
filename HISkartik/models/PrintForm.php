@@ -3,8 +3,10 @@
 namespace app\models;
 require 'vendor/autoload.php';
 use app\models\Patient_admission;
+use app\models\Treatment_details;
 use app\models\Patient_information;
 use app\models\Patient_next_of_kin;
+use app\models\Lookup_general;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\CapabilityProfile;
@@ -279,19 +281,21 @@ class PrintForm
 		$form->escp2ResetPaper();
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$form->escp2SetTypeface(0);
-		$form->printNewLine(2);
+		
+		$form->escp2SetVerticalPrintPosition(133, 0);
+		$form->printNewLine(3);
 
 		// (name and rn)
-		if(strlen($patientInformation->name) > 32){
-			$first = substr($patientInformation->name, 0, 32);
-			$second = substr($patientInformation->name, 33, 65);
+		if(strlen($patientInformation->name) > 50){
+			$first = substr($patientInformation->name, 0, 50);
+			$second = substr($patientInformation->name, 51, 100);
 
 			$form->printElementArray(
 				[
 					[$form->borangdafter_offset, "\x20"],
-					[11, "\x20"],
-					[32, $first, true],
-					[20,"\x20"],
+					[5, "\x20"],
+					[50, $first, true],
+					[1,"\x20"],
 					[11, $rn]
 				]
 			);
@@ -300,8 +304,8 @@ class PrintForm
 			$form->printElementArray(
 				[
 					[$form->borangdafter_offset, "\x20"],
-					[9, "\x20"],
-					[32, $second, true],
+					[5, "\x20"],
+					[50, $second, true],
 				]
 			);
 			$form->printNewLine(1);
@@ -319,14 +323,13 @@ class PrintForm
 			);
 			$form->printNewLine(2);
 		}
-		
-		// // (address and ic)
-		// $form->printElementArray(
-		// 	[
-		// 		[56,"\x20"],
-		// 		[14, $patientInformation->nric],
-		// 	]
-		// );
+		$form->printElementArray(
+			[
+				[$form->borangdafter_offset, "\x20"],
+				[56, "\x20"],
+				[14, $patientInformation->nric],
+			]
+		);		
 		$form->printNewLine(1);
 		
 		$form->printElementArray(
@@ -334,8 +337,6 @@ class PrintForm
 				[$form->borangdafter_offset, "\x20"],
 				[5, "\x20"],
 				[38, $patientInformation->address1,true],
-				[13,"\x20"],
-				[14, $patientInformation->nric],
 			]
 		);
 		$form->printNewLine(1);
@@ -346,6 +347,8 @@ class PrintForm
 				[$form->borangdafter_offset, "\x20"],
 				[5,"\x20"],
 				[38, $patientInformation->address2,true],
+				[13,"\x20"], 
+				[15, $patientInformation->phone_number],  
 			]
 		);
 		$form->printNewLine(1);
@@ -356,17 +359,21 @@ class PrintForm
 				[$form->borangdafter_offset, "\x20"],
 				[5,"\x20"],  
 				[38, $patientInformation->address3,true],
-				[13,"\x20"], 
-				[15, $patientInformation->phone_number],  
 			]
 		);
 		
-		$form->printNewLine(4);
+		$form->printNewLine(3);
 
 		$race = $patientInformation->race;
 		$raceResult = Lookup_general::findOne(["code"=>$race, "category"=>"Race"]);
 		if(!is_null($raceResult))
 			$race = $raceResult->name;
+		
+		$nationality = $patientInformation->nationality;
+		$nationalityResult = Lookup_general::findOne(["code"=>$nationality, "category"=>"Nationality"]);
+		if(!is_null($nationalityResult))
+			$nationality = $nationalityResult->name;
+		
 		$form->printElementArray( 
 			[  
 				[$form->borangdafter_offset, "\x20"],
@@ -377,9 +384,9 @@ class PrintForm
 				[3,"\x20"],
 				[11,$patientInformation->getAge("%y, %m, %d")],
 				[2, "\x20"],
-				[10,$race,true],
+				[10,$race,true], //patient information stores 'kod', 'name' is needed. 
 				[8, "\x20"],
-				[9,$patientInformation->nationality,true],
+				[9,$nationality,true], //patient information stores 'kod', 'name' is needed. 
 			]
 		);
 		$form->printNewLine(2);
@@ -428,6 +435,7 @@ class PrintForm
 		}
 		
    
+		$form->printNewLine(2);
 		$form->printElementArray( 
 			[  
 				[$form->borangdafter_offset, "\x20"],
@@ -447,7 +455,7 @@ class PrintForm
 				[30,$patientAdmission->reference,true ],
 			]
 		);
-		$form->printNewLine(4);
+		$form->printNewLine(3);
 		$form->printElementArray( 
 			[  
 				[$form->borangdafter_offset, "\x20"],
@@ -456,14 +464,19 @@ class PrintForm
 			]
 		);
 		$form->printNewLine(2);
+		
+		$ward_text = $patientAdmission->initial_ward_code;
+		if(!empty ( $ward_model = Lookup_ward::findOne(['ward_code' => $ward_text])))
+			$ward_text = $ward_text . ' (' . $ward_model->ward_name. ')';
 		$form->printElementArray( 
 			[  
 				[$form->borangdafter_offset, "\x20"],
 				[19,"\x20"],
-				[10,$patientAdmission->initial_ward_code,true],
+				[30,$ward_text,true],
 			]
 		);
 		$form->printNewLine(2);
+		
 		$form->printElementArray( 
 			[  
 				[$form->borangdafter_offset, "\x20"],
@@ -503,6 +516,7 @@ class PrintForm
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$form->escp2SetTypeface(0);
 		
+		$form->escp2SetVerticalPrintPosition(154, 0);
 		$form->printNewLine(4);
 		$form->printElementArray(
 				[
@@ -517,9 +531,16 @@ class PrintForm
 				]
 			);
 		$form->printNewLine(2);
+		
+		
+		$nationality = $patientInformation->nationality;
+		$nationalityResult = Lookup_general::findOne(["code"=>$nationality, "category"=>"Nationality"]);
+		if(!is_null($nationalityResult))
+			$nationality = $nationalityResult->name;
+		
 		if(strlen($patientInformation->name) > 25){
 			$first = substr($patientInformation->name, 0, 25);
-			$second = substr($patientInformation->name, 26, 51);
+			$second = substr($patientInformation->name, 25, 50);
 
 			$form->printElementArray(
 				[
@@ -532,6 +553,9 @@ class PrintForm
 				]
 			);
 			$form->printNewLine(1);
+			
+			
+		
 			$form->printElementArray(
 			[
 				//line 2, name and nric
@@ -539,7 +563,7 @@ class PrintForm
 				[6, "\x20"],
 				[30, $second,true],
 				[15,"\x20"],
-				[25, $patientInformation->nationality,true],
+				[25, $nationality,true],
 			]
 			);
 			$form->printNewLine(2);
@@ -562,7 +586,7 @@ class PrintForm
 					//line for nationality 
 					[$form->chargesheet_offset, "\x20"],
 					[51, "\x20"],
-					[25, $patientInformation->nationality,true],
+					[25, $nationality,true],
 				]
 			);
 			$form->printNewLine(2);
@@ -607,12 +631,18 @@ class PrintForm
 			]
 		);
 		$form->printNewLine(2);
+		
+		
+		$ward_text = $patientAdmission->initial_ward_code;
+		if(!empty ( $ward_model = Lookup_ward::findOne(['ward_code' => $ward_text])))
+			$ward_text = $ward_text . ' (' . $ward_model->ward_name. ')';
+		
 		$form->printElementArray(
 			[
 				[$form->chargesheet_offset, "\x20"],
 				[11, "\x20"],
-				[5, $patientAdmission->initial_ward_code,true],
-				[42, "\x20"],
+				[30, $ward_text,true],
+				[17, "\x20"],
 				[3, $patientAdmission->initial_ward_class,true],
 			]
 		);
@@ -640,6 +670,7 @@ class PrintForm
 		if(Yii::$app->params['printeroverwritefont'] == "true")
 			$form->escp2SetTypefaceDraft();
 		
+		$form->escp2SetVerticalPrintPosition(231, 0);
 		
 		//$form->printNewLine(4);
 		$form->printElementArray(
@@ -682,7 +713,7 @@ class PrintForm
 				[14, $patientInformation->nric],
 			]
 		);
-		$form->printNewLine(1);
+		$form->printNewLine(2);
 		$form->printElementArray(
 			[
 				[$form->casehistory_offset, "\x20"],
@@ -745,13 +776,20 @@ class PrintForm
 
 			]
 		);
-		//$form->printNewLine(1);
+		$form->printNewLine(1);
+		
+		$ward_text = "";
+		if(!empty ( $ward_model = Lookup_ward::findOne(['ward_code' => $patientAdmission->initial_ward_code])))
+			$ward_text = '(' . $ward_model->ward_name. ')';
+		
 		$form->printElementArray(
 			[
 				[$form->casehistory_offset, "\x20"],
 				//case history note line 8, nok name
 				[21, "\x20"], // from 22->20
-				[24, $availableNOK?$second:" ",true],
+				[24, $availableNOK?$second:"\x20",true],
+				[1, "\x20"], // from 22->20
+				[25, $ward_text, true],
 			]
 		);
 		$form->printNewLine(1);
@@ -833,12 +871,18 @@ class PrintForm
 		// Begin Print
 		$form->escp2ResetPaper();
 		$form->escp2SetStickerPrintingArea();
-		$form->escp2SetTypefaceDraft();
-		$form->escp2SetTiny();
 		
+		//if(Yii::$app->params['printeroverwritefont'] == "true")
+		if(true)
+		{	
+			$form->escp2SetTypefaceDraft();
+			$form->escp2SetTiny();
+		}
 		
 		$ageString = $patientInformation->getAge("%yyrs %mmth%dday");
-		$wardDesc = Lookup_ward::findOne(["ward_code"=>$patientAdmission->initial_ward_code])->ward_name; 
+		
+		$ward_model = Lookup_ward::findOne(["ward_code"=>$patientAdmission->initial_ward_code]);
+		$wardDesc = empty($ward_model)?$patientAdmission->initial_ward_code:$ward_model->ward_name; 
 		
 		$rows = 6;
 		
@@ -981,7 +1025,7 @@ class PrintForm
 			
 		//$form = new PrintForm(PrintForm::Receipt);
 		
-		$form = new PrintForm(PrintForm::Bill2);
+		$form = new PrintForm(PrintForm::Receipt);
 		
 		// Begin Print
 		$form->escp2ResetPaper();
@@ -998,7 +1042,7 @@ class PrintForm
 					//receiptline 1, receipt serial number, ic
 					[15, "\x20"],
 					[10, $receipt->receipt_serial_number,true],
-					[33,"\x20"],
+					[31,"\x20"],
 					[14, $patientInformation->nric],
 				]
 			);
@@ -1009,7 +1053,7 @@ class PrintForm
 					//line2 , pay date, rn
 					[15, "\x20"],
 					[10, date_format(new \datetime($receipt->receipt_content_datetime_paid), "d/m/Y")],
-					[33, "\x20"],
+					[31, "\x20"],
 					[11, $receipt->rn],
 					
 				   // [13, "\x20"], for status in the future
@@ -1108,11 +1152,12 @@ class PrintForm
 		$previousPayments = Receipt::find()
 			->where(["rn"=>$bill->rn])
 			->andWhere(["<", "receipt_content_datetime_paid", $bill->bill_generation_datetime])
+			->orderBy(['receipt_content_datetime_paid'=>SORT_ASC])
 			->all();
 		
 		
-		$treatmentDetails = Treatment_details::find()->where(["bill_uid"=>$bill->bill_uid])->all();
-		$fppDetails = Fpp::find()->where(["bill_uid"=>$bill->bill_uid])->all();
+		$treatmentDetails = Treatment_details::find()->where(["bill_uid"=>$bill->bill_uid])->orderBy(Treatment_details::getNaturalSortArgs())->all();
+		$fppDetails = Fpp::find()->where(["bill_uid"=>$bill->bill_uid])->orderBy(Fpp::getNaturalSortArgs())->all();
 
 		//print header
 		//print ward details (3 rows)
@@ -1139,9 +1184,15 @@ class PrintForm
 		$session = Yii::$app->session;
 		$form_type = null;
 		$printer_choice = $session->get('bill_printer_session');
-		
-					
-		$form_type = PrintForm::Bill2;
+		if($printer_choice == "Printer 1")
+			$form_type = PrintForm::Bill;
+		elseif($printer_choice == "Printer 2")
+			$form_type = PrintForm::Bill2;
+		else{
+			echo 'At Printform:printBill, system unable to find printer choice (try changing printer selection from 1 to 2 and back). Value given was '.empty($printer_choice)?'Null': $printer_choice;
+			exit;
+		}
+		//$form_type = $printer_choice;//PrintForm::Bill2; values are "Printer 2", "Printer 1"
 		
 		$form = new PrintForm($form_type);
 
@@ -1210,8 +1261,10 @@ class PrintForm
 
 	public function printBillAddress($bill, $patientInformation, $form)
 	{
-		$form->escp2SetVerticalPrintPosition(0, 2);
-		//$form->escp2SetVerticalPrintPosition(8, 1);
+		if(true) //with foxpro
+			$form->escp2SetVerticalPrintPosition(167, 1);
+		else //without foxpro
+			$form->escp2SetVerticalPrintPosition(0, 2);
 		// return true if contain guarantor name 
 		$checkGuarantor = !empty($bill->guarantor_name);
 		$this->printElementArray(
@@ -1236,7 +1289,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $bill->guarantor_name,true],
+					[69, $bill->guarantor_name,true],
 				]
 			);
 			$this->printNewLine(1);
@@ -1244,7 +1297,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $bill->guarantor_address1,true],
+					[69, $bill->guarantor_address1,true],
 				]
 			);
 			$this->printNewLine(1);
@@ -1252,7 +1305,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $bill->guarantor_address2,true],
+					[69, $bill->guarantor_address2,true],
 				]
 			);
 			$this->printNewLine(1);
@@ -1260,18 +1313,18 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $bill->guarantor_address3,true],
-				]
-			);
-			$this->printNewLine(1);
-			$this->printElementArray(
-				[
-					[$form->bill_offset, "\x20"],
-					[6, "\x20"],
-					[35, $bill->guarantor_comment,true],
+					[69, $bill->guarantor_address3,true],
 				]
 			);
 			$this->printNewLine(9);
+			$this->printElementArray(
+				[
+					[$form->bill_offset, "\x20"],
+					[6, "\x20"],
+					[69, $bill->guarantor_comment,true],
+				]
+			);
+			$this->printNewLine(1);
 		}
 		else
 		{
@@ -1279,7 +1332,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $patientInformation->name,true],
+					[69, $patientInformation->name,true],
 				]
 			);
 			$this->printNewLine(1);
@@ -1287,7 +1340,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $patientInformation->address1,true],
+					[69, $patientInformation->address1,true],
 				]
 			);
 			$this->printNewLine(1);
@@ -1295,7 +1348,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $patientInformation->address2,true],
+					[69, $patientInformation->address2,true],
 				]
 			);
 			$this->printNewLine(1);
@@ -1303,7 +1356,7 @@ class PrintForm
 				[
 					[$form->bill_offset, "\x20"],
 					[6, "\x20"],
-					[35, $patientInformation->address3,true],
+					[69, $patientInformation->address3,true],
 				]
 			);
 			$this->printNewLine(10);

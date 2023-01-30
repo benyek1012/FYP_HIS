@@ -127,10 +127,10 @@ class Receipt extends \yii\db\ActiveRecord
         
         if($type == 'deposit'){
             if($temp2->hasValidIC() == true){
-                return '018/76302';
+                return '76302';
             }
             else{
-                return '018/76303';
+                return '76303';
             }
         }
         else{

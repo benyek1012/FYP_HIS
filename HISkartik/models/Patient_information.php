@@ -46,7 +46,7 @@ class Patient_information extends \yii\db\ActiveRecord
             [['first_reg_date'], 'required'],
             [['nric'], 'unique'],
             [['name'], 'string', 'max' => 200],
-            ['name', 'match', 'pattern' => '/^[a-z\s\-\/\.\'@]+$/i', 'message' => 'Name can only contain word characters'],
+            ['name', 'match', 'pattern' => '/^[a-z\s\-\/\.\'@0-9]+$/i', 'message' => 'Name can only contain a-z\s\-\/\.\'@0-9'],
             // ['address1', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address2', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
             // ['address3', 'match', 'pattern' => '/^[a-z,.\s]+$/i', 'message' => 'Address cannot contain special symbol, only can contain "." and ","'],
@@ -65,7 +65,7 @@ class Patient_information extends \yii\db\ActiveRecord
             [['phone_number', 'email', 'address1', 'address2', 'address3'], 'string', 'max' => 100],
             [['patient_uid'], 'unique'],
             ['race', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Race can only contain word characters'],
-            ['nationality', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Nationality can only contain word characters'],
+            //['nationality', 'match', 'pattern' => '/^[a-z\s]+$/i', 'message' => 'Nationality can only contain word characters'], //values 001, 002 are used
         ];
     }
 
@@ -104,7 +104,7 @@ class Patient_information extends \yii\db\ActiveRecord
     public function Date_validate($input_date, $format = 'Y/m/d')
     {
         $date_obj = DateTime::createFromFormat($format, $input_date);
-        return $date_obj && $date_obj->format($format) == $input_date;
+        return $date_obj && ($date_obj->format($format) == $input_date);
     }
 
     // return DOB yy/mm/dd
@@ -140,17 +140,17 @@ class Patient_information extends \yii\db\ActiveRecord
         // get date for  dd/mm/yyyy
         public function getDOB_format()
         {
-            if($this->hasValidIC())
+            if(!empty($this->DOB))
             {
                
-                $timestamp = strtotime($this->getDOB());
+                $timestamp = strtotime($this->DOB);
                 $date_formated = date('d/m/Y', $timestamp);
                 return $date_formated;
             }
             else return null;
         }
 
-    // get date yyyy/mm/dd (validate is 0, 5, 6, 7)
+    // get date yyyy/mm/dd (validate is 0, 5, 6, 7), the rest sets age to <100 years, still returns date
     public function getStartDate()
 	{
 		if($this->hasValidIC())
@@ -161,13 +161,23 @@ class Patient_information extends \yii\db\ActiveRecord
             {
                 $centuryIdentifierInt = (int)(explode('-', $this->nric))[2][0];
                 {
-                    //at time of writing, wiki says for final 4 digits, 1st digit will be 0 if 2000+, 5-7 if 1900+
+                    //at time of writing, wiki says for final 4 digits, 1st digit will be 0 if 2000+, 5-7 if 1900+, else set patient's age to <100 years
                     if($centuryIdentifierInt == 0)
                         return $targetString = "20".$targetString;
                     else if($centuryIdentifierInt >=5 && $centuryIdentifierInt<=7)
                         return $targetString = "19".$targetString;
-                    else
-                        return false;
+                    else{
+						$date_values = explode('/',$targetString);
+						$baseYear = 1900 + (int)$date_values[0];
+						$currentYear = (int)(date('Y'));
+						while(($baseYear < 2500) AND (($currentYear - $baseYear) >= 100 ))
+							$baseYear = $baseYear +100;
+						
+						//$append_string = (string) (int)$baseYear/100;
+					
+						//return $append_string.$append_string;
+						return (string)$baseYear . '/' . $date_values[1] . '/' . $date_values[2];
+					}
                 }
             }
 		}
@@ -177,19 +187,13 @@ class Patient_information extends \yii\db\ActiveRecord
     // return age from IC 
 	public function getAge($format)
 	{
-		if($this->hasValidIC())
-		{
-            if($this->getStartDate() && $this->Date_validate($this->getStartDate()))
-            {
-                $startDate = new \DateTime($this->getStartDate());
-                $endDate = new \DateTime();
-                $difference = $endDate->diff($startDate);
-                return $difference->format($format);
-            }
-            else return "N/A";
+		if($this->Date_validate($this->DOB,'Y-m-d'))
+		{//non-0s are true
+			$endDate = new \DateTime();
+			$difference = $endDate->diff(new \DateTime($this->DOB));
+			return $difference->format($format);
 		}
-		else
-			return "N/A";
+		else return "N/A";
 	}
 
     // caluculate age from paramter DOB
@@ -236,12 +240,12 @@ class Patient_information extends \yii\db\ActiveRecord
     // Get nationality if ic valid
     public function getNationality(){
         if($this->hasValidIC()){
-            $this->nationality = "Malaysia";
-            $this->save();
-            return true;
+            return "001";
+            //$this->save();
+            //return true;
         }
         else{
-            return false;
+            return null;
         }
     }
 

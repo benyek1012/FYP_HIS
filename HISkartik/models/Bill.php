@@ -65,12 +65,12 @@ class Bill extends \yii\db\ActiveRecord
             [['is_free', 'deleted'], 'integer'],
             // [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime', 'discharge_date'], 'safe'],
             [['bill_generation_datetime', 'bill_print_datetime', 'final_ward_datetime'], 'safe'],
-            [['discharge_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            ['discharge_date', 'match', 'pattern' => '/^(\d{4})\-(0[1-9]|1[0-2])\-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[0-1][0-9])\:[0-5][0-9](|\:[0-5][0-9])$/i'],
             [['bill_uid', 'generation_responsible_uid', 'bill_print_responsible_uid'], 'string', 'max' => 64],
             [['rn'], 'string', 'max' => 11],
             [['status_code', 'class', 'department_code', 'collection_center_code'], 'string', 'max' => 20],
             [['status_description'], 'string', 'max' => 100],
-            [['department_name'], 'string', 'max' => 50],
+            [['department_name'], 'string', 'max' => 200],
             [['description', 'guarantor_name', 'guarantor_comment'], 'string', 'max' => 200],
             [['guarantor_phone_number'], 'string', 'max' => 100],
             [['guarantor_nric'], 'integer'],
@@ -205,7 +205,7 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Get Inpatient Treatment Total Cost
-    public function getTotalInpatientTreatmentCost($bill_uid){
+    public function getTotalInpatientTreatmentCost($bill_uid){ //must be deprecated, no time to fix. New one is in model Inpatient_treatment
         $totalInpatient = 0.0;
         $totalWardDays = 0;
 
@@ -244,38 +244,30 @@ class Bill extends \yii\db\ActiveRecord
     }
 
     // Calculate Billable
-    public function calculateBillable($bill_uid) {
+    public function calculateBillable($bill_uid) { //based on current values, it should not change anything
         $totalWardDays = 0;
-        $dailyWardCost = 0.0;
+		$dailyWardCost = 0;
+		$inpatient_treatment_cost = 0.0;
         $totalTreatmentCost = 0.0;
         $totalFPPCost = 0.0;
         $billable = 0.0;
+		
+		if(empty($bill_uid))//to prevent legacy bill page from breaking
+			return '0.00';
 
         $modelBill = Bill::findOne(['bill_uid' => $bill_uid]);
-        $modelWard = Ward::findAll(['bill_uid' => $bill_uid]);
-        $modelTreatment = Treatment_details::findAll(['bill_uid' => $bill_uid]);
-        $modelFPP = Fpp::findAll(['bill_uid' => $bill_uid]);
+		if(!empty($modelBill) && $modelBill->is_free == 1)
+            return number_format((float) 0, 2, '.', '');
+		
+		$totalWardDays = Ward::find()->where(['bill_uid' => $bill_uid])->sum('ward_number_of_days');
+		$dailyWardCost = $modelBill->daily_ward_cost;
+        $totalTreatmentCost = Treatment_details::find()->where(['bill_uid' => $bill_uid])->sum('item_total_unit_cost_rm');
+		$inpatient_treatment_cost = Inpatient_treatment::find()->where(['bill_uid' => $bill_uid])->sum('inpatient_treatment_cost_rm');
+        $modelFPP = Fpp::find()->where(['bill_uid' => $bill_uid])->sum('total_cost');
 
-        if($modelBill != ""){
-            $dailyWardCost = $modelBill->daily_ward_cost;
-        }
-        
-        foreach ($modelWard as $index => $modelWard){            
-            $totalWardDays += $modelWard->ward_number_of_days;
-        }
+        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost + $inpatient_treatment_cost;
 
-        foreach($modelTreatment as $index => $modelTreatment){
-            $totalTreatmentCost += $modelTreatment->item_total_unit_cost_rm;
-        }
 
-        foreach($modelFPP as $index => $modelFPP){
-            $totalFPPCost += $modelFPP->total_cost;
-        }
-        
-        $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost + Bill::getTotalInpatientTreatmentCost($bill_uid);
-
-        if(!empty($modelBill) && $modelBill->is_free == 1)
-            $billable = 0;
 
         $billable = number_format((float) $billable, 2, '.', '');
         return $billable;
@@ -283,43 +275,8 @@ class Bill extends \yii\db\ActiveRecord
 
     // Calculate Billable for Transaction Records
     public function calculateBillableRN($rn) {
-        $totalWardDays = 0;
-        $dailyWardCost = 0.0;
-        $totalTreatmentCost = 0.0;
-        $totalFPPCost = 0.0;
-        $billable = 0.0;
-
         $modelBill = Bill::findOne(['rn' => $rn, 'deleted' => 0]);
-        if(!empty($modelBill)){
-            $modelWard = Ward::findAll(['bill_uid' => $modelBill->bill_uid]);
-            $modelTreatment = Treatment_details::findAll(['bill_uid' => $modelBill->bill_uid]);
-            $modelFPP = Fpp::findAll(['bill_uid' => $modelBill->bill_uid]);
-        
-
-            if($modelBill != ""){
-                $dailyWardCost = $modelBill->daily_ward_cost;
-            }
-            
-            foreach ($modelWard as $index => $modelWard){            
-                $totalWardDays += $modelWard->ward_number_of_days;
-            }
-
-            foreach($modelTreatment as $index => $modelTreatment){
-                $totalTreatmentCost += $modelTreatment->item_total_unit_cost_rm;
-            }
-
-            foreach($modelFPP as $index => $modelFPP){
-                $totalFPPCost += $modelFPP->total_cost;
-            }
-            
-            $billable = ($totalWardDays * $dailyWardCost) + $totalTreatmentCost + $totalFPPCost + Bill::getTotalInpatientTreatmentCost($modelBill->bill_uid);
-
-            if(!empty($modelBill) && $modelBill->is_free == 1)
-                $billable = 0;
-
-            $billable = number_format((float) $billable, 2, '.', '');
-        }
-        // return $billable;
+		$billable = $this->calculateBillable($modelBill->bill_uid);
         return Yii::t('app','Billable Total')." : ". Yii::$app->formatter->asCurrency($billable);
     }
 
@@ -581,7 +538,6 @@ class Bill extends \yii\db\ActiveRecord
     public function getLastWardEndDateTime($bill_uid){
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('+0800')); //GMT
-        $model = Bill::findOne(['bill_uid' => $bill_uid]);
         $modelWards = Ward::find(['bill_uid' => $bill_uid]);
 
         if($modelWards->count() > 0)

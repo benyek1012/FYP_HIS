@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
 use GpsLab\Component\Base64UID\Base64UID;
 use yii\helpers\Json;
 use DateTime;
+use yii\base\Exception;
 
 /**
  * WardController implements the CRUD actions for Ward model.
@@ -65,7 +66,7 @@ class WardController extends Controller
     {
         // Add Ward Row
         // if (Yii::$app->request->post('addWardRow') == 'true') {
-            $dbWard = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
+            $dbWard = Ward::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderBy(Ward::getNaturalSortArgs())->all();   
 
             // if(empty($dbWard)) {
             //     $countWard = count(Yii::$app->request->post('Ward', []));
@@ -164,43 +165,59 @@ class WardController extends Controller
      */
     public function actionUpdate()
     {
+		
         // Insert and Update Ward
         // Yii::$app->request->post('saveWard') == 'true' &&
         if(Yii::$app->request->post('Ward', [])) {
             $dbWard = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);   
             $modelWard = Model::createMultiple(Ward::className());
 
+
             // insert first row
             if(empty($dbWard)) {
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
-                    $valid = Model::validateMultiple($modelWard);
-                    
-                    
-                    if($valid) {                    
-                        foreach ($modelWard as $modelWard) {
-                            $modelWard->ward_uid = Base64UID::generate(32);
-                            $modelWard->bill_uid = Yii::$app->request->get('bill_uid');
-                            $modelWard->ward_end_datetime = $modelWard->ward_end_date . " " . $modelWard->ward_end_time;
+                    //$valid = Model::validateMultiple($modelWard);
+					$connection = \Yii::$app->db;
+					$transaction = $connection->beginTransaction();
+					try {	 
+						foreach ($modelWard as $modelWard) {
+							$modelWard->ward_uid = Base64UID::generate(32);
+							$modelWard->bill_uid = Yii::$app->request->get('bill_uid');
+							$modelWard->ward_end_datetime = $modelWard->ward_end_date . " " . $modelWard->ward_end_time;
 
-                            if(!empty($modelWard->ward_code) && !empty($modelWard->ward_start_datetime) && !empty($modelWard->ward_end_datetime) && !empty($modelWard->ward_number_of_days)){
-                                $modelWard->save();
+							
 
-                                $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
-                                if(!empty($modelInpatient)){
-                                    $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
-                                    $modelInpatient->save();
-                                }
-                                else{
-                                    $modelInpatient = new Inpatient_treatment();
-                                    $modelInpatient->inpatient_treatment_uid = Base64UID::generate(32);
-                                    $modelInpatient->bill_uid = Yii::$app->request->get('bill_uid');
-                                    $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
-                                    $modelInpatient->save();
-                                }
-                                echo 'success';
-                            }
-                        }
-                    }
+							
+							if($modelWard->validate()){
+								$modelWard->save();
+
+								$modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+								if(!empty($modelInpatient)){
+									$modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+									$modelInpatient->save();
+								}
+								else{
+									$modelInpatient = new Inpatient_treatment();
+									$modelInpatient->inpatient_treatment_uid = Base64UID::generate(32);
+									$modelInpatient->bill_uid = Yii::$app->request->get('bill_uid');
+									$modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+									$modelInpatient->save();
+								}
+								echo 'success';
+							}else throw new Exception('ward_validation_error:'.$modelWard->errors);
+						}
+					$transaction->commit();
+					} catch (\Exception $e) {
+						$transaction->rollBack();
+						return $e->getMessage();
+						//var_dump( $e);
+						return;
+					} catch (\Throwable $e) {
+						$transaction->rollBack();
+						return $e->getMessage();
+						//var_dump( $e);
+						return;
+					}
                 }
             }
             // insert another row
@@ -209,88 +226,98 @@ class WardController extends Controller
                 $countdb = count($dbWard);
 
                 if( Model::loadMultiple($modelWard, Yii::$app->request->post())) {
-                    $valid = Model::validateMultiple($modelWard);
-                    if($valid) {         
-                        if($countWard > $countdb){
-                            $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
-                            
-                            for($i = $countWard; $i > $countdb; $i--) {
-                                $modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
-                                $modelWard[$i - 1]->bill_uid = Yii::$app->request->get('bill_uid');
-                                $modelWard[$i - 1]->ward_end_datetime = $modelWard[$i - 1]->ward_end_date . " " . $modelWard[$i - 1]->ward_end_time;
-
-                                if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_date) && !empty($modelWard[$i - 1]->ward_end_time) && !empty($modelWard[$i - 1]->ward_number_of_days)){
-                                    $modelWard[$i - 1]->save();
-
-                                    $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
-                                    if(!empty($modelInpatient)){
-                                        $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
-                                        $modelInpatient->save();
-                                    }
-                                    else{
-                                        $modelInpatient = new Inpatient_treatment();
-                                        $modelInpatient->inpatient_treatment_uid = Base64UID::generate(32);
-                                        $modelInpatient->bill_uid = Yii::$app->request->get('bill_uid');
-                                        $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
-                                        $modelInpatient->save();
-                                    }
-
-                                    echo 'success';
-                                }
-                                // update 
-                                else{
-                                    $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
-                                    $data = Yii::$app->request->post();
-                                    array_pop($data["Ward"]);
-                                    for($i = 0; $i < count($data["Ward"]); $i++){
-                                        if(!empty($data['Ward'][$i]['ward_end_date']) && !empty($data['Ward'][$i]['ward_end_time'])){
-                                            $data['Ward'][$i]['ward_end_datetime'] = $data['Ward'][$i]['ward_end_date'] . " " . $data['Ward'][$i]['ward_end_time'];
-                                        }
-                                        else{
-                                            $data['Ward'][$i]['ward_end_datetime'] = "";
-                                        }
-                                    }
-                                        
-                                    if( Model::loadMultiple($modelWardUpdate, $data)) {                                        
-                                        $valid = Model::validateMultiple($modelWardUpdate);
-                                        
-                                        if($valid) {     
-                                            foreach ($modelWardUpdate as $modelWardUpdate) {
-                                                $modelWardUpdate->save();
-                                            }
-
-                                            $modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
-                                            $modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
-                                            $modelInpatient->save();
-
-                                            echo 'success';
-                                        }
-                                    }
-                                }
-                            }
-                        }   
-
-
-                        // else if($countWard == $countdb){   
-                        //     $modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
-                        //     if( Model::loadMultiple($modelWardUpdate, Yii::$app->request->post())) {
-                        //         $valid = Model::validateMultiple($modelWardUpdate);
+					//echo $countWard .' '.$countdb;
+					//var_dump($modelWard[1]);
+					//var_dump($_POST);
+					//return;
+					
+					if($countWard > $countdb){
+						$connection = \Yii::$app->db;
+						$transaction = $connection->beginTransaction();
+						try {	
+						
+							$modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+							
+							for($i = $countWard; $i > $countdb; $i--) {
+								$modelWard[$i - 1]->ward_uid = Base64UID::generate(32);
+								$modelWard[$i - 1]->bill_uid = Yii::$app->request->get('bill_uid');
+								$modelWard[$i - 1]->ward_end_datetime = $modelWard[$i - 1]->ward_end_date . " " . $modelWard[$i - 1]->ward_end_time;
+								
+								//ignore duds
+								echo $i;
+								//echo 'tried 1';
+								echo $modelWard[$i - 1]->ward_code;
+								if(!empty($modelWard[$i - 1]->ward_code) && !empty($modelWard[$i - 1]->ward_start_datetime) && !empty($modelWard[$i - 1]->ward_end_date) && !empty($modelWard[$i - 1]->ward_end_time) && !empty($modelWard[$i - 1]->ward_number_of_days)){
                                 
-                        //         if($valid) {            
-                        //             foreach ($modelWardUpdate as $modelWardUpdate) {
-                        //                 $modelWardUpdate->save();
-                        //             }
-                        //         }
-                        //     }
-                        // }
-                    }
-                }
-            } 
+								//echo 'reached 2';
+									if($modelWard[$i - 1]->validate()){
+										$modelWard[$i - 1]->save();
+
+										$modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+										if(!empty($modelInpatient)){
+											$modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+											$modelInpatient->save();
+										}
+										else{
+											$modelInpatient = new Inpatient_treatment();
+											$modelInpatient->inpatient_treatment_uid = Base64UID::generate(32);
+											$modelInpatient->bill_uid = Yii::$app->request->get('bill_uid');
+											$modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+											if(!$modelInpatient->save())
+												throw new Exception($modelInpatient->errors);
+										}
+
+									}else{ 
+										//var_dump($modelWard[$i - 1]);
+										throw new Exception('ward_validation_error: '.$modelWard[$i - 1]->errors[0]);
+									}
+								}
+							}
+							$modelWardUpdate = Ward::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]); 
+							$data = Yii::$app->request->post();
+							array_pop($data["Ward"]);
+							for($i = 0; $i < count($data["Ward"]); $i++){
+								if(!empty($data['Ward'][$i]['ward_end_date']) && !empty($data['Ward'][$i]['ward_end_time'])){
+									$data['Ward'][$i]['ward_end_datetime'] = $data['Ward'][$i]['ward_end_date'] . " " . $data['Ward'][$i]['ward_end_time'];
+								}
+								else{
+									$data['Ward'][$i]['ward_end_datetime'] = "";
+								}
+							}
+								
+							if( Model::loadMultiple($modelWardUpdate, $data)) {   					
+								foreach ($modelWardUpdate as $modelWardUpdate) {
+									if(!$modelWardUpdate->save())
+										throw new Exception('modelWardUpdate failed to save '. $modelWardUpdate.errors);
+								}
+
+								$modelInpatient = Inpatient_treatment::findOne(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+								$modelInpatient->inpatient_treatment_cost_rm = (new Bill)->getTotalInpatientTreatmentCost(Yii::$app->request->get('bill_uid'));
+								if(!$modelInpatient->save())
+									throw new Exception('modelInpatient failed to save '. $modelInpatient.errors);
+
+							} 
+							$transaction->commit();
+						}catch (\Exception $e) {
+							$transaction->rollBack();
+							return $e->getMessage();
+							//var_dump( $e);
+							return;
+						} catch (\Throwable $e) {
+							$transaction->rollBack();
+							return $e->getMessage();
+							//var_dump( $e);
+							return;
+						}
+						echo 'success';
+					}
+				}   
+			}
+		} 
 
             // return Yii::$app->getResponse()->redirect(array('/bill/generate', 
             //     'bill_uid' => $model->bill_uid, 'rn' => $model->rn, '#' => 'ward'))->send();
-        }
-    }
+	}
 
     /**
      * Deletes an existing Ward model.

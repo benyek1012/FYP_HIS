@@ -56,7 +56,7 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
             [['original_password'] ,'validateOriginalPassword'],
             [['admin_password'] ,'validateAdminPassword'],
             [['new_password', 'confirm_new_password', 'original_password', 'admin_password'], 'string', 'max' => 40],
-            [['new_password', 'confirm_new_password'], 'filter', 'filter' => 'trim'],
+            //[['new_password', 'confirm_new_password'], 'filter', 'filter' => 'trim'],
             [['confirm_new_password'], 'compare', 'compareAttribute' => 'new_password', 'message' => Yii::t('app', 'Passwords does not match with new password')],
         ];
     }
@@ -74,7 +74,7 @@ class New_user extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public function verifyAdminPassword($password) {
-        $admin = New_user::findOne(['username' => 'administrator1']);
+        $admin = New_user::findOne(['user_uid' => Yii::$app->user->identity->getId()]);
         if($this->hashPassword($password) == $admin->user_password){
             return true;
         }

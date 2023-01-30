@@ -103,7 +103,7 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                             },
                                             'label' => Yii::t('app','Sex')
                                         ],
-                                        [
+										[                                    [
                                             'attribute' => 'rn',
                                             'format' => 'raw',
                                             'headerOptions'=>['style'=>'max-width: 100px;'],

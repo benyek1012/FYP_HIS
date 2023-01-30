@@ -53,7 +53,7 @@ else{
                 'deposit'=> Yii::t('app','Deposit'),
                 'refund'=>  Yii::t('app','Refund'),
                 'exception' =>Yii::t('app','Exception'),
-                'other' =>Yii::t('app','Other')
+                //'other' =>Yii::t('app','Other')
             );
         
         if(Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'])
@@ -105,7 +105,27 @@ else{
 
         // var_dump($checked_name);
         // exit;
-        
+
+		$patientName = (new \yii\db\Query())
+		->select(['`patient_information`.`name`'])
+		->from('patient_information')//,  patient_admission, bill')
+		->where(['patient_information.patient_uid' => $temp->patient_uid])
+		//->andWhere(['patient_admission.rn' => Yii::$app->request->get('rn')])
+		//->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
+		->one();
+		
+		$names = array();
+		$names[$patientName['name']] = $patientName['name'];
+		
+		if(empty($names[$patientName['name']]))
+			$names[$patientName['name']]= 'UNKNOWN';
+		
+		if(!empty($model_bill))
+			if(!empty($model_bill->guarantor_name))
+				$names[$model_bill['guarantor_name']] = $model_bill['guarantor_name'];
+				
+		/*
+		
         if(!empty($model_bill))
         {
             $rows = (new \yii\db\Query())
@@ -122,22 +142,24 @@ else{
         {
             $rows = (new \yii\db\Query())
             ->select(['`patient_information`.`name`'])
-            ->from('patient_information,  patient_admission, bill')
+            ->from('patient_information')//,  patient_admission, bill')
             ->where(['patient_information.patient_uid' => $temp->patient_uid])
-            ->andWhere(['patient_admission.rn' => Yii::$app->request->get('rn')])
-            ->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
-            ->all();
+            //->andWhere(['patient_admission.rn' => Yii::$app->request->get('rn')])
+            //->andWhere('`patient_admission`.`patient_uid` = `patient_information`.`patient_uid`')
+            ->one();
         }
 
         $names = array();
-        foreach($rows as $row){
-            if($row['name'] == '')
-                $row['name'] = "Unknown"; 
-            $names[$row['name']] = $row['name'];
+		if(empty($model_bill))
+		if($row['name'] == '')
+			$row['name'] = "Unknown"; 
+		$names[$row['name']] = $row['name'];
 
+        foreach($rows as $row){
             if(!empty($model_bill))
                 $names[$row['guarantor_name']] = $row['guarantor_name'];
         }
+		*/
         // removes duplicate values from an array
         $names = array_unique($names);
         $names = array_filter($names);
@@ -184,12 +206,6 @@ else{
     
     <?= $form->field($model, 'receipt_uid')->hiddenInput(['readonly' => true, 'maxlength' => true,'value' => Base64UID::generate(32)])->label(false); ?>
 
-    <?php if($cancellation == false) { ?>
-    <?= $form->field($model, 'kod_akaun')->dropDownList($account_code, ['prompt'=> Yii::t('app','Please select kod akaun'), 
-        'maxlength' => true]) ?>
-    <?php } else{ ?>
-        <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?>
-    <?php } ?>
 
     <!-- <?= $form->field($model, 'kod_akaun')->textInput(['autocomplete' =>'off', 'readonly' => true, 'maxlength' => true]); ?> -->
 
@@ -200,51 +216,51 @@ else{
     <div class="row">
         <div class="col-sm-6">
             <?php if($cancellation == false){ ?>
-            <?php  if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, [
-                'prompt'=> Yii::t('app','Please select receipt'),
-                'maxlength' => true, 'id' => 'receipt-receipt_type'.$index,
-             'options'=>['other'=>['Selected'=> Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'] ? true : false]],
-             'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')",
-             ]) ?>
+				<?php  if(!empty($model_bill)){ ?>
+					<?= $form->field($model, 'receipt_type')->dropDownList($receipt, [
+						'prompt'=> Yii::t('app','Please select receipt'),
+						'maxlength' => true, 'id' => 'receipt-receipt_type'.$index,
+					 'options'=>['other'=>['Selected'=> Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'] ? true : false]],
+					 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')",
+					 ]) ?>
 
-            <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
-                'data' => $receipt,
-                'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
-                    'id' => 'receipt_type', 
-                    'onchange' => 'myfunctionforType(this.value)',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'minimumResultsForSearch' => 'Infinity',
-                ],
-               
-            ]); ?> -->
-            <?php }else{ ?>
-            <?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
-            'options'=>['other'=>['Selected'=> Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'] ? true : false]],
-            'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
+					<!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
+						'data' => $receipt,
+						'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
+							'id' => 'receipt_type', 
+							'onchange' => 'myfunctionforType(this.value)',
+						],
+						'pluginOptions' => [
+							'allowClear' => true,
+							'minimumResultsForSearch' => 'Infinity',
+						],
+					   
+					]); ?> -->
+				<?php }else{ ?>
+					<?= $form->field($model, 'receipt_type')->dropDownList($receipt, ['prompt'=> Yii::t('app','Please select receipt'),
+					'options'=>['other'=>['Selected'=> Yii::$app->request->get('rn') == Yii::$app->params['other_payment_rn'] ? true : false]],
+					'maxlength' => true, 'id' => 'receipt-receipt_type'.$index, 'onchange' => "myfunctionforType(this.value, '{$index}', '{$cancellation}')"]) ?>
 
-            <!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
-                'data' => $receipt,
-                'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
-                    'id' => 'receipt_type', 
-                    'onchange' => 'myfunctionforType(this.value)',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                    'minimumResultsForSearch' => 'Infinity',
-                ],
-            ]); ?> -->
-            <?php }
-            } else{ ?>
-            <?= $form->field($model, 'receipt_type')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'readonly' => true, 'id' => 'receipt-receipt_type'.$index]) ?>
-            <?php } ?>
-        </div>
+					<!-- <?= $form->field($model, 'receipt_type')->widget(kartik\select2\Select2::classname(), [
+						'data' => $receipt,
+						'options' => ['placeholder' => Yii::t('app','Please select receipt'), 
+							'id' => 'receipt_type', 
+							'onchange' => 'myfunctionforType(this.value)',
+						],
+						'pluginOptions' => [
+							'allowClear' => true,
+							'minimumResultsForSearch' => 'Infinity',
+						],
+					]); ?> -->
+					<?php }
+				} else{ ?>
+					<?= $form->field($model, 'receipt_type')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'readonly' => true, 'id' => 'receipt-receipt_type'.$index]) ?>
+					<?php } ?>
+				</div>
 
-        <div class="col-sm-6" id="bill_div<?php echo $index ?>">
-            <?php if(!empty($model_bill)){ ?>
-            <?= $form->field($model, 'receipt_content_bill_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
+				<div class="col-sm-6" id="bill_div<?php echo $index ?>">
+					<?php if(!empty($model_bill)){ ?>
+					<?= $form->field($model, 'receipt_content_bill_id')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'value' => $model_bill->bill_print_id, 'readonly' =>true]) ?>
             <?php }else{ ?>
             <?= $form->field($model, 'receipt_content_bill_id')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
             <?php } ?>
@@ -264,6 +280,13 @@ else{
             <?= $form->field($model, 'receipt_content_sum')->textInput(['autocomplete' =>'off', 'maxlength' => true, 'id' => 'receipt_sum']) ?>
         </div>
 
+
+        <div class="col-sm-6">
+		<?= $form->field($model, 'kod_akaun')->dropDownList($account_code, ['prompt'=> Yii::t('app','Please select kod akaun'), 
+			'maxlength' => true]) ?>
+        </div>
+
+
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_content_description')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
         </div>
@@ -271,17 +294,15 @@ else{
         <div class="col-sm-6">
             <?php 
             if(Yii::$app->request->get('rn') != Yii::$app->params['other_payment_rn'])
-            {
-                if($cancellation == false) { 
-            ?>
-            <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $checked_name, 'custom' => true, 'inline' => true]); ?>
-            <?php } else { ?>
-            <?= $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $model->receipt_content_payer_name, 'id' => 'payer_name'.$index ,'custom' => true, 'inline' => true]); ?>
-            <?php } 
+            {//if payment isn't for regular RNs
+                if($cancellation == false)  
+					echo $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $checked_name, 'custom' => true, 'inline' => true]); 
+				else 
+					echo $form->field($model, 'receipt_content_payer_name')->radioList($names, ['value' => $model->receipt_content_payer_name, 'id' => 'payer_name'.$index ,'custom' => true, 'inline' => true]); 
             }
-            else{ ?>
-            <?= $form->field($model, 'receipt_content_payer_name')->textInput(['autocomplete' =>'off', 'maxlength' => true]) ?>
-            <?php } ?>
+            else{//else (payment for bayaran bill lain lain
+				echo $form->field($model, 'receipt_content_payer_name')->textInput(['autocomplete' =>'off', 'maxlength' => true]);
+            } ?>
         </div>
 
         <div class="col-sm-6">
@@ -299,7 +320,7 @@ else{
         <div class="col-sm-6">
             <?= $form->field($model, 'receipt_serial_number', 
                 ['labelOptions' => [ 'id' => 'receipt_label'.$index]])->textInput(['autocomplete' =>'off', 'maxlength' => true, 
-                    'readonly' => true, 'id' => 'serial_number'.$index]) ?>
+                    /*'readonly' => true,*/ 'id' => 'serial_number'.$index]) ?>
         </div>
 
         <!-- <div class="col-sm-6">
@@ -340,11 +361,11 @@ else{
         <?= Html::button(Yii::t('app','Payment Outside SGH'), ['class' => 'btn btn-info', 'id' => 'btnOutside', 'onclick' => "outsidePayment('{$index}');"])?>
         <?= Html::button(Yii::t('app', 'Custom serial number'), ['class' => 'btn btn-primary', 
             'onclick' => "(function () {
-                 document.getElementById('serial_number'+{$index}).readOnly = false; 
+                 //document.getElementById('serial_number'+{$index}).readOnly = false; 
                  document.getElementById('serial_number'+{$index}).value = '';
                  document.getElementById('serial_number'+{$index}).focus();
             })();" ]) ?>
-        <?= Html::button(Yii::t('app', 'Refresh'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}', '{$index}')"]) ?>
+        <?= Html::button(Yii::t('app', 'Refresh Serial #'), ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "refreshButton('{$url}', '{$index}')"]) ?>
     </div>
 
     <?php kartik\form\ActiveForm::end(); ?>
@@ -360,7 +381,7 @@ if (document.getElementById('receipt-receipt_type<?php echo $index?>').value == 
     document.getElementById("receipt_label<?php echo $index?>").innerHTML =
         '<?php echo Yii::t('app','Document Number');?>';
     document.getElementById("serial_number<?php echo $index?>").value = '';
-    document.getElementById("serial_number<?php echo $index?>").readOnly = false;
+    //document.getElementById("serial_number<?php echo $index?>").readOnly = false;
 }
 
 function myfunctionforType(val, index, cancellation) {
@@ -368,7 +389,7 @@ function myfunctionforType(val, index, cancellation) {
     if (val == "refund" || val == "exception") {
         document.getElementById("receipt_label" + index).innerHTML = '<?php echo Yii::t('app','Document Number');?>';
         document.getElementById("serial_number" + index).value = '';
-        document.getElementById("serial_number" + index).readOnly = false;
+        //document.getElementById("serial_number" + index).readOnly = false;
     } else {
         document.getElementById("receipt_label" + index).innerHTML =
             '<?php echo Yii::t('app','Receipt Serial Number')?>';
@@ -432,14 +453,14 @@ function refreshButton(url, index) {
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             document.getElementById("serial_number" + index).value = this.responseText;
-            document.getElementById("serial_number" + index).readOnly = true;
+            //document.getElementById("serial_number" + index).readOnly = true;
         }
     }
     xhttp.open("GET", url, true);
     xhttp.send();
 }
 
-document.getElementById("div_no_print").style.display = "none";
+//document.getElementById("div_no_print").style.display = "none";
 
 function submitReceiptForm(index, checkPayment) {
     var form = $('#receipt-form' + index);
@@ -451,6 +472,7 @@ function submitReceiptForm(index, checkPayment) {
     else{
         form.attr("action", '<?php echo $urlReceipt ?>' + "&outside=false");
     }
+	//debugger;
 
     form.submit();
 

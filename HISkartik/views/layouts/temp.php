@@ -182,6 +182,9 @@ if(!empty(Yii::$app->request->queryParams))
                         echo \hail812\adminlte\widgets\Menu::widget([
                             'items' => [
                                     ['label' => $model_bill->rn, 'header' => true],
+									['label' => Yii::t('app','Bill (Test)'), 'iconClass' => '', 
+										'url' => [\yii\helpers\Url::to(['bill/index2', 'rn'=>$model_bill->rn])],
+									],
                                     ['label' => Yii::t('app','Bill'), 'iconClass' => '', 'url' => [$url_bill, 
                                         'bill_uid' =>  $model_bill->bill_uid,  'rn' => $model_bill->rn]],
                                     ['label' => Yii::t('app','Payment'), 'iconClass' => '',
@@ -194,6 +197,9 @@ if(!empty(Yii::$app->request->queryParams))
                         echo \hail812\adminlte\widgets\Menu::widget([
                             'items' => [
                                 ['label' => Yii::$app->request->get('rn'), 'header' => true],
+								['label' => Yii::t('app','Bill (Test)'), 'iconClass' => '', 
+									'url' => [\yii\helpers\Url::to(['bill/index2', 'rn'=>$model_bill->rn])],
+								],
                                 ['label' => Yii::t('app','Bill'), 'iconClass' => '', 
                                     'url' => ['bill/create', 'rn' =>  Yii::$app->request->get('rn')]],
                                 ['label' => Yii::t('app','Payment'), 'iconClass' => '', 

@@ -11,7 +11,7 @@ use app\models\DateFormat;
 use app\models\Patient_information;
 use app\models\Receipt;
 use yii\widgets\Pjax;
-
+use yii\bootstrap4\Button;
 /* @var $this yii\web\View */
 /* @var $model app\models\Patient_admission */
 /* @var $form yii\widgets\ActiveForm */
@@ -380,16 +380,47 @@ use yii\widgets\Pjax;
 </div>
 
 <div>
-    <?= Html::a(Yii::t('app', 'Print All'), ['/patient_admission/printall', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
+	<?=	Button::widget([
+		'label' => Yii::t('app', 'Print All'),
+		'options' => ['class' => 'btn btn-success'],
+		'clientEvents' => ['click'=>'function a(){if(validateKodsPrint())window.location.replace("'.Url::toRoute(['patient_admission/printall', 'rn' => Yii::$app->request->get('rn')]).'");}'],
+	]);
+	
+	?>
+    <!--<?= Html::a(Yii::t('app', 'Print All'), ['/patient_admission/printall', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled, 'onclick' => 'function a(){return validateKodsPrint();}']) ?>
+	-->
 </div>
 
 <br>
     
 <div>
+	<?=	Button::widget([
+		'label' => Yii::t('app', 'Registration Form'),
+		'options' => ['class' => 'btn btn-success'],
+		'clientEvents' => ['click'=>'function a(){if(validateKodsPrint())window.location.replace("'.Url::toRoute(['patient_admission/print1', 'rn' => Yii::$app->request->get('rn')]).'");}'],
+	]);	?>
+	<?=	Button::widget([
+		'label' => Yii::t('app', 'Charge Sheet'),
+		'options' => ['class' => 'btn btn-success'],
+		'clientEvents' => ['click'=>'function a(){if(validateKodsPrint())window.location.replace("'.Url::toRoute(['patient_admission/print2', 'rn' => Yii::$app->request->get('rn')]).'");}'],
+	]);	?>
+	<?=	Button::widget([
+		'label' => Yii::t('app', 'Case History Sheet'),
+		'options' => ['class' => 'btn btn-success'],
+		'clientEvents' => ['click'=>'function a(){if(validateKodsPrint())window.location.replace("'.Url::toRoute(['patient_admission/print3', 'rn' => Yii::$app->request->get('rn')]).'");}'],
+	]);	?>
+	<?=	Button::widget([
+		'label' => Yii::t('app', 'Sticker'),
+		'options' => ['class' => 'btn btn-success'],
+		'clientEvents' => ['click'=>'function a(){if(validateKodsPrint())window.location.replace("'.Url::toRoute(['patient_admission/print4', 'rn' => Yii::$app->request->get('rn')]).'");}'],
+	]);	?>
+
+	<!--
     <?= Html::a(Yii::t('app', 'Registration Form'), ['/patient_admission/print1', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
     <?= Html::a(Yii::t('app', 'Charge Sheet'), ['/patient_admission/print2', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
     <?= Html::a(Yii::t('app', 'Case History Sheet'), ['/patient_admission/print3', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
-    <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled]) ?>
+    <?= Html::a(Yii::t('app', 'Sticker'), ['/patient_admission/print4', 'rn' => Yii::$app->request->get('rn')], ['class'=>"btn btn-success {$linkDisabled}", 'disabled' => $disabled ]) ?>
+	-->
 </div>
 <br />
 
@@ -418,6 +449,18 @@ if('<?php echo $model->initial_ward_code == "UNKNOWN" ?>' || '<?php echo $model-
 
 if('<?php echo $model->initial_ward_class == "UNKNOWN" ?>' || '<?php echo $model->initial_ward_class == null ?>'){
     document.getElementById('div_ward_class').style.backgroundColor = '#ffc107';
+}
+
+function validateKodsPrint()
+{
+	
+	if( document.getElementById("initial_ward_code").value == "UNKNOWN" 
+		||document.getElementById("initial_ward_code").value == "" 
+		||document.getElementById("initial_ward_class").value == "UNKNOWN"
+		||document.getElementById("initial_ward_class").value == "")
+		return confirm("Ward Code or Ward Class is not set properly. Are you sure?");
+	else
+		return true;
 }
 
 function testing(url) {

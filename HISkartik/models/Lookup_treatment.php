@@ -56,4 +56,11 @@ class Lookup_treatment extends \yii\db\ActiveRecord
             'class_Daycare_FPP_per_unit' => Yii::t('app','Class DayCare FPP Cost Per Unit'),
         ];
     }
+	
+	static function getNaturalSortArgs()
+	{
+		return ['CAST(REGEXP_SUBSTR(treatment_code,"[0-9]+") AS UNSIGNED)'=>SORT_ASC, 
+			'length(treatment_code)' => SORT_ASC,
+			'treatment_code'=>SORT_ASC]; 
+	}
 }

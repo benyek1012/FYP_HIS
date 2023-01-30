@@ -17,6 +17,7 @@ use yii\helpers\Html;
         'model_admission' => $model_admission,
         'model_cancellation' => $model_cancellation,
         'type' => $type,
+		'bill_uid'=> empty($bill_uid)?null:$bill_uid
     ]) ?>
 
 </div>

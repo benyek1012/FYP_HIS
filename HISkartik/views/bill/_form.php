@@ -14,6 +14,7 @@ use app\models\DateFormat;
 use app\models\Patient_information;
 use app\models\Variable;
 use yii\bootstrap4\Modal;
+use app\models\Treatment_details;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Bill */
@@ -961,8 +962,10 @@ textarea {
                 </div>
             </div>
             <?php if( $isGenerated && Yii::$app->request->get('bill_uid')){ ?>
+				<?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
+
             <?php }else if(!empty( Yii::$app->request->get('bill_uid'))){ ?>
-            <?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee('{$urlBillableAndFinalFee}');", 'disabled' => $disabled]) ?>
+				<?= Html::button(Yii::t('app','Generate'), ['id' => 'generate', 'name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => "generateBill('{$urlGenerate}'); getBillableAndFinalFee('{$urlBillableAndFinalFee}');", 'disabled' => $disabled]) ?>
             <!-- <?= Html::submitButton(Yii::t('app','Generate'), ['name' => 'generate', 'value' => 'true', 'class' => 'btn btn-success', 'onclick' => 'getBillableAndFinalFee();']) ?> -->
             <!-- <?= Html::submitButton(Yii::t('app','Print Pro-forma'), ['class' => 'btn btn-success','disabled' => 'disabled']) ?>  -->
             <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'), 'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
@@ -1032,7 +1035,6 @@ textarea {
                         ['class' => 'btn btn-secondary', 'id' => 'refresh', 'onclick' => "choosePrinter()", 'disabled' => $disabled]) ?>
             <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-            <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
             <?php }else{ echo "<span class='badge badge-primary'>".Yii::t('app','Bill has been printed')."</span> <br/><br/>" ?>
 
             <!-- If the flash message existed, show it  -->
@@ -1043,7 +1045,6 @@ textarea {
             <?php endif; ?>
             <!-- <?= Html::a(Yii::t('app','Cancellation'), ['/bill/cancellation', 'bill_uid' => Yii::$app->request->get('bill_uid'),
                      'rn' => Yii::$app->request->get('rn')], ['class'=>'btn btn-danger']) ?> -->
-            <?= Html::button(Yii::t('app','Cancellation'), ['class' => 'btn btn-danger', 'id' => 'btnCancellation', 'onclick' => 'cancellation()', 'disabled' => $disabled_cancellation])?>
             <?php } ?>
         </div>
         <!-- /.card-body -->
@@ -1165,7 +1166,9 @@ function getDailyWardCost(url) {
 
 <?php if( Yii::$app->language == "en"){ ?>
 // The function below will start the confirmation  dialog
-function confirmAction(url) {
+function confirmAction(url, preMessage) {
+	if(preMessage != "")
+		alert(preMessage);
     var answer = confirm("Are you sure to generate bill?");
     if (answer) {
         window.location.href = url + '&confirm=true&discharge=' + document.getElementById('bill-discharge_date').value;
@@ -1176,7 +1179,9 @@ function confirmAction(url) {
 }
 <?php }else{?>
 // The function below will start the confirmation  dialog
-function confirmAction(url) {
+function confirmAction(url, preMessage) {
+	if(preMessage != "")
+		alert(preMessage);
     var answer = confirm("Adakah anda pasti menjana bil?");
     if (answer) {
         window.location.href = url + '&confirm=true&discharge=' + document.getElementById('bill-discharge_date').value;
@@ -1188,17 +1193,22 @@ function confirmAction(url) {
 <?php } ?>
 
 function generateBill(url) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (xhttp.readyState == 4 && xhttp.status == 200) {
-            console.log(this.responseText);
-            if (this.responseText == false) {
-                confirmAction(url);
-            }
-        }
-    }
-    xhttp.open("GET", url, true);
-    xhttp.send();
+	const emptyWardConfirmText = ( <?=(Yii::$app->language== "en")?1:0?>?"This bill does not ward details recorded":"Bill ini tiada maklumat wad"); 
+		
+	const xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log(this.responseText);
+			if (this.responseText == false)
+				confirmAction(url, "");
+			else if (this.responseText == "No Wards")
+				confirmAction(url, emptyWardConfirmText);
+				
+				
+		}
+	}
+	xhttp.open("GET", url, true);
+	xhttp.send();
 }
 
 function matchBill(params, data) {
@@ -1271,7 +1281,7 @@ $(document).ready(function() {
         placeholder: 'Please select department code',
         allowClear: true,
         width: '100%',
-        minimumInputLength: 2,
+        minimumInputLength: 1,
         // matcher: function(params, data) {
         //     return matchBill(params, data);
         // },

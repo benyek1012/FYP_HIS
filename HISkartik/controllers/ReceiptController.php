@@ -265,7 +265,9 @@ class ReceiptController extends Controller
     {       
         $model = new Receipt();
         $model_bill = Bill::findOne(['rn' => Yii::$app->request->get('rn')]);
-
+			
+			//echo $model->receipt_serial_number + '<br/>';
+			
         if ($this->request->isPost && $model->load($this->request->post())) {
             if(Yii::$app->request->get('outside') == 'false'){
                 // if(empty($model->receipt_content_datetime_paid))
@@ -278,9 +280,13 @@ class ReceiptController extends Controller
             else{
                 $model->receipt_serial_number = null;
             }
-
+			
+			//echo $model->receipt_serial_number . '<br/>';
+			//var_dump($_POST);
+			//return;
+			
             if($model->validate() && $model->save()){
-                if($model->receipt_type == 'bill' || $model->receipt_type == 'deposit' || $model->receipt_type == 'other')
+                if( (Yii::$app->request->get('outside') == 'false') && ($model->receipt_type == 'bill' || $model->receipt_type == 'deposit' || $model->receipt_type == 'other'))
                 {
                     if($model->receipt_serial_number != SerialNumber::getSerialNumber("receipt"))
                     {

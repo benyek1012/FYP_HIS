@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = Yii::t('app','Generate');
 ?>
 <div class="bill-generate">
 
+
     <?= $this->render('_form', [
         'model' => $model,
         'modelWard' => $modelWard,

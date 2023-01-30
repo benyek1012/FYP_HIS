@@ -224,6 +224,7 @@ $urlNationality = Url::toRoute(['/patient_information/nationality']);
                 else{?>
                     <?= $form->field($model, 'nationality')->widget(kartik\select2\Select2::classname(), [
                         'data' => $countries,
+						'value' => $model->nationality,
                         'options' => ['placeholder' => Yii::t('app','Please select nationality'), 'id' => 'nationality'],
                         'pluginOptions' => [
                             'allowClear' => true,

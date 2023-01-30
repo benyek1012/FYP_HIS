@@ -49,7 +49,7 @@ use yii\helpers\Url;
                     //         :  Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
                     //     }
                     // }
-
+					
                     return ($index == 0) ?
                     '<b>'.Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']])).'</b>'
                     :  Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
@@ -240,8 +240,8 @@ use yii\helpers\Url;
                         // }
 
                         return ($index == 0) ?
-                        '<b>'.Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']])).'</b>'
-                        :  Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']]));
+                        ($data['cancelled']?'<s>':'').'<b>'.Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']])).'</b>'.($data['cancelled']?'</s>':'')
+                        :  ($data['cancelled']?'<s>':'').Html::a($data['rn'], \yii\helpers\Url::to(['/patient_admission/update', 'rn' => $data['rn']])).($data['cancelled']?'</s>':'');
                     },
                 ],
                 [
@@ -317,9 +317,16 @@ use yii\helpers\Url;
                     'attribute' => 'final_fee',
                     'label' => Yii::t('app','Amount Due').' / '.Yii::t('app','Unclaimed Balance').' (RM)',
                     'headerOptions'=>['style'=>'max-width: 100px;'],
-                    'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+					'contentOptions'=>function($model, $key, $index, $column) { 
+                        $value = (new Patient_admission()) ->get_bill($model->rn);
+						if(substr($value,0,1) == '-') //if negative
+							return ['style'=>'max-width:100px;vertical-align:middle;color:Tomato'];
+						else
+							return ['style'=>'max-width:100px;vertical-align:middle'];
+					},
                     'value' => function($data){
-                        return (new Patient_admission()) ->get_bill($data->rn);
+
+						return (new Patient_admission()) ->get_bill($data->rn);
                     },
                 ],
 

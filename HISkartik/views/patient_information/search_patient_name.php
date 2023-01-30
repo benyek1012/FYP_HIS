@@ -105,6 +105,15 @@ $model = Patient_information::findOne(Yii::$app->request->get('id'));
                                             },
                                             'label' => Yii::t('app','Sex')
                                         ],
+                                        /*[
+                                            'attribute' => 'type',
+                                            'headerOptions'=>['style'=>'max-width: 100px;'],
+                                            'contentOptions'=>['style'=>'max-width: 100px;vertical-align:middle'],
+                                            'value' => function($data){
+                                                return  $data['type'];
+                                            },
+                                            'label' => Yii::t('app','RN Type')
+                                        ],*/
                                         [
                                             'attribute' => 'rn',
                                             'format' => 'raw',

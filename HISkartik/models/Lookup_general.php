@@ -55,6 +55,14 @@ class Lookup_general extends \yii\db\ActiveRecord
             'recommend' => Yii::t('app','Recommend'),
         ];
     }
+	
+	static function getNaturalSortArgs()
+	{
+		return ['length(code)' => SORT_ASC,
+			'CAST(REGEXP_SUBSTR(code,"[0-9]+") AS UNSIGNED)'=>SORT_ASC, 
+			'code'=>SORT_ASC
+			]; 
+	}
 
 }
 

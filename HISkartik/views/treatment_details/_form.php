@@ -145,7 +145,7 @@ else{
     $linkDisabled = '';
 }
 
-$dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get('bill_uid')]);
+//$dbTreatment = Treatment_details::find()->where(['bill_uid' => $bill_uid])->orderBy(Treatment_details::getNaturalSortArgs())->all();
 
 ?>
 
@@ -186,7 +186,10 @@ $dbTreatment = Treatment_details::findAll(['bill_uid' => Yii::$app->request->get
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td> </td>
             </tr>
-            <?php foreach ($modelTreatment as $index => $model) { ?>
+			
+            <?php 
+			//$modelTreatment = Treatment_details::find()->where(['bill_uid' => Yii::$app->request->get('bill_uid')])->orderBy(Treatment_details::getNaturalSortArgs())->all();
+			foreach ($modelTreatment as $index => $model) { ?>
             <tr id='treatment-<?php echo $index ?>'>
                 <td>
                     <!-- <?= $form->field($model, "[$index]treatment_code")->dropDownList($treatment_code,['class' => 'treatmentCode',
