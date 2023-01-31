@@ -11,6 +11,10 @@ class Utils{
 	const bill_page_mode_generated = 2;
 	const bill_page_mode_printed = 3;
 	
+	const permission_clerk = 0;
+	const permission_cashier = 1;
+	const permission_admin = 2;
+	
 	static function getEditeable(){
 		return Yii::$app->session['editeable'];
 	}
@@ -43,6 +47,20 @@ class Utils{
 	
 	static function generateUID(){return Base64UID::generate(32);}
 
+	static function permissionCheck($access){
+		if(Yii::$app->user->identity->role_cashier && in_array(Utils::permission_cashier,$access))
+			return true;
+		
+		if(Yii::$app->user->identity->role_clerk && in_array(Utils::permission_clerk,$access))
+			return true;
+		
+		if(Yii::$app->user->identity->role_admin && in_array(Utils::permission_admin,$access))
+			return true;
+	
+		echo 'No Permission';
+		exit;
+	
+	}
 
 
 }

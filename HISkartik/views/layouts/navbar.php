@@ -137,9 +137,11 @@ body {
                 </ul>
             </div>
         </div>
-
+		<?php if((new New_user()) -> isClerkorAdmin()) { ?>
+			<div class="dropdown"><a id="report" href="<?=Url::to(['report/temporary-report']); ?>"" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a></div>
+		<?php } ?>
+		<!--
         <li class="nav-item dropdown">
-            <!-- <a id="report" href="#" class="nav-link"><?php echo Yii::t('app','Reports'); ?></a> -->
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 class="nav-link dropdown-toggle"><?php echo Yii::t('app', "Reports"); ?></a>
             <div class="dropdown-content">
@@ -165,13 +167,9 @@ body {
                     <li><a href="#" class="dropdown-item"
                             style="color: grey"><?php echo Yii::t('app','Report Penyata Akaun Belum Terima'); ?></a>
                     </li>
-                    <!-- <li><a href="<?php echo Url::to(['/cancellation/deleted']); ?>"
-                            class="dropdown-item"><?php echo Yii::t('app','Deleted'); ?></a></li> -->
-                    <!--<li><a href="<?//php echo Url::to(['/dbupdate']); ?>"
-                    class="dropdown-item"><?//php echo Yii::t('app','Testing database update'); ?></a></li> -->
                 </ul>
             </div>
-        </li>
+        </li> -->
 
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"

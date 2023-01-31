@@ -12,7 +12,8 @@ use app\models\Pekeliling_import;
 use app\models\Pekeliling_importSearch;
 use app\models\Receipt;
 use app\models\Reminder_pdf;
-use app\models\Report;
+//use app\models\Report;
+use app\reports\Report;
 use Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -21,6 +22,7 @@ use yii2tech\csvgrid\CsvGrid;
 use yii\data\ActiveDataProvider;
 use Yii;
 use yii\data\ArrayDataProvider;
+use app\components\Utils;
 
 
 class ReportController extends Controller
@@ -42,6 +44,47 @@ class ReportController extends Controller
             ]
         );
     }
+
+	public function actionTemporaryReport(){
+        //permission check
+		Utils::permissionCheck([Utils::permission_clerk, Utils::permission_admin]);
+		$result = null;
+		
+        if ($this->request->isPost) {
+			if(!array_key_exists($_POST['list'], Report::reportList)){
+				$result = 'Stop hacking thank you';
+			}
+			if((\DateTime::createFromFormat('Y-m-d', $start_date = $_POST['start_date'])) == false)
+				$result = 'Invalid start date. Please use format "YYYY-MM-DD"';
+			if((\DateTime::createFromFormat('Y-m-d', $end_date = $_POST['end_date'])) == false)
+				$result = 'Invalid end date. Please use format "YYYY-MM-DD"';
+			
+			if(empty($result)){
+				//valid dates
+				if($_POST['submit'] == 'pdf'){
+					$result = 'pdf not supported yet';
+				}
+				if($_POST['submit'] == 'csv'){
+					$modelNameString = '\\app\\reports\\'.$_POST['list'];
+					$report = new $modelNameString($start_date, $end_date);
+					$report->export_csv();
+					
+					//echo 'reached this far, should attempt to print if coded';
+					//exit;
+					
+				}
+				
+			}
+        } 
+
+        return $this->render('index',[
+			'start_date'=> empty($_POST['start_date'])?null:$_POST['start_date'],
+			'end_date'=> empty($_POST['end_date'])?null:$_POST['end_date'],
+			'list_value'=> empty($_POST['list'])?null:$_POST['list'],
+			'result' => $result
+			]);
+	}
+	
 
     public function actionReport1()
     {
